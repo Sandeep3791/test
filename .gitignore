@@ -4,7 +4,7 @@
 #     https://www.atlassian.com/git/tutorials/saving-changes/gitignore
 
 *_pycache_/
-migrations/
+*migrations/
 env/
 app/__init__.py
 myenv/
