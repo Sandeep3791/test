@@ -1,0 +1,253 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% block title %} Dashboard {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+{% block head %}
+<script src="{% static 'assets/js/datatable_ajax.js' %}"></script>
+<link rel="stylesheet" href="{% static 'assets/css/datatable.css' %}">
+<link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+<script src="{% static 'assets/js/datatable_1.js' %}"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+<script src="{% static 'assets/js/datatable.js' %}"></script>
+
+{% comment %} <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"> {% endcomment %}
+{% comment %} <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,800&display=swap" rel="stylesheet"> {% endcomment %}
+
+
+   
+{% endblock head %}
+
+{% block content %}
+<!-- <div class="text-left">
+    <a class="nav-link" href="{% url 'sub-admin-register' %}">
+        <button class="btn btn-secondary" style="background-color: #f2e600; position: relative;left: 850px;">Create New User</button>
+        </a>
+</div> -->
+
+<!-- <div class="col-xl-4 col-lg-4 col-md-6 d-flex align-items-center"><span class="page_title mb-md-2" style="font-size: 28px; font-weight:600;">User</span>
+</div> -->
+
+<div class="subheader row pe-4 ps-4 mt-5">
+    <div class="row add_btn col-xl-4 col-lg-4 col-md-5 d-flex align-items-center">
+        <div class="col">
+            <button class="button button1 mt-2 export_file">Export to pdf</button>
+        </div>
+    </div>
+
+    <div class="col-xl-8 col-lg-8 col-12">
+        <div class="row d-flex align-items-center">
+            <div class="col-xl-4 col-lg-3 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 " style="height:40px;">
+                <!-- <input type="search" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Search"> -->
+                <label class="subadmin_search d-flex align-items-center">
+                    <input class="table_searchbar" type="search" placeholder="Search">
+                    <!-- <img src="images/Search.svg" alt=""> -->
+                   </label>
+
+            </div>
+            <div class="col-xl-4 col-md-4">
+                <select class="form-select form-select-md filter_select" aria-label=".form-select-md example">
+                <option selected="">All</option>
+                <option value="1">...</option>
+                <option value="2">...</option>
+                <option value="3">...</option>
+              </select>
+            </div>
+            <div class="col-xl-4 col-lg-5 col-md-5"><a class="btn w-100 anchor_btn ps-0 pe-0" href="{% url 'sub-admin-register' %}">
+                <button class="btn col-sm-12 col-md-12 col-12 create_new">Create New User</button>
+            </a></div>
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="fas fa-comment-dots" {% endif %}> {{ message }}</li>
+        {% endfor %}
+</ul>
+{% endif %}
+
+    <table class="table  text-center" id="filtertable" >
+        <thead class="table-dark ">
+            <tr>
+                <th scope="col">Sr.No.</th>
+                <th scope="col">Username</th>
+                <th scope="col">Email</th>
+                <th scope="col">Contact</th>
+                <th scope="col">Role</th>
+                <th scope="col">Status</th>
+                {% comment %} <th scope="col">Access</th> {% endcomment %}
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody class="bg-white">
+            {% for user in userlist %}
+            {% if user.is_superuser %}
+            {% else %}
+            <tr>
+                <th scope="row">{{forloop.counter}}</th>
+                <td>{{user.username}}</td>
+                <td>{{user.email}}</td>
+                <td>{{user.contact}}</td>
+                <td>{{user.role}}</td>
+                <td>
+                    {% if 'User Edit' in request.user.role.permission or request.user.is_superuser %}
+                    {% if user.is_active %} <a href="{% url 'activeblock' user.id %}"
+                        class="badge rounded-pill bg-success "><i class="fas fa-toggle-on"></i> Active</a> {% else %} <a
+                        href="{% url 'activeblock' user.id %}" class="badge rounded-pill bg-danger"><i
+                            class="fas fa-toggle-off"></i> Blocked</a>
+                    {% endif %}
+                    {% else %}
+                    No Permission
+                </td>
+                {% endif %}
+                {% comment %} <td>{{user.role.content}}</td> {% endcomment %}
+
+                <td>
+                    {% if 'User Delete' in request.user.role.permission or request.user.is_superuser %}
+                    <a type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{user.id}}">
+                        <i class="fas fa-trash-alt text-danger"></i>
+                    </a>
+                    {% else %}
+                    No Permission
+                    {% endif %}
+                </td>
+
+                <!-- Modal -->
+                <div class="modal fade" id="deleteModal{{user.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Delete {{user.username | title}}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                Are You Sure You Want to Delete {{user.username | title}} ??
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+                                <form method="POST" action="{% url 'deleteuser' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" value="{{user.id}}" name="userid">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </tr>
+            {% endif %}
+            {% endfor %}
+
+        </tbody>
+    </table>
+       </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% comment %} <script>
+
+$(document).ready( function () {
+    $('#filtertable').DataTable({
+        dom: 'rtip',
+        buttons: [
+            {
+                extend: 'collection',
+                text: 'Export',
+                className: ' btn-sm',
+                buttons: [
+                    {
+                        extend:    'copyHtml5',
+                        text:      '<i class="fas fa-copy"> COPY</i>',
+                        titleAttr: 'Copy'
+                    },
+                    {
+                        extend:    'excelHtml5',
+                        text:      '<i class="fas fa-file-excel"> EXCEL</i>',
+                        titleAttr: 'Excel'
+                    },
+                    {
+                        extend:    'csvHtml5',
+                        text:      '<i class="fas fa-file-csv"> CSV</i>',
+                        titleAttr: 'CSV'
+                    },
+                    
+                    {
+                        extend:    'pdfHtml5',
+                        text:      '<i class="fas fa-file-pdf"> PDF</i>',
+                        titleAttr: 'PDF'
+                    }
+                ]
+            }
+        ],  
+        "oLanguage": {
+            "oPaginate": {
+                    "sNext": '<i class="fas fa-arrow-circle-right text-primary"></i>',
+                    "sPrevious": '<i class="fas fa-arrow-circle-left text-primary"></i>'
+                }
+        },
+    });
+} );
+</script> {% endcomment %}
+
+<script>
+
+$(document).ready( function () {
+    $('#filtertable').DataTable({
+        dom: 'rtip',
+        buttons: [
+            {
+                extend: 'collection',
+                text: 'Export',
+                className: ' btn-sm',
+                buttons: [
+                    {
+                        extend:    'copyHtml5',
+                        text:      '<i class="fas fa-copy"> COPY</i>',
+                        titleAttr: 'Copy'
+                    },
+                    {
+                        extend:    'excelHtml5',
+                        text:      '<i class="fas fa-file-excel"> EXCEL</i>',
+                        titleAttr: 'Excel'
+                    },
+                    {
+                        extend:    'csvHtml5',
+                        text:      '<i class="fas fa-file-csv"> CSV</i>',
+                        titleAttr: 'CSV'
+                    },
+                    
+                    {
+                        extend:    'pdfHtml5',
+                        text:      '<i class="fas fa-file-pdf"> PDF</i>',
+                        titleAttr: 'PDF'
+                    }
+                ]
+            },
+           
+        ],          
+        "oLanguage": {
+            "oPaginate": {
+                    "sNext": '<i class="fas fa-arrow-circle-right text-primary"></i>',
+                    "sPrevious": '<i class="fas fa-arrow-circle-left text-primary"></i>'
+                }
+        },
+    });
+} );
+</script>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

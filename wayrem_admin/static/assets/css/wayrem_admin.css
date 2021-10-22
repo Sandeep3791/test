@@ -1,0 +1,16 @@
+@media (min-width: 992px) {
+.admin_login_lg{
+    background-image: url("/static/assets/img/login_bg.png");
+    background-size: 100% 100%;
+    background-repeat: no-repeat;
+
+}
+
+.admin_signup_lg{
+    background-image: url("/static/assets/img/signup_bg.png");
+    background-size: 110% 100%;
+    background-repeat: no-repeat;
+
+}
+
+}

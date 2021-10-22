@@ -1,0 +1,220 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %} Sign Up {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+<main class="align-items-center admin_signup_lg">
+    <section class="d-flex   align-items-center my-5 mt-lg-6 mb-lg-5">
+        <div class="container ">
+            <div class="row justify-content-center form-bg-image">
+                <div class="col-12 d-flex align-items-center justify-content-center ">
+                    <div
+                        class="mb-4 mb-lg-0  shadow-soft border rounded border-light p-4 p-lg-4 w-100 fmxw-800 ">
+                        <div class="text-center text-md-center mb-4 mt-md-0 ">
+                            <h1 class="mb-0 h3">
+                                <!-- <img src="{% static '/assets/img/logo/Wayrem_logo..svg'%}" alt=""> -->
+                                Add Product
+                            </h1>
+                            <hr >
+                            <p>
+                                {% if messages %}
+                                {% for message in messages %}
+                            <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show"
+                                {% endif %} role="alert">
+                                <strong> {{ message }}</strong>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+
+
+                            </p>
+                        </div>
+
+
+
+                        <div class="container-fluid">
+                            <form method="post" action="{% url 'product' %}" enctype="multipart/form-data" novalidate>
+                                {% csrf_token %}
+                                {{ form.non_field_errors }}
+                                <div class="row">
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="name">Name</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text " id="name"><span
+                                                        class="fab fa-product-hunt"></span></span>
+                                                {{form.name}}
+                                            </div>
+                                            <div class="input-group">
+                                                <span class="text-danger"><em> {{form.name.errors | striptags}}
+                                                    </em></span>
+                                            </div>
+                                            <span class="text-error"></span>
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="image">Image</label>
+                                            <div class="input-group">
+                                                {% comment %} <span class="input-group-text" id="image"><span
+                                                        class="fas fa-lock"></span></span> {% endcomment %}
+                                                {{form.image}}
+                                            </div>
+                                            <div class="input-group">
+                                                <span class="text-danger"> <em> {{form.image.errors | striptags}}
+                                                    </em> </span>
+                                            </div>
+                                            <span class="text-error"></span>
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+                                </div>
+                                <div class="row">
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="category">Category</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text" id="category"><span
+                                                        class="fas fa-chevron-circle-down"></span></span>
+                                                {{form.category}}
+                                            </div>
+                                            <div class="input-group">
+                                                <span class="text-danger"> <em> {{form.category.errors | striptags}}
+                                                    </em>
+                                                </span>
+                                            </div>
+                                            <span class="text-error"></span>
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="price">Price</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text" id="price"><span
+                                                        class="fas fa-dollar-sign"></span></span>
+                                                {{form.price}}
+                                            </div>
+                                            <div class="input-group">
+                                                <span class="text-danger"> <em> {{form.price.errors | striptags}}
+                                                    </em> </span>
+                                            </div>
+                                            <span class="text-error"></span>
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+                                </div>
+                                <div class="row">
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="quantity">Quantity</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text" id="quantity"><span
+                                                        class="fas fa-warehouse"></span></span>
+                                                {{form.quantity}}
+                                            </div>
+                                            <div class="input-group">
+                                                <span class="text-danger"> <em> {{form.quantity.errors | striptags}}
+                                                    </em>
+                                                </span>
+                                            </div>
+                                            <span class="text-error"></span>
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="weight">Weight</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text" id="weight"><span
+                                                        class="fas fa-balance-scale"></span></span>
+                                                {{form.weight}}
+                                                <span class="input-group-text fs-5.5" id="weight">gm</span></span>
+                                            </div>
+                                            <div class="input-group">
+                                                <span class="text-danger"> <em> {{form.weight.errors | striptags}}
+                                                    </em>
+                                                </span>
+                                            </div>
+                                            <span class="text-error"></span>
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+                                </div>
+                                <div class="row">
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="description">Description</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text" id="description"><span
+                                                        class="fas fa-file-alt"></span></span>
+                                                {{form.description}}
+                                            </div>
+                                            <div class="input-group">
+                                                <span class="text-danger">
+                                                    <em> {{form.description.errors | striptags}}
+                                                    </em>
+                                                </span>
+                                            </div>
+                                            <span class="text-error"></span>
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+
+
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="provider">Provider</label>
+                                            <div class="input-group">
+                                                <span class="input-group-text" id="provider"><span
+                                                        class="fas fa-hand-holding-usd"></span></span>
+                                                {{form.provider}}
+                                            </div>
+                                            <div class="input-group">
+                                                <span class="text-danger"> <em> {{form.provider.errors | striptags}}
+                                                    </em>
+                                                </span>
+                                            </div>
+                                            <span class="text-error"></span>
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+                                </div>
+
+                                <div class="d-grid">
+                                    <button type="submit" class="btn text-white"
+                                        style="background-color:#29313d;">Save</button>
+                                </div>
+
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

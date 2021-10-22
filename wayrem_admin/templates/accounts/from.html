@@ -1,0 +1,106 @@
+                            <!-- Form -->
+                            <div class="form-group mb-4">
+                                <label for="email">Username</label>
+                                <div class="input-group">
+                                    <span class="input-group-text" id="username"><span
+                                            class="fas fa-user-shield"></span></span>
+                                    {{form.username}}
+                                    {{from.username.errors}}
+
+                                    <!-- <input type="text" placeholder="Username" class="form-control" id="username"
+                                        name="username" required> -->
+                                </div>
+                                <span class="text-error"></span>
+                            </div>
+
+                            <!-- Form -->
+                            <div class="form-group mb-4">
+                                <label for="email">Your Email</label>
+                                <div class="input-group">
+                                    <span class="input-group-text" id="email"><span
+                                            class="fas fa-envelope"></span></span>
+                                    {{form.email}}
+                                    {{form.email.errors}}
+                                    <!-- <input type="text" placeholder="Email" class="form-control" id="email" name="email"
+                                        required> -->
+                                </div>
+                                <span class="text-error"></span>
+                            </div>
+                            <!-- End of Form -->
+                            <!-- Form -->
+                            {% comment %} <div class="form-group mb-4">
+                                <label for="role">Role</label>
+                                <div class="input-group">
+                                    <span class="input-group-text" id="role"><span
+                                            class="fas fa-user-tag"></span></span>
+
+                                    <input type="text" placeholder="Role" class="form-control" id="role" name="role">
+                                </div>
+                                <span class="text-error"></span>
+                            </div> {% endcomment %}
+                            <!-- End of Form -->
+                            <!-- Form -->
+                            <div class="form-group mb-4">
+                                <label for="contact">Contact</label>
+                                <div class="input-group">
+                                    <span class="input-group-text" id="contact"><span
+                                            class="fas fa-phone-alt"></span></span>
+                                    {{form.contact}}
+                                    <!-- <input type="number" placeholder="Contact" class="form-control" id="contact"
+                                        name="contact" required> -->
+                                </div>
+                                <span class="text-error"></span>
+                            </div>
+                            <!-- End of Form -->
+                            <!-- End of Form -->
+                            <div class="form-group">
+
+                                <!-- Form -->
+                                <div class="form-group mb-4">
+                                    <label for="password">Your Password</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text" id="password"><span
+                                                class="fas fa-unlock-alt"></span></span>
+
+                                        {{form.password1}}
+                        
+                                        <!-- <input type="password" placeholder="Password" class="form-control" id="password"
+                                            name="password" required> -->
+
+                                    </div>
+                                    <span class="text-error"></span>
+                                </div>
+                                <!-- End of Form -->
+
+                                <!-- Form -->
+                                <div class="form-group mb-4">
+                                    <label for="password">Password Check</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text" id="cpassword"><span
+                                                class="fas fa-lock"></span></span>
+                                        {{form.password2}}
+
+                                          
+                                        <!-- <input type="password" placeholder="Confirm Password" class="form-control"
+                                            id="cpassword" name="cpassword" required> -->
+
+                                    </div>
+                                    <span class="text-error"></span>
+                                </div>
+                                <!-- End of Form -->
+
+                                <div class="d-flex justify-content-between align-items-top mb-4">
+                                    <!-- <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="" id="remember">
+                                        <label class="form-check-label mb-0" for="remember">
+                                            Agree Terms
+                                        </label>
+                                    </div> -->
+                                    <!-- <div class="form-check">
+                                            <a href="{% url 'login' %}" class="small text-right">Login</a>
+                                        </div> -->
+                                </div>
+                             
+
+
+                            </div>

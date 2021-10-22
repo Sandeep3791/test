@@ -1,0 +1,180 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %} Create Product {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+<link type="text/css" href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+{% endblock stylesheets %}
+
+{% block content %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.css" integrity="sha512-p209YNS54RKxuGVBVhL+pZPTioVDcYPZPYYlKWS9qVvQwrlzxBxkR8/48SCP58ieEuBosYiPUS970ixAfI/w/A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+
+{% comment %} <script type="text/javascript">
+       $(document).ready(function () {
+            $('#id_product_category').select2({
+            placeholder: 'Select Category',
+            })
+            $('#id_supplier_name').select2({
+            placeholder: 'Select Supplier',
+            });
+     });
+    </script> {% endcomment %}
+
+<main class="align-items-center admin_signup_lg">
+    <section class="d-flex   align-items-center my-5 mt-lg-6 mb-lg-5">
+        <div class="container ">
+            <div class="row justify-content-center form-bg-image">
+                <div class="col-12 d-flex align-items-center justify-content-center">
+                    <div
+                        class="mb-4 mb-lg-0 bg-white  rounded p-4 p-lg-4 w-100" style="box-shadow: 0px 14px 20px 0px #00000014;">
+                        <div class="mb-4 mt-md-0">
+                            <h1 class="mb-0 h3">
+                                <!-- <img src="{% static '/assets/img/logo/Wayrem_logo..svg'%}" alt=""> -->
+                                 Add Product | Step - 2
+                            </h1>
+                            <hr>
+                            
+                            <p>
+                                {% if messages %}
+                                {% for message in messages %}
+                            <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show"
+                                {% endif %} role="alert">
+                                <strong> {{ message }}</strong>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+
+
+                            </p>
+                        </div>
+
+ {% if form.non_field_errors %}
+  {% for error in form.non_field_errors %}
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+  {{error}}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+  <span aria-hidden="true">&times;</span>
+</div>
+  {% endfor %}
+{% endif %}
+
+
+                         <form method="post" action="{% url 'productviewtwo' %}" enctype="multipart/form-data" novalidate>
+                                {% csrf_token %}
+                                {{ form.non_field_errors }}
+                                <div class="row">
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="name">Weight</label>
+                                            <div class="input-group first">   
+                                             {{form.product_weight}} 
+                                               {{form.unit}}
+                                            </div>
+                                            
+                                            <span class="text-error"></span>
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+                                    
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="name">Price</label>
+                                            <div class="input-group">   
+                                                {{form.price}}
+                                            </div>
+                                            <div class="input-group">
+                                                <span class="text-danger"><em> {{form.image3.errors | striptags}}
+                                                    </em></span>
+                                            </div>
+                                            <span class="text-error"></span>
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="name">Discount</label>
+                                            <div class="input-group first">   
+                                                {{form.discount}}
+                                                {{form.dis_abs_percent}}
+                                            </div>
+                                            <!-- <div class="input-group">
+                                                <span class="text-danger"><em> {{form.image4.errors | striptags}}
+                                                    </em></span>
+                                            </div> -->
+                                            <span class="text-error"></span>
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+                                   
+
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="image">Package Count</label>
+                                            <div class="input-group">
+                                                {% comment %} <span class="input-group-text" id="product_code"><span
+                                                        class="fas fa-lock"></span></span> {% endcomment %}
+                                                {{form.package_count}}
+                                            </div>
+                                            <div class="input-group">
+                                                <span class="text-danger"> <em> {{form.product_name.errors | striptags}}
+                                                    </em> </span>
+                                            </div>
+                                            <span class="text-error"></span>
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+                                </div>
+                                <div class="row">
+                                   
+                                   <!-- Form -->
+                                    <div class="col-lg-12">
+                                        <div class="form-group mb-4">
+                                            <label for="name">Product Meta Key</label>
+                                            <div class="input-group">
+                                                {{form.product_meta_key}}
+                                            </div>
+                                           
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->                                    
+                                </div>
+                            {% comment %} <div class="row">
+                                    <div class="col-md-6 d-grid">
+                                                <a href="{% url 'productviewone' %}" class="btn btn-secondary">Previous</a>
+                                        </div>  
+                                <div class="col-md-6 d-grid">
+                                        <button type="submit" class="btn text-white"
+                                            style="background-color:#29313d;">Next</button>
+                                    </div> 
+                                </div> {% endcomment %}
+
+                                <div class="mt-1">
+                                <a type="submit" href="{% url 'productviewone' %}" class="btn  btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Previous</a>
+                                <a type="submit" class="btn btn-dark border-0 col-xl-3 col-md-5 col-12" >Next</a>
+                            </div>
+                                
+
+                            </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

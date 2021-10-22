@@ -1,0 +1,185 @@
+{% load static %}
+<nav id="sidebarMenu" class="sidebar d-md-block bg-dark text-white collapse" data-simplebar>
+  <div class="sidebar-inner px-4 pt-3">
+    <div class="user-card d-flex d-md-none align-items-center justify-content-between justify-content-md-center pb-4">
+      <div class="d-flex align-items-center">
+        <div class="user-avatar lg-avatar me-4">
+          <img src="{% static 'assets/img/team/profile-picture-3.jpg' %}" class="card-img-top rounded-circle border-white"
+            alt="Bonnie Green">
+        </div>
+        <div class="d-block">
+          <h2 class="h6">
+            {{ request.user.username | title }}
+          </h2>
+          <a href="#" class="btn btn-secondary text-dark btn-xs"><span class="me-2"><span
+                class="fas fa-sign-out-alt"></span></span>Sign Out</a>
+        </div>
+      </div>
+      <div class="collapse-close d-md-none">
+        <a href="#sidebarMenu" class="fas fa-times" data-bs-toggle="collapse" data-bs-target="#sidebarMenu"
+          aria-controls="sidebarMenu" aria-expanded="true" aria-label="Toggle navigation"></a>
+      </div>
+    </div>
+    <ul class="nav flex-column pt-3 pt-md-0">
+      <li class="nav-item">
+        <a href="{% url 'dashboard' %}" class="nav-link d-flex align-items-center">
+          <span class="sidebar-text sidebar-logo">
+            <img src="{% static '/assets/img/logo/Wayrem_logo_dashboard.svg'%}" height="100" width="" alt="Volt Logo">
+          </span>
+        </a>
+      </li>
+      <li class="nav-item {% if 'dashboard' in segment %} active {% endif %}">
+        <a href="{% url 'dashboard' %}" class="nav-link">
+          <span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span>
+          <span class="sidebar-text">Dashboard</span>
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <span class="nav-link  collapsed  d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
+          data-bs-target="#submenu-pages" >
+          <span>
+            <span class="sidebar-icon"><i class="fas fa-users-cog"></i></span>
+            <span class="sidebar-text">User Management</span>
+          </span>
+          <span class="link-arrow"><span class="fas fa-chevron-right"></span></span>
+        </span>
+        <div class="multi-level collapse " role="list" id="submenu-pages" aria-expanded="false">
+          <ul class="flex-column nav">
+            <!-- <li class="nav-item">
+                <a class="nav-link" href="/sign-in.html">
+                  <span class="sidebar-text">Sign In</span>
+                </a>
+              </li> -->
+            {% if request.user.is_superuser %}
+            
+
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'userlist' %}">
+                <span class="sidebar-text">Users </span>
+              </a>
+            </li>
+             <li class="nav-item">
+              <a class="nav-link" href="{% url 'supplierlist' %}">
+                <span class="sidebar-text">Suppliers </span>
+              </a>
+            </li>
+            {% endif %}
+            
+            <!-- <li class="nav-item">
+              <a class="nav-link" href="{% url 'change-password' %}">
+                <span class="sidebar-text">Change Password</span>
+              </a>
+            </li> -->
+          </ul>
+        </div>
+      </li>
+{% comment %} <!-- ---------------------------------------------------------------------------- --> {% endcomment %}
+
+
+<li class="nav-item">
+        {% if 'Roles View' in request.user.role.permission or request.user.is_superuser %}
+          <li class="nav-item {% if 'dashboard' in segment %} active {% endif %}">
+            <a href="{% url 'roles_list' %}" class="nav-link">
+              <span class="sidebar-icon"><i class="fas fa-user-tag"></i></span></span>
+              <span class="sidebar-text">Roles </span>
+            </a>
+          </li>
+          {% endif %}
+</li>
+
+
+<ul class="nav">
+  <a href="{% url 'categorieslist' %}" class="nav-link w-100">
+    <span class="sidebar-icon"><i class="fas fa-grip-horizontal"></i></span></span>
+    <span class="sidebar-text">Categories</span>
+  </a>
+</li>
+</ul>
+
+<ul class="nav">
+<li class="nav-item w-100 {% if 'dashboard' in segment %} active {% endif %}">
+  <a href="{% url 'productlist' %}" class="nav-link">
+    <span class="sidebar-icon"><i class="fas fa-gift"></i></span></span>
+    <span class="sidebar-text">Product</span>
+  </a>
+</li>
+</ul>
+
+<ul class="nav">
+<li class="nav-item w-100 {% if 'dashboard' in segment %} active {% endif %}">
+  <a href="{% url 'createpo' %}" class="nav-link">
+    <span class="sidebar-icon"><i class="fas fa-file-alt"></i></span></span>
+    <span class="sidebar-text">Purchase Order</span>
+  </a>
+</li>
+</ul>
+
+{% comment %} ---------------------------<i class="fas fa-gift"></i>----------------------------------------------- {% endcomment %}
+  
+ 
+      <!-- <li class="nav-item {% if 'ui-' in segment %} active {% endif %}">
+        <span class="nav-link  collapsed  d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
+          data-bs-target="#submenu-components">
+          <span>
+            <span class="sidebar-icon"><span class="fas fa-box-open"></span></span>
+            <span class="sidebar-text">Components</span>
+          </span>
+          <span class="link-arrow"><span class="fas fa-chevron-right"></span></span>
+        </span>
+        <div class="multi-level collapse " role="list" id="submenu-components" aria-expanded="false">
+          <ul class="flex-column nav">
+            <li class="nav-item ">
+              <a class="nav-link" href="#">
+                <span class="sidebar-text">Buttons</span>
+              </a>
+            </li>
+            <li class="nav-item ">
+              <a class="nav-link" href="#">
+                <span class="sidebar-text">Notifications</span>
+              </a>
+            </li>
+            <li class="nav-item ">
+              <a class="nav-link" href="#">
+                <span class="sidebar-text">Forms</span>
+              </a>
+            </li>
+            <li class="nav-item ">
+              <a class="nav-link" href="#">
+                <span class="sidebar-text">Modals</span>
+              </a>
+            </li>
+            <li class="nav-item ">
+              <a class="nav-link" href="#">
+                <span class="sidebar-text">Typography</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </li> -->
+      <li role="separator" class="dropdown-divider mt-4 mb-3 border-black"></li>
+
+      
+      <!-- <li class="nav-item">
+        <a href="https://appseed.us/admin-dashboards/django-dashboard-volt" target="_blank"
+          class="nav-link d-flex align-items-center">
+          <span class="sidebar-icon"><span class="fas fa-info-circle"></span></span>
+          <span class="sidebar-text">Product Page</span>
+        </a>
+      </li> -->
+      {% comment %} <li class="nav-item">
+        <a href="" target="_blank" class="nav-link d-flex align-items-center">
+          <span class="sidebar-icon"><span class="fas fa-envelope"></span></span>
+          <span class="sidebar-text">Support</span>
+        </a>
+      </li> {% endcomment %}
+      {% comment %} <li class="nav-item">
+        <a target="_blank" href="https://appseed.us/admin-dashboards/django-dashboard-volt-pro"
+          class="btn btn-secondary d-flex align-items-center justify-content-center btn-upgrade-pro">
+          <span class="sidebar-icon"><span class="fas fa-rocket me-2"></span></span>
+          <span>Upgrade to Pro</span>
+        </a>
+      </li> {% endcomment %}
+    </ul>
+  </div>
+</nav>

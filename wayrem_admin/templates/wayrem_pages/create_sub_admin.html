@@ -1,0 +1,121 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %} Reset Password {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+    <main>
+        <!-- Section -->
+        <section class="bg-soft d-flex align-items-center my-5 mt-lg-6 mb-lg-5">
+            <div class="container">
+                <div class="row justify-content-center form-bg-image">
+                    <div class="col-12 d-flex align-items-center justify-content-center">
+                        <div class="bg-white shadow-soft border rounded border-light p-4 p-lg-5 w-100 fmxw-800">
+                            <h1 class="h3 mb-4">Create User</h1>
+                            <form method="post" action="{% url 'sub-admin-register' %}">
+
+                                {% csrf_token %}
+                                <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-4">
+                                        <label for="email">Username</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text" id="username"><span
+                                                    class="fas fa-user-shield"></span></span>
+        
+                                            <input type="text" placeholder="Username" class="form-control" id="username"
+                                                name="username" required>
+                                        </div>
+                                        <span class="text-error"></span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-4">
+                                        <label for="email">Your Email</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text" id="email"><span
+                                                    class="fas fa-envelope"></span></span>
+        
+                                            <input type="text" placeholder="Email" class="form-control" id="email" name="email" required>
+                                        </div>
+                                        <span class="text-error"></span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-4">
+                                        <label for="contact">Contact</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text" id="contact"><span
+                                                    class="fas fa-phone-alt"></span></span>
+        
+                                            <input type="number" placeholder="Contact" class="form-control" id="contact"
+                                                name="contact" required>
+                                        </div>
+                                        <span class="text-error"></span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-4">
+                                        <label for="password">Your Password</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text" id="password"><span
+                                                    class="fas fa-unlock-alt"></span></span>
+    
+                                            <input type="password" placeholder="Password" class="form-control" id="password"
+                                                name="password" required>
+    
+                                        </div>
+                                        <span class="text-error"></span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-4">
+                                        <label for="password">Password Check</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text" id="cpassword"><span
+                                                    class="fas fa-lock"></span></span>
+    
+                                            <input type="password" placeholder="Confirm Password" class="form-control"
+                                                id="cpassword" name="cpassword" required>
+    
+                                        </div>
+                                        <span class="text-error"></span>
+                                    </div>
+                                </div>
+                                {% comment %}
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-4">
+                                        <label for="role">Role</label>
+                                        <div class="input-group">
+                                            <span class="input-group-text" id="role"><span
+                                                    class="fas fa-user-tag"></span></span>
+        
+                                            <input type="text" placeholder="Role" class="form-control" id="role" name="role">
+                                        </div>
+                                        <span class="text-error"></span>
+                                    </div> 
+                                </div>
+                                {% endcomment %}
+                                </div>
+                                <div class="float-end">
+                                    <button type="submit" name="register" class="btn" style="background-color:#245125;">Create user</button>
+                                    <input type="reset" name="reset" class="btn btn-" value="reset" style="background-color:#edfc21;">
+                                    <a href="{% url 'userlist' %}" class="btn" style="background-color:#b71918;">Cancel</a>
+                                </div>
+    
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}
