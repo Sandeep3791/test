@@ -1,3 +1,4 @@
+from wayrem.settings import BASE_DIR
 import pandas as pd
 from django.template.loader import get_template
 import pdfkit
@@ -953,8 +954,12 @@ def update_ingredients(request, id=None, *args, **kwargs):
 #             print("Invalid")
 #     return render(request, 'create_ingredients.html', context)
 
-def create_po(request):
-    return render(request, 'create_po.html/')
+def create_po1(request):
+    return render(request, 'po_step1.html/')
+
+
+def create_po2(request):
+    return render(request, 'po_step2.html/')
 
 
 # Ajax
@@ -970,11 +975,11 @@ def load_supplier(request):
 
 
 def pdf_userlist(request):
-    query = 'SELECT  `wayrem_admin_customuser`.`username`, `wayrem_admin_customuser`.`first_name`, `wayrem_admin_customuser`.`last_name`, `wayrem_admin_customuser`.`is_active`, `wayrem_admin_customuser`.`date_joined`,  `wayrem_admin_customuser`.`email`, `wayrem_admin_customuser`.`contact`,  `wayrem_admin_customuser`.`dob`, `wayrem_admin_customuser`.`gender`, `wayrem_admin_customuser`.`address`, `wayrem_admin_customuser`.`city`, `wayrem_admin_customuser`.`zip_code` FROM `wayrem_admin_customuser`'
+    query = 'SELECT username, first_name, last_name, is_active, date_joined, email, contact,  dob, gender, address, city, zip_code FROM custom_user'
     df = pd.read_sql_query(
         query, connection)
-    # df.to_html(
-    #     '/templates/abhi.html')
+    df.to_html(
+        f'{BASE_DIR}/wayrem_admin/templates/pdf_user.html')
     template = get_template('pdf_user.html')
     html = template.render({'persons': query})
     options = {
