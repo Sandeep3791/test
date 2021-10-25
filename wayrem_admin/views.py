@@ -1,3 +1,6 @@
+import pandas as pd
+from django.template.loader import get_template
+import pdfkit
 import requests
 from .forms import *
 from django.contrib.auth.hashers import make_password, check_password
@@ -488,7 +491,6 @@ def supplier_register(request):
         return redirect('/dashboard/')
 
 
-
 class SupplierList(View):
     template_name = "supplierlist.html"
 
@@ -935,7 +937,6 @@ def update_ingredients(request, id=None, *args, **kwargs):
     return render(request, 'update_ingredients.html', {'form': form, 'id': user.id})
 
 
-
 # @login_required(login_url='/')
 # def create_purchase_order_PO(request):
 #     context = {}
@@ -956,7 +957,6 @@ def create_po(request):
     return render(request, 'create_po.html/')
 
 
-
 # Ajax
 def load_supplier(request):
     # category = request.GET.get('category_product')
@@ -969,3 +969,19 @@ def load_supplier(request):
     return render(request, 'supplier_dropdown.html', {'supplier': supplier})
 
 
+def pdf_userlist(request):
+    query = 'SELECT  `wayrem_admin_customuser`.`username`, `wayrem_admin_customuser`.`first_name`, `wayrem_admin_customuser`.`last_name`, `wayrem_admin_customuser`.`is_active`, `wayrem_admin_customuser`.`date_joined`,  `wayrem_admin_customuser`.`email`, `wayrem_admin_customuser`.`contact`,  `wayrem_admin_customuser`.`dob`, `wayrem_admin_customuser`.`gender`, `wayrem_admin_customuser`.`address`, `wayrem_admin_customuser`.`city`, `wayrem_admin_customuser`.`zip_code` FROM `wayrem_admin_customuser`'
+    df = pd.read_sql_query(
+        query, connection)
+    # df.to_html(
+    #     '/templates/abhi.html')
+    template = get_template('pdf_user.html')
+    html = template.render({'persons': query})
+    options = {
+        'page-size': 'Letter',
+        'encoding': "UTF-8",
+    }
+    pdf = pdfkit.from_string(html, False, options)
+    response = HttpResponse(pdf, content_type='application/pdf')
+    response['Content-Disposition'] = 'attachment; filename = "demo.pdf"'
+    return response

@@ -292,11 +292,11 @@ class ProductFormThree(forms.Form):
     calories1 = forms.DecimalField(widget=forms.NumberInput(
         attrs={'class': "form-control", 'step': 0.1, 'placeholder': 'Calories (kcal)'}))
     calories2 = forms.DecimalField(widget=forms.NumberInput(
-        attrs={'class': "form-control", 'step': 0.1, 'placeholder': 'Calories'}))
+        attrs={'class': "form-control", 'step': 0.1, 'placeholder': 'Calories (kcal)'}))
     calories3 = forms.DecimalField(widget=forms.NumberInput(
-        attrs={'class': "form-control", 'step': 0.1, 'placeholder': 'Calories'}))
+        attrs={'class': "form-control", 'step': 0.1, 'placeholder': 'Calories (kcal)'}))
     calories4 = forms.DecimalField(widget=forms.NumberInput(
-        attrs={'class': "form-control", 'step': 0.1, 'placeholder': 'Calories'}))
+        attrs={'class': "form-control", 'step': 0.1, 'placeholder': 'Calories (kcal)'}))
     # nutrition = forms.CharField(widget=forms.TextInput(attrs={'class': "form-control"}))
     product_qty = forms.IntegerField(
         widget=forms.NumberInput(attrs={'class': "form-control"}))
@@ -362,10 +362,10 @@ class IngredientsCreateForm(forms.ModelForm):
 #         choices=choices_role, widget=forms.SelectMultiple(attrs={'class': 'form-control'}), required=False)
 #             'product_name': forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-select'})),
 #         }
-    
+
 
 # class PurchaseOrderCreateForm(forms.Form):
-    
+
 #     def get_category():
 #         obj = Products.objects.all()
 #         choice = [(r.id, r.name) for r in obj]
@@ -385,4 +385,3 @@ class IngredientsCreateForm(forms.ModelForm):
 #         attrs={'class': 'form-control'}), required=False)
 #     supplier_name = forms.MultipleChoiceField(
 #         choices=choices_role, widget=forms.SelectMultiple(attrs={'class': 'form-control'}), required=False)
-

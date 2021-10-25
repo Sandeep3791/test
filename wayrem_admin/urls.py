@@ -45,8 +45,8 @@ urlpatterns = [
     path('update-ingredients/<str:id>/',
          views.update_ingredients, name='updateingredients'),
     path('create-po/', views.create_po, name='createpo'),
-     
-         
+
+
     #   Roles CRUD urls start-------------------------
 
     path('roles/list/', views.rolesList, name='roles_list'),
@@ -60,6 +60,7 @@ urlpatterns = [
 
     path('inputBar/', views.inputBar, name='inputBar'),
     path('product/', views.product, name='product'),
+    path('pdf_user/', views.pdf_userlist, name='userpdf'),
     #     ajax
     path('ajax/load-supplier/', views.load_supplier, name='ajax_load_supplier'),
 
