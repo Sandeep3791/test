@@ -88,9 +88,9 @@
           {% endif %}
 </li>
 
-
 <ul class="nav">
-  <a href="{% url 'categorieslist' %}" class="nav-link w-100">
+<li class="nav-item w-100 {% if 'dashboard' in segment %} active {% endif %}">
+  <a href="{% url 'categorieslist' %}" class="nav-link">
     <span class="sidebar-icon"><i class="fas fa-grip-horizontal"></i></span></span>
     <span class="sidebar-text">Categories</span>
   </a>

@@ -44,6 +44,9 @@ class Roles(models.Model):
     created_at = models.DateTimeField(default=datetime.now)
     updated_at = models.DateTimeField(default=datetime.now)
 
+    class Meta:
+       db_table ='wayrem_roles'
+
     def __str__(self):
         return self.role
 
@@ -66,12 +69,16 @@ class CustomUser(AbstractUser):
     zip_code = models.CharField(max_length=15, null=True, blank=True)
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = []
-
+    class Meta:
+       db_table ='custom_user'
 
 class Otp(models.Model):
     email = models.EmailField()
     otp = models.IntegerField()
     created_at = models.DateTimeField(default=datetime.now)
+
+    class Meta:
+       db_table ='otp'
 
 
 class Categories(models.Model):
@@ -85,6 +92,9 @@ class Categories(models.Model):
     
     def __str__(self):
         return self.name
+
+    class Meta:
+       db_table ='categories'
 
 
 class SupplierRegister(models.Model):
@@ -100,6 +110,9 @@ class SupplierRegister(models.Model):
     is_active = models.BooleanField(default=True)
     category_name = models.ManyToManyField('Categories', null=True)
 
+    class Meta:
+       db_table ='supplier_master'
+
 
 
 class Ingredients(models.Model):
@@ -107,6 +120,9 @@ class Ingredients(models.Model):
     ingredients_name = models.CharField(max_length=100, null=True, blank=True)
     ingredients_status = models.CharField(
         max_length=10, choices=status, default='Active')
+
+    class Meta:
+       db_table ='ingredients'
 
 
 class Products(models.Model):
@@ -180,6 +196,9 @@ class Products(models.Model):
     wayrem_abs_percent = models.CharField(max_length=20,
                                           choices=DIS_ABS_PERCENT, null=True, blank=True)
 
+   
+    class Meta:
+       db_table ='product_master'
     # image = models.ImageField(upload_to='images/', null=True)
 
 

@@ -967,3 +967,5 @@ def load_supplier(request):
         category_name=i).all() for i in category]
     # supplier = SupplierRegister.objects.filter(category_name=category).all()
     return render(request, 'supplier_dropdown.html', {'supplier': supplier})
+
+
