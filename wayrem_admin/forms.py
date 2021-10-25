@@ -283,7 +283,7 @@ class ProductFormTwo(forms.Form):
     package_count = forms.IntegerField(
         widget=forms.NumberInput(attrs={'class': "form-control"}))
     product_meta_key = forms.CharField(
-        widget=forms.TextInput(attrs={'class': "form-control"}))
+        widget=forms.Textarea(attrs={'class': "form-control", 'rows': '3'}))
 
 
 class ProductFormThree(forms.Form):
@@ -328,15 +328,15 @@ class ProductFormFour(forms.Form):
     wayrem_abs_percent = forms.ChoiceField(
         choices=WAYREM_ABS_PERCENT, widget=forms.Select(attrs={'class': 'form-select'}))
     image1 = forms.ImageField(widget=forms.FileInput(
-        attrs={'class': "form-control"}))
+        attrs={'class': "form-control-file"}))
     image2 = forms.ImageField(widget=forms.FileInput(
-        attrs={'class': "form-control"}))
+        attrs={'class': "form-control-file"}))
     image3 = forms.ImageField(widget=forms.FileInput(
-        attrs={'class': "form-control"}))
+        attrs={'class': "form-control-file"}))
     image4 = forms.ImageField(widget=forms.FileInput(
-        attrs={'class': "form-control"}))
+        attrs={'class': "form-control-file"}), required=False)
     image5 = forms.ImageField(widget=forms.FileInput(
-        attrs={'class': "form-control"}))
+        attrs={'class': "form-control-file"}), required=False)
 
 
 class IngredientsCreateForm(forms.ModelForm):
