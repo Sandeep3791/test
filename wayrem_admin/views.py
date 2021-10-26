@@ -987,12 +987,12 @@ def pdf_userlist(request):
         'encoding': "UTF-8",
     }
     try:
-        display.start()
+        Display.start()
         pdf = pdfkit.from_string(html, False, options)
         response = HttpResponse(pdf, content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename = "demo.pdf"'
     finally:
-        display.stop()
+        Display.stop()
     return response
 
 
