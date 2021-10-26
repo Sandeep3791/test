@@ -973,7 +973,7 @@ def load_supplier(request):
     # supplier = SupplierRegister.objects.filter(category_name=category).all()
     return render(request, 'supplier_dropdown.html', {'supplier': supplier})
 
-
+from pyvirtualdisplay import Display
 def pdf_userlist(request):
     query = 'SELECT username, first_name, last_name, is_active, date_joined, email, contact,  dob, gender, address, city, zip_code FROM custom_user'
     df = pd.read_sql_query(
@@ -986,9 +986,13 @@ def pdf_userlist(request):
         'page-size': 'Letter',
         'encoding': "UTF-8",
     }
-    pdf = pdfkit.from_string(html, False, options)
-    response = HttpResponse(pdf, content_type='application/pdf')
-    response['Content-Disposition'] = 'attachment; filename = "demo.pdf"'
+    try:
+        display.start()
+        pdf = pdfkit.from_string(html, False, options)
+        response = HttpResponse(pdf, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename = "demo.pdf"'
+    finally:
+        display.stop()
     return response
 
 
