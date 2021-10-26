@@ -117,7 +117,10 @@
                 <td>{{prod.product_code}}</td>
                 <td>{{prod.product_meta_key}}</td>
                 <td>{{prod.mfr_name}}</td>     
-                <td>{{prod.supplier_name.username}}</td>
+                <td> {% for supplier  in prod.supplier_name.all %}
+                {{supplier.username}},
+                {% endfor %}
+                </td>
                 <td>{{prod.product_name}}</td>
                 <td>{{prod.description}}</td>     
                 <td>{{prod.ingredients1.ingredients_name}}</td>
