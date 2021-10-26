@@ -1,0 +1,107 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% block title %} Dashboard {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+<link type="text/css" href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+{% endblock stylesheets %}
+
+{% block content %}
+{% if messages %}
+{% for message in messages %}
+<div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
+    <strong> {{ message }}!</strong>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endfor %}
+{% endif %}
+
+<div class="shadow p-3 bg-white rounded" style="height: auto;">
+    <h1 class="mb-1 h3 text-center">
+        Create Purchase Order | step-1
+   </h1>
+	<form action="">
+        <div class="container p-3 mt-4 w-75">
+            <div class="row">
+                <div class="col-md-4">
+                    <label for="product">Product Name</label>
+                    <input type="text" list="browsers" id="product" placeholder=" Search Product.." />
+                    <datalist id="browsers">
+                        <option value="Chrome"></option>
+                        <option value="Firefox"></option>
+                        <option value="Internet Explorer"></option>
+                        <option value="Opera"></option>
+                        <option value="Safari"></option>
+                        <option value="Microsoft Edge"></option>
+                    </datalist>
+                </div>
+
+                <div class="col-md-2">
+                    <label for="quantity">Quantity</label>
+                    <input type="number" id="quantity" name="lastname" min="0" max="">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="price">Price</label>
+                    <input type="text" id="price" name="lastname" placeholder="Price..">
+                </div>
+
+                <div class="col-md-3 mt-4">
+                    <button class="btn btn-success mt-2" type="submit" onclick="addCourse()">Add More</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="container w-75 bg-white">
+	  	<div class="table-data mt-5">
+		    <table class="table text-center" id="enrolled">
+		        <thead>
+		            <tr>
+		                <th scope="col">Product</th>
+		                <th scope="col">Quantity</th>
+		                <th scope="col">Price</th>
+		                
+		            </tr>
+		        </thead>
+		        <tbody>
+		            <tr>
+		                <td>crome</td>
+		                <td>12</td>
+		                <td>120</td>
+		                
+		            </tr>
+		            <tr>
+		                <td>MS</td>
+		                <td>15</td>
+		                <td>200</td>
+		                
+		            </tr>
+		            <tr>
+		                <td>Safari</td>
+		                <td>10</td>
+		                <td>250</td>
+		                
+		            </tr>
+		        </tbody>
+		    </table>
+		    <div class="text-right mr-5 px-2">
+			<a type="submit" href="{% url 'createpo2'%}" class="btn btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Next</a>
+
+		    {% comment %} <button class="btn btn-success mr-5" type="submit" >Next</button> {% endcomment %}
+		    </div>
+		</div>
+		<!-- <div>
+		    <button class="btn btn-success float-right" type="submit">Next</button>
+		</div> -->
+	</div>
+</div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}
+
+
+
