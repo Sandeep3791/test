@@ -246,3 +246,7 @@ class Products(models.Model):
 #     price = models.DecimalField(null=True, max_digits=12, decimal_places=2)
 #     supplier_name = models.ManyToManyField(null=True, default=1)
 #     is_active = models.BooleanField(default=True)
+
+# 6281073150012
+# 6281035000034
+# 693214940004
