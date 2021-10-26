@@ -986,13 +986,14 @@ def pdf_userlist(request):
         'page-size': 'Letter',
         'encoding': "UTF-8",
     }
+    display = Display(visible=0, size=(1024, 768))
     try:
-        Display.start()
+        display.start()
         pdf = pdfkit.from_string(html, False, options)
         response = HttpResponse(pdf, content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename = "demo.pdf"'
     finally:
-        Display.stop()
+        display.stop()
     return response
 
 
