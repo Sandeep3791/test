@@ -56,17 +56,17 @@
 # print(response.text)
 
 
-# import requests
+import requests
 
-# url = "https://gs1parser.p.rapidapi.com/parse"
+url = "https://gs1parser.p.rapidapi.com/parse"
 
-# querystring = {"q":"(01)12345678901231(10)ABCD-123(30)27(11)211015"}
+querystring = {"q":"(01)12345678901231(10)ABCD-123(30)27(11)211015"}
 
-# headers = {
-#     'x-rapidapi-host': "gs1parser.p.rapidapi.com",
-#     'x-rapidapi-key': "ffc135b1d6msh48ed5e2971128a5p1f3e65jsn0408bb956706"
-#     }
+headers = {
+    'x-rapidapi-host': "gs1parser.p.rapidapi.com",
+    'x-rapidapi-key': "ffc135b1d6msh48ed5e2971128a5p1f3e65jsn0408bb956706"
+    }
 
-# response = requests.request("GET", url, headers=headers, params=querystring)
+response = requests.request("GET", url, headers=headers, params=querystring)
 
-# print(response.text)
+print(response.text)

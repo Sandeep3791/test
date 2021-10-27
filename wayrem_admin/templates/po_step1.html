@@ -19,9 +19,22 @@
 
 <div class="shadow p-3 bg-white rounded" style="height: auto;">
     <h1 class="mb-1 h3 text-center">
-        Create Purchase Order | step-1
+        Create Purchase Order
    </h1>
 	<form action="">
+
+
+<div class="container p-3 mt-4 w-75">
+  <label for="supplier">Supplier Name</label>
+                    <select id="supplier" class="form-row" name="supplier">
+                        <option value="">1</option>
+                        <option value="">2</option>
+                        <option value="">3</option>
+                    </select>
+      
+  </div>
+
+
         <div class="container p-3 mt-4 w-75">
             <div class="row">
                 <div class="col-md-4">
@@ -42,13 +55,13 @@
                     <input type="number" id="quantity" name="lastname" min="0" max="">
                 </div>
 
-                <div class="col-md-3">
+                {% comment %} <div class="col-md-3">
                     <label for="price">Price</label>
                     <input type="text" id="price" name="lastname" placeholder="Price..">
-                </div>
+                </div> {% endcomment %}
 
-                <div class="col-md-3 mt-4">
-                    <button class="btn btn-success mt-2" type="submit" onclick="addCourse()">Add More</button>
+                <div class="col-md-3 mt-4 text-right offset-3">
+                    <button class="btn btn-success mt-2" type="submit" onclick="addCourse()" >Add More</button>
                 </div>
             </div>
         </div>
@@ -61,7 +74,7 @@
 		            <tr>
 		                <th scope="col">Product</th>
 		                <th scope="col">Quantity</th>
-		                <th scope="col">Price</th>
+		                {% comment %} <th scope="col">Price</th> {% endcomment %}
 		                
 		            </tr>
 		        </thead>
@@ -69,25 +82,25 @@
 		            <tr>
 		                <td>crome</td>
 		                <td>12</td>
-		                <td>120</td>
+		                {% comment %} <td>120</td> {% endcomment %}
 		                
 		            </tr>
 		            <tr>
 		                <td>MS</td>
 		                <td>15</td>
-		                <td>200</td>
+		                {% comment %} <td>200</td> {% endcomment %}
 		                
 		            </tr>
 		            <tr>
 		                <td>Safari</td>
 		                <td>10</td>
-		                <td>250</td>
+		                {% comment %} <td>250</td> {% endcomment %}
 		                
 		            </tr>
 		        </tbody>
 		    </table>
 		    <div class="text-right mr-5 px-2">
-			<a type="submit" href="{% url 'createpo2'%}" class="btn btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Next</a>
+			<a type="submit" href="#" class="btn btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Send</a>
 
 		    {% comment %} <button class="btn btn-success mr-5" type="submit" >Next</button> {% endcomment %}
 		    </div>

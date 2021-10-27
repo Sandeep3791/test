@@ -239,14 +239,15 @@ class Products(models.Model):
 #     reports = models.CharField(max_length=500)
 
 
-# class PurchaseOrderPO(models.Model):
-#     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
-#     product_name = models.ManyToManyField('Products', null=True)
-#     product_qty = models.IntegerField(null=True, default=1)
-#     price = models.DecimalField(null=True, max_digits=12, decimal_places=2)
-#     supplier_name = models.ManyToManyField(null=True, default=1)
-#     is_active = models.BooleanField(default=True)
+class PurchaseOrder(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    po_id = models.UUIDField(default=uuid.uuid4)
+    product_name = models.ForeignKey(Products, on_delete=models.DO_NOTHING,null=False)
+    product_qty = models.IntegerField(null=False, default=1)
+    supplier_name = models.ForeignKey(SupplierRegister, on_delete=models.DO_NOTHING,null=False)
+    is_active = models.BooleanField(default=True)
+
 
 # 6281073150012
 # 6281035000034
-# 693214940004
+# 69321494000400 

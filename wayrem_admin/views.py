@@ -958,8 +958,8 @@ def create_po1(request):
     return render(request, 'po_step1.html/')
 
 
-def create_po2(request):
-    return render(request, 'po_step2.html/')
+# def create_po2(request):
+#     return render(request, 'po_step2.html/')
 
 
 # Ajax
@@ -995,6 +995,13 @@ def pdf_userlist(request):
     finally:
         display.stop()
     return response
+
+
+
+def create_purchase_order(request):
+    if request.method == "POST":
+        form = POForm()
+
 
 
 

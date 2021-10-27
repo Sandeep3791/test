@@ -385,3 +385,18 @@ class IngredientsCreateForm(forms.ModelForm):
 #         attrs={'class': 'form-control'}), required=False)
 #     supplier_name = forms.MultipleChoiceField(
 #         choices=choices_role, widget=forms.SelectMultiple(attrs={'class': 'form-control'}), required=False)
+
+
+
+class POForm(forms.ModelForm):
+    class Meta:
+        model = PurchaseOrder
+        fields = ("product_name", "product_qty", "supplier_name")
+
+        widgets = {
+            'product_name': forms.Select(attrs={'class': 'form-control'}),
+            # 'category_image': forms.ImageField(attrs={'class': 'form-control-file'}),
+            # 'category_image': forms.FieldInput(widget=forms.FileInput(attrs={'class': 'rounded_list'})),
+            'product_qty':forms.NumberInput(attrs={'class': "form-control"}),
+            'supplier_name': forms.Select(attrs={'class': 'form-control'})
+        }
