@@ -45,11 +45,11 @@ urlpatterns = [
     path('update-ingredients/<str:id>/',
          views.update_ingredients, name='updateingredients'),
     path('create-po/', views.create_po1, name='createpo'),
-    path('create-po2/', views.create_po2, name='createpo2'),
+    #     path('create-po2/', views.create_po2, name='createpo2'),
     path('update-product/<str:id>/', views.update_product, name='updateproduct'),
     path('delete-product/', views.DeleteProduct.as_view(),
          name='deleteproduct'),
-#     path('create-po2/', views.create_po2, name='createpo2'),
+    #     path('create-po2/', views.create_po2, name='createpo2'),
 
 
     #   Roles CRUD urls start-------------------------
@@ -66,10 +66,13 @@ urlpatterns = [
     path('inputBar/', views.inputBar, name='inputBar'),
     path('product/', views.product, name='product'),
     path('pdf_user/', views.pdf_userlist, name='userpdf'),
+    path('pdf_supplier/', views.pdf_supplier, name='supplierpdf'),
+    path('pdf_product/', views.pdf_product, name='productpdf'),
     #     ajax
     path('ajax/load-supplier/', views.load_supplier, name='ajax_load_supplier'),
 
-    path('purchase_order/',views.create_purchase_order,name='create_po')
+    path('purchase_order/', views.create_purchase_order, name='create_po'),
+    path('po-list/', views.POList.as_view(), name='polist'),
 
 
 

@@ -54,8 +54,8 @@
                 <option value="3">...</option>
               </select>
             </div>
-            <div class="col-xl-4 col-lg-5 col-md-5"><a class="btn w-100 anchor_btn ps-0 pe-0" href="{% url 'sub-admin-register' %}">
-                <button class="btn col-sm-12 col-md-12 col-12 create_new">Create New User</button>
+            <div class="col-xl-4 col-lg-5 col-md-5"><a class="btn w-100 anchor_btn ps-0 pe-0" href="{% url 'create_po' %}">
+                <button class="btn col-sm-12 col-md-12 col-12 create_new">Create New PO</button>
             </a></div>
         </div>
 
@@ -79,12 +79,8 @@
         <thead class="table-dark ">
             <tr>
                 <th scope="col">Sr.No.</th>
-                <th scope="col">Username</th>
-                <th scope="col">Email</th>
-                <th scope="col">Contact</th>
-                <th scope="col">Role</th>
-                <th scope="col">Status</th>
-                {% comment %} <th scope="col">Access</th> {% endcomment %}
+                <th scope="col">Purchase Order Id</th>
+                <th scope="col">Supplier</th>
                 <th scope="col">Action</th>
             </tr>
         </thead>
@@ -94,31 +90,10 @@
             {% else %}
             <tr>
                 <th scope="row">{{forloop.counter}}</th>
-                <td>{{user.username}}</td>
-                <td>{{user.email}}</td>
-                <td>{{user.contact}}</td>
-                <td>{{user.role}}</td>
+                <td>{{user.po_id}}</td>
+                <td>{{user.supplier_name}}</td>
                 <td>
-                    {% if 'User Edit' in request.user.role.permission or request.user.is_superuser %}
-                    {% if user.is_active %} <a href="{% url 'activeblock' user.id %}"
-                        class="badge rounded-pill bg-success "><i class="fas fa-toggle-on"></i> Active</a> {% else %} <a
-                        href="{% url 'activeblock' user.id %}" class="badge rounded-pill bg-danger"><i
-                            class="fas fa-toggle-off"></i> Blocked</a>
-                    {% endif %}
-                    {% else %}
-                    No Permission
-                </td>
-                {% endif %}
-                {% comment %} <td>{{user.role.content}}</td> {% endcomment %}
-
-                <td>
-                    {% if 'User Delete' in request.user.role.permission or request.user.is_superuser %}
-                    <a type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{user.id}}">
-                        <i class="fas fa-trash-alt text-danger"></i>
-                    </a>
-                    {% else %}
-                    No Permission
-                    {% endif %}
+                    Action
                 </td>
 
                 <!-- Modal -->
@@ -157,50 +132,7 @@
         </div>
     </div>
 
-{% comment %} <script>
 
-$(document).ready( function () {
-    $('#filtertable').DataTable({
-        dom: 'rtip',
-        buttons: [
-            {
-                extend: 'collection',
-                text: 'Export',
-                className: ' btn-sm',
-                buttons: [
-                    {
-                        extend:    'copyHtml5',
-                        text:      '<i class="fas fa-copy"> COPY</i>',
-                        titleAttr: 'Copy'
-                    },
-                    {
-                        extend:    'excelHtml5',
-                        text:      '<i class="fas fa-file-excel"> EXCEL</i>',
-                        titleAttr: 'Excel'
-                    },
-                    {
-                        extend:    'csvHtml5',
-                        text:      '<i class="fas fa-file-csv"> CSV</i>',
-                        titleAttr: 'CSV'
-                    },
-                    
-                    {
-                        extend:    'pdfHtml5',
-                        text:      '<i class="fas fa-file-pdf"> PDF</i>',
-                        titleAttr: 'PDF'
-                    }
-                ]
-            }
-        ],  
-        "oLanguage": {
-            "oPaginate": {
-                    "sNext": '<i class="fas fa-arrow-circle-right text-primary"></i>',
-                    "sPrevious": '<i class="fas fa-arrow-circle-left text-primary"></i>'
-                }
-        },
-    });
-} );
-</script> {% endcomment %}
 
 <script>
 

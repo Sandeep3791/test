@@ -113,11 +113,7 @@ class SupplierRegister(models.Model):
     category_name = models.ManyToManyField('Categories', null=True)
 
     def __str__(self):
-        return self.username    
-
-    class Meta:
-       db_table ='supplier_master'
-
+        return self.username
 
     class Meta:
         db_table = 'supplier_master'
@@ -256,10 +252,10 @@ class PurchaseOrder(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     po_id = models.UUIDField(default=uuid.uuid4)
     product_name = models.ForeignKey(
-        Products, on_delete=models.DO_NOTHING, null=False)
+        Products, on_delete=models.CASCADE, null=True)
     product_qty = models.IntegerField(null=False, default=1)
     supplier_name = models.ForeignKey(
-        SupplierRegister, on_delete=models.DO_NOTHING, null=False)
+        SupplierRegister, on_delete=models.CASCADE, null=False)
     is_active = models.BooleanField(default=True)
 
     class Meta:

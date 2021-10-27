@@ -962,7 +962,53 @@ def pdf_userlist(request):
         display.start()
         pdf = pdfkit.from_string(html, False, options)
         response = HttpResponse(pdf, content_type='application/pdf')
-        response['Content-Disposition'] = 'attachment; filename = "demo.pdf"'
+        response['Content-Disposition'] = 'attachment; filename = "users.pdf"'
+    finally:
+        display.stop()
+    return response
+
+
+def pdf_supplier(request):
+    query = 'SELECT username, email, contact, address, delivery_incharge, company_name, is_active FROM supplier_master'
+    df = pd.read_sql_query(
+        query, connection)
+    df.to_html(
+        f'{BASE_DIR}/wayrem_admin/templates/pdf_supplier.html')
+    template = get_template('pdf_supplier.html')
+    html = template.render({'persons': query})
+    options = {
+        'page-size': 'Letter',
+        'encoding': "UTF-8",
+    }
+    display = Display(visible=0, size=(1024, 768))
+    try:
+        display.start()
+        pdf = pdfkit.from_string(html, False, options)
+        response = HttpResponse(pdf, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename = "supplier.pdf"'
+    finally:
+        display.stop()
+    return response
+
+
+def pdf_product(request):
+    query = 'SELECT  SKU, product_code, product_meta_key, feature_product, product_deliverable, date_of_mfg, date_of_exp, mfr_name, dis_abs_percent, image1, image2, image3, image4, image5, product_name, description, ingredients1_id, ingredients2_id, ingredients3_id, ingredients4_id, calories1, calories2, calories3, calories4, nutrition, product_qty, product_weight, unit, price, discount, package_count, wayrem_margin, wayrem_abs_percent FROM product_master'
+    df = pd.read_sql_query(
+        query, connection)
+    df.to_html(
+        f'{BASE_DIR}/wayrem_admin/templates/pdf_product.html')
+    template = get_template('pdf_product.html')
+    html = template.render({'persons': query})
+    options = {
+        'page-size': 'Letter',
+        'encoding': "UTF-8",
+    }
+    display = Display(visible=0, size=(1024, 768))
+    try:
+        display.start()
+        pdf = pdfkit.from_string(html, False, options)
+        response = HttpResponse(pdf, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename = "products.pdf"'
     finally:
         display.stop()
     return response
@@ -973,92 +1019,16 @@ def update_product(request, id=None, *args, **kwargs):
     if request.method == "POST":
         # kwargs = { 'data' : request.POST }
         prod = Products.objects.get(id=id)
-        form = ProductUpdateForm(request.POST or None, request.FILES or None, instance=prod)
+        form = ProductUpdateForm(request.POST or None,
+                                 request.FILES or None, instance=prod)
         if form.is_valid():
             print("FORM")
-            # SKU = form.cleaned_data['SKU']
-            # product_name = form.cleaned_data['product_name']
-            # product_code = form.cleaned_data['product_code']
-            # feature_product = form.cleaned_data['feature_product']
-            # product_deliverable = form.cleaned_data['product_deliverable']
-            # date_of_mfg = form.cleaned_data['date_of_mfg']
-            # date_of_exp = form.cleaned_data['date_of_exp']
-            # mfr_name = form.cleaned_data['mfr_name']
-            # product_category = form.cleaned_data['product_category']
-            # print(product_category)
-            # supplier_name = form.cleaned_data['supplier_name']
-            # category = [inst_Category(i)
-            #             for i in product_category]
-            # supplier = [inst_Supplier(i)
-            #             for i in supplier_name]
-            # product_weight = form.cleaned_data['product_weight']
-            # unit = form.cleaned_data['unit']
-            # price = form.cleaned_data['price']
-            # discount = form.cleaned_data['discount']
-            # dis_abs_percent = form.cleaned_data['dis_abs_percent']
-            # wayrem_margin = form.cleaned_data['wayrem_margin']
-            # wayrem_abs_percent = form.cleaned_data['wayrem_abs_percent']
-            # package_count = form.cleaned_data['package_count']
-            # product_meta_key = form.cleaned_data['product_meta_key']
-            # description = form.cleaned_data['description']
-            # ingredients1 = form.cleaned_data['ingredients1']
-            # ingredients2 = form.cleaned_data['ingredients2']
-            # ingredients3 = form.cleaned_data['ingredients3']
-            # ingredients4 = form.cleaned_data['ingredients4']
-            # calories1 = form.cleaned_data['calories1']
-            # calories2 = form.cleaned_data['calories2']
-            # calories3 = form.cleaned_data['calories3']
-            # calories4 = form.cleaned_data['calories4']
-            # product_qty = form.cleaned_data['product_qty']
-            # image1 = form.cleaned_data['image1']
-            # image2 = form.cleaned_data['image2']
-            # image3 = form.cleaned_data['image3']
-            # image4 = form.cleaned_data['image4']
-            # image5 = form.cleaned_data['image5']
-            # prod.SKU = SKU
-            # prod.product_name  = product_name 
-            # prod.product_code  = product_code 
-            # prod.feature_product   = feature_product  
-            # prod.product_deliverable  = product_deliverable 
-            # prod.date_of_mfg   = date_of_mfg  
-            # prod.date_of_exp  = date_of_exp 
-            # prod.mfr_name   = mfr_name  
-            # # prod.product_category   = product_category  
-            # # prod.supplier_name  = supplier_name 
-            # prod.product_weight   = product_weight  
-            # prod.unit  = unit 
-            # prod.price   = price  
-            # prod.discount  = discount 
-            # prod.dis_abs_percent   = dis_abs_percent  
-            # prod.wayrem_margin  = wayrem_margin 
-            # prod.wayrem_abs_percent   = wayrem_abs_percent  
-            # prod.package_count  = package_count 
-            # prod.product_meta_key   = product_meta_key  
-            # prod.description  = description 
-            # prod.ingredients1   = inst_Ingridient(ingredients1)  
-            # prod.ingredients2  = inst_Ingridient(ingredients2)
-            # prod.ingredients3  = inst_Ingridient(ingredients3)
-            # prod.ingredients4 = inst_Ingridient(ingredients4)
-            # prod.calories1   = calories1  
-            # prod.calories2  = calories2 
-            # prod.calories3  = calories3 
-            # prod.calories4 = calories4
-            # prod.product_qty   = product_qty  
-            # prod.image1  = image1 
-            # prod.image2   = image2  
-            # prod.image3  = image3 
-            # prod.image4   = image4
-            # prod.image5  = image5   
-            # prod.product_category.set(category)
-            # prod.supplier_name.set(supplier)
-            # prod.save()
-            # print(prod)
+
             form.save()
             return redirect('/product-list/')
     prod = Products.objects.get(id=id)
     form = ProductUpdateForm(instance=prod)
     return render(request, 'UpdateProduct.html', {'form': form, 'id': prod.id})
-    
 
 
 class DeleteProduct(View):
@@ -1067,6 +1037,7 @@ class DeleteProduct(View):
         products = Products.objects.get(id=productid)
         products.delete()
         return redirect('/product-list/')
+
 
 def create_purchase_order(request):
 
@@ -1106,3 +1077,13 @@ def create_purchase_order(request):
         form = POForm()
     request.session['products'] = []
     return render(request, "po_step1.html", {'form': form})
+
+
+class POList(View):
+    template_name = "po_list.html"
+
+    @method_decorator(login_required(login_url='/'))
+    def get(self, request, format=None):
+        polist = PurchaseOrder.objects.values(
+            'po_id', 'supplier_name').distinct()
+        return render(request, self.template_name, {"userlist": polist})
