@@ -45,7 +45,7 @@ class Roles(models.Model):
     updated_at = models.DateTimeField(default=datetime.now)
 
     class Meta:
-       db_table ='wayrem_roles'
+        db_table = 'wayrem_roles'
 
     def __str__(self):
         return self.role
@@ -69,8 +69,10 @@ class CustomUser(AbstractUser):
     zip_code = models.CharField(max_length=15, null=True, blank=True)
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = []
+
     class Meta:
-       db_table ='custom_user'
+        db_table = 'custom_user'
+
 
 class Otp(models.Model):
     email = models.EmailField()
@@ -78,7 +80,7 @@ class Otp(models.Model):
     created_at = models.DateTimeField(default=datetime.now)
 
     class Meta:
-       db_table ='otp'
+        db_table = 'otp'
 
 
 class Categories(models.Model):
@@ -89,12 +91,12 @@ class Categories(models.Model):
     description = models.CharField(max_length=500, null=True)
     created_at = models.DateTimeField(default=datetime.now())
     updated_at = models.DateTimeField(default=datetime.now())
-    
+
     def __str__(self):
         return self.name
 
     class Meta:
-       db_table ='categories'
+        db_table = 'categories'
 
 
 class SupplierRegister(models.Model):
@@ -117,6 +119,9 @@ class SupplierRegister(models.Model):
        db_table ='supplier_master'
 
 
+    class Meta:
+        db_table = 'supplier_master'
+
 
 class Ingredients(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
@@ -128,7 +133,7 @@ class Ingredients(models.Model):
         return self.ingredients_name
 
     class Meta:
-       db_table ='ingredients'
+        db_table = 'ingredients'
 
 
 class Products(models.Model):
@@ -202,9 +207,11 @@ class Products(models.Model):
     wayrem_abs_percent = models.CharField(max_length=20,
                                           choices=DIS_ABS_PERCENT, null=True, blank=True)
 
-   
+    def __str__(self):
+        return self.product_name
+
     class Meta:
-       db_table ='product_master'
+        db_table = 'product_master'
     # image = models.ImageField(upload_to='images/', null=True)
 
 
@@ -245,10 +252,20 @@ class Products(models.Model):
 #     reports = models.CharField(max_length=500)
 
 
-# class PurchaseOrderPO(models.Model):
-#     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
-#     product_name = models.ManyToManyField('Products', null=True)
-#     product_qty = models.IntegerField(null=True, default=1)
-#     price = models.DecimalField(null=True, max_digits=12, decimal_places=2)
-#     supplier_name = models.ManyToManyField(null=True, default=1)
-#     is_active = models.BooleanField(default=True)
+class PurchaseOrder(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    po_id = models.UUIDField(default=uuid.uuid4)
+    product_name = models.ForeignKey(
+        Products, on_delete=models.DO_NOTHING, null=False)
+    product_qty = models.IntegerField(null=False, default=1)
+    supplier_name = models.ForeignKey(
+        SupplierRegister, on_delete=models.DO_NOTHING, null=False)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        db_table = 'po_master'
+
+
+# 6281073150012
+# 6281035000034
+# 69321494000400

@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-)(85bhh^@-x_8cpzbvc7*z9&$*c8#l&3uimsl+odf2ub&h3r2&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -79,10 +79,10 @@ WSGI_APPLICATION = 'wayrem.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'wayrem_v8',
-        'USER': 'root',
-        'PASSWORD': 'root',
-        'HOST': 'localhost',
+        'NAME': 'wayrem_v3',
+        'USER': 'admin',
+        'PASSWORD': 'Merlin007#',
+        'HOST': 'wayrem.c08qmktlafbu.us-east-1.rds.amazonaws.com',
         'PORT': '3306',
     }
 }
