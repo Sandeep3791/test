@@ -405,46 +405,6 @@ def update_categories(request, id=None, *args, **kwargs):
     return render(request, 'update_category.html', {'form': form, 'id': user.id})
 
 
-# @login_required(login_url='/')
-# def supplier_register(request):
-
-#     if request.user.is_authenticated:
-#         if request.method == 'POST':
-#             form = SupplierRegisterForm(request.POST)
-#             if form.is_valid():
-#                 username = form.cleaned_data['username']
-#                 email = form.cleaned_data['email']
-#                 password = form.cleaned_data['password']
-#                 user = SupplierRegister(
-#                     username=username, email=email, password=password)
-#                 user.save()
-#                 # form.save()
-#                 gmail_user = 'pankajspsq@gmail.com'
-#                 gmail_password = 'Pankaj@05'
-
-#                 sent_from = gmail_user
-#                 to = email
-#                 subject = 'Welcome to Wayrem'
-#                 body = f'Your credential for wayrem are:\n username: {username} \n Email_id: {email} \n Password: {password} \n '
-#                 # Role: {role}
-#                 email_text = f"From:{sent_from},To:{to} Subject: {subject}  {body}"
-#                 try:
-#                     smtp_server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-#                     smtp_server.ehlo()
-#                     smtp_server.login(gmail_user, gmail_password)
-#                     smtp_server.sendmail(sent_from, to, email_text)
-#                     smtp_server.close()
-#                     print("Email sent successfully!")
-#                 except Exception as ex:
-#                     print("Something went wrong….", ex)
-#                 messages.success(request, 'User Created Successfully!!')
-#                 return redirect('/dashboard/')
-#         else:
-#             form = SupplierRegisterForm()
-#         return render(request, 'accounts/supplier_register.html', {"form": form})
-#     else:
-#         return redirect('/dashboard/')
-
 @login_required(login_url='/')
 def supplier_register(request):
 
@@ -710,6 +670,8 @@ def product_view_two(request):
         'price': request.session.get('price', None),
         'discount': request.session.get('discount', None),
         'dis_abs_percent': request.session.get('dis_abs_percent', None),
+        'wayrem_margin': request.session.get('wayrem_margin', None),
+        'wayrem_abs_percent': request.session.get('wayrem_abs_percent', None),
         'package_count': request.session.get('package_count', None),
         'product_meta_key': request.session.get('product_meta_key', None),
     }
@@ -729,6 +691,8 @@ def product_view_two(request):
             request.session['price'] = float(price)
             request.session['discount'] = float(form.cleaned_data['discount'])
             request.session['dis_abs_percent'] = form.cleaned_data['dis_abs_percent']
+            request.session['wayrem_margin'] = form.cleaned_data['wayrem_margin']
+            request.session['wayrem_abs_percent'] = form.cleaned_data['wayrem_abs_percent']
             request.session['package_count'] = float(
                 form.cleaned_data['package_count'])
             request.session['product_meta_key'] = form.cleaned_data['product_meta_key']
@@ -800,12 +764,12 @@ def inst_Ingridient(value):
 
 
 def product_view_four(request):
-    initial = {
-        'wayrem_margin': request.session.get('wayrem_margin', None),
-        'wayrem_abs_percent': request.session.get('wayrem_abs_percent', None),
-    }
+    # initial = {
+    #     'wayrem_margin': request.session.get('wayrem_margin', None),
+    #     'wayrem_abs_percent': request.session.get('wayrem_abs_percent', None),
+    # }
     context = {}
-    form = ProductFormFour(request.POST, request.FILES, initial=initial)
+    form = ProductFormFour(request.POST, request.FILES)
     context['form'] = form
     if request.method == 'POST':
         print("Post")
@@ -830,6 +794,8 @@ def product_view_four(request):
             unit = request.session['unit']
             price = request.session['price']
             discount = request.session['discount']
+            wayrem_margin = request.session['wayrem_margin']
+            wayrem_abs_percent = request.session['wayrem_abs_percent']
             package_count = request.session['package_count']
             ingredients1 = inst_Ingridient(request.session['ingredients1'])
             ingredients2 = inst_Ingridient(request.session['ingredients2'])
@@ -839,8 +805,7 @@ def product_view_four(request):
                         for i in request.session['product_category']]
             supplier = [inst_Supplier(i)
                         for i in request.session['supplier_name']]
-            wayrem_margin = form.cleaned_data['wayrem_margin']
-            wayrem_abs_percent = form.cleaned_data['wayrem_abs_percent']
+            # c
             image1 = form.cleaned_data['image1']
             image2 = form.cleaned_data['image2']
             image3 = form.cleaned_data['image3']
@@ -865,7 +830,7 @@ def product_view_four(request):
                 pass
             return redirect('/dashboard/')
     else:
-        context['form'] = ProductFormFour(initial=initial)
+        context['form'] = ProductFormFour()
     return render(request, 'product4.html', context)
 
 
@@ -990,3 +955,104 @@ def pdf_userlist(request):
     response = HttpResponse(pdf, content_type='application/pdf')
     response['Content-Disposition'] = 'attachment; filename = "demo.pdf"'
     return response
+
+
+def update_product(request, id=None, *args, **kwargs):
+    # print(id)
+    if request.method == "POST":
+        # kwargs = { 'data' : request.POST }
+        prod = Products.objects.get(id=id)
+        form = ProductUpdateForm(request.POST or None, request.FILES or None, instance=prod)
+        if form.is_valid():
+            print("FORM")
+            # SKU = form.cleaned_data['SKU']
+            # product_name = form.cleaned_data['product_name']
+            # product_code = form.cleaned_data['product_code']
+            # feature_product = form.cleaned_data['feature_product']
+            # product_deliverable = form.cleaned_data['product_deliverable']
+            # date_of_mfg = form.cleaned_data['date_of_mfg']
+            # date_of_exp = form.cleaned_data['date_of_exp']
+            # mfr_name = form.cleaned_data['mfr_name']
+            # product_category = form.cleaned_data['product_category']
+            # print(product_category)
+            # supplier_name = form.cleaned_data['supplier_name']
+            # category = [inst_Category(i)
+            #             for i in product_category]
+            # supplier = [inst_Supplier(i)
+            #             for i in supplier_name]
+            # product_weight = form.cleaned_data['product_weight']
+            # unit = form.cleaned_data['unit']
+            # price = form.cleaned_data['price']
+            # discount = form.cleaned_data['discount']
+            # dis_abs_percent = form.cleaned_data['dis_abs_percent']
+            # wayrem_margin = form.cleaned_data['wayrem_margin']
+            # wayrem_abs_percent = form.cleaned_data['wayrem_abs_percent']
+            # package_count = form.cleaned_data['package_count']
+            # product_meta_key = form.cleaned_data['product_meta_key']
+            # description = form.cleaned_data['description']
+            # ingredients1 = form.cleaned_data['ingredients1']
+            # ingredients2 = form.cleaned_data['ingredients2']
+            # ingredients3 = form.cleaned_data['ingredients3']
+            # ingredients4 = form.cleaned_data['ingredients4']
+            # calories1 = form.cleaned_data['calories1']
+            # calories2 = form.cleaned_data['calories2']
+            # calories3 = form.cleaned_data['calories3']
+            # calories4 = form.cleaned_data['calories4']
+            # product_qty = form.cleaned_data['product_qty']
+            # image1 = form.cleaned_data['image1']
+            # image2 = form.cleaned_data['image2']
+            # image3 = form.cleaned_data['image3']
+            # image4 = form.cleaned_data['image4']
+            # image5 = form.cleaned_data['image5']
+            # prod.SKU = SKU
+            # prod.product_name  = product_name 
+            # prod.product_code  = product_code 
+            # prod.feature_product   = feature_product  
+            # prod.product_deliverable  = product_deliverable 
+            # prod.date_of_mfg   = date_of_mfg  
+            # prod.date_of_exp  = date_of_exp 
+            # prod.mfr_name   = mfr_name  
+            # # prod.product_category   = product_category  
+            # # prod.supplier_name  = supplier_name 
+            # prod.product_weight   = product_weight  
+            # prod.unit  = unit 
+            # prod.price   = price  
+            # prod.discount  = discount 
+            # prod.dis_abs_percent   = dis_abs_percent  
+            # prod.wayrem_margin  = wayrem_margin 
+            # prod.wayrem_abs_percent   = wayrem_abs_percent  
+            # prod.package_count  = package_count 
+            # prod.product_meta_key   = product_meta_key  
+            # prod.description  = description 
+            # prod.ingredients1   = inst_Ingridient(ingredients1)  
+            # prod.ingredients2  = inst_Ingridient(ingredients2)
+            # prod.ingredients3  = inst_Ingridient(ingredients3)
+            # prod.ingredients4 = inst_Ingridient(ingredients4)
+            # prod.calories1   = calories1  
+            # prod.calories2  = calories2 
+            # prod.calories3  = calories3 
+            # prod.calories4 = calories4
+            # prod.product_qty   = product_qty  
+            # prod.image1  = image1 
+            # prod.image2   = image2  
+            # prod.image3  = image3 
+            # prod.image4   = image4
+            # prod.image5  = image5   
+            # prod.product_category.set(category)
+            # prod.supplier_name.set(supplier)
+            # prod.save()
+            # print(prod)
+            form.save()
+            return redirect('/product-list/')
+    prod = Products.objects.get(id=id)
+    form = ProductUpdateForm(instance=prod)
+    return render(request, 'UpdateProduct.html', {'form': form, 'id': prod.id})
+    
+
+
+class DeleteProduct(View):
+    def post(self, request):
+        productid = request.POST.get('product_id')
+        products = Products.objects.get(id=productid)
+        products.delete()
+        return redirect('/product-list/')

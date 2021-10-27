@@ -1,6 +1,6 @@
 {% extends "layouts/base.html" %}
 {% load static %}
-{% block title %} Supplier List {% endblock %}
+{% block title %} Ingredients List {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
@@ -29,7 +29,7 @@
 <!-- <div class="col-xl-4 col-lg-4 col-md-6 d-flex align-items-center"><span class="page_title mb-md-2" style="font-size: 28px; font-weight:600;">User</span>
 </div> -->
 
-<div class="subheader row pe-4 ps-4 mt-5">
+<div class="subheader row pe-4 ps-4 mt-5" >
     <div class="row add_btn col-xl-4 col-lg-4 col-md-5 d-flex align-items-center">
         <div class="col">
             <button class="button button1 mt-2 export_file">Export to pdf</button>
@@ -54,8 +54,8 @@
                 <option value="3">...</option>
               </select>
             </div>
-            <div class="col-xl-4 col-lg-5 col-md-5"><a class="btn w-100 anchor_btn ps-0 pe-0" href="{% url 'createcategory' %}">
-                <button class="btn col-sm-12 col-md-12 col-12 create_new">Create New Category</button>
+            <div class="col-xl-4 col-lg-5 col-md-5"><a class="btn w-100 anchor_btn ps-0 pe-0" href="{% url 'createingredients' %}">
+                <button class="btn col-sm-12 col-md-12 col-12 create_new">Create New Ingredients</button>
             </a></div>
         </div>
 
@@ -78,50 +78,46 @@
         <thead class="table-dark">
             <tr>
                 <th scope="col">Sr.No.</th>
-                <th scope="col">Category Name</th>
-                <th scope="col">Category Image</th>
-                <th scope="col">Description</th>
-                <th scope="col">Actions</th>
+                
+                {% comment %} <th scope="col">Product Image</th> {% endcomment %}
+                {% comment %} <th scope="col">Category</th> {% endcomment %}
+                <th scope="col">Ingredientse Name</th>
+                <th scope="col">Ingredients Status</th>    
+                <th scope="col">Actions</th>              
+                {% comment %} <th scope="col">Action</th> {% endcomment %}
             </tr>
         </thead>
         <tbody>
-            {% for cate in categorieslist %}
+            {% for ingre in ingredientslist %}
           
             <tr>
                 <th scope="row">{{forloop.counter}}</th>
-                <td>{{cate.name}}</td>
-                <td>
-                {% if cate.category_image %}
-                <img src="{{cate.category_image.url}}" style="height:45px">
-                {% else %}
-                No Image
-                {% endif %}
-                </td>
-                <td>{{cate.description}}</td>     
-                <td><a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'updatecategory' cate.id %}">
+                <td>{{ingre.ingredients_name}}</td>
+                <td>{{ingre.ingredients_status}}</td>     
+                <td><a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'updateingredients' ingre.id %}">
                     <i class="fas fa-edit text-dark"></i>
                 </a> <a type="button" class="btn btn-sm" data-bs-toggle="modal"
-                        data-bs-target="#deleteModal{{cate.id}}">
+                        data-bs-target="#deleteModal{{ingre.id}}">
                         <i class="fas fa-trash-alt text-danger"></i>
                     </a></td> 
                 <!-- Modal -->
-                <div class="modal fade" id="deleteModal{{cate.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                <div class="modal fade" id="deleteModal{{ingre.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
                     aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Delete {{cate.name | title}}</h5>
+                                <h5 class="modal-title" id="exampleModalLabel">Delete {{ingre.name | title}}</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                Are You Sure You Want to Delete {{cate.name | title}} ??
+                                Are You Sure You Want to Delete {{ingre.name | title}} ??
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
-                                <form method="POST" action="{% url 'deletecategories' %}">
+                                <form method="POST" action="{% url 'deleteingredients' %}">
                                     {% csrf_token %}
-                                    <input type="hidden" value="{{cate.id}}" name="category_id">
+                                    <input type="hidden" value="{{ingre.id}}" name="ingredients_id">
                                     <button type="submit" class="btn btn-danger">Delete</button>
                                 </form>
                             </div>

@@ -287,19 +287,25 @@ input#id_product_weight {
     width: 65%;
 }
 input#id_discount {
-    width: 67%;
+    width: 48%;
 }
 select#id_ingredients1 {
     width: 48%;
 }
 select#id_ingredients2 {
     width: 48%;
+    border-bottom-left-radius: 8px;
+    border-top-left-radius: 8px;
 }
 select#id_ingredients3{
     width: 48%;
+    border-bottom-left-radius: 8px;
+    border-top-left-radius: 8px;
 }
 select#id_ingredients4{
     width: 48%;
+    border-bottom-left-radius: 8px;
+    border-top-left-radius: 8px;
 }
 input#id_wayrem_margin {
     width: 67%;
@@ -410,3 +416,16 @@ select#supplier {
     .supplier{
         margin-left: 12%;
     }
+
+select#id_unit {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+select#id_dis_abs_percent {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+select#id_wayrem_abs_percent{
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}

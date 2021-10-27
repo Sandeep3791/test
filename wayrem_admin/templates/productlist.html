@@ -78,32 +78,16 @@
         <thead class="table-dark">
             <tr>
                 <th scope="col">Sr.No.</th>
-                <th scope="col">SKU</th>
-                {% comment %} <th scope="col">Product Image</th> {% endcomment %}
-                {% comment %} <th scope="col">Category</th> {% endcomment %}
+                <th scope="col">SKU</th>                
                 <th scope="col">Product Code</th>
-                <th scope="col">Product Meta Key</th>
-                <th scope="col">Manufacturer Name</th>
-                <th scope="col">Supplier Name</th>
-                <th scope="col">Product Name</th>
-                <th scope="col">Description</th>
-                <th scope="col">Ingredients-1</th>
-                <th scope="col">Ingredients-2</th>
-                <th scope="col">Ingredients-3</th>
-                <th scope="col">Ingredients-4</th>
-                <th scope="col">calories-1</th>
-                <th scope="col">calories-2</th>
-                <th scope="col">calories-3</th>
-                <th scope="col">calories-4</th>
-                <th scope="col">Nutrition</th>
-                <th scope="col">Product QTY</th>
-                <th scope="col">Product Weight</th>
-                <th scope="col">Unit</th>
-                <th scope="col">Price</th>
-                <th scope="col">Discount</th>
-                <th scope="col">Package Count</th>
-                <th scope="col">Wayrem Margin</th>
-                {% comment %} <th scope="col">Action</th> {% endcomment %}
+                <th scope="col">Product Name</th>                
+                <th scope="col">Category Name</th>
+                <th scope="col">Feature Product</th>
+                <th scope="col">Product Deliverable</th>
+                <th scope="col">Product QTY</th>                
+                <th scope="col">Price</th>   
+                <th scope="col">Package Count</th>                
+                <th scope="col">Actions</th>                
             </tr>
         </thead>
         <tbody>
@@ -111,31 +95,45 @@
           
             <tr>
                 <th scope="row">{{forloop.counter}}</th>
-                <td>{{prod.SKU}}</td>
-                {% comment %} <td><img src="{{prod.image.url}}" style="height:45px"></td> {% endcomment %}
-                {% comment %} <td>{{prod.product_category.name}}</td>      {% endcomment %}
-                <td>{{prod.product_code}}</td>
-                <td>{{prod.product_meta_key}}</td>
-                <td>{{prod.mfr_name}}</td>     
-                <td>{{prod.supplier_name.username}}</td>
+                <td>{{prod.SKU}}</td>                
+                <td>{{prod.product_code}}</td>                
                 <td>{{prod.product_name}}</td>
-                <td>{{prod.description}}</td>     
-                <td>{{prod.ingredients1.ingredients_name}}</td>
-                <td>{{prod.ingredients2.ingredients_name}}</td>
-                <td>{{prod.ingredients3.ingredients_name}}</td>     
-                <td>{{prod.ingredients4.ingredients_name}}</td>
-                <td>{{prod.calories1}}</td>
-                <td>{{prod.calories2}}</td>
-                <td>{{prod.calories3}}</td>
-                <td>{{prod.calories4}}</td>
-                <td>{{prod.nutrition}}</td>
+                <td>{{prod.product_category}}</td>
+                <td>{{prod.feature_product}}</td>
+                <td>{{prod.product_deliverable}}</td>
                 <td>{{prod.product_qty}}</td>
-                <td>{{prod.product_weight}}</td>
-                <td>{{prod.unit}}</td>
                 <td>{{prod.price}}</td>
-                <td>{{prod.discount}}</td>
                 <td>{{prod.package_count}}</td>
-                <td>{{prod.wayrem_margin}}</td>
+                <td><a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'updateproduct' prod.id %}">
+                    <i class="fas fa-edit text-dark"></i>
+                </a> <a type="button" class="btn btn-sm" data-bs-toggle="modal"
+                        data-bs-target="#deleteModal{{prod.id}}">
+                        <i class="fas fa-trash-alt text-danger"></i>
+                    </a></td> 
+                <!-- Modal -->
+                <div class="modal fade" id="deleteModal{{prod.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Delete {{prod.product_name | title}}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                Are You Sure You Want to Delete {{prod.product_name | title}} ??
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+                                <form method="POST" action="{% url 'deleteproduct' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" value="{{prod.id}}" name="product_id">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                
             </tr>
             {% endfor %}

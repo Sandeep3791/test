@@ -46,7 +46,9 @@ urlpatterns = [
          views.update_ingredients, name='updateingredients'),
     path('create-po/', views.create_po1, name='createpo'),
     path('create-po2/', views.create_po2, name='createpo2'),
-
+    path('update-product/<str:id>/', views.update_product, name='updateproduct'),
+    path('delete-product/', views.DeleteProduct.as_view(),
+         name='deleteproduct'),
 
     #   Roles CRUD urls start-------------------------
 

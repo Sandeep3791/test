@@ -110,6 +110,9 @@ class SupplierRegister(models.Model):
     is_active = models.BooleanField(default=True)
     category_name = models.ManyToManyField('Categories', null=True)
 
+    def __str__(self):
+        return self.username    
+
     class Meta:
        db_table ='supplier_master'
 
@@ -120,6 +123,9 @@ class Ingredients(models.Model):
     ingredients_name = models.CharField(max_length=100, null=True, blank=True)
     ingredients_status = models.CharField(
         max_length=10, choices=status, default='Active')
+
+    def __str__(self):
+        return self.ingredients_name
 
     class Meta:
        db_table ='ingredients'

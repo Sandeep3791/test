@@ -280,6 +280,14 @@ class ProductFormTwo(forms.Form):
     )
     dis_abs_percent = forms.ChoiceField(
         choices=DIS_ABS_PERCENT, widget=forms.Select(attrs={'class': 'form-select'}))
+    wayrem_margin = forms.IntegerField(
+        widget=forms.NumberInput(attrs={'class': "form-control"}))
+    WAYREM_ABS_PERCENT = (
+        ('(Absolute ', 'Abs'),
+        ('%', '%'),
+    )
+    wayrem_abs_percent = forms.ChoiceField(
+        choices=WAYREM_ABS_PERCENT, widget=forms.Select(attrs={'class': 'form-select'}))
     package_count = forms.IntegerField(
         widget=forms.NumberInput(attrs={'class': "form-control"}))
     product_meta_key = forms.CharField(
@@ -319,14 +327,14 @@ class ProductFormThree(forms.Form):
 
 
 class ProductFormFour(forms.Form):
-    wayrem_margin = forms.IntegerField(
-        widget=forms.NumberInput(attrs={'class': "form-control"}))
-    WAYREM_ABS_PERCENT = (
-        ('(Absolute ', 'Abs'),
-        ('%', '%'),
-    )
-    wayrem_abs_percent = forms.ChoiceField(
-        choices=WAYREM_ABS_PERCENT, widget=forms.Select(attrs={'class': 'form-select'}))
+    # wayrem_margin = forms.IntegerField(
+    #     widget=forms.NumberInput(attrs={'class': "form-control"}))
+    # WAYREM_ABS_PERCENT = (
+    #     ('(Absolute ', 'Abs'),
+    #     ('%', '%'),
+    # )
+    # wayrem_abs_percent = forms.ChoiceField(
+    #     choices=WAYREM_ABS_PERCENT, widget=forms.Select(attrs={'class': 'form-select'}))
     image1 = forms.ImageField(widget=forms.FileInput(
         attrs={'class': "form-control-file"}))
     image2 = forms.ImageField(widget=forms.FileInput(
@@ -346,7 +354,7 @@ class IngredientsCreateForm(forms.ModelForm):
 
         widgets = {
             'ingredients_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'ingredients_status': forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-select'})),
+            'ingredients_status': forms.Select(attrs={'class': 'form-select'}),
         }
 
 
@@ -385,3 +393,52 @@ class IngredientsCreateForm(forms.ModelForm):
 #         attrs={'class': 'form-control'}), required=False)
 #     supplier_name = forms.MultipleChoiceField(
 #         choices=choices_role, widget=forms.SelectMultiple(attrs={'class': 'form-control'}), required=False)
+
+
+class ProductUpdateForm(forms.ModelForm):
+
+    class Meta:
+        model = Products
+        fields = ("SKU", "product_category", "product_code", "product_meta_key",
+                  "feature_product", "product_deliverable", "date_of_mfg", "date_of_exp", "mfr_name", "supplier_name", "dis_abs_percent",
+                  "image1", "image2", "image3", "image4", "image5", "product_name",
+                  "description", "ingredients1", "ingredients2", "ingredients3", "ingredients4",
+                  "calories1", "calories2", "calories3", "calories4", "product_qty", "product_weight",
+                  "unit", "price", "discount", "package_count", "wayrem_margin", "wayrem_abs_percent")
+
+        widgets = {
+            'SKU' : forms.TextInput(attrs={'class': "form-control"}),
+            'product_name' : forms.TextInput(attrs={'class': "form-control"}),
+            'product_code' : forms.TextInput(attrs={'class': "form-control"}),
+            'feature_product' : forms.CheckboxInput(attrs={'class': "form-check-input", 'required': False}),
+            'product_deliverable' : forms.CheckboxInput(attrs={'class': "form-check-input", 'required': False}),
+            'date_of_mfg' : DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'date_of_exp' : DateInput(attrs={'class': 'form-control'}),
+            'mfr_name' : forms.TextInput(attrs={'class': "form-control"}),
+            'product_weight' : forms.NumberInput(attrs={'class': "form-control"}),
+            'price' : forms.NumberInput(attrs={'class': "form-control"}),
+            'discount' : forms.NumberInput(attrs={'class': "form-control"}),
+            'wayrem_margin' : forms.NumberInput(attrs={'class': "form-control"}),
+            'package_count' : forms.NumberInput(attrs={'class': "form-control"}),
+            'product_meta_key' : forms.Textarea(attrs={'class': "form-control", 'rows': '3'}),
+            'description' : forms.Textarea(attrs={'class': "form-control", 'rows': '3'}),
+            'calories1': forms.NumberInput(attrs={'class': "form-control", 'step': 0.1, 'placeholder': 'Calories (kcal)'}),
+            'calories2' : forms.NumberInput(attrs={'class': "form-control", 'step': 0.1, 'placeholder': 'Calories (kcal)'}),
+            'calories3' : forms.NumberInput(attrs={'class': "form-control", 'step': 0.1, 'placeholder': 'Calories (kcal)'}),
+            'calories4' : forms.NumberInput(attrs={'class': "form-control", 'step': 0.1, 'placeholder': 'Calories (kcal)'}),            
+            'product_qty' : forms.NumberInput(attrs={'class': "form-control"}),
+            'image1' : forms.FileInput(attrs={'class': "form-control-file"}),
+            'image2' : forms.FileInput(attrs={'class': "form-control-file"}),
+            'image3' : forms.FileInput(attrs={'class': "form-control-file"}),
+            'image4' : forms.FileInput(attrs={'class': "form-control-file", 'required': False}),
+            'image5' : forms.FileInput(attrs={'class': "form-control-file", 'required': False}),
+            'product_category' : forms.SelectMultiple(attrs={'class': 'form-control', 'required': False}),
+            'supplier_name' : forms.SelectMultiple(attrs={'class': 'form-control', 'required': False}),
+            'unit' : forms.Select(attrs={'class': 'form-select'}),
+            'dis_abs_percent' : forms.Select(attrs={'class': 'form-select'}),            
+            'wayrem_abs_percent' : forms.Select(attrs={'class': 'form-select'}),        
+            'ingredients1' : forms.Select(attrs={'class': 'form-select'}),
+            'ingredients2' : forms.Select(attrs={'class': 'form-select'}),
+            'ingredients3' : forms.Select(attrs={'class': 'form-select'}),
+            'ingredients4' : forms.Select(attrs={'class': 'form-select'})
+        }

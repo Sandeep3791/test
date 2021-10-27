@@ -1,0 +1,512 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %} Update Product {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+<link type="text/css" href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+{% endblock stylesheets %}
+
+{% block content %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.css" integrity="sha512-p209YNS54RKxuGVBVhL+pZPTioVDcYPZPYYlKWS9qVvQwrlzxBxkR8/48SCP58ieEuBosYiPUS970ixAfI/w/A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+
+<script type="text/javascript">
+       $(document).ready(function () {
+            $('#id_product_category').select2({
+            placeholder: 'Select Category',
+            })
+            $('#id_supplier_name').select2({
+            placeholder: 'Select Supplier',
+            });
+     });
+    </script>
+
+<main class="align-items-center admin_signup_lg">
+    <section class="d-flex   align-items-center my-5 mt-lg-6 mb-lg-5">
+        <div class="container ">
+            <div class="row justify-content-center form-bg-image">
+                <div class="col-12 d-flex align-items-center justify-content-center">
+                    <div
+                        class="mb-4 mb-lg-0 bg-white  rounded p-4 p-lg-4 w-100" style="box-shadow: 0px 14px 20px 0px #00000014;">
+                        <div class="mb-4 mt-md-0">
+                            <h1 class="mb-0 h3">
+                                <!-- <img src="{% static '/assets/img/logo/Wayrem_logo..svg'%}" alt=""> -->
+                                 Update Product
+                            </h1>
+                            <hr>
+                            
+                            <p>
+                                {% if messages %}
+                                {% for message in messages %}
+                            <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show"
+                                {% endif %} role="alert">
+                                <strong> {{ message }}</strong>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+
+
+                            </p>
+                        </div>
+
+ {% if form.non_field_errors %}
+  {% for error in form.non_field_errors %}
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+  {{error}}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+  <span aria-hidden="true">&times;</span>
+</div>
+  {% endfor %}
+{% endif %}
+
+
+                        <form method="POST" action="{% url 'updateproduct' id %}"  id="product" enctype="multipart/form-data" novalidate>
+                                {% csrf_token %}
+                                {{ form.non_field_errors }}
+                                <div class="row">
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="name">SKU <span class="text-danger">*</span> <span class="text-danger"><em> {{form.SKU.errors | striptags}}
+                                            </em></span></label>
+                                            <div class="input-group">   
+                                                {{form.SKU}}
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="image">Product Name <span class="text-danger">*</span> <span class="text-danger"> <em> {{form.product_name.errors | striptags}}
+                                            </em> </span></label>
+                                            <div class="input-group">
+                                                
+                                                {{form.product_name}}
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+                                </div>
+                                <div class="row">
+                                    
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="price">Product Code <span class="text-danger"> <em> {{form.product_code.errors | striptags}}
+                                            </em> </span></label>
+                                            <div class="input-group">
+                                                
+                                                {{form.product_code}}
+                                            </div>
+                                           
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+                                     <!-- Form -->
+                                     <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                        
+                                            <label for="description">Product Category <span class="text-danger"> 
+                                                <em> {{form.product_category.errors | striptags}}
+                                                </em>*</span>
+                                            </span></label>
+                                            <div class="input-group">
+                                                
+                                                {{form.product_category}}
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+                                    
+                                </div>
+
+                                
+                                
+                                <div class="row">
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="description">Date of Manufacture  <span class="text-danger">*</span> <span class="text-danger">
+                                                <em> {{form.date_of_mfg.errors | striptags}}
+                                                </em>
+                                            </span></label>
+                                            <div class="input-group">
+                                                
+                                                {{form.date_of_mfg}}
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+
+
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="provider">Date of Expiry  <span class="text-danger">*</span>  <span class="text-danger"> <em> {{form.date_of_exp.errors | striptags}}
+                                            </em>
+                                        </span></label>
+                                            <div class="input-group">
+                                               
+                                                {{form.date_of_exp}}
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="provider">Manufacturer Name <span class="text-danger">*</span>  <span class="text-danger"> <em> {{form.mfr_name.errors | striptags}}
+                                            </em>
+                                        </span></label>
+                                            <div class="input-group">
+                                               
+                                                {{form.mfr_name}}
+                                            </div>
+                                           
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+
+                                         <label for="description">Supplier Name<span class="text-danger">*</span> <span class="text-danger"><em> {{form.supplier_name.errors | striptags}}
+                                                </em>
+                                            </span></label>
+                                            <div class="input-group">
+                                            {% comment %}  {% endcomment %}
+                                        {{form.supplier_name}}
+                                        {% comment %} </script> {% endcomment %}
+                                            </div>
+
+                                            
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+                                </div>
+                                <div class="row">
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <div class="form-check">
+                                                <label class="form-check-label" for="quantity">  Featured Product  <span class="text-danger"> <em> {{form.feature_product.errors | striptags}}
+                                                </em>
+                                            </span></label>
+                                                {{form.feature_product}}
+                                            </div>
+                                           
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <div class="form-check">
+                                                <label class="form-check-label" for="weight">Deliverable Product <span class="text-danger"> <em> {{form.product_deliverable.errors | striptags}}
+                                                </em>
+                                            </span></label>
+                                                {{form.product_deliverable}}
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+                                </div>
+                                <div class="row">
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="name">Weight</label>
+                                            <div class="input-group first">   
+                                             {{form.product_weight}} 
+                                               {{form.unit}}
+                                            </div>
+                                            
+                                            <span class="text-error"></span>
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+                                    
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="name">Price</label>
+                                            <div class="input-group">   
+                                                {{form.price}}
+                                            </div>
+                                            <div class="input-group">
+                                                <span class="text-danger"><em> {{form.image3.errors | striptags}}
+                                                    </em></span>
+                                            </div>
+                                            <span class="text-error"></span>
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="name">Discount</label>
+                                            <div class="input-group first">   
+                                                {{form.discount}}
+                                                {{form.dis_abs_percent}}
+                                            </div>
+                                            <!-- <div class="input-group">
+                                                <span class="text-danger"><em> {{form.image4.errors | striptags}}
+                                                    </em></span>
+                                            </div> -->
+                                            <span class="text-error"></span>
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+                                   <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="name">Wayrem Margin <span class="text-danger">*</span> <span class="text-danger"> <em> {{form.wayrem_margin.errors | striptags}}
+                                            </em> </span> </label>
+                                            <div class="input-group">
+                                                {{form.wayrem_margin}}
+                                                {{form.wayrem_abs_percent}}
+                                            </div>
+                                            <span class="text-error"></span>
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="image">Package Count</label>
+                                            <div class="input-group">
+                                                {% comment %} <span class="input-group-text" id="product_code"><span
+                                                        class="fas fa-lock"></span></span> {% endcomment %}
+                                                {{form.package_count}}
+                                            </div>
+                                            <div class="input-group">
+                                                <span class="text-danger"> <em> {{form.product_name.errors | striptags}}
+                                                    </em> </span>
+                                            </div>
+                                            <span class="text-error"></span>
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+                                </div>
+                                <div class="row">
+                                   
+                                   <!-- Form -->
+                                    <div class="col-lg-12">
+                                        <div class="form-group mb-4">
+                                            <label for="name">Product Meta Key</label>
+                                            <div class="input-group">
+                                                {{form.product_meta_key}}
+                                            </div>
+                                           
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->                                    
+                                </div>
+
+                                 <div class="row">
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="name">Ingredients</label>
+                                            <div class="input-group">   
+                                                {{form.ingredients1}}
+                                                {{form.calories1}}
+                                            </div>
+                                         
+
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+
+                                     
+
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="name">Ingredients</label>
+                                            <div class="input-group">   
+                                                {{form.ingredients2}}
+                                                {{form.calories2}}
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+
+
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="name">Ingredients</label>
+                                            <div class="input-group">   
+                                                {{form.ingredients3}}
+                                                {{form.calories3}}
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+
+                                    
+
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="name">Ingredients</label>
+                                            <div class="input-group">   
+                                                {{form.ingredients4}}
+                                                 {{form.calories4}}
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+                      <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="name">Product QTY</label>
+                                            <div class="input-group">   
+                                                {{form.product_qty}}
+                                            </div>
+                                            <div class="input-group">
+                                                <span class="text-danger"><em> 
+                                                    </em></span>
+                                            </div>
+                                            <span class="text-error"></span>
+                                        </div>
+                                    </div>
+                                    <!-- End of Form --> 
+
+                                    <!-- Form -->
+                                    <div class="col-lg-12">
+                                        <div class="form-group mb-4">
+                                            <label for="name">Description</label>
+                                            <div class="input-group">   
+                                               {{form.description}}
+                                            </div>
+                                           
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+                                    
+                                </div>
+
+                                <div class="row">
+                                    
+
+                                    
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="name">Image<span class="text-danger">*</span> <span class="text-danger"> <em> {{form.image1.errors | striptags}}
+                                            </em> </span></label>
+                                            <div class="input-group">
+                                                 {{form.image1}}                                                          
+                                            </div>
+                                            <span class="text-error"></span>
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+
+                                     <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="name">Image <span class="text-danger">*</span> <span class="text-danger"> <em> {{form.image2.errors | striptags}}
+                                            </em> </span></label>
+                                            <div class="input-group">
+                                                {{form.image2}}         
+                                            </div>                                    
+                                            <span class="text-error"></span>
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="name">Image <span class="text-danger">*</span> <span class="text-danger"> <em> {{form.image3.errors | striptags}}
+                                            </em> </span></label>
+                                            <div class="input-group">                                       
+                                                {{form.image3}}      
+                                            </div>                                            
+                                            <span class="text-error"></span>
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="name">Image</label>
+                                            <div class="input-group">
+                                                {{form.image4}}         
+                                            </div>                                        
+                                            <span class="text-error"></span>
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="name">Image</label>
+                                            <div class="input-group">
+                                                {{form.image5}}         
+                                            </div>                        
+                                            <span class="text-error"></span>
+                                        </div>
+                                    </div>
+
+
+                            <div class="mt-1">
+                                <a  href="{% url 'product' %}" class="btn  btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Back</a>
+                                <button type="submit" class="btn btn-dark border-0 col-xl-3 col-md-5 col-12" >Save</button>
+                            </div>
+
+
+                            </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %} 
+    <script>
+    $("#id_product_category").change(function () {
+        const url = $("#product1").attr("data-supplier-url");  // get the url of the load_cities view
+        const supplierId = $(this).val();  // get the selected supplier ID from the HTML input
+
+        $.ajax({                       // initialize an AJAX request
+            url: url,                    // set the url of the request (= /persons/ajax/load-cities/ )
+            data: {
+                'category_product': supplierId       // add the country id to the GET parameters
+            },
+            success: function (data) {   // data is the return of the load_cities view function
+                $("#id_supplier_name").html(data);  // replace the contents of the city input with the data that came from the server
+                
+            }
+        });
+
+    });
+</script>
+{% endblock javascripts %}
