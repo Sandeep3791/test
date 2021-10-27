@@ -21,16 +21,12 @@
     <h1 class="mb-1 h3 text-center">
         Create Purchase Order
    </h1>
-	<form action="">
-
+<form action="{% url 'create_po' %}" method="POST" novalidate>
+{% csrf_token %}
 
 <div class="container p-3 mt-4 w-75">
   <label for="supplier">Supplier Name</label>
-                    <select id="supplier" class="form-row" name="supplier">
-                        <option value="">1</option>
-                        <option value="">2</option>
-                        <option value="">3</option>
-                    </select>
+                    {{form.supplier_name}}
       
   </div>
 
@@ -39,39 +35,28 @@
             <div class="row">
                 <div class="col-md-4">
                     <label for="product">Product Name</label>
-                    <input type="text" list="browsers" id="product" placeholder=" Search Product.." />
-                    <datalist id="browsers">
-                        <option value="Chrome"></option>
-                        <option value="Firefox"></option>
-                        <option value="Internet Explorer"></option>
-                        <option value="Opera"></option>
-                        <option value="Safari"></option>
-                        <option value="Microsoft Edge"></option>
-                    </datalist>
+                    {{form.product_name}}
                 </div>
 
                 <div class="col-md-2">
                     <label for="quantity">Quantity</label>
-                    <input type="number" id="quantity" name="lastname" min="0" max="">
+                {{form.product_qty}}
                 </div>
 
-                {% comment %} <div class="col-md-3">
-                    <label for="price">Price</label>
-                    <input type="text" id="price" name="lastname" placeholder="Price..">
-                </div> {% endcomment %}
+               
 
                 <div class="col-md-3 mt-4 text-right offset-3">
-                    <button class="btn btn-success mt-2" type="submit" onclick="addCourse()" >Add More</button>
+                    <button class="btn btn-success mt-2" name="addMore" type="submit" >Add More</button>
                 </div>
             </div>
         </div>
-    </form>
 
     <div class="container w-75 bg-white">
 	  	<div class="table-data mt-5">
 		    <table class="table text-center" id="enrolled">
 		        <thead>
 		            <tr>
+		                <th scope="col">Sr. No.</th>
 		                <th scope="col">Product</th>
 		                <th scope="col">Quantity</th>
 		                {% comment %} <th scope="col">Price</th> {% endcomment %}
@@ -79,29 +64,20 @@
 		            </tr>
 		        </thead>
 		        <tbody>
+                {% for data in po%}
+                    
 		            <tr>
-		                <td>crome</td>
-		                <td>12</td>
-		                {% comment %} <td>120</td> {% endcomment %}
-		                
+		                <td>{{forloop.counter}}</td>
+		                <td>{{data.1}}</td>
+		                <td>{{data.2}}</td>
 		            </tr>
-		            <tr>
-		                <td>MS</td>
-		                <td>15</td>
-		                {% comment %} <td>200</td> {% endcomment %}
-		                
-		            </tr>
-		            <tr>
-		                <td>Safari</td>
-		                <td>10</td>
-		                {% comment %} <td>250</td> {% endcomment %}
-		                
-		            </tr>
+                    
+		        {% endfor %}
 		        </tbody>
 		    </table>
 		    <div class="text-right mr-5 px-2">
-			<a type="submit" href="#" class="btn btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Send</a>
-
+			<button type="submit" name="send" href="#" class="btn btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Send</button>
+ </form>
 		    {% comment %} <button class="btn btn-success mr-5" type="submit" >Next</button> {% endcomment %}
 		    </div>
 		</div>

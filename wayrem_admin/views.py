@@ -1,3 +1,4 @@
+from pyvirtualdisplay import Display
 from wayrem.settings import BASE_DIR
 import pandas as pd
 from django.template.loader import get_template
@@ -45,6 +46,7 @@ def dashboard(request):
         'suppliers': len(suppliers),
         'products': len(products)
     }
+
     return render(request, 'dashboard.html', context)
 
 
@@ -799,6 +801,10 @@ def inst_Ingridient(value):
     return Ingredients.objects.get(id=value)
 
 
+def inst_Product(value):
+    return Products.objects.get(id=value)
+
+
 def product_view_four(request):
     initial = {
         'wayrem_margin': request.session.get('wayrem_margin', None),
@@ -973,7 +979,7 @@ def load_supplier(request):
     # supplier = SupplierRegister.objects.filter(category_name=category).all()
     return render(request, 'supplier_dropdown.html', {'supplier': supplier})
 
-from pyvirtualdisplay import Display
+
 def pdf_userlist(request):
     query = 'SELECT username, first_name, last_name, is_active, date_joined, email, contact,  dob, gender, address, city, zip_code FROM custom_user'
     df = pd.read_sql_query(
@@ -997,11 +1003,41 @@ def pdf_userlist(request):
     return response
 
 
-
 def create_purchase_order(request):
+
     if request.method == "POST":
+        form = POForm(request.POST or None, request.FILES or None)
+        if 'addMore' in request.POST:
+            product_id = request.POST['product_name']
+            product_qty = request.POST['product_qty']
+            name = inst_Product(product_id)
+            x = (product_id, name.product_name, product_qty)
+            request.session['products'].append(x)
+            po = request.session['products']
+            request.session.modified = True
+            print('add more')
+            return render(request, "po_step1.html", {'form': form, 'po': po})
+        elif 'send' in request.POST:
+            if request.POST['supplier_name'] == '':
+                messages.error(request, "Please Select Supplier!")
+                return render(request, "po_step1.html", {'form': form, 'po': request.session['products']})
+            else:
+                print("supplier")
+                supplier_name = inst_Supplier(request.POST['supplier_name'])
+                po_id = uuid.uuid4()
+                for data in request.session['products']:
+                    print(data)
+                    product_instance = inst_Product(data[0])
+                    product_qty = data[2]
+                    product_order = PurchaseOrder(
+                        po_id=po_id, product_name=product_instance, product_qty=product_qty, supplier_name=supplier_name)
+                    product_order.save()
+                messages.success(
+                    request, f"Purchase Order Sent to {supplier_name.username}")
+                return redirect('/dashboard/')
+        else:
+            print("Invalid")
+    else:
         form = POForm()
-
-
-
-
+    request.session['products'] = []
+    return render(request, "po_step1.html", {'form': form})
