@@ -113,6 +113,8 @@
 
                 <td>
                     {% if 'User Delete' in request.user.role.permission or request.user.is_superuser %}
+                    <a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'updateuser' user.id %}">
+                    <i class="fas fa-edit text-dark"></i>
                     <a type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{user.id}}">
                         <i class="fas fa-trash-alt text-danger"></i>
                     </a>

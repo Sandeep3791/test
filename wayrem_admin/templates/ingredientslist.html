@@ -3,7 +3,14 @@
 {% block title %} Ingredients List {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
-{% block stylesheets %}{% endblock stylesheets %}
+{% block stylesheets %}
+<style>
+#myFileInput {
+    display:none;
+}
+</style>
+
+{% endblock stylesheets %}
 {% block head %}
 <script src="{% static 'assets/js/datatable_ajax.js' %}"></script>
 <link rel="stylesheet" href="{% static 'assets/css/datatable.css' %}">
@@ -29,12 +36,26 @@
 <!-- <div class="col-xl-4 col-lg-4 col-md-6 d-flex align-items-center"><span class="page_title mb-md-2" style="font-size: 28px; font-weight:600;">User</span>
 </div> -->
 
+{% comment %} <div class="subheader row pe-4 ps-4 mt-5" >
+    <div class="row add_btn col-xl-4 col-lg-4 col-md-5 d-flex align-items-center">
+        <div class="col">
+            <a href="{% url 'importingredients' %}" class="button button1 mt-2 export_file">Import Data</a>
+        </div>
+    </div> {% endcomment %}
+
 <div class="subheader row pe-4 ps-4 mt-5" >
     <div class="row add_btn col-xl-4 col-lg-4 col-md-5 d-flex align-items-center">
         <div class="col">
-            <button class="button button1 mt-2 export_file">Export to pdf</button>
+        <form action="{% url 'importingredients' %}" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+            <input type="file" name="myFileInput" onchange="form.submit()" id="myFileInput" />
+        </form>
+<input type="button" class="button button1 mt-2 export_file"
+       onclick="document.getElementById('myFileInput').click()" 
+       value="Import Data" />
         </div>
     </div>
+
 
     <div class="col-xl-8 col-lg-8 col-12">
         <div class="row d-flex align-items-center">
@@ -136,6 +157,7 @@
     </div>
 
 <script>
+
 
 $(document).ready( function () {
     $('#filtertable').DataTable({

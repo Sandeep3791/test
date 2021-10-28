@@ -1,3 +1,4 @@
+from sqlalchemy import create_engine
 from pyvirtualdisplay import Display
 from wayrem.settings import BASE_DIR
 import pandas as pd
@@ -1087,3 +1088,83 @@ class POList(View):
         polist = PurchaseOrder.objects.values(
             'po_id', 'supplier_name').distinct()
         return render(request, self.template_name, {"userlist": polist})
+
+
+def import_ingredients(request):
+    if request.method == "POST":
+        file = request.FILES["myFileInput"]
+        engine = create_engine(
+            "mysql+pymysql://root:root1234@localhost/wayrem_9.0?charset=utf8")
+        # df = pd.read_excel('files/ingredients.xlsx')
+        df = pd.read_excel(file)
+        # df.columns = df.iloc[0]
+        # df = df.drop(0)
+        df = df[df.columns.dropna()]
+        df = df.fillna(0)
+        ids = []
+        uuids = []
+
+        for id_counter in range(0, len(df.index)):
+            ids.append(str(uuid.uuid4()))
+            df['ingredients_status'] = 'Active'
+        for i in ids:
+            uuids.append((uuid.UUID(i)).hex)
+        df['id'] = uuids
+
+        df.to_sql('ingredients', engine, if_exists='append', index=False)
+        return redirect('/ingredients-list/')
+    return redirect('/ingredients-list/')
+
+
+def update_user(request, id=None):
+    print(id)
+    if request.method == "POST":
+        # kwargs = { 'data' : request.POST }
+        user = CustomUser.objects.get(id=id)
+        form = SubAdminForm(request.POST or None, instance=user)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            email = form.cleaned_data['email']
+            contact = form.cleaned_data['contact']
+            role = form.cleaned_data['role']
+            role_obj = Roles.objects.get(id=role)
+            password = form.cleaned_data['password1']
+            print("FORM")
+            user.username = username
+            user.email = email
+            user.contact = contact
+            user.role_obj = role_obj
+            user.password = password
+            user.save()
+            print("Here")
+            return redirect('/users-list/')
+    user = CustomUser.objects.get(id=id)
+    form = SubAdminForm(instance=user)
+    return render(request, 'update_user.html', {'form': form, 'id': user.id})
+
+
+def update_supplier(request, id=None):
+    print(id)
+    if request.method == "POST":
+        # kwargs = { 'data' : request.POST }
+        suppl = SupplierRegister.objects.get(id=id)
+        form = SupplierRegisterForm(request.POST or None, instance=suppl)
+        if form.is_valid():
+            username = form.cleaned_data['username']
+            email = form.cleaned_data['email']
+            password = form.cleaned_data['password']
+            category_name = form.cleaned_data['category_name']
+            print("FORM")
+            suppl.username = username
+            suppl.email = email
+            suppl.password = password
+            suppl.category_name.set(category_name)
+            suppl.save()
+            return redirect('/supplier-list/')
+    suppl = SupplierRegister.objects.get(id=id)
+    form = SupplierRegisterForm(instance=suppl)
+    return render(request, 'update_supplier.html', {'form': form, 'id': suppl.id})
+
+
+def inputIngredients(request):
+    return render(request, 'input_ingredients.html')

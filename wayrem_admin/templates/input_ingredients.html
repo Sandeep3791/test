@@ -1,7 +1,7 @@
 {% extends "layouts/base.html" %}
 {% load static %}
 
-{% block title %} Input Barcode {% endblock %}
+{% block title %} Input Ingredients {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
@@ -41,12 +41,9 @@
 
                             <!-- Form -->
                             <div class="form-group mb-4">
-                                <label for="code">Barcode Number</label>
+                                <label for="code">Select Ingredients Excel</label>
                                 <div class="input-group">
-                                    <span class="input-group-text" id="basic-addon1"><span
-                                            class="fas fa-barcode"></span></span>
-                                    <input type="text" placeholder="Barcode Number" class="form-control" id="code"
-                                        name="code" aria-describedby="emailHelp">
+                                     <input type="file" class="form-control-file" id="exampleFormControlFile1">
                                 </div>
                             </div>
                             <!-- End of Form -->

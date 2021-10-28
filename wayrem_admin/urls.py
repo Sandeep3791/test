@@ -73,6 +73,13 @@ urlpatterns = [
 
     path('purchase_order/', views.create_purchase_order, name='create_po'),
     path('po-list/', views.POList.as_view(), name='polist'),
+    path('import-ingredients/', views.import_ingredients, name="importingredients"),
+    path('update-user/<str:id>/',
+         views.update_user, name='updateuser'),
+    path('update-supplier/<str:id>/',
+         views.update_supplier, name='updatesupplier'),
+    path('inputIngredients/', views.inputIngredients, name='inputIngredients'),
+
 
 
 

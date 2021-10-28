@@ -96,7 +96,10 @@
                 
                 <td> {% if suppl.is_active %} <a href="{% url 'activeblocksupplier' suppl.id %}" class="badge rounded-pill bg-success "><i class="fas fa-toggle-on"></i> Active</a> {% else %} <a href="{% url 'activeblocksupplier' suppl.id %}" class="badge rounded-pill bg-danger"><i class="fas fa-toggle-off"></i>  Blocked</a>
                     {% endif %} </td>
-                <td><a type="button" class="btn btn-sm" data-bs-toggle="modal"
+                <td>
+                <a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'updatesupplier' suppl.id %}">
+                    <i class="fas fa-edit text-dark"></i>
+                <a type="button" class="btn btn-sm" data-bs-toggle="modal"
                         data-bs-target="#deleteModal{{suppl.id}}">
                         <i class="fas fa-trash-alt text-danger"></i>
                     </a></td>
