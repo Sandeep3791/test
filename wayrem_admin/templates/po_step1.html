@@ -17,6 +17,23 @@
 {% endfor %}
 {% endif %}
 
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.css" integrity="sha512-p209YNS54RKxuGVBVhL+pZPTioVDcYPZPYYlKWS9qVvQwrlzxBxkR8/48SCP58ieEuBosYiPUS970ixAfI/w/A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+
+<script type="text/javascript">
+       $(document).ready(function () {
+            $('#id_product_name').select2({
+            placeholder: 'Select Product',
+            })
+            $('#id_supplier_name').select2({
+            placeholder: 'Select Supplier',
+            });
+     });
+    </script>
+
 <div class="shadow p-3 bg-white rounded" style="height: auto;">
     <h1 class="mb-1 h3 text-center">
         Create Purchase Order

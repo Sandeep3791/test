@@ -30,13 +30,13 @@
 </div> -->
 
 <div class="subheader row pe-4 ps-4 mt-5">
-    <div class="row add_btn col-xl-4 col-lg-4 col-md-5 d-flex align-items-center">
+    {% comment %} <div class="row add_btn col-xl-4 col-lg-4 col-md-5 d-flex align-items-center">
         <div class="col">
             <a href="{% url 'userpdf' %}" class="button button1 mt-2 export_file">Export to pdf</a>
         </div>
-    </div>
+    </div> {% endcomment %}
 
-    <div class="col-xl-8 col-lg-8 col-12">
+    <div class="col-xl-8 col-lg-8 col-12 offset-4">
         <div class="row d-flex align-items-center">
             <div class="col-xl-4 col-lg-3 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 " style="height:40px;">
                 <!-- <input type="search" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Search"> -->
@@ -79,41 +79,44 @@
         <thead class="table-dark ">
             <tr>
                 <th scope="col">Sr.No.</th>
-                <th scope="col">Purchase Order Id</th>
+                <th scope="col">Purchase Order</th>
                 <th scope="col">Supplier</th>
+                <th scope="col">Status</th>
                 <th scope="col">Action</th>
             </tr>
         </thead>
         <tbody class="bg-white">
-            {% for user in userlist %}
-            {% if user.is_superuser %}
-            {% else %}
+            {% for item1,item2 in userlist %}
             <tr>
                 <th scope="row">{{forloop.counter}}</th>
-                <td>{{user.po_id}}</td>
-                <td>{{user.supplier_name}}</td>
+                <td>{{item1.po_name}}</td>
+                <td>{{item2}}</td>
+                <td>Pending</td>
                 <td>
-                    Action
+                <a type="button" href="{% url 'viewpo' item1.po_id %}" class="btn btn-sm"><i class="fas fa-eye text-primary"></i>
+                    </a>
+                     <a type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{item1.po_id}}"><i class="fas fa-trash-alt text-danger"></i>
+                    </a>
                 </td>
 
                 <!-- Modal -->
-                <div class="modal fade" id="deleteModal{{user.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                <div class="modal fade" id="deleteModal{{item1.po_id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
                     aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Delete {{user.username | title}}</h5>
+                                <h5 class="modal-title" id="exampleModalLabel">Delete {{item2}}</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                     aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                Are You Sure You Want to Delete {{user.username | title}} ??
+                                Are You Sure You Want to Delete  ??
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
-                                <form method="POST" action="{% url 'deleteuser' %}">
+                                <form method="POST" action="{% url 'deletepo' %}">
                                     {% csrf_token %}
-                                    <input type="hidden" value="{{user.id}}" name="userid">
+                                    <input type="hidden" value="{{item1.po_id}}" name="po_id">
                                     <button type="submit" class="btn btn-danger">Delete</button>
                                 </form>
                             </div>
@@ -121,7 +124,7 @@
                     </div>
                 </div>
             </tr>
-            {% endif %}
+            
             {% endfor %}
 
         </tbody>

@@ -407,41 +407,43 @@ class ProductUpdateForm(forms.ModelForm):
                   "unit", "price", "discount", "package_count", "wayrem_margin", "wayrem_abs_percent")
 
         widgets = {
-            'SKU' : forms.TextInput(attrs={'class': "form-control"}),
-            'product_name' : forms.TextInput(attrs={'class': "form-control"}),
-            'product_code' : forms.TextInput(attrs={'class': "form-control"}),
-            'feature_product' : forms.CheckboxInput(attrs={'class': "form-check-input", 'required': False}),
-            'product_deliverable' : forms.CheckboxInput(attrs={'class': "form-check-input", 'required': False}),
-            'date_of_mfg' : DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-            'date_of_exp' : DateInput(attrs={'class': 'form-control'}),
-            'mfr_name' : forms.TextInput(attrs={'class': "form-control"}),
-            'product_weight' : forms.NumberInput(attrs={'class': "form-control"}),
-            'price' : forms.NumberInput(attrs={'class': "form-control"}),
-            'discount' : forms.NumberInput(attrs={'class': "form-control"}),
-            'wayrem_margin' : forms.NumberInput(attrs={'class': "form-control"}),
-            'package_count' : forms.NumberInput(attrs={'class': "form-control"}),
-            'product_meta_key' : forms.Textarea(attrs={'class': "form-control", 'rows': '3'}),
-            'description' : forms.Textarea(attrs={'class': "form-control", 'rows': '3'}),
+            'SKU': forms.TextInput(attrs={'class': "form-control"}),
+            'product_name': forms.TextInput(attrs={'class': "form-control"}),
+            'product_code': forms.TextInput(attrs={'class': "form-control"}),
+            'feature_product': forms.CheckboxInput(attrs={'class': "form-check-input", 'required': False}),
+            'product_deliverable': forms.CheckboxInput(attrs={'class': "form-check-input", 'required': False}),
+            'date_of_mfg': DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'date_of_exp': DateInput(attrs={'class': 'form-control'}),
+            'mfr_name': forms.TextInput(attrs={'class': "form-control"}),
+            'product_weight': forms.NumberInput(attrs={'class': "form-control"}),
+            'price': forms.NumberInput(attrs={'class': "form-control"}),
+            'discount': forms.NumberInput(attrs={'class': "form-control"}),
+            'wayrem_margin': forms.NumberInput(attrs={'class': "form-control"}),
+            'package_count': forms.NumberInput(attrs={'class': "form-control"}),
+            'product_meta_key': forms.Textarea(attrs={'class': "form-control", 'rows': '3'}),
+            'description': forms.Textarea(attrs={'class': "form-control", 'rows': '3'}),
             'calories1': forms.NumberInput(attrs={'class': "form-control", 'step': 0.1, 'placeholder': 'Calories (kcal)'}),
-            'calories2' : forms.NumberInput(attrs={'class': "form-control", 'step': 0.1, 'placeholder': 'Calories (kcal)'}),
-            'calories3' : forms.NumberInput(attrs={'class': "form-control", 'step': 0.1, 'placeholder': 'Calories (kcal)'}),
-            'calories4' : forms.NumberInput(attrs={'class': "form-control", 'step': 0.1, 'placeholder': 'Calories (kcal)'}),            
-            'product_qty' : forms.NumberInput(attrs={'class': "form-control"}),
-            'image1' : forms.FileInput(attrs={'class': "form-control-file"}),
-            'image2' : forms.FileInput(attrs={'class': "form-control-file"}),
-            'image3' : forms.FileInput(attrs={'class': "form-control-file"}),
-            'image4' : forms.FileInput(attrs={'class': "form-control-file", 'required': False}),
-            'image5' : forms.FileInput(attrs={'class': "form-control-file", 'required': False}),
-            'product_category' : forms.SelectMultiple(attrs={'class': 'form-control', 'required': False}),
-            'supplier_name' : forms.SelectMultiple(attrs={'class': 'form-control', 'required': False}),
-            'unit' : forms.Select(attrs={'class': 'form-select'}),
-            'dis_abs_percent' : forms.Select(attrs={'class': 'form-select'}),            
-            'wayrem_abs_percent' : forms.Select(attrs={'class': 'form-select'}),        
-            'ingredients1' : forms.Select(attrs={'class': 'form-select'}),
-            'ingredients2' : forms.Select(attrs={'class': 'form-select'}),
-            'ingredients3' : forms.Select(attrs={'class': 'form-select'}),
-            'ingredients4' : forms.Select(attrs={'class': 'form-select'})
+            'calories2': forms.NumberInput(attrs={'class': "form-control", 'step': 0.1, 'placeholder': 'Calories (kcal)'}),
+            'calories3': forms.NumberInput(attrs={'class': "form-control", 'step': 0.1, 'placeholder': 'Calories (kcal)'}),
+            'calories4': forms.NumberInput(attrs={'class': "form-control", 'step': 0.1, 'placeholder': 'Calories (kcal)'}),
+            'product_qty': forms.NumberInput(attrs={'class': "form-control"}),
+            'image1': forms.FileInput(attrs={'class': "form-control-file"}),
+            'image2': forms.FileInput(attrs={'class': "form-control-file"}),
+            'image3': forms.FileInput(attrs={'class': "form-control-file"}),
+            'image4': forms.FileInput(attrs={'class': "form-control-file", 'required': False}),
+            'image5': forms.FileInput(attrs={'class': "form-control-file", 'required': False}),
+            'product_category': forms.SelectMultiple(attrs={'class': 'form-control', 'required': False}),
+            'supplier_name': forms.SelectMultiple(attrs={'class': 'form-control', 'required': False}),
+            'unit': forms.Select(attrs={'class': 'form-select'}),
+            'dis_abs_percent': forms.Select(attrs={'class': 'form-select'}),
+            'wayrem_abs_percent': forms.Select(attrs={'class': 'form-select'}),
+            'ingredients1': forms.Select(attrs={'class': 'form-select'}),
+            'ingredients2': forms.Select(attrs={'class': 'form-select'}),
+            'ingredients3': forms.Select(attrs={'class': 'form-select'}),
+            'ingredients4': forms.Select(attrs={'class': 'form-select'})
         }
+
+
 class POForm(forms.ModelForm):
     class Meta:
         model = PurchaseOrder
@@ -449,7 +451,6 @@ class POForm(forms.ModelForm):
 
         widgets = {
             'product_name': forms.Select(attrs={'class': 'form-select'}),
-            'product_qty': forms.NumberInput(attrs={'class': "form-control"}),
+            'product_qty': forms.NumberInput(attrs={'class': "form-control form-control-sm"}),
             'supplier_name': forms.Select(attrs={'class': 'form-select'})
         }
-

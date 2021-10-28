@@ -251,6 +251,7 @@ class Products(models.Model):
 class PurchaseOrder(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     po_id = models.UUIDField(default=uuid.uuid4)
+    po_name = models.CharField(max_length=250, null=True)
     product_name = models.ForeignKey(
         Products, on_delete=models.CASCADE, null=True)
     product_qty = models.IntegerField(null=False, default=1)

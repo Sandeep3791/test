@@ -68,6 +68,7 @@ urlpatterns = [
     path('pdf_user/', views.pdf_userlist, name='userpdf'),
     path('pdf_supplier/', views.pdf_supplier, name='supplierpdf'),
     path('pdf_product/', views.pdf_product, name='productpdf'),
+    path('pdf_category/', views.pdf_category, name='categorypdf'),
     #     ajax
     path('ajax/load-supplier/', views.load_supplier, name='ajax_load_supplier'),
 
@@ -78,7 +79,9 @@ urlpatterns = [
          views.update_user, name='updateuser'),
     path('update-supplier/<str:id>/',
          views.update_supplier, name='updatesupplier'),
-    path('inputIngredients/', views.inputIngredients, name='inputIngredients'),
+    path('view-po/<str:id>', views.viewpo, name='viewpo'),
+    path('delete-po/', views.DeletePO.as_view(),
+         name='deletepo'),
 
 
 

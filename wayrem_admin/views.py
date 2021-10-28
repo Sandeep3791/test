@@ -1015,6 +1015,29 @@ def pdf_product(request):
     return response
 
 
+def pdf_category(request):
+    query = 'SELECT id, name, category_image, description, created_at, updated_at FROM categories'
+    df = pd.read_sql_query(
+        query, connection)
+    df.to_html(
+        f'{BASE_DIR}/wayrem_admin/templates/pdf_category.html')
+    template = get_template('pdf_category.html')
+    html = template.render({'persons': query})
+    options = {
+        'page-size': 'Letter',
+        'encoding': "UTF-8",
+    }
+    display = Display(visible=0, size=(1024, 768))
+    try:
+        display.start()
+        pdf = pdfkit.from_string(html, False, options)
+        response = HttpResponse(pdf, content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename = "categories.pdf"'
+    finally:
+        display.stop()
+    return response
+
+
 def update_product(request, id=None, *args, **kwargs):
     # print(id)
     if request.method == "POST":
@@ -1061,13 +1084,15 @@ def create_purchase_order(request):
             else:
                 print("supplier")
                 supplier_name = inst_Supplier(request.POST['supplier_name'])
+                random_no = random.randint(1000, 99999)
                 po_id = uuid.uuid4()
+                po_name = "PO"+str(random_no)
                 for data in request.session['products']:
                     print(data)
                     product_instance = inst_Product(data[0])
                     product_qty = data[2]
                     product_order = PurchaseOrder(
-                        po_id=po_id, product_name=product_instance, product_qty=product_qty, supplier_name=supplier_name)
+                        po_id=po_id, po_name=po_name, product_name=product_instance, product_qty=product_qty, supplier_name=supplier_name)
                     product_order.save()
                 messages.success(
                     request, f"Purchase Order Sent to {supplier_name.username}")
@@ -1086,8 +1111,16 @@ class POList(View):
     @method_decorator(login_required(login_url='/'))
     def get(self, request, format=None):
         polist = PurchaseOrder.objects.values(
-            'po_id', 'supplier_name').distinct()
-        return render(request, self.template_name, {"userlist": polist})
+            'po_id', 'po_name', 'supplier_name').distinct()
+        pol = []
+        for i in polist:
+            obj = SupplierRegister.objects.filter(
+                id=i['supplier_name']).first()
+            pol.append(obj.username)
+        mylist = zip(polist, pol)
+        # polist = PurchaseOrder.objects.values_list('po_id').distinct()
+        # polist = PurchaseOrder.objects.distinct('po_id')
+        return render(request, self.template_name, {"userlist": mylist})
 
 
 def import_ingredients(request):
@@ -1166,5 +1199,14 @@ def update_supplier(request, id=None):
     return render(request, 'update_supplier.html', {'form': form, 'id': suppl.id})
 
 
-def inputIngredients(request):
-    return render(request, 'input_ingredients.html')
+class DeletePO(View):
+    def post(self, request):
+        po_id = request.POST.get('po_id')
+        po_obj = PurchaseOrder.objects.filter(po_id=po_id).all()
+        po_obj.delete()
+        return redirect('/po-list/')
+
+
+def viewpo(request, id=None):
+    po = PurchaseOrder.objects.filter(po_id=id).all()
+    return render(request, 'view_po.html', {"po": po})
