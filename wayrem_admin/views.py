@@ -1,3 +1,4 @@
+from io import BytesIO
 from sqlalchemy import create_engine
 from pyvirtualdisplay import Display
 from wayrem.settings import BASE_DIR
@@ -1210,3 +1211,16 @@ class DeletePO(View):
 def viewpo(request, id=None):
     po = PurchaseOrder.objects.filter(po_id=id).all()
     return render(request, 'view_po.html', {"po": po})
+
+
+def editpo(request, id=None):
+    po = PurchaseOrder.objects.filter(po_id=id).all()
+    if request.method == "POST":
+        count = 1
+        for item in po:
+            item.po_name = request.POST.get('poname')
+            item.product_qty = request.POST.get(f'prodqty{count}')
+            item.save()
+            count += 1
+        return redirect('/po-list/')
+    return render(request, 'edit_po.html', {"po": po})

@@ -80,6 +80,7 @@ urlpatterns = [
     path('update-supplier/<str:id>/',
          views.update_supplier, name='updatesupplier'),
     path('view-po/<str:id>', views.viewpo, name='viewpo'),
+    path('edit-po/<str:id>', views.editpo, name='editpo'),
     path('delete-po/', views.DeletePO.as_view(),
          name='deletepo'),
 
