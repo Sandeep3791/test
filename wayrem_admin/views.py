@@ -1,4 +1,3 @@
-from io import BytesIO
 from sqlalchemy import create_engine
 from pyvirtualdisplay import Display
 from wayrem.settings import BASE_DIR
@@ -27,13 +26,9 @@ from django.contrib.auth import update_session_auth_hash
 from django.utils.translation import ugettext_lazy as _
 from datetime import datetime
 import uuid
-from django.http import request, HttpResponse
-from django.contrib.auth.models import Permission
+from django.http import HttpResponse
 from wayrem_admin.decorators import role_required
-from django.http import HttpResponseRedirect
-from django.urls import reverse
 import json
-from .jsonSession import DecimalEncoder
 from django.db import connection
 # Create your views here.
 

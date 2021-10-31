@@ -1,9 +1,8 @@
 # from typing_extensions import Required
 from django.db import models
 from django.contrib.auth.models import AbstractUser
-from django.db.models.base import Model
 from django.utils.translation import ugettext_lazy as _
-from datetime import datetime, timezone
+from datetime import datetime
 import uuid
 from multiselectfield import MultiSelectField
 
@@ -208,44 +207,6 @@ class Products(models.Model):
 
     class Meta:
         db_table = 'product_master'
-    # image = models.ImageField(upload_to='images/', null=True)
-
-
-# class PurchaseOrder(models.Model):
-#     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-#     supplier_id	= models.ForeignKey(Supplier, on_delete=models.DO_NOTHING, null=True, blank=True)
-#     product_id	= models.ForeignKey(Supplier, on_delete=models.DO_NOTHING, null=True, blank=True)
-#     product_name = models.CharField(max_length=500, null=True)
-#     quanity	= models.IntegerField(max_length=100)
-#     unit_price = models.models.FloatField(max_length=500)
-#     order_date = models.DateTimeField()
-
-# class CustomerProfile(models.Model):
-#     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-#     customer_name = models.CharField(max_length=500, null=True)
-#     email_id = models.EmailField(max_length=50)
-#     contact_no = models.CharField(max_length=50)
-#     address = models.CharField(max_length=500, null=True)
-#     password = models.CharField(max_length=250)
-#     profile_pic = models.ImageField(upload_to='images/', blank=True)
-
-# class CustomerOrder(models.Model):
-#     order_id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-#     customer_id = models.ForeignKey(CustomerProfile, on_delete=models.DO_NOTHING, null=True, blank=True)
-#     product_id = models.ForeignKey(Products, on_delete=models.DO_NOTHING, null=True, blank=True)
-#     quantity = models.IntegerField(max_length=500)
-#     order_at = models.DateTimeField(default=datetime.now())
-#     product_price = models.FloatField(max_length=500)
-
-# class Finance(models.Model):
-#     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-#     order_id = models.ForeignKey(CustomerOrder, on_delete=models.DO_NOTHING, null=True, blank=True)
-#     amount = models.FloatField(max_length=500)
-#     payment_method = models.CharField(max_length=500)
-
-# class Reports(models.Model):
-#     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-#     reports = models.CharField(max_length=500)
 
 
 class PurchaseOrder(models.Model):
