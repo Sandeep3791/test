@@ -1227,3 +1227,19 @@ def editpo(request, id=None):
             count += 1
         return redirect('/po-list/')
     return render(request, 'edit_po.html', {"po": po})
+
+def supplier_details(request, id=None):
+    suppl = SupplierRegister.objects.filter(id=id).first()
+    return render(request, 'supplier_popup.html', {'suppldata': suppl})
+
+def user_details(request, id=None):
+    user = CustomUser.objects.filter(id=id).first()
+    return render(request, 'user_popup.html', {'userdata': user})
+
+def category_details(request, id=None):
+    cate = Categories.objects.filter(id=id).first()
+    return render(request, 'category_popup.html', {'catedata': cate})
+
+def product_details(request, id=None):
+    prod = Products.objects.filter(id=id).first()
+    return render(request, 'View_product.html', {'proddata':prod})

@@ -50,6 +50,11 @@ urlpatterns = [
     path('delete-product/', views.DeleteProduct.as_view(),
          name='deleteproduct'),
     #     path('create-po2/', views.create_po2, name='createpo2'),
+    path('supplier-details/<str:id>/', views.supplier_details, name='supplierdetails'),
+    path('user-details/<str:id>/', views.user_details, name='userdetails'),
+    path('category-details/<str:id>/', views.category_details, name='categorydetails'),
+    path('product-details/<str:id>', views.product_details, name='productdetails'),
+
 
 
     #   Roles CRUD urls start-------------------------

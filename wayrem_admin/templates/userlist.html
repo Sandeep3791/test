@@ -118,6 +118,9 @@
                     <a type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{user.id}}">
                         <i class="fas fa-trash-alt text-danger"></i>
                     </a>
+                     <a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'userdetails' user.id %}">
+                        <i class="mx-1 fas fa-eye text-success" style="font-size:15px;"></i>
+                    </a>
                     {% else %}
                     No Permission
                     {% endif %}

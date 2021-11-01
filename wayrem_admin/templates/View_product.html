@@ -1,0 +1,249 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %} Product {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+
+
+<!-- <div class="subheader row pe-4 ps-4 mt-5">
+    <div class="row add_btn col-xl-4 col-lg-4 col-md-5 d-flex align-items-center">
+        <div class="col">
+            <button class="button button1 mt-2 export_file">Export to pdf</button>
+        </div>
+    </div>
+
+    <div class="col-xl-8 col-lg-8 col-12">
+        <div class="row d-flex align-items-center">
+            <div class="col-xl-4 col-lg-3 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 " style="height:40px;">
+
+                <label class="subadmin_search d-flex align-items-center">
+                    <input class="table_searchbar" type="search" placeholder="Search">
+
+                   </label>
+
+            </div>
+            <div class="col-xl-4 col-md-4">
+                <select class="form-select form-select-md filter_select" aria-label=".form-select-md example">
+                <option selected="">All</option>
+                <option value="1">...</option>
+                <option value="2">...</option>
+                <option value="3">...</option>
+              </select>
+            </div>
+            <div class="col-xl-4 col-lg-5 col-md-5"><a class="btn w-100 anchor_btn ps-0 pe-0" href="{% url 'createcategory' %}">
+                <button class="btn col-sm-12 col-md-12 col-12 create_new">Create New category</button>
+            </a></div>
+        </div>
+
+    </div>
+
+</div>
+
+
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="fas fa-comment-dots" {% endif %}> {{ message }}</li>
+        {% endfor %}
+</ul>
+{% endif %}
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4">
+    <table class="table table-dark text-center">
+        <thead>
+            <tr>
+                <th scope="col">Sr.No.</th>
+                <th scope="col">Category Name</th>
+                <th scope="col">Category Image</th>
+                <th scope="col">Description</th>
+                <th scope="col">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cate in categorieslist %}
+          
+            <tr>
+                <th scope="row">{{forloop.counter}}</th>
+                <td>{{cate.name}}</td>
+                <td>
+                {% if cate.category_image %}
+                <img src="{{cate.category_image.url}}" style="height:45px">
+                {% else %}
+                No Image
+                {% endif %}
+                </td>
+                <td>{{cate.description}}</td>     
+                <td><a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'updatecategory' cate.id %}">
+                    <i class="fas fa-edit text-white"></i>
+                </a> <a type="button" class="btn btn-sm" data-bs-toggle="modal"
+                        data-bs-target="#deleteModal{{cate.id}}">
+                        <i class="fas fa-trash-alt text-danger"></i>
+                    </a></td> 
+  
+                <div class="modal fade" id="deleteModal{{cate.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Delete {{cate.name | title}}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                Are You Sure You Want to Delete {{cate.name | title}} ??
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+                                <form method="POST" action="{% url 'deletecategories' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" value="{{cate.id}}" name="category_id">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </tr>
+            {% endfor %}
+
+        </tbody>
+    </table>
+
+</div> -->
+
+
+<div class="container mt-5">
+    
+    <div class="row rounded p-4 card_shadow bg-white">
+        <div class="col-xl-4 col-lg-4   other_info view_border">
+            <div class="">
+                <div class="row p-2">
+                    <img src="{{proddata.image1.url}}" alt="">
+                </div>
+            </div>
+        </div>
+        <!-- <div class="col-xl-1 p-0"></div> -->
+        <div class="col-xl-8 col-lg-8 d-flex other_info">
+            <div class="row">
+                <div class="col-xl-3 text_value">
+                    <label for="">SKU:
+                    </label>
+                    <span class="">{{proddata.SKU}}</span>
+                </div>
+                <div class="col-xl-3 text_value">
+                    <label for="">Product Code
+                    </label>
+                    <span class="">{{proddata.product_code}}</span>
+                </div>
+                <div class="col-xl-3 text_value">
+                    <label for="">Product Name</label>
+                    <span class="">{{proddata.product_name}}</span>
+                </div> 
+                <div class="col-xl-3 text_value">
+                    <label for="">Feature Product</label>
+                    <span class="">{{proddata.feature_product}}</span>
+                </div>
+                <div class="col-xl-3 text_value">
+                    <label for="">Product Deliverable</label>
+                    <span class="">{{proddata.product_deliverable}}</span>
+                </div>
+                <div class="col-xl-3 text_value">
+                    <label for="">Date Of Manufacturing</label>
+                    <span class="">{{proddata.date_of_mfg}}</span>
+                </div>
+                <div class="col-xl-3 text_value">
+                    <label for="">Date of Expire </label>
+                    <span class="">{{proddata.date_of_exp}}</span>
+                </div>
+                <div class="col-xl-3 text_value">
+                    <label for="">Manufacturer Name</label>
+                    <span class="">{{proddata.mfr_name}}</span>
+                </div>
+                <div class="col-xl-3 text_value">
+                    <label for="">Supplier Name </label>
+                    <span class="">{% for i in proddata.supplier_name.all%}{{i}}{% endfor %}</span>
+                </div>
+                <div class="col-xl-3 text_value">
+                    <label for="">Product Weight</label>
+                    <span class="">{{proddata.product_weight}}{{proddata.unit}}</span>
+                </div>
+                <div class="col-xl-3 text_value">
+                    <label for="">Price </label>
+                    <span class="">{{proddata.price}}</span>
+                </div>
+                <div class="col-xl-3 text_value">
+                    <label for="">Discount</label>
+                    <span class="">{{proddata.discount}}{{proddata.dis_abs_percent}}</span>
+                </div>
+                <div class="col-xl-3 text_value">
+                    <label for="">Wayrem Margin</label>
+                    <span class="">{{proddata.wayrem_margin}}{{proddata.wayrem_abs_percent}}</span>
+                </div>
+                <div class="col-xl-3 text_value">
+                    <label for="">Package Count</label>
+                    <span class="">{{proddata.package_count}}</span>
+                </div>
+                <div class="col-xl-3 text_value">
+                    <label for="">Product Meta Key </label>
+                    <span class="">{{proddata.product_meta_key}}</span>
+                </div>
+                <div class="col-xl-3 text_value">
+                    <label for="">Price </label>
+                    <span class="">{{proddata.price}}</span>
+                </div>
+                <div class="col-xl-3 text_value">
+                    <label for="">Product QTY</label>
+                    <span class="">{{proddata.product_qty}}</span>
+                </div>
+                <!-- <div class="col-xl-12 text_value">
+                    <label for="">Description </label>
+                    <span class="">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,</span>
+                </div>
+                <div class="col-xl-12 text_value">
+                    <label for="">Ingredients</label>
+                    <span class="">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,</span>
+                </div>
+                <div class="col-xl-12 text_value">
+                    <label for="">Nutrition </label>
+                    <span class="">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,</span>
+                </div>
+                <div class="col-xl-12 text_value">
+                    <label for="">Calories</label>
+                    <span class="">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s,</span>
+                </div> -->
+
+            </div>
+        </div>
+        <div class="row ps-5 pe-5">
+            <div class="col-xl-12 text_value">
+                <label for="">Description </label>
+                <span class="">{{proddata.description}}</span>
+            </div>
+            <div class="col-xl-12 text_value">
+                <label for="">Ingredients</label>
+                <span class="">{{proddata.ingredients1}}|{{proddata.ingredients2}}|{{proddata.ingredients3}}|{{proddata.ingredients4}}</span>
+            </div>                    
+            </div>
+        </div>
+    </div>
+
+    
+
+</div>
+
+<style>
+    .text_value span{
+        color: rgb(126, 126, 126);
+    }
+</style>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

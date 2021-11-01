@@ -100,9 +100,8 @@
                 <td>{{prod.product_code}}</td>                
 
                 <td>{{prod.product_name}}</td>
-                <td>{% for i in prod.product_category.all %}
-                {{i}}, 
-                {% endfor %}</td>
+                {% comment %} {% for i in proddata.supplier_name.all%}{{i}}{% endfor %} {% endcomment %}
+                <td>{% for i in prod.product_category.all%}{{i}}{% endfor %}</td>
                 <td>{{prod.feature_product}}</td>
                 <td>{{prod.product_deliverable}}</td>
                 <td>{{prod.product_qty}}</td>
@@ -113,7 +112,11 @@
                 </a> <a type="button" class="btn btn-sm" data-bs-toggle="modal"
                         data-bs-target="#deleteModal{{prod.id}}">
                         <i class="fas fa-trash-alt text-danger"></i>
-                    </a></td> 
+                    </a>
+                    <a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'productdetails' prod.id %}">
+                        <i class="mx-1 fas fa-eye text-success" style="font-size:15px;"></i>
+                    </a>
+                    </td> 
                 <!-- Modal -->
                 <div class="modal fade" id="deleteModal{{prod.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
                     aria-hidden="true">

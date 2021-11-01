@@ -103,7 +103,11 @@
                 </a> <a type="button" class="btn btn-sm" data-bs-toggle="modal"
                         data-bs-target="#deleteModal{{cate.id}}">
                         <i class="fas fa-trash-alt text-danger"></i>
-                    </a></td> 
+                    </a>
+                    <a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'categorydetails' cate.id %}">
+                    <i class="mx-1 fas fa-eye text-success" style="font-size:15px;"></i>
+                </a>
+                    </td> 
                 <!-- Modal -->
                 <div class="modal fade" id="deleteModal{{cate.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
                     aria-hidden="true">
