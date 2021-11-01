@@ -73,7 +73,9 @@
                                     <!-- Form -->
                                     <div class="col-lg-6">
                                         <div class="form-group mb-4">
-                                            <label for="name">Weight</label>
+                                            <label for="name">Weight <span class="text-danger">*</span><span class="text-danger"><em> {{form.product_weight.errors | striptags}}
+                                                </em>
+                                            </span></label>
                                             <div class="input-group first">   
                                              {{form.product_weight}} 
                                                {{form.unit}}
@@ -87,14 +89,13 @@
                                     <!-- Form -->
                                     <div class="col-lg-6">
                                         <div class="form-group mb-4">
-                                            <label for="name">Price</label>
+                                            <label for="name">Price <span class="text-danger">*</span><span class="text-danger"><em> {{form.price.errors | striptags}}
+                                                </em>
+                                            </span></label>
                                             <div class="input-group">   
                                                 {{form.price}}
                                             </div>
-                                            <div class="input-group">
-                                                <span class="text-danger"><em> {{form.image3.errors | striptags}}
-                                                    </em></span>
-                                            </div>
+                                           
                                             <span class="text-error"></span>
                                         </div>
                                     </div>
@@ -102,7 +103,9 @@
                                     <!-- Form -->
                                     <div class="col-lg-6">
                                         <div class="form-group mb-4">
-                                            <label for="name">Discount</label>
+                                            <label for="name">Discount <span class="text-danger">*</span><span class="text-danger"><em> {{form.discount.errors | striptags}}
+                                                </em>
+                                            </span></label>
                                             <div class="input-group first">   
                                                 {{form.discount}}
                                                 {{form.dis_abs_percent}}
@@ -132,17 +135,15 @@
                                     <!-- Form -->
                                     <div class="col-lg-6">
                                         <div class="form-group mb-4">
-                                            <label for="image">Package Count</label>
+                                            <label for="image">Package Count <span class="text-danger">*</span><span class="text-danger"><em> {{form.package_count.errors | striptags}}
+                                                </em>
+                                            </span></label>
                                             <div class="input-group">
                                                 {% comment %} <span class="input-group-text" id="product_code"><span
                                                         class="fas fa-lock"></span></span> {% endcomment %}
                                                 {{form.package_count}}
                                             </div>
-                                            <div class="input-group">
-                                                <span class="text-danger"> <em> {{form.product_name.errors | striptags}}
-                                                    </em> </span>
-                                            </div>
-                                            <span class="text-error"></span>
+                                           
                                         </div>
                                     </div>
                                     <!-- End of Form -->
@@ -152,7 +153,9 @@
                                    <!-- Form -->
                                     <div class="col-lg-12">
                                         <div class="form-group mb-4">
-                                            <label for="name">Product Meta Key</label>
+                                            <label for="name">Product Meta Key <span class="text-danger">*</span><span class="text-danger"><em> {{form.product_meta_key.errors | striptags}}
+                                                </em>
+                                            </span></label>
                                             <div class="input-group">
                                                 {{form.product_meta_key}}
                                             </div>

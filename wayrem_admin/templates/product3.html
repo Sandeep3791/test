@@ -131,7 +131,9 @@
                       <!-- Form -->
                                     <div class="col-lg-6">
                                         <div class="form-group mb-4">
-                                            <label for="name">Product QTY</label>
+                                            <label for="name">Product QTY <span class="text-danger">*</span><span class="text-danger"><em> {{form.product_qty.errors | striptags}}
+                                                </em>
+                                            </span></label>
                                             <div class="input-group">   
                                                 {{form.product_qty}}
                                             </div>
@@ -147,11 +149,12 @@
                                     <!-- Form -->
                                     <div class="col-lg-12">
                                         <div class="form-group mb-4">
-                                            <label for="name">Description</label>
+                                            <label for="name">Description <span class="text-danger"><em> {{form.description.errors | striptags}}
+                                                </em>
+                                            </span></label>
                                             <div class="input-group">   
                                                {{form.description}}
                                             </div>
-                                           
                                         </div>
                                     </div>
                                     <!-- End of Form -->

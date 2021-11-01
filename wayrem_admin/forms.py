@@ -296,15 +296,15 @@ class ProductFormTwo(forms.Form):
 
 class ProductFormThree(forms.Form):
     description = forms.CharField(
-        widget=forms.Textarea(attrs={'class': "form-control", 'rows': '3'}))
+        widget=forms.Textarea(attrs={'class': "form-control", 'rows': '3'}), required=False)
     calories1 = forms.DecimalField(widget=forms.NumberInput(
-        attrs={'class': "form-control", 'step': 0.1, 'placeholder': 'Calories (kcal)'}))
+        attrs={'class': "form-control", 'step': 0.1, 'placeholder': 'Calories (kcal)'}), required=False)
     calories2 = forms.DecimalField(widget=forms.NumberInput(
-        attrs={'class': "form-control", 'step': 0.1, 'placeholder': 'Calories (kcal)'}))
+        attrs={'class': "form-control", 'step': 0.1, 'placeholder': 'Calories (kcal)'}), required=False)
     calories3 = forms.DecimalField(widget=forms.NumberInput(
-        attrs={'class': "form-control", 'step': 0.1, 'placeholder': 'Calories (kcal)'}))
+        attrs={'class': "form-control", 'step': 0.1, 'placeholder': 'Calories (kcal)'}), required=False)
     calories4 = forms.DecimalField(widget=forms.NumberInput(
-        attrs={'class': "form-control", 'step': 0.1, 'placeholder': 'Calories (kcal)'}))
+        attrs={'class': "form-control", 'step': 0.1, 'placeholder': 'Calories (kcal)'}), required=False)
     # nutrition = forms.CharField(widget=forms.TextInput(attrs={'class': "form-control"}))
     product_qty = forms.IntegerField(
         widget=forms.NumberInput(attrs={'class': "form-control"}))

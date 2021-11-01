@@ -101,7 +101,7 @@
                                     <!-- Form -->
                                     <div class="col-lg-6">
                                         <div class="form-group mb-4">
-                                            <label for="price">Product Code <span class="text-danger"> <em> {{form.product_meta_key.errors | striptags}}
+                                            <label for="price">Product Code <span class="text-danger">*</span><span class="text-danger"> <em> {{form.product_code.errors | striptags}}
                                             </em> </span></label>
                                             <div class="input-group">
                                                 
@@ -115,7 +115,7 @@
                                      <div class="col-lg-6">
                                         <div class="form-group mb-4">
                                         
-                                            <label for="description">Product Category <span class="text-danger">*</span> <span class="text-danger">
+                                            <label for="description">Product Category  <span class="text-danger">
                                                 <em> {{form.product_category.errors | striptags}}
                                                 </em>
                                             </span></label>
@@ -184,7 +184,7 @@
                                     <div class="col-lg-6">
                                         <div class="form-group mb-4">
 
-                                         <label for="description">Supplier Name<span class="text-danger">*</span> <span class="text-danger"><em> {{form.supplier_name.errors | striptags}}
+                                         <label for="description">Supplier Name <span class="text-danger"><em> {{form.supplier_name.errors | striptags}}
                                                 </em>
                                             </span></label>
                                             <div class="input-group">

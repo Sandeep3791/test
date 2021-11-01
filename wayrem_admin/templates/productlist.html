@@ -100,7 +100,9 @@
                 <td>{{prod.product_code}}</td>                
 
                 <td>{{prod.product_name}}</td>
-                <td>{{prod.product_category}}</td>
+                <td>{% for i in prod.product_category.all %}
+                {{i}}, 
+                {% endfor %}</td>
                 <td>{{prod.feature_product}}</td>
                 <td>{{prod.product_deliverable}}</td>
                 <td>{{prod.product_qty}}</td>

@@ -169,14 +169,14 @@ class Products(models.Model):
         Ingredients, on_delete=models.DO_NOTHING, related_name='Products3', null=True, blank=True)
     ingredients4 = models.ForeignKey(
         Ingredients, on_delete=models.DO_NOTHING, related_name='Products4', null=True, blank=True)
-    calories1 = models.DecimalField(
-        max_digits=20, decimal_places=2, null=True, blank=True)
-    calories2 = models.DecimalField(
-        max_digits=20, decimal_places=2, null=True, blank=True)
-    calories3 = models.DecimalField(
-        max_digits=20, decimal_places=2, null=True, blank=True)
-    calories4 = models.DecimalField(
-        max_digits=20, decimal_places=2, null=True, blank=True)
+    calories1 = models.CharField(
+        max_length=25, null=True, blank=True)
+    calories2 = models.CharField(
+        max_length=25, null=True, blank=True)
+    calories3 = models.CharField(
+        max_length=25, null=True, blank=True)
+    calories4 = models.CharField(
+        max_length=25, null=True, blank=True)
     nutrition = models.CharField(max_length=20, null=True, blank=True)
     product_qty = models.IntegerField(null=True, default=1)
     # ---------------------------------Third slide model-----------------------------------------------------------

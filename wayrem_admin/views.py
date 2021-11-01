@@ -85,7 +85,7 @@ class LoginView(View):
             messages.error(request, "User not found!")
             return redirect('/')
         if not check_password(password, user.password):
-            messages.error(request, "Incorrect Password!")
+            messages.error(request, "Invalid credentials. Please try again!")
             return redirect('/')
             # raise AuthenticationFailed("incorrect Password!")
 
@@ -568,15 +568,21 @@ def delSession(request):
 
 
 def barcodeDetail(code):
+    # headers = {
+    #     'Content-Type': 'application/json',
+    #     'Accept': 'application/json',
+    #     'Accept-Encoding': 'gzip,deflate',
+    #     'user_key': 'only_for_dev_or_pro',
+    #     'key_type': '3scale'
+    # }
     headers = {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        'Accept-Encoding': 'gzip,deflate',
-        'user_key': 'only_for_dev_or_pro',
-        'key_type': '3scale'
+        'x-rapidapi-host': "barcode-lookup.p.rapidapi.com",
+        # 'x-rapidapi-key': "2ppq23rl3qiilkkc0k315y1ft3ytxw"
     }
+    # resp = requests.get(
+    #     f'https://api.upcitemdb.com/prod/trial/lookup?upc={code}', headers=headers)
     resp = requests.get(
-        f'https://api.upcitemdb.com/prod/trial/lookup?upc={code}', headers=headers)
+        f'https://api.barcodelookup.com/v3/products?barcode={code}&formatted=y&key=2ppq23rl3qiilkkc0k315y1ft3ytxw', headers=headers)
     data = json.loads(resp.text)
     return data
 
@@ -586,14 +592,16 @@ def inputBar(request):
         delSession(request)
         user_code = request.POST.get('code')
         data = barcodeDetail(user_code)
-
+# data['products'][0]['barcode_number']
         try:
-            request.session['SKU'] = data['items'][0]['ean']
-            request.session['product_name'] = data['items'][0]['title']
-            request.session['description'] = data['items'][0]['description']
-            request.session['model'] = data['items'][0]['model']
-            request.session['weight'] = data['items'][0]['weight']
-            request.session['price'] = data['items'][0]['price']
+            request.session['SKU'] = data['products'][0]['barcode_number']
+            request.session['product_name'] = data['products'][0]['title']
+            request.session['description'] = data['products'][0]['description']
+            request.session['model'] = data['products'][0]['model']
+            request.session['weight'] = data['products'][0]['weight']
+            request.session['mfr_name'] = data['products'][0]['manufacturer']
+            # request.session['product_code'] = data['products'][0]['asin']
+            request.session['price'] = data['products'][0]['price']
         except:
             pass
         return redirect('/product-view-one/')
@@ -730,12 +738,12 @@ def product_view_three(request):
             calories2 = form.cleaned_data['calories2']
             calories3 = form.cleaned_data['calories3']
             calories4 = form.cleaned_data['calories4']
-            request.session['calories1'] = float(calories1)
-            request.session['calories2'] = float(calories2)
+            request.session['calories1'] = str(calories1)
+            request.session['calories2'] = str(calories2)
             # request.session['calories2'] = json.dumps(
             # calories2, cls=DecimalEncoder)
-            request.session['calories3'] = float(calories3)
-            request.session['calories4'] = float(calories4)
+            request.session['calories3'] = str(calories3)
+            request.session['calories4'] = str(calories4)
             request.session['ingredients1'] = form.cleaned_data['ingredients1']
             request.session['ingredients2'] = form.cleaned_data['ingredients2']
             request.session['ingredients3'] = form.cleaned_data['ingredients3']
