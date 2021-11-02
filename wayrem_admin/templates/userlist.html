@@ -83,7 +83,7 @@ endcomment %}
 <table class="table  text-center" id="filtertable">
     <thead class="table-dark ">
         <tr>
-            <th scope="col">Sr.No.</th>
+            <th scope="col">S.No.</th>
             <th scope="col">Username</th>
             <th scope="col">Email</th>
             <th scope="col">Contact</th>
@@ -106,9 +106,9 @@ endcomment %}
             <td>
                 {% if 'User Edit' in request.user.role.permission or request.user.is_superuser %}
                 {% if user.is_active %} <a href="{% url 'activeblock' user.id %}"
-                    class="badge rounded-pill bg-success "><i class="fas fa-toggle-on"></i> Active</a> {% else %} <a
-                    href="{% url 'activeblock' user.id %}" class="badge rounded-pill bg-danger"><i
-                        class="fas fa-toggle-off"></i> Blocked</a>
+                    class="btn-sm text-success"><i class="fas fa-toggle-on text-success"> Active</i></a> {% else %} <a
+                    href="{% url 'activeblock' user.id %}" class="btn-sm text-danger"><i
+                        class="fas fa-toggle-off"> Blocked</i></a>
                 {% endif %}
                 {% else %}
                 No Permission
@@ -141,7 +141,7 @@ endcomment %}
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            Are You Sure You Want to Delete {{user.username | title}} ??
+                            Are you sure want to delete {{user.username | title}} ??
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>

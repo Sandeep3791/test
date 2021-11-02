@@ -19,9 +19,9 @@
                    
                     <div class="col-md-6 mb-3">
                         <div>
-                            <label for="name">Ingredients Name</label>
+                            <label for="name">Ingredients Name <span class="text-danger">*</span> <span class="text-danger"><em> {{form.ingredients_name.errors | striptags}}
+                            </em></span></label>
                             {{form.ingredients_name}}
-                            {{form.ingredients_name.errors}}
                             <!-- <input class="form-control" id="first_name" type="text" placeholder="Enter your first name" required> -->
                         </div>
                     </div>

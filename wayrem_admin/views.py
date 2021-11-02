@@ -1,3 +1,4 @@
+import os
 from sqlalchemy import create_engine
 from pyvirtualdisplay import Display
 from wayrem.settings import BASE_DIR
@@ -5,6 +6,7 @@ import pandas as pd
 from django.template.loader import get_template
 import pdfkit
 import requests
+from pymysql import connect
 from .forms import *
 from django.contrib.auth.hashers import make_password, check_password
 from django.shortcuts import render, redirect, get_object_or_404
@@ -575,16 +577,19 @@ def barcodeDetail(code):
     #     'user_key': 'only_for_dev_or_pro',
     #     'key_type': '3scale'
     # }
-    headers = {
-        'x-rapidapi-host': "barcode-lookup.p.rapidapi.com",
-        # 'x-rapidapi-key': "2ppq23rl3qiilkkc0k315y1ft3ytxw"
-    }
-    # resp = requests.get(
-    #     f'https://api.upcitemdb.com/prod/trial/lookup?upc={code}', headers=headers)
-    resp = requests.get(
-        f'https://api.barcodelookup.com/v3/products?barcode={code}&formatted=y&key=2ppq23rl3qiilkkc0k315y1ft3ytxw', headers=headers)
-    data = json.loads(resp.text)
-    return data
+    try:
+        headers = {
+            'x-rapidapi-host': "barcode-lookup.p.rapidapi.com",
+            # 'x-rapidapi-key': "2ppq23rl3qiilkkc0k315y1ft3ytxw"
+        }
+        # resp = requests.get(
+        #     f'https://api.upcitemdb.com/prod/trial/lookup?upc={code}', headers=headers)
+        resp = requests.get(
+            f'https://api.barcodelookup.com/v3/products?barcode={code}&formatted=y&key=2ppq23rl3qiilkkc0k315y1ft3ytxw', headers=headers)
+        data = json.loads(resp.text)
+        return data
+    except:
+        pass
 
 
 def inputBar(request):
@@ -909,8 +914,9 @@ def update_ingredients(request, id=None, *args, **kwargs):
             user.save()
             print("Here")
             return redirect('/ingredients-list/')
-    user = Ingredients.objects.get(id=id)
-    form = IngredientsCreateForm(instance=user)
+    else:
+        user = Ingredients.objects.get(id=id)
+        form = IngredientsCreateForm(instance=user)
     return render(request, 'update_ingredients.html', {'form': form, 'id': user.id})
 
 
@@ -1072,6 +1078,9 @@ def create_purchase_order(request):
     if request.method == "POST":
         form = POForm(request.POST or None, request.FILES or None)
         if 'addMore' in request.POST:
+            if request.POST['product_name'] == "":
+                messages.error(request, "Please select a Product!")
+                return redirect("/purchase_order/")
             product_id = request.POST['product_name']
             product_qty = request.POST['product_qty']
             name = inst_Product(product_id)
@@ -1085,6 +1094,9 @@ def create_purchase_order(request):
             if request.POST['supplier_name'] == '':
                 messages.error(request, "Please Select Supplier!")
                 return render(request, "po_step1.html", {'form': form, 'po': request.session['products']})
+            if request.session['products'] == []:
+                messages.error(request, "Please select some Products!")
+                return redirect("/purchase_order/")
             else:
                 print("supplier")
                 supplier_name = inst_Supplier(request.POST['supplier_name'])
@@ -1100,7 +1112,7 @@ def create_purchase_order(request):
                     product_order.save()
                 messages.success(
                     request, f"Purchase Order Sent to {supplier_name.username}")
-                return redirect('/dashboard/')
+                return redirect('/po-list/')
         else:
             print("Invalid")
     else:
@@ -1127,7 +1139,7 @@ class POList(View):
         return render(request, self.template_name, {"userlist": mylist})
 
 
-def import_ingredients(request):
+def import_ingredients12(request):
     if request.method == "POST":
         file = request.FILES["myFileInput"]
         engine = create_engine(
@@ -1150,6 +1162,43 @@ def import_ingredients(request):
 
         df.to_sql('ingredients', engine, if_exists='append', index=False)
         return redirect('/ingredients-list/')
+    return redirect('/ingredients-list/')
+
+
+def import_ingredients(request):
+    if request.method == "POST":
+        try:
+            file = request.FILES["myFileInput"]
+            engine = create_engine(
+                "mysql+pymysql://root:root1234@localhost/wayrem_9.0?charset=utf8")
+            # df = pd.read_excel('files/ingredients.xlsx')
+            con = connect(user="root", password="root1234",
+                          host="localhost", database="wayrem_9.0")
+
+            df_ingredients = pd.read_sql('select * from ingredients', con)
+            df = pd.read_excel(file)
+            # df.columns = df.iloc[0]
+            # df = df.drop(0)
+            df = df[df.columns.dropna()]
+            df = df.fillna(0)
+            df3 = pd.merge(df_ingredients, df, how='outer', indicator='Exist')
+            df3 = df3.loc[df3['Exist'] != 'both']
+            ids = []
+            uuids = []
+
+            for id_counter in range(0, len(df3.index)):
+                ids.append(str(uuid.uuid4()))
+                df3['ingredients_status'] = 'Active'
+            for i in ids:
+                uuids.append((uuid.UUID(i)).hex)
+            df3['id'] = uuids
+            df3 = df3.drop('Exist', axis=1)
+
+            df3.to_sql('ingredients', engine, if_exists='append', index=False)
+            messages.success(request, "Ingredients imported successfully!")
+            return redirect('/ingredients-list/')
+        except:
+            messages.error(request, "Please select a valid file!")
     return redirect('/ingredients-list/')
 
 
@@ -1228,18 +1277,22 @@ def editpo(request, id=None):
         return redirect('/po-list/')
     return render(request, 'edit_po.html', {"po": po})
 
+
 def supplier_details(request, id=None):
     suppl = SupplierRegister.objects.filter(id=id).first()
     return render(request, 'supplier_popup.html', {'suppldata': suppl})
+
 
 def user_details(request, id=None):
     user = CustomUser.objects.filter(id=id).first()
     return render(request, 'user_popup.html', {'userdata': user})
 
+
 def category_details(request, id=None):
     cate = Categories.objects.filter(id=id).first()
     return render(request, 'category_popup.html', {'catedata': cate})
 
+
 def product_details(request, id=None):
     prod = Products.objects.filter(id=id).first()
-    return render(request, 'View_product.html', {'proddata':prod})
+    return render(request, 'View_product.html', {'proddata': prod})

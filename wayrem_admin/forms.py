@@ -35,7 +35,7 @@ class SubAdminForm(UserCreationForm):
     choices_role = choice
 
     role = forms.ChoiceField(choices=choices_role, widget=forms.Select(
-        attrs={'class': 'form-control'}))
+        attrs={'class': 'form-select'}))
 
     class Meta:
         model = CustomUser

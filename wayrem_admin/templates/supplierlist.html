@@ -82,7 +82,7 @@ endcomment %}
 <table class="table  text-center" id="filtertable">
     <thead class="table-dark">
         <tr>
-            <th scope="col">Sr.No.</th>
+            <th scope="col">S.No.</th>
             <th scope="col">Username</th>
             <th scope="col">Email</th>
 
@@ -100,9 +100,9 @@ endcomment %}
             <td>{{suppl.email}}</td>
 
             <td> {% if suppl.is_active %} <a href="{% url 'activeblocksupplier' suppl.id %}"
-                    class="badge rounded-pill bg-success "><i class="fas fa-toggle-on"></i> Active</a> {% else %} <a
-                    href="{% url 'activeblocksupplier' suppl.id %}" class="badge rounded-pill bg-danger"><i
-                        class="fas fa-toggle-off"></i> Blocked</a>
+                    class="btn-sm text-success"><i class="fas fa-toggle-on"> Active</i></a> {% else %} <a
+                    href="{% url 'activeblocksupplier' suppl.id %}" class="btn-sm text-danger"><i
+                        class="fas fa-toggle-off"> Blocked</i> </a>
                 {% endif %} </td>
             <td>
                 <a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'updatesupplier' suppl.id %}">
@@ -126,7 +126,7 @@ endcomment %}
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            Are You Sure You Want to Delete {{suppl.username | title}} ??
+                            Are you sure want to delete {{suppl.username | title}} ??
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
