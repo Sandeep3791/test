@@ -120,7 +120,8 @@ class SupplierRegister(models.Model):
 
 class Ingredients(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
-    ingredients_name = models.CharField(max_length=100, null=True, blank=True)
+    ingredients_name = models.CharField(
+        max_length=100, unique=True, null=True, blank=False)
     ingredients_status = models.CharField(
         max_length=10, choices=status, default='Active')
 

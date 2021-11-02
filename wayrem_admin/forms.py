@@ -35,7 +35,7 @@ class SubAdminForm(UserCreationForm):
     choices_role = choice
 
     role = forms.ChoiceField(choices=choices_role, widget=forms.Select(
-        attrs={'class': 'form-control'}))
+        attrs={'class': 'form-select'}))
 
     class Meta:
         model = CustomUser
@@ -353,7 +353,7 @@ class IngredientsCreateForm(forms.ModelForm):
         fields = ("ingredients_name", "ingredients_status",)
 
         widgets = {
-            'ingredients_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'ingredients_name': forms.TextInput(attrs={'class': 'form-control', 'minlength': 3}),
             'ingredients_status': forms.Select(attrs={'class': 'form-select'}),
         }
 

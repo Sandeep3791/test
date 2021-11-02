@@ -12,11 +12,15 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
 <script src="{% static 'assets/js/datatable.js' %}"></script>
 
-{% comment %} <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"> {% endcomment %}
-{% comment %} <link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,800&display=swap" rel="stylesheet"> {% endcomment %}
+{% comment %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"> {%
+endcomment %}
+{% comment %}
+<link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,800&display=swap"
+    rel="stylesheet"> {% endcomment %}
 
 
-   
+
 {% endblock head %}
 
 {% block content %}
@@ -29,7 +33,7 @@
 <!-- <div class="col-xl-4 col-lg-4 col-md-6 d-flex align-items-center"><span class="page_title mb-md-2" style="font-size: 28px; font-weight:600;">User</span>
 </div> -->
 
-<div class="subheader row pe-4 ps-4 mt-5" >
+<div class="subheader row pe-4 ps-4 mt-5">
     <div class="row add_btn col-xl-4 col-lg-4 col-md-5 d-flex align-items-center">
         <div class="col">
             <a href="{% url 'productpdf' %}" class="button button1 mt-2 export_file">Export to pdf</a>
@@ -41,22 +45,23 @@
             <div class="col-xl-4 col-lg-3 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 " style="height:40px;">
                 <!-- <input type="search" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Search"> -->
                 <label class="subadmin_search d-flex align-items-center">
-                    <input class="table_searchbar" type="search" placeholder="Search">
+                    <input class="table_searchbar" id="table_search" type="search" placeholder="Search">
                     <!-- <img src="images/Search.svg" alt=""> -->
-                   </label>
+                </label>
 
             </div>
             <div class="col-xl-4 col-md-4">
-                <select class="form-select form-select-md filter_select" aria-label=".form-select-md example">
-                <option selected="">All</option>
-                <option value="1">...</option>
-                <option value="2">...</option>
-                <option value="3">...</option>
-              </select>
+                <select class="form-select form-select-md filter_select" aria-label=".form-select-md example" disabled>
+                    <option selected="">All</option>
+                    <option value="1">...</option>
+                    <option value="2">...</option>
+                    <option value="3">...</option>
+                </select>
             </div>
-            <div class="col-xl-4 col-lg-5 col-md-5"><a class="btn w-100 anchor_btn ps-0 pe-0" href="{% url 'product' %}">
-                <button class="btn col-sm-12 col-md-12 col-12 create_new">Create New Product</button>
-            </a></div>
+            <div class="col-xl-4 col-lg-5 col-md-5"><a class="btn w-100 anchor_btn ps-0 pe-0"
+                    href="{% url 'product' %}">
+                    <button class="btn col-sm-12 col-md-12 col-12 create_new">Create New Product</button>
+                </a></div>
         </div>
 
     </div>
@@ -75,128 +80,107 @@
 {% endfor %}
 {% endif %}
 
-    <table class="table  text-center" id="filtertable">
-        <thead class="table-dark">
-            <tr>
-                <th scope="col">S. No.</th>
-                <th scope="col">SKU</th>                
-                <th scope="col">Product Code</th>
-                <th scope="col">Product Name</th>                
-                <th scope="col">Category Name</th>
-                <th scope="col">Feature Product</th>
-                <th scope="col">Product Deliverable</th>
-                <th scope="col">Product QTY</th>                
-                <th scope="col">Price</th>   
-                <th scope="col">Package Count</th>                
-                <th scope="col">Actions</th>                
-            </tr>
-        </thead>
-        <tbody>
-            {% for prod in productslist %}
-          
-            <tr>
-                <th scope="row">{{forloop.counter}}</th>
-                <td>{{prod.SKU}}</td>                
-                <td>{{prod.product_code}}</td>                
+<table class="table  text-center" id="filtertable">
+    <thead class="table-dark">
+        <tr>
+            <th scope="col">S.No.</th>
+            <th scope="col">SKU</th>
+            <th scope="col">Product Code</th>
+            <th scope="col">Product Name</th>
+            <th scope="col">Category Name</th>
+            <th scope="col">Feature Product</th>
+            <th scope="col">Product Deliverable</th>
+            <th scope="col">Product QTY</th>
+            <th scope="col">Price</th>
+            <th scope="col">Package Count</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for prod in productslist %}
 
-                <td>{{prod.product_name}}</td>
-                {% comment %} {% for i in proddata.supplier_name.all%}{{i}}{% endfor %} {% endcomment %}
-                <td>{% for i in prod.product_category.all%}{{i}}{% endfor %}</td>
-                <td>{{prod.feature_product}}</td>
-                <td>{{prod.product_deliverable}}</td>
-                <td>{{prod.product_qty}}</td>
-                <td>{{prod.price}}</td>
-                <td>{{prod.package_count}}</td>
-                <td><a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'updateproduct' prod.id %}">
+        <tr>
+            <th scope="row">{{forloop.counter}}</th>
+            <td>{{prod.SKU}}</td>
+            <td>{{prod.product_code}}</td>
+
+            <td>{{prod.product_name}}</td>
+            {% comment %} {% for i in proddata.supplier_name.all%}{{i}}{% endfor %} {% endcomment %}
+            <td>{% for i in prod.product_category.all%}{{i}}{% endfor %}</td>
+            <td>{{prod.feature_product}}</td>
+            <td>{{prod.product_deliverable}}</td>
+            <td>{{prod.product_qty}}</td>
+            <td>{{prod.price}}</td>
+            <td>{{prod.package_count}}</td>
+            <td><a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'updateproduct' prod.id %}">
+
                     <i class="fas fa-edit text-dark"></i>
                 </a> <a type="button" class="btn btn-sm" data-bs-toggle="modal"
-                        data-bs-target="#deleteModal{{prod.id}}">
-                        <i class="fas fa-trash-alt text-danger"></i>
-                    </a>
-                    <a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'productdetails' prod.id %}">
-                        <i class="mx-1 fas fa-eye text-success" style="font-size:15px;"></i>
-                    </a>
-                    </td> 
-                <!-- Modal -->
-                <div class="modal fade" id="deleteModal{{prod.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Delete {{prod.product_name | title}}</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                Are You Sure You Want to Delete {{prod.product_name | title}} ??
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
-                                <form method="POST" action="{% url 'deleteproduct' %}">
-                                    {% csrf_token %}
-                                    <input type="hidden" value="{{prod.id}}" name="product_id">
-                                    <button type="submit" class="btn btn-danger">Delete</button>
-                                </form>
-                            </div>
+                    data-bs-target="#deleteModal{{prod.id}}">
+                    <i class="fas fa-trash-alt text-danger"></i>
+                </a>
+                <a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'productdetails' prod.id %}">
+                    <i class="mx-1 fas fa-eye text-success" style="font-size:15px;"></i>
+                </a>
+            </td>
+            <!-- Modal -->
+            <div class="modal fade" id="deleteModal{{prod.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Delete {{prod.product_name | title}}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure want to delete {{prod.product_name | title}} ??
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+                            <form method="POST" action="{% url 'deleteproduct' %}">
+                                {% csrf_token %}
+                                <input type="hidden" value="{{prod.id}}" name="product_id">
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
                         </div>
                     </div>
                 </div>
-               
-            </tr>
-            {% endfor %}
-
-        </tbody>
-    </table>
-       </div>
-                </div>
             </div>
-        </div>
-    </div>
+
+        </tr>
+        {% endfor %}
+
+    </tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
 
 <script>
 
-$(document).ready( function () {
-    $('#filtertable').DataTable({
-        dom: 'rtip',
-        buttons: [
-            {
-                extend: 'collection',
-                text: 'Export',
-                className: ' btn-sm',
-                buttons: [
-                    {
-                        extend:    'copyHtml5',
-                        text:      '<i class="fas fa-copy"> COPY</i>',
-                        titleAttr: 'Copy'
-                    },
-                    {
-                        extend:    'excelHtml5',
-                        text:      '<i class="fas fa-file-excel"> EXCEL</i>',
-                        titleAttr: 'Excel'
-                    },
-                    {
-                        extend:    'csvHtml5',
-                        text:      '<i class="fas fa-file-csv"> CSV</i>',
-                        titleAttr: 'CSV'
-                    },
-                    
-                    {
-                        extend:    'pdfHtml5',
-                        text:      '<i class="fas fa-file-pdf"> PDF</i>',
-                        titleAttr: 'PDF'
-                    }
-                ]
-            },
-           
-        ],          
-        "oLanguage": {
-            "oPaginate": {
+    $(document).ready(function () {
+        oTable = $('#filtertable').DataTable({
+            dom: 'rtip',
+            "oLanguage": {
+                "oPaginate": {
                     "sNext": '<i class="fas fa-arrow-circle-right text-primary"></i>',
                     "sPrevious": '<i class="fas fa-arrow-circle-left text-primary"></i>'
                 }
-        },
+            },
+            "fnDrawCallback": function (oSettings) {
+                if (oSettings._iDisplayLength > oSettings.fnRecordsDisplay()) {
+                    $(oSettings.nTableWrapper).find('.dataTables_paginate').hide();
+                } else {
+                    $(oSettings.nTableWrapper).find('.dataTables_paginate').show();
+                }
+            }
+        });
+        $('#table_search').keyup(function () {
+            oTable.search($(this).val()).draw();
+        })
     });
-} );
 </script>
 
 {% endblock content %}
