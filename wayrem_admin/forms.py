@@ -170,7 +170,7 @@ class SupplierRegisterForm(forms.ModelForm):
 
         if password != password2:
             raise forms.ValidationError(
-                "password and confirm password does not match"
+                "Password and Confirm Password should be same."
             )
         return cleaned_data
 

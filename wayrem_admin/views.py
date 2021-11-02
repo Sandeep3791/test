@@ -152,6 +152,7 @@ class Forgot_Password(View):
 
     def post(self, request, *args, **kwargs):
         email = request.POST.get('email')
+        request.session['fpemail']=email
         user = CustomUser.objects.filter(email=email).first()
         if not user:
             messages.error(request, "Email Doesn't Exist!")
@@ -223,10 +224,12 @@ class Reset_Password(View):
     # serializer_class = ResetSerializer
 
     def get(self, request):
-        return render(request, 'reset-password.html', )
+        email = request.session.get('fpemail', None)
+        return render(request, 'reset-password.html', {'email': email})
 
     def post(self, request, *args, **kwargs):
-        email = request.POST.get('email')
+        # email = request.POST.get('email')
+        email = request.session.get('fpemail')
         print(email)
         otp = request.POST.get('otp')
         newpassword = request.POST.get('newpassword')
