@@ -353,7 +353,7 @@ class IngredientsCreateForm(forms.ModelForm):
         fields = ("ingredients_name", "ingredients_status",)
 
         widgets = {
-            'ingredients_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'ingredients_name': forms.TextInput(attrs={'class': 'form-control', 'minlength': 3}),
             'ingredients_status': forms.Select(attrs={'class': 'form-select'}),
         }
 
