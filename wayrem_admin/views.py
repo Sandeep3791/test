@@ -154,7 +154,7 @@ class Forgot_Password(View):
 
     def post(self, request, *args, **kwargs):
         email = request.POST.get('email')
-        request.session['fpemail']=email
+        request.session['fpemail'] = email
         user = CustomUser.objects.filter(email=email).first()
         if not user:
             messages.error(request, "Email Doesn't Exist!")
@@ -1172,11 +1172,15 @@ def import_ingredients(request):
     if request.method == "POST":
         try:
             file = request.FILES["myFileInput"]
+            # engine = create_engine(
+            #     "mysql+pymysql://root:root1234@localhost/wayrem_9.0?charset=utf8")
             engine = create_engine(
-                "mysql+pymysql://root:root@localhost/wayrem_v3?charset=utf8")
+                "mysql+pymysql://admin:Merlin007#@wayrem.c08qmktlafbu.us-east-1.rds.amazonaws.com/wayrem_v3?charset=utf8")
             # df = pd.read_excel('files/ingredients.xlsx')
-            con = connect(user="root", password="root",
-                          host="localhost", database="wayrem_v3")
+            # con = connect(user="root", password="root1234",
+            #               host="localhost", database="wayrem_9.0")
+            con = connect(user="admin", password="Merlin007",
+                          host="wayrem.c08qmktlafbu.us-east-1.rds.amazonaws.com", database="wayrem_v3")
 
             df_ingredients = pd.read_sql('select * from ingredients', con)
             df = pd.read_excel(file)
