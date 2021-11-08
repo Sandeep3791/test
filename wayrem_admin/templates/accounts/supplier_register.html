@@ -119,6 +119,8 @@
                                                 class="fas fa-unlock-alt"></span></span>
 
                                         {{form.password}}
+                                        <span class="input-group-text" id="cpassword"><i class="far fa-eye"
+                                                    id="togglePassword"></i></span>
                                         </div>
                                         <div class="input-group">
                                             <span class="text-danger"> {{form.password.errors | striptags}} </span>
@@ -134,8 +136,10 @@
                                     <label for="password">Confirm Password</label>
                                     <div class="input-group">
                                         <span class="input-group-text" id="cpassword"><span
-                                                class="fas fa-lock"></span></span>
+                                                class="fas fa-unlock-alt"></span></span>
                                         {{form.password2}}
+                                        <span class="input-group-text" id="cpassword"><i class="far fa-eye"
+                                                    id="toggleCPassword"></i></span>
                                     </div>
                                         <div class="input-group">
                                             <span class="text-danger"> {{form.password2.errors | striptags}} </span>
@@ -145,7 +149,7 @@
                                 </div>
                                 <!-- End of Form -->
                                <!-- Form -->
-                                <div class="col-lg-12">
+                                <div class="col-lg-6">
                                 <div class="form-group mb-4">
                                     <label for="password">Category</label>
                                     <div class="input-group">
@@ -180,4 +184,28 @@
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
-{% block javascripts %}{% endblock javascripts %}
+{% block javascripts %}
+
+<script>
+    const togglePassword = document.querySelector('#togglePassword');
+    const toggleCPassword = document.querySelector('#toggleCPassword');
+    const password = document.querySelector('#id_password');
+    const cpassword = document.querySelector('#id_password2');
+
+    togglePassword.addEventListener('click', function (e) {
+        // toggle the type attribute
+        const type = password.getAttribute('type') === 'password' ? 'text' : 'password';
+        password.setAttribute('type', type);
+        // toggle the eye slash icon
+        this.classList.toggle('fa-eye-slash');
+    });
+    toggleCPassword.addEventListener('click', function (e) {
+        // toggle the type attribute
+        const type = cpassword.getAttribute('type') === 'password' ? 'text' : 'password';
+        cpassword.setAttribute('type', type);
+        // toggle the eye slash icon
+        this.classList.toggle('fa-eye-slash');
+    });
+</script>
+
+{% endblock javascripts %}

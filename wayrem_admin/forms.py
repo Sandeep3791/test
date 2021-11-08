@@ -13,40 +13,29 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.db.models.query import QuerySet
 from django.forms import widgets
-from django.forms.fields import MultipleChoiceField
 from .models import *
 
 
 class SubAdminForm(UserCreationForm):
 
-    def choice():
-        obj = Roles.objects.all()
-        choice = [(r.id, r.role) for r in obj]
-        return choice
-
-    contact = forms.CharField(label='Contact',
-                              widget=forms.NumberInput(attrs={'class': 'form-control'}), required=True)
+    error_messages = {
+        "password_mismatch": "Password and Confirm Password should be same"
+    }
 
     password1 = forms.CharField(label='Password',
-                                widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+                                widget=forms.PasswordInput(attrs={'class': 'form-control eye'}, render_value=True))
     password2 = forms.CharField(
-        label='Confirm Password', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
-
-    choices_role = choice
-
-    role = forms.ChoiceField(choices=choices_role, widget=forms.Select(
-        attrs={'class': 'form-select'}))
+        label='Confirm Password', widget=forms.PasswordInput(attrs={'class': 'form-control eye'}, render_value=True))
 
     class Meta:
         model = CustomUser
-        fields = ("username", "email", "contact")
-
-        # role = forms.MultipleChoiceField(choices=Roles)
+        fields = ("username", "email", "contact", "role")
 
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
-            'contact': forms.NumberInput(attrs={'class': 'form-control'}),
+            'contact': forms.NumberInput(attrs={'class': 'form-control', 'minlength': 10}),
+            'role': forms.Select(attrs={'class': 'form-select'})
             # 'role': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
@@ -81,15 +70,15 @@ class ProfileUpdateForm(forms.ModelForm):
 class ChangePasswordForm(PasswordChangeForm):
     old_password = forms.CharField(
         widget=forms.PasswordInput(
-            attrs={'autocomplete': 'new-password', 'class': 'form-control'}),
+            attrs={'autocomplete': 'new-password', 'class': 'form-control'}, render_value=True),
     )
     new_password1 = forms.CharField(
         widget=forms.PasswordInput(
-            attrs={'autocomplete': 'new-password', 'class': 'form-control'}),
+            attrs={'autocomplete': 'new-password', 'class': 'form-control'}, render_value=True),
     )
     new_password2 = forms.CharField(
         widget=forms.PasswordInput(
-            attrs={'autocomplete': 'new-password', 'class': 'form-control'}),
+            attrs={'autocomplete': 'new-password', 'class': 'form-control'}, render_value=True),
     )
 
 
@@ -107,46 +96,9 @@ class CategoryCreateForm(forms.ModelForm):
         }
 
 
-# class ProductForm(forms.ModelForm):
-
-#     def get_category():
-#         obj = Categories.objects.all()
-#         choice = [(r.id, r.name) for r in obj]
-#         return choice
-
-#     choices_role = get_category
-
-#     category = forms.ChoiceField(choices=choices_role, widget=forms.Select(
-#         attrs={'class': 'form-select'}))
-
-#     class Meta:
-#         model = Products
-#         fields = ("name", "image", "price", "quantity",
-#                   "weight", "description", "provider")
-
-#         widgets = {
-#             'name': forms.TextInput(attrs={'class': 'form-control rounded-right', }),
-#             # 'category': forms.Select(attrs={'class': 'form-select'}),
-#             'image': forms.FileInput(attrs={'class': 'form-control'}),
-#             'price': forms.NumberInput(attrs={'class': 'form-control', }),
-#             'quantity': forms.NumberInput(attrs={'class': 'form-control', }),
-#             'weight': forms.NumberInput(attrs={'class': 'form-control', }),
-#             'description': forms.TextInput(attrs={'class': 'form-control', }),
-#             'provider': forms.TextInput(attrs={'class': 'form-control', }),
-#             'contact': forms.NumberInput(attrs={'class': 'form-control', }),
-#         }
-
-
-# class ProductUpdateForm(forms.ModelForm):
-#     class Meta:
-#         model = Products
-#         fields = ("id", "name", "image", "category", "price",
-#                   "quantity", "weight", "description", "provider")
-
-
 class SupplierRegisterForm(forms.ModelForm):
     password2 = forms.CharField(
-        label='Confirm Password', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+        label='Confirm Password', widget=forms.PasswordInput(attrs={'class': 'form-control'}, render_value=True))
 
     class Meta:
         model = SupplierRegister
@@ -158,7 +110,7 @@ class SupplierRegisterForm(forms.ModelForm):
             'username': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
             # 'contact': forms.NumberInput(attrs={'class': 'form-control'}),
-            'password': forms.PasswordInput(attrs={'class': 'form-control'}),
+            'password': forms.PasswordInput(attrs={'class': 'form-control'}, render_value=True),
             'category_name': forms.SelectMultiple(attrs={'class': 'form-control'})
             # 'role': forms.TextInput(attrs={'class': 'form-control'}),
         }
