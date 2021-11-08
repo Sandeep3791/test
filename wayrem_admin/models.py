@@ -53,7 +53,8 @@ class Roles(models.Model):
 class CustomUser(AbstractUser):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     email = models.EmailField(_('email address'), unique=True)
-    contact = models.CharField(max_length=12, null=True, blank=True)
+    contact = models.CharField(
+        max_length=12, null=True, unique=True, blank=False)
     role = models.ForeignKey(
         Roles, on_delete=models.DO_NOTHING, null=True, blank=True)
     dob = models.DateField(null=True, blank=True)

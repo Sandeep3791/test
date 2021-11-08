@@ -1,4 +1,3 @@
-import os
 from sqlalchemy import create_engine
 from pyvirtualdisplay import Display
 from wayrem.settings import BASE_DIR
@@ -14,7 +13,6 @@ from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.utils.decorators import method_decorator
 from django.contrib import messages
-import smtplib
 from django.contrib.auth import authenticate, login, logout
 from django.views import View
 from wayrem_admin.models import *
@@ -26,13 +24,40 @@ from django.views.decorators.debug import sensitive_post_parameters
 from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth import update_session_auth_hash
 from django.utils.translation import ugettext_lazy as _
-from datetime import datetime
 import uuid
 from django.http import HttpResponse
 from wayrem_admin.decorators import role_required
 import json
 from django.db import connection
 # Create your views here.
+
+from sendgrid import SendGridAPIClient
+from sendgrid.helpers.mail import Mail
+
+
+# Send Mail Function
+def send_email(to, subject, body):
+    message = Mail(
+        from_email='wayrem@hotmail.com',
+        to_emails=to,
+        subject=subject,
+        html_content=body)
+    # to_emails=('surya.pratap.2181@gmail.com', 'pankajspsq@gmail.com'),
+    # subject='Sending with Twilio SendGrid is Fun',
+    # html_content='<strong>and easy to do anywhere, even with Python</strong>')
+    try:
+        sg = SendGridAPIClient(
+            '[REDACTED].3HFHrgCCN81kEee5n_LCmeZbm8GrAVOXU1lClP5S_vI')
+        response = sg.send(message)
+        print(response.status_code)
+        print(response.body)
+        print(response.headers)
+        print("Email Sent Successfully!!")
+    except Exception as e:
+        print("Email not sent!!")
+        print(e)
+        print(e.body)
+        # print(e.message)
 
 
 @login_required(login_url='/')
@@ -112,32 +137,19 @@ def user_signup(request):
                 contact = form.cleaned_data['contact']
                 role = form.cleaned_data['role']
                 print(role)
-                role_obj = Roles.objects.get(id=role)
+                # role_obj = Roles.objects.get(id=role)
                 password = form.cleaned_data['password1']
-                user = CustomUser.objects.create_user(
-                    username=username, email=email, contact=contact, role=role_obj, password=password)
-                user.save()
-                # form.save()
-                gmail_user = 'pankajspsq@gmail.com'
-                gmail_password = 'Pankaj@05'
-
-                sent_from = gmail_user
+                # user = CustomUser.objects.create_user(
+                #     username=username, email=email, contact=contact, role=role_obj, password=password)
+                # user.save()
+                form.save()
                 to = email
                 subject = 'Welcome to Wayrem'
-                body = f'Your credential for wayrem are:\n username: {username} \n Email_id: {email} \n Password: {password} \n '
+                body = f'Your credential for <strong> Wayrem </strong> are:\n <br> Username: <em>{username}</em>\n  <br> Password: <em>{password}</em>\n <br> Email: <em>{email}</em>\n'
+                send_email(to, subject, body)
                 # Role: {role}
-                email_text = f"From:{sent_from},To:{to} Subject: {subject}  {body}"
-                try:
-                    smtp_server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-                    smtp_server.ehlo()
-                    smtp_server.login(gmail_user, gmail_password)
-                    smtp_server.sendmail(sent_from, to, email_text)
-                    smtp_server.close()
-                    print("Email sent successfully!")
-                except Exception as ex:
-                    print("Something went wrong….", ex)
                 messages.success(request, 'User Created Successfully!!')
-                return redirect('/dashboard/')
+                return redirect('/users-list/')
         else:
             form = SubAdminForm()
         return render(request, 'accounts/register.html', {"form": form})
@@ -154,7 +166,7 @@ class Forgot_Password(View):
 
     def post(self, request, *args, **kwargs):
         email = request.POST.get('email')
-        request.session['fpemail']=email
+        request.session['fpemail'] = email
         user = CustomUser.objects.filter(email=email).first()
         if not user:
             messages.error(request, "Email Doesn't Exist!")
@@ -169,26 +181,10 @@ class Forgot_Password(View):
 
             sent_from = gmail_user
             to = email
-            subject = 'Welcome to Wayrem'
-            body = f'Your One time password is {no}'
+            subject = 'Your Wayrem password reset request !'
+            body = f'Your One time password is: <strong><em>{no}</em></strong>'
+            send_email(to, subject, body)
 
-            email_text = """\
-            From: %s
-            To: %s
-            Subject: %s
-
-            %s
-            """ % (sent_from, ", ".join(to), subject, body)
-
-            try:
-                smtp_server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-                smtp_server.ehlo()
-                smtp_server.login(gmail_user, gmail_password)
-                smtp_server.sendmail(sent_from, to, email_text)
-                smtp_server.close()
-                print("Email sent successfully!")
-            except Exception as ex:
-                print("Something went wrong….", ex)
             data1 = {"email": request.POST['email'], "otp": no}
             print(data1)
             user = Otp(email=email, otp=no)
@@ -218,8 +214,7 @@ class UsersList(View):
     @method_decorator(login_required(login_url='/'))
     def get(self, request, format=None):
         userlist = CustomUser.objects.all()
-        user_role = Roles.objects.all()
-        return render(request, self.template_name, {"userlist": userlist, "roles": user_role})
+        return render(request, self.template_name, {"userlist": userlist})
 
 
 class Reset_Password(View):
@@ -422,31 +417,19 @@ def supplier_register(request):
                 category_name = form.cleaned_data['category_name']
                 user = SupplierRegister(
                     username=username, email=email, password=password)
-                with connection.cursor() as cursor:
-                    cursor.execute(
-                        f'CREATE TABLE If NOT Exists {username}_product(`product_id` Varchar(250), `supplier_product_id` Varchar(250),`quantity` Integer, `price` Float , `availability` boolean not null default 0 , `status` boolean not null default 0 ,PRIMARY KEY(`product_id`));')
+                # with connection.cursor() as cursor:
+                #     cursor.execute(
+                #         f'CREATE TABLE If NOT Exists {username}_product(`product_id` Varchar(250), `supplier_product_id` Varchar(250),`quantity` Integer, `price` Float , `availability` boolean not null default 0 , `status` boolean not null default 0 ,PRIMARY KEY(`product_id`));')
                 user.save()
                 user.category_name.set(category_name)
                 user.save()
                 # form.save()
-                gmail_user = 'pankajspsq@gmail.com'
-                gmail_password = 'Pankaj@05'
 
-                sent_from = gmail_user
                 to = email
-                subject = 'Welcome to Wayrem'
-                body = f'Your credential for wayrem are:\n username: {username} \n Email_id: {email} \n Password: {password} \n '
+                subject = 'Welcome to Wayrem Supplier'
+                body = f'Your credential for <strong> Wayrem Supplier</strong> are:\n <br> Username: <em>{username}</em>\n  <br> Password: <em>{password}</em>\n <br> Email: <em>{email}</em>\n'
                 # Role: {role}
-                email_text = f"From:{sent_from},To:{to} Subject: {subject}  {body}"
-                try:
-                    smtp_server = smtplib.SMTP_SSL('smtp.gmail.com', 465)
-                    smtp_server.ehlo()
-                    smtp_server.login(gmail_user, gmail_password)
-                    smtp_server.sendmail(sent_from, to, email_text)
-                    smtp_server.close()
-                    print("Email sent successfully!")
-                except Exception as ex:
-                    print("Something went wrong….", ex)
+                send_email(to, subject, body)
                 messages.success(request, 'User Created Successfully!!')
                 return redirect('/dashboard/')
         else:
@@ -1114,7 +1097,7 @@ def create_purchase_order(request):
                         po_id=po_id, po_name=po_name, product_name=product_instance, product_qty=product_qty, supplier_name=supplier_name)
                     product_order.save()
                 messages.success(
-                    request, f"Purchase Order Sent to {supplier_name.username}")
+                    request, f"Purchase Order Created Successfully!")
                 return redirect('/po-list/')
         else:
             print("Invalid")
@@ -1172,11 +1155,15 @@ def import_ingredients(request):
     if request.method == "POST":
         try:
             file = request.FILES["myFileInput"]
+            # engine = create_engine(
+            #     "mysql+pymysql://root:root1234@localhost/wayrem_9.0?charset=utf8")
             engine = create_engine(
-                "mysql+pymysql://root:root@localhost/wayrem_v3?charset=utf8")
+                "mysql+pymysql://admin:Merlin007#@wayrem.c08qmktlafbu.us-east-1.rds.amazonaws.com/wayrem_8.2?charset=utf8")
             # df = pd.read_excel('files/ingredients.xlsx')
-            con = connect(user="root", password="root",
-                          host="localhost", database="wayrem_v3")
+            # con = connect(user="root", password="root1234",
+            #               host="localhost", database="wayrem_9.0")
+            con = connect(user="admin", password="Merlin007#",
+                          host="wayrem.c08qmktlafbu.us-east-1.rds.amazonaws.com", database="wayrem_8.2")
 
             df_ingredients = pd.read_sql('select * from ingredients', con)
             df = pd.read_excel(file)
@@ -1207,28 +1194,15 @@ def import_ingredients(request):
 
 def update_user(request, id=None):
     print(id)
+    user = CustomUser.objects.get(id=id)
     if request.method == "POST":
         # kwargs = { 'data' : request.POST }
-        user = CustomUser.objects.get(id=id)
         form = SubAdminForm(request.POST or None, instance=user)
         if form.is_valid():
-            username = form.cleaned_data['username']
-            email = form.cleaned_data['email']
-            contact = form.cleaned_data['contact']
-            role = form.cleaned_data['role']
-            role_obj = Roles.objects.get(id=role)
-            password = form.cleaned_data['password1']
-            print("FORM")
-            user.username = username
-            user.email = email
-            user.contact = contact
-            user.role_obj = role_obj
-            user.password = password
-            user.save()
-            print("Here")
+            form.save()
             return redirect('/users-list/')
-    user = CustomUser.objects.get(id=id)
-    form = SubAdminForm(instance=user)
+    else:
+        form = SubAdminForm(instance=user)
     return render(request, 'update_user.html', {'form': form, 'id': user.id})
 
 
