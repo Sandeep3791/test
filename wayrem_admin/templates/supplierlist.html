@@ -157,6 +157,7 @@ endcomment %}
     $(document).ready(function () {
         oTable = $('#filtertable').DataTable({
             dom: 'rtip',
+            'columnDefs': [{ 'orderable': false, 'targets': 4 }],
             buttons: [
                 {
                     extend: 'collection',

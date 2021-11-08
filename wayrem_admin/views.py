@@ -971,7 +971,7 @@ def pdf_userlist(request):
         'page-size': 'Letter',
         'encoding': "UTF-8",
     }
-    display = Display(visible=0, size=(1024, 768))
+    display = Display(visible=1, size=(1024, 768))
     try:
         display.start()
         pdf = pdfkit.from_string(html, False, options)
