@@ -16,7 +16,7 @@ roles_options = (
     ('Categories Add', 'Categories Add'), ('Categories Edit', 'Categories Edit'), (
         'Categories Delete', 'Categories Delete'), ('Categories View', 'Categories View'),
     ('Products Add', 'Products Add'), ('Products Edit', 'Products Edit'), ('Products Delete',
-                                                                           'Products Delete'), ('Products View', 'RolProductses View'),
+                                                                           'Products Delete'), ('Products View', 'Products View'),
     ('Supplier Add', 'Supplier Add'), ('Supplier Edit', 'Supplier Edit'), (
         'Supplier Delete', 'Supplier Delete'), ('Supplier View', 'Supplier View'),
     ('Purchase Order Add', 'Purchase Order Add'), ('Purchase Order Edit', 'Purchase Order Edit'), (

@@ -89,6 +89,7 @@
             <th scope="col">Price</th>
             <th scope="col">Package Count</th>
             <th scope="col">Actions</th>
+            <th scope="col">Purchase Order</th>
         </tr>
     </thead>
     <tbody>
@@ -113,7 +114,7 @@
                 <div class="modal-dialog  modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="">Suppliers</h5>
+                            <h5 class="modal-title" id="">{{prod.product_name}}</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
@@ -121,6 +122,8 @@
                                 <thead class="table-white">
                                     <tr>
                                         <th scope="col">Suppliers</th>
+                                        <th scope="col">Deliverable Time</th>
+                                        <th scope="col">Price</th>
                                         <th scope="col">PO</th>
                                     </tr>
                                 </thead>
@@ -130,9 +133,11 @@
                                         <td class="btn w-100 anchor_btn ps-0 pe-0 " > 
                                             {{i}} 
                                         </td>
+                                        <td>Within 1 day</td>
+                                        <td>{{prod.price}}</td>
                                         <td>
-                                            <a class="btn w-100 anchor_btn ps-0 pe-0" href="{% url 'create_po' %}">
-                                                <button class="btn col-sm-6 col-md-6 col-6 create_new">Raise PO</button>
+                                            <a class="btn btn-sm btn-dark" href="{% url 'create_po' %}?supplier={{i.id}}">
+                                                Raise PO
                                             </a>
                                         </td>
                                     </tr>
@@ -185,7 +190,8 @@
                     </div>
                 </div>
             </div>
-
+        <td><a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'create_po' %}?product={{prod.id}}">Raise PO
+                </a></td>
         </tr>
     {% endfor %}
 

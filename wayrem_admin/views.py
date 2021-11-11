@@ -135,11 +135,11 @@ class LoginView(View):
 
 
 def user_signup(request):
-    
+
     if request.user.is_authenticated:
         if request.method == 'POST':
             form = SubAdminForm(request.POST)
-            
+
             if form.is_valid():
                 username = form.cleaned_data['username']
                 email = form.cleaned_data['email']
@@ -161,8 +161,9 @@ def user_signup(request):
                 return redirect('/users-list/')
         else:
             alphabet = string.ascii_letters + string.digits
-            auto_password = ''.join(secrets.choice(alphabet) for i in range(8)) 
-            form = SubAdminForm(initial={'password1':auto_password,'password2':auto_password})
+            auto_password = ''.join(secrets.choice(alphabet) for i in range(8))
+            form = SubAdminForm(
+                initial={'password1': auto_password, 'password2': auto_password})
         return render(request, 'accounts/register.html', {"form": form})
     else:
         return redirect('/dashboard/')
@@ -420,9 +421,9 @@ def supplier_register(request):
 
     if request.user.is_authenticated:
         alphabet = string.ascii_letters + string.digits
-        auto_password = ''.join(secrets.choice(alphabet) for i in range(8)) 
+        auto_password = ''.join(secrets.choice(alphabet) for i in range(8))
         if request.method == 'POST':
-            form = SupplierRegisterForm(request.POST)       
+            form = SupplierRegisterForm(request.POST)
             if form.is_valid():
                 username = form.cleaned_data['username']
                 email = form.cleaned_data['email']
@@ -446,7 +447,8 @@ def supplier_register(request):
                 messages.success(request, 'User Created Successfully!!')
                 return redirect('/supplier-list/')
         else:
-            form = SupplierRegisterForm(initial={'password':auto_password,'password2':auto_password})
+            form = SupplierRegisterForm(
+                initial={'password': auto_password, 'password2': auto_password})
         return render(request, 'accounts/supplier_register.html', {"form": form})
     else:
         return redirect('/dashboard/')
@@ -1069,7 +1071,6 @@ class DeleteProduct(View):
 
 
 def create_purchase_order(request):
-
     if request.method == "POST":
         form = POForm(request.POST or None, request.FILES or None)
         if 'addMore' in request.POST:
@@ -1111,7 +1112,14 @@ def create_purchase_order(request):
         else:
             print("Invalid")
     else:
-        form = POForm()
+        if request.GET.get('supplier'):
+            form = POForm(
+                initial={"supplier_name": request.GET.get('supplier')})
+        elif request.GET.get('product'):
+            form = POForm(
+                initial={"product_name": request.GET.get('product')})
+        else:
+            form = POForm()
     request.session['products'] = []
     return render(request, "po_step1.html", {'form': form})
 
