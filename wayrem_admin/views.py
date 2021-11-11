@@ -1,6 +1,11 @@
+from io import BytesIO
+from pymysql import *
+import pandas.io.sql as sql
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.paginator import Paginator
 from sqlalchemy import create_engine
 from pyvirtualdisplay import Display
-from wayrem.settings import BASE_DIR
+from wayrem.settings import BASE_DIR, DATABASES
 import pandas as pd
 from django.template.loader import get_template
 import pdfkit
@@ -431,7 +436,7 @@ def supplier_register(request):
                 # Role: {role}
                 send_email(to, subject, body)
                 messages.success(request, 'User Created Successfully!!')
-                return redirect('/dashboard/')
+                return redirect('/supplier-list/')
         else:
             form = SupplierRegisterForm()
         return render(request, 'accounts/supplier_register.html', {"form": form})
@@ -830,7 +835,8 @@ def product_view_four(request):
                 del request.session['model']
             except:
                 pass
-            return redirect('/dashboard/')
+            messages.success(request, "Product created successfully!")
+            return redirect('/product-list/')
     else:
         context['form'] = ProductFormFour()
     return render(request, 'product4.html', context)
@@ -864,15 +870,30 @@ def create_ingredients(request):
     return render(request, 'create_ingredients.html', context)
 
 
-class IngredientsList(View):
-    template_name = "ingredientslist.html"
+# class IngredientsList(View):
+#     template_name = "ingredientslist.html"
 
-    @method_decorator(login_required(login_url='/'))
-    def get(self, request, format=None):
-        ingredientslist = Ingredients.objects.all()
-        # user_role = Roles.objects.all()
-        # "roles":user_role
-        return render(request, self.template_name, {"ingredientslist": ingredientslist})
+#     @method_decorator(login_required(login_url='/'))
+#     def get(self, request, format=None):
+#         ingredientslist = Ingredients.objects.all()
+#         # user_role = Roles.objects.all()
+#         # "roles":user_role
+#         return render(request, self.template_name, {"ingredientslist": ingredientslist})
+
+
+def ingredientsList(request):
+    ingredients_list = Ingredients.objects.all()
+    paginator = Paginator(ingredients_list, 25)
+    page = request.GET.get('page')
+    try:
+        ingredientslist = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        ingredientslist = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        ingredientslist = paginator.page(paginator.num_pages)
+    return render(request, "ingredientslist.html", {"list": ingredientslist})
 
 
 class DeleteIngredients(View):
@@ -908,10 +929,6 @@ def update_ingredients(request, id=None, *args, **kwargs):
 
 def create_po1(request):
     return render(request, 'po_step1.html/')
-
-
-# def create_po2(request):
-#     return render(request, 'po_step2.html/')
 
 
 # Ajax
@@ -1097,7 +1114,7 @@ class POList(View):
     @method_decorator(login_required(login_url='/'))
     def get(self, request, format=None):
         polist = PurchaseOrder.objects.values(
-            'po_id', 'po_name', 'supplier_name').distinct()
+            'po_id', 'po_name', 'supplier_name', 'status').distinct()
         pol = []
         for i in polist:
             obj = SupplierRegister.objects.filter(
@@ -1113,15 +1130,15 @@ def import_ingredients(request):
     if request.method == "POST":
         try:
             file = request.FILES["myFileInput"]
-            # engine = create_engine(
-            #     "mysql+pymysql://root:root1234@localhost/wayrem_9.0?charset=utf8")
             engine = create_engine(
-                "mysql+pymysql://admin:Merlin007#@wayrem.c08qmktlafbu.us-east-1.rds.amazonaws.com/wayrem_8.2?charset=utf8")
+                f"mysql+pymysql://{DATABASES['default']['USER']}:{DATABASES['default']['PASSWORD']}@{DATABASES['default']['HOST']}/{DATABASES['default']['NAME']}?charset=utf8")
+            # engine = create_engine(
+            #     "mysql+pymysql://admin:Merlin007#@wayrem.c08qmktlafbu.us-east-1.rds.amazonaws.com/wayrem_8.2?charset=utf8")
             # df = pd.read_excel('files/ingredients.xlsx')
-            # con = connect(user="root", password="root1234",
-            #               host="localhost", database="wayrem_9.0")
-            con = connect(user="admin", password="Merlin007#",
-                          host="wayrem.c08qmktlafbu.us-east-1.rds.amazonaws.com", database="wayrem_8.2")
+            con = connect(user=DATABASES['default']['USER'], password=DATABASES['default']['PASSWORD'],
+                          host=DATABASES['default']['HOST'], database=DATABASES['default']['NAME'])
+            # con = connect(user="admin", password="Merlin007#",
+            #               host="wayrem.c08qmktlafbu.us-east-1.rds.amazonaws.com", database="wayrem_8.2")
 
             df_ingredients = pd.read_sql('select * from ingredients', con)
             df = pd.read_excel(file)
@@ -1129,8 +1146,9 @@ def import_ingredients(request):
             # df = df.drop(0)
             df = df[df.columns.dropna()]
             df = df.fillna(0)
-            df3 = pd.merge(df_ingredients, df, how='outer', indicator='Exist')
-            df3 = df3.loc[df3['Exist'] != 'both']
+            df3 = df.merge(df_ingredients, how='outer',
+                           indicator=True).loc[lambda x: x['_merge'] == 'left_only']
+
             ids = []
             uuids = []
 
@@ -1140,7 +1158,7 @@ def import_ingredients(request):
             for i in ids:
                 uuids.append((uuid.UUID(i)).hex)
             df3['id'] = uuids
-            df3 = df3.drop('Exist', axis=1)
+            df3 = df3.drop('_merge', axis=1)
 
             df3.to_sql('ingredients', engine, if_exists='append', index=False)
             messages.success(request, "Ingredients imported successfully!")
@@ -1195,6 +1213,17 @@ class DeletePO(View):
         return redirect('/po-list/')
 
 
+class POStatus(View):
+    def post(self, request):
+        po_id = request.POST.get('po_id')
+        po_obj = PurchaseOrder.objects.filter(po_id=po_id).all()
+        if po_obj[0].is_active:
+            po_obj.update(is_active=False)
+        else:
+            po_obj.update(is_active=True)
+        return redirect('/po-list/')
+
+
 def viewpo(request, id=None):
     po = PurchaseOrder.objects.filter(po_id=id).all()
     return render(request, 'view_po.html', {"po": po})
@@ -1203,6 +1232,22 @@ def viewpo(request, id=None):
 def editpo(request, id=None):
     po = PurchaseOrder.objects.filter(po_id=id).all()
     if request.method == "POST":
+        if 'addMore' in request.POST:
+            form = POEditForm()
+            if request.POST['product_name'] == "":
+                messages.error(request, "Please select a Product!")
+                return render(request, 'edit_po.html', {"po": po, "form": form})
+            product = request.POST.get('product_name')
+            name = inst_Product(product)
+            quantity = request.POST.get('product_qty')
+            supplier = po[0].supplier_name
+            po_id = po[0].po_id
+            poname = request.POST.get('poname')
+            new = PurchaseOrder(
+                po_name=poname, product_name=name, product_qty=quantity, supplier_name=supplier, po_id=po_id)
+            new.save()
+            return render(request, 'edit_po.html', {"po": po, "form": form})
+
         count = 1
         for item in po:
             item.po_name = request.POST.get('poname')
@@ -1210,7 +1255,18 @@ def editpo(request, id=None):
             item.save()
             count += 1
         return redirect('/po-list/')
-    return render(request, 'edit_po.html', {"po": po})
+    else:
+        form = POEditForm()
+    return render(request, 'edit_po.html', {"po": po, "form": form})
+
+
+def statuspo(request, id=None):
+    po = PurchaseOrder.objects.filter(po_id=id).all()
+    if request.method == "POST":
+        status = request.POST.get('status')
+        po.update(status=status)
+        return redirect('/po-list/')
+    return redirect('/po-list/')
 
 
 def supplier_details(request, id=None):
@@ -1233,7 +1289,41 @@ def product_details(request, id=None):
     return render(request, 'View_product.html', {'proddata': prod})
 
 
-def view_supplier(request, id=None):
-    supp = Products.objects.filter(id=id).first()
-    return render(request, 'viewprodsupplier.html', {'prodview': supp})
+def generate_excel(table_name, file_name):
+    con = connect(user=DATABASES['default']['USER'], password=DATABASES['default']['PASSWORD'],
+                  host=DATABASES['default']['HOST'], database=DATABASES['default']['NAME'])
+    df = sql.read_sql(f'select * from {table_name}', con)
+    print(df)
+    with BytesIO() as b:
+        # Use the StringIO object as the filehandle.
+        writer = pd.ExcelWriter(b, engine='xlsxwriter')
+        df.to_excel(writer, sheet_name='Sheet1')
+        writer.save()
+        # Set up the Http response.
+        filename = f'{file_name}.xlsx'
+        response = HttpResponse(
+            b.getvalue(),
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        response['Content-Disposition'] = 'attachment; filename=%s' % filename
+        return response
 
+
+def user_excel(request):
+    return generate_excel("custom_user", "users")
+
+
+def supplier_excel(request):
+    return generate_excel("supplier_master", "suppliers")
+
+
+def po_excel(request):
+    return generate_excel("po_master", "purchase_order")
+
+
+def product_excel(request):
+    return generate_excel("product_master", "products")
+
+
+def ingredient_excel(request):
+    return generate_excel("ingredients", "ingredients")
