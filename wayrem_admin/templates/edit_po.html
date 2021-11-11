@@ -34,7 +34,7 @@
                             {% endfor %}
                             {% endif %}
                             </p>
-                            <form method="POST" action="{% url 'editpo' po.0.po_id %}">
+                            <form method="POST" action="{% url 'editpo' po.0.po_id %}" novalidate>
                             <div class="row">
                                 <div class="col">
                                     <h5>Purchase Order :</h5>
@@ -45,6 +45,24 @@
                                     <p>{{po.0.supplier_name}}</p>
                                 </div>
                             </div>
+
+                            <div class="container p-3 mt-4 w-75">
+            <div class="row">
+                <div class="col-md-4">
+                    <label for="product">Product Name</label>
+                    {{form.product_name}}
+                </div>
+
+                <div class="col-md-2">
+                    <label for="quantity">Quantity</label>
+                {{form.product_qty}}
+                </div>
+                <div class="col-md-3 mt-4 text-right offset-3">
+                    <button class="btn btn-success mt-2" name="addMore" type="submit" >Add More</button>
+                </div>
+            </div>
+        </div>
+        
                             <div class="container mt-4">
                             {% csrf_token %}
                                 <table class="table">
@@ -69,7 +87,7 @@
                                 <button type="reset" class="btn  btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Reset</button>
                                 <button type="submit" class="btn btn-dark border-0 col-xl-3 col-md-5 col-12" >Update</button>
                             </div>
-                                    
+                                    </form>
                                 <div class="text-right">
                                 <a href="{% url 'polist' %}" class="btn btn-dark my-3" >Back</a>
                                 </div>

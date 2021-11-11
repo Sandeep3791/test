@@ -164,13 +164,13 @@ class Products(models.Model):
     product_name = models.CharField(max_length=255, null=True, blank=True)
     description = models.CharField(max_length=255)
     ingredients1 = models.ForeignKey(
-        Ingredients, on_delete=models.DO_NOTHING, related_name='Products1', null=True, blank=True)
+        Ingredients, on_delete=models.CASCADE, related_name='Products1', null=True, blank=True)
     ingredients2 = models.ForeignKey(
-        Ingredients, on_delete=models.DO_NOTHING, related_name='Products2', null=True, blank=True)
+        Ingredients, on_delete=models.CASCADE, related_name='Products2', null=True, blank=True)
     ingredients3 = models.ForeignKey(
-        Ingredients, on_delete=models.DO_NOTHING, related_name='Products3', null=True, blank=True)
+        Ingredients, on_delete=models.CASCADE, related_name='Products3', null=True, blank=True)
     ingredients4 = models.ForeignKey(
-        Ingredients, on_delete=models.DO_NOTHING, related_name='Products4', null=True, blank=True)
+        Ingredients, on_delete=models.CASCADE, related_name='Products4', null=True, blank=True)
     calories1 = models.CharField(
         max_length=25, null=True, blank=True)
     calories2 = models.CharField(
@@ -220,6 +220,15 @@ class PurchaseOrder(models.Model):
     product_qty = models.IntegerField(null=False, default=1)
     supplier_name = models.ForeignKey(
         SupplierRegister, on_delete=models.CASCADE, null=False)
+    po_status = (
+        ('accept', 'Accept'),
+        ('deny', 'Deny'),
+        ('cancel', 'Cancel'),
+        ('in progress', 'In Progress'),
+        ('delivered', 'Delivered'),
+    )
+    status = models.CharField(
+        max_length=35, choices=po_status, default='in progress', null=True, blank=True)
     is_active = models.BooleanField(default=True)
 
     class Meta:

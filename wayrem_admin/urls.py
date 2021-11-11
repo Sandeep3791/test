@@ -38,7 +38,7 @@ urlpatterns = [
     path('product-view-three/', views.product_view_three, name='productviewthree'),
     path('product-view-four/', views.product_view_four, name='productviewfour'),
     path('create-ingredients/', views.create_ingredients, name='createingredients'),
-    path('ingredients-list/', views.IngredientsList.as_view(),
+    path('ingredients-list/', views.ingredientsList,
          name='ingredientslist'),
     path('delete-ingredients/', views.DeleteIngredients.as_view(),
          name='deleteingredients'),
@@ -50,9 +50,11 @@ urlpatterns = [
     path('delete-product/', views.DeleteProduct.as_view(),
          name='deleteproduct'),
     #     path('create-po2/', views.create_po2, name='createpo2'),
-    path('supplier-details/<str:id>/', views.supplier_details, name='supplierdetails'),
+    path('supplier-details/<str:id>/',
+         views.supplier_details, name='supplierdetails'),
     path('user-details/<str:id>/', views.user_details, name='userdetails'),
-    path('category-details/<str:id>/', views.category_details, name='categorydetails'),
+    path('category-details/<str:id>/',
+         views.category_details, name='categorydetails'),
     path('product-details/<str:id>', views.product_details, name='productdetails'),
 
 
@@ -74,6 +76,13 @@ urlpatterns = [
     path('pdf_supplier/', views.pdf_supplier, name='supplierpdf'),
     path('pdf_product/', views.pdf_product, name='productpdf'),
     path('pdf_category/', views.pdf_category, name='categorypdf'),
+    # ---------------Excel -----------------------
+    path('excel_user/', views.user_excel, name='exceluser'),
+    path('excel_supplier/', views.supplier_excel, name='excelsupplier'),
+    path('excel_po/', views.po_excel, name='excelpo'),
+    path('excel_product/', views.product_excel, name='excelproduct'),
+    path('excel_ingredient/', views.ingredient_excel, name='excelingredient'),
+    # ---------------Excel Ends ----------------
     #     ajax
     path('ajax/load-supplier/', views.load_supplier, name='ajax_load_supplier'),
 
@@ -86,12 +95,11 @@ urlpatterns = [
          views.update_supplier, name='updatesupplier'),
     path('view-po/<str:id>', views.viewpo, name='viewpo'),
     path('edit-po/<str:id>', views.editpo, name='editpo'),
+    path('edit-po-status/<str:id>', views.statuspo, name='po_status'),
     path('delete-po/', views.DeletePO.as_view(),
          name='deletepo'),
-
-
-
-
+    path('status-po/', views.POStatus.as_view(),
+         name='statuspo'),
 ]
 
 if settings.DEBUG:
