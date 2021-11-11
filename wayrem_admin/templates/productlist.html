@@ -79,15 +79,9 @@
         <tr>
             <th scope="col">S. No.</th>
             <th scope="col">SKU</th>
-            <th scope="col">Product Code</th>
             <th scope="col">Product Name</th>
             <th scope="col">Category Name</th>
             <th scope="col">Suppliers</th>
-            <th scope="col">Feature Product</th>
-            <th scope="col">Product Deliverable</th>
-            <th scope="col">Product QTY</th>
-            <th scope="col">Price</th>
-            <th scope="col">Package Count</th>
             <th scope="col">Actions</th>
             <th scope="col">Purchase Order</th>
         </tr>
@@ -98,14 +92,14 @@
         <tr>
             <th scope="row">{{forloop.counter}}</th>
             <td>{{prod.SKU}}</td>
-            <td>{{prod.product_code}}</td>
-
             <td>{{prod.product_name}}</td>
             <td>{% for i in prod.product_category.all%}
                 {{i}}
                 {% endfor %}
-                </td>        
-            <td><a type="button" class="btn btn-sm" data-bs-toggle="modal"
+                </td>
+                <td><a class="btn btn-sm" href="{% url 'viewprodsupplier' %}?product={{prod.SKU}}">View Supplier
+                </a></td>
+            {% comment %} <td><a type="button" class="btn btn-sm" data-bs-toggle="modal"
                 data-bs-target="#supplier1{{prod.id}}">
                 View Supplier
             </a>
@@ -142,7 +136,6 @@
                                         </td>
                                     </tr>
                                     {% endfor %}
-                                    
                                 </tbody>
                             </table>
                             
@@ -150,12 +143,7 @@
                     </div>
                 </div>
             </div>
-        </td>
-            <td>{{prod.feature_product}}</td>
-            <td>{{prod.product_deliverable}}</td>
-            <td>{{prod.product_qty}}</td>
-            <td>{{prod.price}}</td>
-            <td>{{prod.package_count}}</td>
+        </td> {% endcomment %}
             <td><a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'updateproduct' prod.id %}">
 
                     <i class="fas fa-edit text-dark"></i>

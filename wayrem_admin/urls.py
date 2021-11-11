@@ -100,6 +100,8 @@ urlpatterns = [
          name='deletepo'),
     path('status-po/', views.POStatus.as_view(),
          name='statuspo'),
+    path('product-suppliers/', views.view_product_suppliers,
+         name='viewprodsupplier'),
 ]
 
 if settings.DEBUG:

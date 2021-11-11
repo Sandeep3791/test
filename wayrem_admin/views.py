@@ -858,8 +858,6 @@ class ProductList(View):
     @method_decorator(login_required(login_url='/'))
     def get(self, request, format=None):
         productslist = Products.objects.all()
-        # user_role = Roles.objects.all()
-        # "roles":user_role
         return render(request, self.template_name, {"productslist": productslist})
 
 
@@ -1118,6 +1116,11 @@ def create_purchase_order(request):
         elif request.GET.get('product'):
             form = POForm(
                 initial={"product_name": request.GET.get('product')})
+        elif request.GET.get('suprod'):
+            x = request.GET.get('suprod').split('?')
+            product = Products.objects.get(SKU=x[1])
+            form = POForm(
+                initial={"product_name": product, "supplier_name": x[0]})
         else:
             form = POForm()
     request.session['products'] = []
@@ -1343,3 +1346,9 @@ def product_excel(request):
 
 def ingredient_excel(request):
     return generate_excel("ingredients", "ingredients")
+
+
+def view_product_suppliers(request):
+    product = request.GET.get('product')
+    po = SupplierProducts.objects.filter(SKU=product).order_by('price')
+    return render(request, 'product_supplier.html', {"list": po})

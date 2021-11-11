@@ -1,0 +1,82 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %} Product Suppliers {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+
+<main class="  align-items-center admin_login_lg">
+    <!-- Section -->
+    <section class="d-flex align-items-center my-5 mt-lg-6 mb-lg-5">
+        <div class="container">
+            <div class="row justify-content-center form-bg-image">
+                <div class="col-12 d-flex align-items-center justify-content-center">
+                    <div class="bg-white shadow-soft border rounded border-light p-4 p-lg-5 w-100 ">
+                        <div class="text-center text-md-center mb-4 mt-md-0">
+                            <h1 class="mb-0 h3">
+                                {% comment %} <img src="{% static '/assets/img/logo/Wayrem_logo..svg'%}"
+                                    style="width:80%" alt=""> {% endcomment %}
+                            </h1>
+                            <br />
+                            <p>
+                                {% if messages %}
+                                {% for message in messages %}
+                            <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show"
+                                {% endif %} role="alert">
+                                <strong> {{ message }}</strong>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+                            </p>
+                            <div class="text-center">
+                              <h1>{{list.0.product_name|title}}</h1>
+                            </div>
+                            <div class="container mt-4">
+                               <table class="table">
+  <thead>
+    <tr>
+      <th scope="col">S. No.</th>
+      <th scope="col">Suppliers</th>
+      <th scope="col">Price</th>
+      <th scope="col">Deliverable Time</th>
+      <th scope="col">PO</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for i in list %}
+    <tr>
+      <th scope="row">{{forloop.counter}}</th>
+      <td>{{i.supplier_id}}</td>
+      <td>{{i.price}}</td>
+      <td>Within {{i.deliverable_days}} days</td>
+      <td>
+       <a class="btn btn-sm btn-dark" href="{% url 'create_po' %}?suprod={{i.supplier_id.id}}?{{i.SKU}}">Raise PO</a>
+       </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+                                <div class="text-right">
+                                <a href="{% url 'productlist' %}" class="btn btn-dark my-3" >Back</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+{% endblock javascripts %}
