@@ -36,7 +36,16 @@ endcomment %}
 <div class="subheader row pe-4 ps-4 mt-5">
     <div class="row add_btn col-xl-4 col-lg-4 col-md-5 d-flex align-items-center">
         <div class="col">
-            <a href="{% url 'productpdf' %}" class="button button1 mt-2 export_file">Export to pdf</a>
+        <div class="dropdown">
+  <button class="button button1 mt-2 export_file dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+    Export
+  </button>
+  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+    <li><a class="dropdown-item" href="{% url 'productpdf' %}">Export to Pdf</a></li>
+    <li><a class="dropdown-item" href="{% url 'excelproduct' %}">Export to Excel</a></li>
+  </ul>
+</div>
+            {% comment %} <a href="{% url 'productpdf' %}" class="button button1 mt-2 export_file">Export to pdf</a> {% endcomment %}
         </div>
     </div>
 
