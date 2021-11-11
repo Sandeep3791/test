@@ -234,6 +234,37 @@ class PurchaseOrder(models.Model):
     class Meta:
         db_table = 'po_master'
 
+class OtpDetails(models.Model):
+    id = models.CharField(primary_key=True, editable=False, max_length=255)
+    email = models.EmailField()
+    otp = models.CharField(max_length=10)
+    created_at = models.DateTimeField(default=datetime.now())
+    
+    class Meta:
+        db_table = 'supplier_otp'
+
+
+class SupplierProducts(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    supplier_id = models.ForeignKey(SupplierRegister, on_delete=models.CASCADE, null=True)
+    SKU= models.CharField(max_length=250, null=True, blank=True)
+    product_name= models.CharField(max_length=500, null=True, blank=True)
+    quantity= models.IntegerField(null=True, default=1)
+    price= models.DecimalField(null=True, max_digits=12, decimal_places=2)
+    available= models.BooleanField(default=True)
+    deliverable=(
+        ('1', 'within 1 day'),
+        ('2','within 2 day' ),
+        ('3','within 3 day'), 
+        ('4','within 4 day'),
+        ('5','within 5 day'),
+    )
+    deliverable_days = models.CharField(max_length=20,
+                                          choices=deliverable, null=True, blank=True)
+    
+    class Meta:
+           db_table ='product_suppliers'
+
 
 # 6281073150012
 # 6281035000034

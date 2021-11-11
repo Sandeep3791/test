@@ -427,7 +427,7 @@ def supplier_register(request):
             if form.is_valid():
                 username = form.cleaned_data['username']
                 email = form.cleaned_data['email']
-                password = auto_password
+                password = form.cleaned_data['password']
                 category_name = form.cleaned_data['category_name']
                 user = SupplierRegister(
                     username=username, email=email, password=password)
