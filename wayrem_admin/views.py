@@ -906,22 +906,6 @@ def update_ingredients(request, id=None, *args, **kwargs):
     return render(request, 'update_ingredients.html', {'form': form, 'id': user.id})
 
 
-# @login_required(login_url='/')
-# def create_purchase_order_PO(request):
-#     context = {}
-#     # user = SupplierProfileModel.objects.filter(user_id = request.user.id).first()
-#     form = PurchaseOrderCreateForm(request.POST or None)
-#     context['form'] = form
-#     if request.method == "POST":
-#         print("POST")
-#         if form.is_valid():
-#             print('valid')
-#             form.save()
-#             return redirect('/ingredients-list/')
-#         else:
-#             print("Invalid")
-#     return render(request, 'create_ingredients.html', context)
-
 def create_po1(request):
     return render(request, 'po_step1.html/')
 
@@ -1125,32 +1109,6 @@ class POList(View):
         return render(request, self.template_name, {"userlist": mylist})
 
 
-# def import_ingredients12(request):
-#     if request.method == "POST":
-#         file = request.FILES["myFileInput"]
-#         engine = create_engine(
-#             "mysql+pymysql://root:root@localhost/wayrem_v3?charset=utf8")
-#         # df = pd.read_excel('files/ingredients.xlsx')
-#         df = pd.read_excel(file)
-#         # df.columns = df.iloc[0]
-#         # df = df.drop(0)
-#         df = df[df.columns.dropna()]
-#         df = df.fillna(0)
-#         ids = []
-#         uuids = []
-
-#         for id_counter in range(0, len(df.index)):
-#             ids.append(str(uuid.uuid4()))
-#             df['ingredients_status'] = 'Active'
-#         for i in ids:
-#             uuids.append((uuid.UUID(i)).hex)
-#         df['id'] = uuids
-
-#         df.to_sql('ingredients', engine, if_exists='append', index=False)
-#         return redirect('/ingredients-list/')
-#     return redirect('/ingredients-list/')
-
-
 def import_ingredients(request):
     if request.method == "POST":
         try:
@@ -1273,3 +1231,9 @@ def category_details(request, id=None):
 def product_details(request, id=None):
     prod = Products.objects.filter(id=id).first()
     return render(request, 'View_product.html', {'proddata': prod})
+
+
+def view_supplier(request, id=None):
+    supp = Products.objects.filter(id=id).first()
+    return render(request, 'viewprodsupplier.html', {'prodview': supp})
+

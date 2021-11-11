@@ -53,8 +53,8 @@ urlpatterns = [
     path('supplier-details/<str:id>/', views.supplier_details, name='supplierdetails'),
     path('user-details/<str:id>/', views.user_details, name='userdetails'),
     path('category-details/<str:id>/', views.category_details, name='categorydetails'),
-    path('product-details/<str:id>', views.product_details, name='productdetails'),
-
+    path('product-details/<str:id>/', views.product_details, name='productdetails'),
+    path('view-supplier/<str:id>/', views.view_supplier, name='viewsupplier'),
 
 
     #   Roles CRUD urls start-------------------------
@@ -88,6 +88,7 @@ urlpatterns = [
     path('edit-po/<str:id>', views.editpo, name='editpo'),
     path('delete-po/', views.DeletePO.as_view(),
          name='deletepo'),
+    
 
 
 
