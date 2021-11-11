@@ -33,6 +33,8 @@ from django.db import connection
 
 from sendgrid import SendGridAPIClient
 from sendgrid.helpers.mail import Mail
+import secrets
+import string
 
 
 # Send Mail Function
@@ -128,9 +130,11 @@ class LoginView(View):
 
 
 def user_signup(request):
+    
     if request.user.is_authenticated:
         if request.method == 'POST':
             form = SubAdminForm(request.POST)
+            
             if form.is_valid():
                 username = form.cleaned_data['username']
                 email = form.cleaned_data['email']
@@ -151,7 +155,9 @@ def user_signup(request):
                 messages.success(request, 'User Created Successfully!!')
                 return redirect('/users-list/')
         else:
-            form = SubAdminForm()
+            alphabet = string.ascii_letters + string.digits
+            auto_password = ''.join(secrets.choice(alphabet) for i in range(8)) 
+            form = SubAdminForm(initial={'password1':auto_password,'password2':auto_password})
         return render(request, 'accounts/register.html', {"form": form})
     else:
         return redirect('/dashboard/')
@@ -408,12 +414,14 @@ def update_categories(request, id=None, *args, **kwargs):
 def supplier_register(request):
 
     if request.user.is_authenticated:
+        alphabet = string.ascii_letters + string.digits
+        auto_password = ''.join(secrets.choice(alphabet) for i in range(8)) 
         if request.method == 'POST':
-            form = SupplierRegisterForm(request.POST)
+            form = SupplierRegisterForm(request.POST)       
             if form.is_valid():
                 username = form.cleaned_data['username']
                 email = form.cleaned_data['email']
-                password = form.cleaned_data['password']
+                password = auto_password
                 category_name = form.cleaned_data['category_name']
                 user = SupplierRegister(
                     username=username, email=email, password=password)
@@ -433,7 +441,7 @@ def supplier_register(request):
                 messages.success(request, 'User Created Successfully!!')
                 return redirect('/dashboard/')
         else:
-            form = SupplierRegisterForm()
+            form = SupplierRegisterForm(initial={'password':auto_password,'password2':auto_password})
         return render(request, 'accounts/supplier_register.html', {"form": form})
     else:
         return redirect('/dashboard/')

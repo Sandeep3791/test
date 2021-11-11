@@ -120,11 +120,11 @@
                                 </div>
                                 <!-- End of Form -->
 
-
+                                {% comment %} <span class="text-danger">*</span> {% endcomment %}
                                 <!-- Form -->
                                 <div class="col-lg-6">
                                     <div class="form-group mb-4">
-                                        <label for="password">Password <span class="text-danger">*</span> </label>
+                                        <label for="password">Password  </label>
                                         <div class="input-group">
                                             <span class="input-group-text" id="password"><span
                                                     class="fas fa-unlock-alt"></span></span>
@@ -133,11 +133,11 @@
                                             <span class="input-group-text" id="cpassword"><i class="far fa-eye"
                                                     id="togglePassword"></i></span>
                                         </div>
-                                        <div class="input-group">
+                                        {% comment %} <div class="input-group">
                                             <span class="text-danger"> {{form.password1.errors | striptags}} </span>
 
-                                        </div>
-                                        <span class="text-error"></span>
+                                        </div> {% endcomment %}
+                                        {% comment %} <span class="text-error"></span> {% endcomment %}
                                     </div>
                                 </div>
                                 <!-- End of Form -->
@@ -145,7 +145,7 @@
                                 <!-- Form -->
                                 <div class="col-lg-6">
                                     <div class="form-group mb-4">
-                                        <label for="password">Confirm Password <span class="text-danger">*</span> </label>
+                                        <label for="password">Confirm Password </label>
                                         <div class="input-group">
                                             <span class="input-group-text" id="cpassword"><span
                                                     class="fas fa-unlock-alt"></span></span>
@@ -154,10 +154,10 @@
                                                     id="toggleCPassword"></i></span>
 
                                         </div>
-                                        <div class="input-group">
+                                        {% comment %} <div class="input-group">
                                             <span class="text-danger"> {{form.password2.errors | striptags}} </span>
                                         </div>
-                                        <span class="text-error"></span>
+                                        <span class="text-error"></span> {% endcomment %}
                                     </div>
                                 </div>
                                 <!-- End of Form -->
