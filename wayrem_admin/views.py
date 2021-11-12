@@ -1192,12 +1192,12 @@ def update_user(request, id=None):
     user = CustomUser.objects.get(id=id)
     if request.method == "POST":
         # kwargs = { 'data' : request.POST }
-        form = SubAdminForm(request.POST or None, instance=user)
+        form = SubAdminUpdateForm(request.POST or None, instance=user)
         if form.is_valid():
             form.save()
             return redirect('/users-list/')
     else:
-        form = SubAdminForm(instance=user)
+        form = SubAdminUpdateForm(instance=user)
     return render(request, 'update_user.html', {'form': form, 'id': user.id})
 
 
@@ -1206,21 +1206,19 @@ def update_supplier(request, id=None):
     if request.method == "POST":
         # kwargs = { 'data' : request.POST }
         suppl = SupplierRegister.objects.get(id=id)
-        form = SupplierRegisterForm(request.POST or None, instance=suppl)
+        form = SupplierRegisterUpdateForm(request.POST or None, instance=suppl)
         if form.is_valid():
             username = form.cleaned_data['username']
             email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
             category_name = form.cleaned_data['category_name']
             print("FORM")
             suppl.username = username
             suppl.email = email
-            suppl.password = password
             suppl.category_name.set(category_name)
             suppl.save()
             return redirect('/supplier-list/')
     suppl = SupplierRegister.objects.get(id=id)
-    form = SupplierRegisterForm(instance=suppl)
+    form = SupplierRegisterUpdateForm(instance=suppl)
     return render(request, 'update_supplier.html', {'form': form, 'id': suppl.id})
 
 

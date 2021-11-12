@@ -40,6 +40,20 @@ class SubAdminForm(UserCreationForm):
         }
 
 
+class SubAdminUpdateForm(forms.ModelForm):
+
+    class Meta:
+        model = CustomUser
+        fields = ("username", "email", "contact", "role")
+
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'contact': forms.NumberInput(attrs={'class': 'form-control', 'minlength': 10}),
+            'role': forms.Select(attrs={'class': 'form-select'})
+        }
+
+
 class DateInput(forms.DateInput):
     input_type = 'date'
 
@@ -125,6 +139,21 @@ class SupplierRegisterForm(forms.ModelForm):
                 "Password and Confirm Password should be same."
             )
         return cleaned_data
+
+
+class SupplierRegisterUpdateForm(forms.ModelForm):
+    class Meta:
+        model = SupplierRegister
+        fields = ("username", "email", "category_name")
+
+        # role = forms.MultipleChoiceField(choices=Roles)
+
+        widgets = {
+            'username': forms.TextInput(attrs={'class': 'form-control'}),
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
+            'category_name': forms.SelectMultiple(attrs={'class': 'form-control'})
+            # 'role': forms.TextInput(attrs={'class': 'form-control'}),
+        }
 
 
 class RoleForm(forms.ModelForm):
