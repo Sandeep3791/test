@@ -444,7 +444,7 @@ def supplier_register(request):
                 body = f'Your credential for <strong> Wayrem Supplier</strong> are:\n <br> Username: <em>{username}</em>\n  <br> Password: <em>{password}</em>\n <br> Email: <em>{email}</em>\n'
                 # Role: {role}
                 send_email(to, subject, body)
-                messages.success(request, 'User Created Successfully!!')
+                messages.success(request, 'Supplier Created Successfully!!')
                 return redirect('/supplier-list/')
         else:
             form = SupplierRegisterForm(

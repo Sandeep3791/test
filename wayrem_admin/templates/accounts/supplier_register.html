@@ -107,16 +107,16 @@
                             <!-- <div class="form-group"> -->
 
                                 <!-- Form -->
-                                <div class="col-lg-6">
+                                {% comment %} <div class="col-lg-6">
                                 <div class="form-group mb-4">
                                     <label for="password">Password <span class="text-danger">*</span> <span class="text-danger"><em> {{form.password.errors | striptags}}
                                             </em></span></label>
                                     <div class="input-group">
                                         <span class="input-group-text" id="password"><span
-                                                class="fas fa-lock"></span></span>
+                                                class="fas fa-lock"></span></span> {% endcomment %}
 
                                         {{form.password}}
-                                        <span class="input-group-text" id="cpassword"><i class="far fa-eye"
+                                        {% comment %} <span class="input-group-text" id="cpassword"><i class="far fa-eye"
                                                     id="togglePassword"></i></span>
                                         </div>
                                         <div class="input-group">
@@ -125,19 +125,19 @@
 
                                     <span class="text-error"></span>
                                 </div>
-                                </div>
+                                </div> {% endcomment %}
                                 <!-- End of Form -->
 
                                 <!-- Form -->
-                                <div class="col-lg-6">
+                                {% comment %} <div class="col-lg-6">
                                 <div class="form-group mb-4">
                                     <label for="password">Confirm Password <span class="text-danger">*</span> <span class="text-danger"><em> {{form.password2.errors | striptags}} 
                                             </em></span></label>
                                     <div class="input-group">
                                         <span class="input-group-text" id="cpassword"><span
-                                                class="fas fa-unlock-alt"></span></span>
+                                                class="fas fa-unlock-alt"></span></span> {% endcomment %}
                                         {{form.password2}}
-                                        <span class="input-group-text" id="cpassword"><i class="far fa-eye"
+                                        {% comment %} <span class="input-group-text" id="cpassword"><i class="far fa-eye"
                                                     id="toggleCPassword"></i></span>
                                     </div>
                                         <div class="input-group">
@@ -145,7 +145,7 @@
                                         </div>   
                                     <span class="text-error"></span>
                                 </div>
-                                </div>
+                                </div> {% endcomment %}
                                 <!-- End of Form -->
                                <!-- Form -->
                                 <div class="col-lg-6">

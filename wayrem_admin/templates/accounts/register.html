@@ -122,44 +122,44 @@
 
                                 {% comment %} <span class="text-danger">*</span> {% endcomment %}
                                 <!-- Form -->
-                                <div class="col-lg-6">
+                                {% comment %} <div class="col-lg-6">
                                     <div class="form-group mb-4">
                                         <label for="password">Password  </label>
                                         <div class="input-group">
                                             <span class="input-group-text" id="password"><span
-                                                    class="fas fa-unlock-alt"></span></span>
+                                                    class="fas fa-unlock-alt"></span></span> {% endcomment %}
 
                                             {{form.password1}}
-                                            <span class="input-group-text" id="cpassword"><i class="far fa-eye"
+                                            {% comment %} <span class="input-group-text" id="cpassword"><i class="far fa-eye"
                                                     id="togglePassword"></i></span>
-                                        </div>
+                                        </div> {% endcomment %}
                                         {% comment %} <div class="input-group">
                                             <span class="text-danger"> {{form.password1.errors | striptags}} </span>
 
                                         </div> {% endcomment %}
                                         {% comment %} <span class="text-error"></span> {% endcomment %}
-                                    </div>
-                                </div>
+                                    {% comment %} </div>
+                                </div> {% endcomment %}
                                 <!-- End of Form -->
 
                                 <!-- Form -->
-                                <div class="col-lg-6">
+                                {% comment %} <div class="col-lg-6">
                                     <div class="form-group mb-4">
                                         <label for="password">Confirm Password </label>
                                         <div class="input-group">
                                             <span class="input-group-text" id="cpassword"><span
-                                                    class="fas fa-unlock-alt"></span></span>
+                                                    class="fas fa-unlock-alt"></span></span> {% endcomment %}
                                             {{form.password2}}
-                                            <span class="input-group-text" id="cpassword"><i class="far fa-eye"
+                                            {% comment %} <span class="input-group-text" id="cpassword"><i class="far fa-eye"
                                                     id="toggleCPassword"></i></span>
 
-                                        </div>
+                                        </div> {% endcomment %}
                                         {% comment %} <div class="input-group">
                                             <span class="text-danger"> {{form.password2.errors | striptags}} </span>
                                         </div>
                                         <span class="text-error"></span> {% endcomment %}
-                                    </div>
-                                </div>
+                                    {% comment %} </div>
+                                </div> {% endcomment %}
                                 <!-- End of Form -->
                             </div>
 

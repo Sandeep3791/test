@@ -23,9 +23,9 @@ class SubAdminForm(UserCreationForm):
     }
 
     password1 = forms.CharField(label='Password',
-                                widget=forms.PasswordInput(attrs={'class': 'form-control eye','readonly': 'readonly'}, render_value=True))
+                                widget=forms.HiddenInput(attrs={'class': 'form-control eye'}))
     password2 = forms.CharField(
-        label='Confirm Password', widget=forms.PasswordInput(attrs={'class': 'form-control eye','readonly': 'readonly'}, render_value=True))
+        label='Confirm Password', widget=forms.HiddenInput(attrs={'class': 'form-control eye'}))
 
     class Meta:
         model = CustomUser
@@ -98,7 +98,7 @@ class CategoryCreateForm(forms.ModelForm):
 
 class SupplierRegisterForm(forms.ModelForm):
     password2 = forms.CharField(
-        label='Confirm Password', widget=forms.PasswordInput(attrs={'class': 'form-control','readonly': 'readonly'}, render_value=True))
+        label='Confirm Password', widget=forms.HiddenInput(attrs={'class': 'form-control'}))
 
     class Meta:
         model = SupplierRegister
@@ -110,7 +110,7 @@ class SupplierRegisterForm(forms.ModelForm):
             'username': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
             # 'contact': forms.NumberInput(attrs={'class': 'form-control'}),
-            'password': forms.PasswordInput(attrs={'class': 'form-control','readonly': 'readonly'}, render_value=True),
+            'password': forms.HiddenInput(attrs={'class': 'form-control'}),
             'category_name': forms.SelectMultiple(attrs={'class': 'form-control'})
             # 'role': forms.TextInput(attrs={'class': 'form-control'}),
         }
