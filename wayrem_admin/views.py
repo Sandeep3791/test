@@ -586,7 +586,7 @@ def barcodeDetail(code):
         # resp = requests.get(
         #     f'https://api.upcitemdb.com/prod/trial/lookup?upc={code}', headers=headers)
         resp = requests.get(
-            f'https://api.barcodelookup.com/v3/products?barcode={code}&formatted=y&key=2ppq23rl3qiilkkc0k315y1ft3ytxw', headers=headers)
+            f'https://api.barcodelookup.com/v3/products?barcode={code}&formatted=y&key=mnwhg43aos35mx2kusq6mtnrp4vbt0', headers=headers)
         data = json.loads(resp.text)
         return data
     except:
@@ -604,6 +604,7 @@ def inputBar(request):
             request.session['product_name'] = data['products'][0]['title']
             request.session['description'] = data['products'][0]['description']
             request.session['model'] = data['products'][0]['model']
+            request.session['product_meta_key'] = data['products'][0]['features']
             request.session['weight'] = data['products'][0]['weight']
             request.session['mfr_name'] = data['products'][0]['manufacturer']
             # request.session['product_code'] = data['products'][0]['asin']
