@@ -16,7 +16,7 @@
                     <div class="col-12 d-flex align-items-center justify-content-center">
                         <div class="bg-white shadow-soft border rounded border-light p-4 p-lg-5 w-100 fmxw-800">
                             <h1 class="h3 mb-4">Create User</h1>
-                            <form method="post" action="{% url 'sub-admin-register' %}">
+                            <form method="post" action="{% url 'wayrem_admin:sub-admin-register' %}">
 
                                 {% csrf_token %}
                                 <div class="row">
@@ -104,7 +104,7 @@
                                 <div class="float-end">
                                     <button type="submit" name="register" class="btn" style="background-color:#245125;">Create user</button>
                                     <input type="reset" name="reset" class="btn btn-" value="reset" style="background-color:#edfc21;">
-                                    <a href="{% url 'userlist' %}" class="btn" style="background-color:#b71918;">Cancel</a>
+                                    <a href="{% url 'wayrem_admin:userlist' %}" class="btn" style="background-color:#b71918;">Cancel</a>
                                 </div>
     
                             </form>

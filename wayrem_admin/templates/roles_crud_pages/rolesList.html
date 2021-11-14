@@ -25,7 +25,7 @@ endcomment %}
 
 {% block content %}
 <!-- <div class="text-left">
-    <a class="nav-link" href="{% url 'sub-admin-register' %}">
+    <a class="nav-link" href="{% url 'wayrem_admin:sub-admin-register' %}">
         <button class="btn btn-secondary" style="background-color: #f2e600; position: relative;left: 850px;">Create New User</button>
         </a>
 </div> -->
@@ -59,7 +59,7 @@ endcomment %}
                 </select>
             </div>
             <div class="col-xl-4 col-lg-5 col-md-5">
-                <a class="btn w-100 anchor_btn ps-0 pe-0" href="{% url 'roles_create' %}">
+                <a class="btn w-100 anchor_btn ps-0 pe-0" href="{% url 'wayrem_admin:roles_create' %}">
                     <button class="btn col-sm-12 col-md-12 col-12 create_new">Create New Role</button>
                 </a>
             </div>
@@ -99,7 +99,7 @@ endcomment %}
             <th scope="row">{{forloop.counter}}</th>
             <td>{{role.role}}</td>
             {% comment %} <td>{{role.status}}</td> {% endcomment %}
-            <td> <a href="{% url 'roles_view' %}?id={{role.id}}" class="text-dark">View Permissions</a></td>
+            <td> <a href="{% url 'wayrem_admin:roles_view' %}?id={{role.id}}" class="text-dark">View Permissions</a></td>
             {% if 'Roles Delete' in request.user.role.permission or request.user.is_superuser %}
             <td>
                 <a type="button" class="btn-sm text-white" data-bs-toggle="modal"
@@ -116,7 +116,7 @@ endcomment %}
             {% endif %}
             {% if 'Roles Edit' in request.user.role.permission or request.user.is_superuser %}
             <td>
-                <a href="{% url 'roles_update' %}?id={{role.id}}" class="btn-sm text-dark"><i
+                <a href="{% url 'wayrem_admin:roles_update' %}?id={{role.id}}" class="btn-sm text-dark"><i
                         class="fas fa-edit"></i></a>
             </td>
             {% endif %}
@@ -142,7 +142,7 @@ endcomment %}
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
-                            <a href="{% url 'roles_active_unactive' %}?id={{role.id}}" class="btn btn-danger">
+                            <a href="{% url 'wayrem_admin:roles_active_unactive' %}?id={{role.id}}" class="btn btn-danger">
                                 {% if role.status == 'Active'%}
                                 Inactive
                                 {% else %}

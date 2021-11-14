@@ -32,7 +32,7 @@ endcomment %}
 
 {% block content %}
 <!-- <div class="text-left">
-    <a class="nav-link" href="{% url 'sub-admin-register' %}">
+    <a class="nav-link" href="{% url 'wayrem_admin:sub-admin-register' %}">
         <button class="btn btn-secondary" style="background-color: #f2e600; position: relative;left: 850px;">Create New User</button>
         </a>
 </div> -->
@@ -43,14 +43,14 @@ endcomment %}
 {% comment %} <div class="subheader row pe-4 ps-4 mt-5">
     <div class="row add_btn col-xl-4 col-lg-4 col-md-5 d-flex align-items-center">
         <div class="col">
-            <a href="{% url 'importingredients' %}" class="button button1 mt-2 export_file">Import Data</a>
+            <a href="{% url 'wayrem_admin:importingredients' %}" class="button button1 mt-2 export_file">Import Data</a>
         </div>
     </div> {% endcomment %}
 
     <div class="subheader row pe-4 ps-4 mt-5">
         <div class="row add_btn col-xl-4 col-lg-4 col-md-5 d-flex align-items-center">
             <div class="col">
-                <form action="{% url 'importingredients' %}" method="POST" enctype="multipart/form-data" >
+                <form action="{% url 'wayrem_admin:importingredients' %}" method="POST" enctype="multipart/form-data" >
                     {% csrf_token %}
                     <input type="file" name="myFileInput" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onchange="form.submit()" id="myFileInput" />
                 </form>
@@ -80,7 +80,7 @@ endcomment %}
                     </select>
                 </div>
                 <div class="col-xl-4 col-lg-5 col-md-5"><a class="btn w-100 anchor_btn ps-0 pe-0"
-                        href="{% url 'createingredients' %}">
+                        href="{% url 'wayrem_admin:createingredients' %}">
                         <button class="btn col-sm-12 col-md-12 col-12 create_new">Create New Ingredients</button>
                     </a></div>
             </div>

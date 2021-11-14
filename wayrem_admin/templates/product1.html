@@ -65,7 +65,7 @@
 {% endif %}
 
 
-                        <form method="post" action="{% url 'productviewone' %}"  id="product1" data-supplier-url = "{% url 'ajax_load_supplier' %}" enctype="multipart/form-data" novalidate>
+                        <form method="post" action="{% url 'wayrem_admin:productviewone' %}"  id="product1" data-supplier-url = "{% url 'ajax_load_supplier' %}" enctype="multipart/form-data" novalidate>
                                 {% csrf_token %}
                                 {{ form.non_field_errors }}
                                 <div class="row">
@@ -228,7 +228,7 @@
                                 </div>
                                
                             <div class="mt-1">
-                                <a  href="{% url 'product' %}" class="btn  btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Back</a>
+                                <a  href="{% url 'wayrem_admin:product' %}" class="btn  btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Back</a>
                                 <button type="submit" class="btn btn-dark border-0 col-xl-3 col-md-5 col-12" >Next</button>
                             </div>
 

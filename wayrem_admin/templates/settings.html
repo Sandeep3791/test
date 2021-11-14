@@ -40,7 +40,7 @@
       <div class="col-12 col-xl-8">
           <div class="card card-body shadow-sm mb-4">
               <h2 class="h5 mb-4">General information</h2>
-              <form action="{% url 'updateprofile' %}" method="POST">
+              <form action="{% url 'wayrem_admin:updateprofile' %}" method="POST">
                 {% csrf_token %}
                   <div class="row">
                       <div class="col-md-6 mb-3">
@@ -175,7 +175,7 @@
                             {{ request.user.email }}
                           </h5>
                           <p class="text-gray mb-4">{{user.city}}, {{user.zip_code}}</p>
-                          <a class="btn btn-sm btn-dark me-2" href="{% url 'change-password' %}"><span class="fas fa-key me-1"></span> Change Password</a>
+                          <a class="btn btn-sm btn-dark me-2" href="{% url 'wayrem_admin:change-password' %}"><span class="fas fa-key me-1"></span> Change Password</a>
                           <!-- <a class="btn btn-sm btn-secondary" href="#">Send Message</a> -->
                       </div>
                     </div>

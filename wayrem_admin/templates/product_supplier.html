@@ -56,14 +56,14 @@
       <td>{{i.price}}</td>
       <td>Within {{i.deliverable_days}} days</td>
       <td>
-       <a class="btn btn-sm btn-dark" href="{% url 'create_po' %}?suprod={{i.supplier_id.id}}?{{i.SKU}}">Raise PO</a>
+       <a class="btn btn-sm btn-dark" href="{% url 'wayrem_admin:create_po' %}?suprod={{i.supplier_id.id}}?{{i.SKU}}">Raise PO</a>
        </td>
     </tr>
     {% endfor %}
   </tbody>
 </table>
                                 <div class="text-right">
-                                <a href="{% url 'productlist' %}" class="btn btn-dark my-3" >Back</a>
+                                <a href="{% url 'wayrem_admin:productlist' %}" class="btn btn-dark my-3" >Back</a>
                                 </div>
                             </div>
                         </div>

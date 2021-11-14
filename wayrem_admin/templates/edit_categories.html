@@ -13,7 +13,7 @@
         <div class="card card-body card_shadow mb-4">
             <h2 class="h3 ">Add Category</h2>
             <hr class="mb-4 ">
-            <form action="{% url 'createcategory' %}" method="POST" enctype="multipart/form-data" novalidate>
+            <form action="{% url 'wayrem_admin:createcategory' %}" method="POST" enctype="multipart/form-data" novalidate>
               {% csrf_token %}
                 <div class="row">
                    
@@ -46,7 +46,7 @@
                     </div>               
                
                 <div class="mt-3">
-                    <a href="{% url 'categorieslist' %}"
+                    <a href="{% url 'wayrem_admin:categorieslist' %}"
                                     class="btn  btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Cancel</a>
                     <button type="submit" class="btn  btn-dark btn-block col-xl-3 col-md-5 col-12">Save</button>
                 </div>

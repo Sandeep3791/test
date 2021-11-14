@@ -66,7 +66,7 @@
   {% endfor %}
 {% endif %}
 
-                         <form method="post" action="{% url 'productviewtwo' %}" enctype="multipart/form-data" novalidate>
+                         <form method="post" action="{% url 'wayrem_admin:productviewtwo' %}" enctype="multipart/form-data" novalidate>
                                 {% csrf_token %}
                                 {{ form.non_field_errors }}
                                 <div class="row">
@@ -166,7 +166,7 @@
                                 </div>
                             {% comment %} <div class="row">
                                     <div class="col-md-6 d-grid">
-                                                <a href="{% url 'productviewone' %}" class="btn btn-secondary">Previous</a>
+                                                <a href="{% url 'wayrem_admin:productviewone' %}" class="btn btn-secondary">Previous</a>
                                         </div>  
                                 <div class="col-md-6 d-grid">
                                         <button type="submit" class="btn text-white"
@@ -175,7 +175,7 @@
                                 </div> {% endcomment %}
 
                                 <div class="mt-1">
-                                <a  href="{% url 'productviewone' %}" class="btn  btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Previous</a>
+                                <a  href="{% url 'wayrem_admin:productviewone' %}" class="btn  btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Previous</a>
                                 <button type="submit" class="btn btn-dark border-0 col-xl-3 col-md-5 col-12" >Next</button>
                             </div>
                                 

@@ -25,7 +25,7 @@ endcomment %}
 
 {% block content %}
 <!-- <div class="text-left">
-    <a class="nav-link" href="{% url 'sub-admin-register' %}">
+    <a class="nav-link" href="{% url 'wayrem_admin:sub-admin-register' %}">
         <button class="btn btn-secondary" style="background-color: #f2e600; position: relative;left: 850px;">Create New User</button>
         </a>
 </div> -->
@@ -36,7 +36,7 @@ endcomment %}
 <div class="subheader row pe-4 ps-4 mt-5">
     <div class="row add_btn col-xl-4 col-lg-4 col-md-5 d-flex align-items-center">
         <div class="col">
-            <a href="{% url 'categorypdf' %}" class="button button1 mt-2 export_file">Export to pdf</a>
+            <a href="{% url 'wayrem_admin:categorypdf' %}" class="button button1 mt-2 export_file">Export to pdf</a>
         </div>
     </div>
 
@@ -59,7 +59,7 @@ endcomment %}
                 </select>
             </div>
             <div class="col-xl-4 col-lg-5 col-md-5"><a class="btn w-100 anchor_btn ps-0 pe-0"
-                    href="{% url 'createcategory' %}">
+                    href="{% url 'wayrem_admin:createcategory' %}">
                     <button class="btn col-sm-12 col-md-12 col-12 create_new">Create New Category</button>
                 </a></div>
         </div>
