@@ -65,7 +65,7 @@
 {% endif %}
 
 
-                        <form method="post" action="{% url 'wayrem_admin:productviewone' %}"  id="product1" data-supplier-url = "{% url 'ajax_load_supplier' %}" enctype="multipart/form-data" novalidate>
+                        <form method="post" action="{% url 'wayrem_admin:productviewone' %}"  id="product1" data-supplier-url = "{% url 'wayrem_admin:ajax_load_supplier' %}" enctype="multipart/form-data" novalidate>
                                 {% csrf_token %}
                                 {{ form.non_field_errors }}
                                 <div class="row">

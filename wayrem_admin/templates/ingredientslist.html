@@ -123,7 +123,7 @@ endcomment %}
                 <td>{{ingre.ingredients_name}}</td>
                 <td>{{ingre.ingredients_status}}</td>
                 <td><a type="button" class="btn btn-sm " data-bs-toggle="modal"
-                        href="{% url 'updateingredients' ingre.id %}">
+                        href="{% url 'wayrem_admin:updateingredients' ingre.id %}">
                         <i class="fas fa-edit text-dark"></i>
                     </a> <a type="button" class="btn btn-sm" data-bs-toggle="modal"
                         data-bs-target="#deleteModal{{ingre.id}}">
@@ -144,7 +144,7 @@ endcomment %}
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
-                                <form method="POST" action="{% url 'deleteingredients' %}">
+                                <form method="POST" action="{% url 'wayrem_admin:deleteingredients' %}">
                                     {% csrf_token %}
                                     <input type="hidden" value="{{ingre.id}}" name="ingredients_id">
                                     <button type="submit" class="btn btn-danger">Delete</button>

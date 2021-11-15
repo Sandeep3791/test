@@ -13,7 +13,7 @@
         <div class="card card-body card_shadow mb-4">
             <h2 class="h3 ">Update Your Ingredients</h2>
             <hr class="mb-4 ">
-            <form action="{% url 'updateingredients' id %}" method="POST" enctype="multipart/form-data" novalidate>
+            <form action="{% url 'wayrem_admin:updateingredients' id %}" method="POST" enctype="multipart/form-data" novalidate>
               {% csrf_token %}
                 <div class="row">
                    
