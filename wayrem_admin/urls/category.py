@@ -10,5 +10,9 @@ urlpatterns = [
          name='deletecategories'),
     path('update-categories/<str:id>/',
          views.update_categories, name='updatecategory'),
+    path('category-details/<str:id>/',
+         views.category_details, name='categorydetails'),
+    path('delete-categories/', views.DeleteCategories.as_view(),
+         name='deletecategories'),
 
 ]

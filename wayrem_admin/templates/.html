@@ -38,7 +38,7 @@
                 <td>{{user.email}}</td>
                 <td>{{user.contact}}</td>
                 <td>{{user.role}}</td>
-                <td> {% if user.is_active %} <a href="{% url 'activeblock' user.id %}" class="badge rounded-pill bg-success ">Active</a> {% else %} <a href="{% url 'activeblock' user.id %}" class="badge rounded-pill bg-danger">Blocked</a>
+                <td> {% if user.is_active %} <a href="{% url 'wayrem_admin:activeblock' user.id %}" class="badge rounded-pill bg-success ">Active</a> {% else %} <a href="{% url 'wayrem_admin:activeblock' user.id %}" class="badge rounded-pill bg-danger">Blocked</a>
                     {% endif %} </td>
                 <td>
                     
@@ -70,7 +70,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
-                                <form method="POST" action="{% url 'deleteuser' %}">
+                                <form method="POST" action="{% url 'wayrem_admin:deleteuser' %}">
                                     {% csrf_token %}
                                     <input type="hidden" value="{{user.id}}" name="userid">
                                     <button type="submit" class="btn btn-danger">Delete</button>

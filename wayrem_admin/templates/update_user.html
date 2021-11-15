@@ -16,7 +16,7 @@
                         class="mb-4 mb-lg-0 bg-white  rounded p-4 p-lg-4 w-100" style="box-shadow: 0px 14px 20px 0px #00000014;">
                         <div class="mb-4 mt-md-0">
             <h2 class="h5 mb-4">Update User</h2>
-            <form method="post" action="{% url 'updateuser' id %}" novalidate>
+            <form method="post" action="{% url 'wayrem_admin:updateuser' id %}" novalidate>
 
                          {% csrf_token %}
                             {{form.non_field_errors}}

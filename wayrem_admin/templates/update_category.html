@@ -12,7 +12,7 @@
     <div class="col-12 col-xl-6">
         <div class="card card-body shadow-sm mb-4  mt-5">
             <h2 class="h5 mb-4">Update Your Categories</h2>
-            <form action="{% url 'updatecategory' id %}" method="POST" enctype="multipart/form-data" novalidate>
+            <form action="{% url 'wayrem_admin:updatecategory' id %}" method="POST" enctype="multipart/form-data" novalidate>
               {% csrf_token %}
                 <div class="row">
                    

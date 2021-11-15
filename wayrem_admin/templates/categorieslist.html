@@ -103,13 +103,13 @@ endcomment %}
                 {% endif %}
             </td>
             <td>{{cate.description}}</td>
-            <td><a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'updatecategory' cate.id %}">
+            <td><a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'wayrem_admin:updatecategory' cate.id %}">
                     <i class="fas fa-edit text-dark"></i>
                 </a> <a type="button" class="btn btn-sm" data-bs-toggle="modal"
                     data-bs-target="#deleteModal{{cate.id}}">
                     <i class="fas fa-trash-alt text-danger"></i>
                 </a>
-                <a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'categorydetails' cate.id %}">
+                <a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'wayrem_admin:categorydetails' cate.id %}">
                     <i class="mx-1 fas fa-eye text-success" style="font-size:15px;"></i>
                 </a>
             </td>
@@ -127,7 +127,7 @@ endcomment %}
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
-                            <form method="POST" action="{% url 'deletecategories' %}">
+                            <form method="POST" action="{% url 'wayrem_admin:deletecategories' %}">
                                 {% csrf_token %}
                                 <input type="hidden" value="{{cate.id}}" name="category_id">
                                 <button type="submit" class="btn btn-danger">Delete</button>

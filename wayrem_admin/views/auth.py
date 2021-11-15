@@ -88,7 +88,6 @@ class Forgot_Password(View):
 
 
 class Reset_Password(View):
-    # serializer_class = ResetSerializer
 
     def get(self, request):
         email = request.session.get('fpemail', None)

@@ -108,9 +108,9 @@ endcomment %}
             <td>{{suppl.username}}</td>
             <td>{{suppl.email}}</td>
 
-            <td> {% if suppl.is_active %} <a href="{% url 'activeblocksupplier' suppl.id %}"
+            <td> {% if suppl.is_active %} <a href="{% url 'wayrem_admin:activeblocksupplier' suppl.id %}"
                     class="btn-sm text-success"><i class="fas fa-toggle-on"> Active</i></a> {% else %} <a
-                    href="{% url 'activeblocksupplier' suppl.id %}" class="btn-sm text-danger"><i
+                    href="{% url 'wayrem_admin:activeblocksupplier' suppl.id %}" class="btn-sm text-danger"><i
                         class="fas fa-toggle-off"> Blocked</i> </a>
                 {% endif %} </td>
             <td>

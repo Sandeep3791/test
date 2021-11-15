@@ -58,7 +58,6 @@ class DeleteCategories(View):
 def update_categories(request, id=None, *args, **kwargs):
     print(id)
     if request.method == "POST":
-        # kwargs = { 'data' : request.POST }
         user = Categories.objects.get(id=id)
         form = CategoryCreateForm(
             request.POST or None, request.FILES or None, instance=user)
@@ -76,3 +75,16 @@ def update_categories(request, id=None, *args, **kwargs):
     user = Categories.objects.get(id=id)
     form = CategoryCreateForm(instance=user)
     return render(request, 'update_category.html', {'form': form, 'id': user.id})
+
+
+def category_details(request, id=None):
+    cate = Categories.objects.filter(id=id).first()
+    return render(request, 'category_popup.html', {'catedata': cate})
+
+
+class DeleteCategories(View):
+    def post(self, request):
+        categoriesid = request.POST.get('category_id')
+        categories = Categories.objects.get(id=categoriesid)
+        categories.delete()
+        return redirect('/categories-list/')

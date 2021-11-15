@@ -113,9 +113,9 @@ endcomment %}
             <td>{{user.role}}</td>
             <td>
                 {% if 'User Edit' in request.user.role.permission or request.user.is_superuser %}
-                {% if user.is_active %} <a href="{% url 'activeblock' user.id %}"
+                {% if user.is_active %} <a href="{% url 'wayrem_admin:activeblock' user.id %}"
                     class="btn-sm text-success"><i class="fas fa-toggle-on text-success"> Active</i></a> {% else %} <a
-                    href="{% url 'activeblock' user.id %}" class="btn-sm text-danger"><i
+                    href="{% url 'wayrem_admin:activeblock' user.id %}" class="btn-sm text-danger"><i
                         class="fas fa-toggle-off"> Blocked</i></a>
 
                 {% endif %}
@@ -127,12 +127,12 @@ endcomment %}
 
             <td>
                 {% if 'User Delete' in request.user.role.permission or request.user.is_superuser %}
-                <a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'updateuser' user.id %}">
+                <a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'wayrem_admin:updateuser' user.id %}">
                     <i class="fas fa-edit text-dark"></i>
                     <a type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{user.id}}">
                         <i class="fas fa-trash-alt text-danger"></i>
                     </a>
-                    <a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'userdetails' user.id %}">
+                    <a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'wayrem_admin:userdetails' user.id %}">
                         <i class="mx-1 fas fa-eye text-success" style="font-size:15px;"></i>
                     </a>
                     {% else %}
@@ -154,7 +154,7 @@ endcomment %}
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
-                            <form method="POST" action="{% url 'deleteuser' %}">
+                            <form method="POST" action="{% url 'wayrem_admin:deleteuser' %}">
                                 {% csrf_token %}
                                 <input type="hidden" value="{{user.id}}" name="userid">
                                 <button type="submit" class="btn btn-danger">Delete</button>
