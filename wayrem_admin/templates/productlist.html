@@ -45,12 +45,14 @@
 
             </div>
             <div class="col-xl-4 col-md-4">
-                <select class="form-select form-select-md filter_select" aria-label=".form-select-md example" disabled>
+            <form action="#"  method="post">
+            {% csrf_token %}
+                <select class="form-select form-select-md filter_select" name="status" onchange='this.form.submit()' aria-label=".form-select-md example">
                     <option selected="">All</option>
-                    <option value="1">...</option>
-                    <option value="2">...</option>
-                    <option value="3">...</option>
+                    <option value="1">Featured product</option>
+                    <option value="2">Deliverable Product</option>
                 </select>
+                </form>
             </div>
             <div class="col-xl-4 col-lg-5 col-md-5"><a class="btn w-100 anchor_btn ps-0 pe-0"
                     href="{% url 'wayrem_admin:product' %}">
@@ -99,7 +101,7 @@
                 {{i}}
                 {% endfor %}
                 </td>
-                <td><a class="btn btn-sm" href="{% url 'viewprodsupplier' %}?product={{prod.SKU}}">View Supplier
+                <td><a class="btn btn-sm" href="{% url 'wayrem_admin:viewprodsupplier' %}?product={{prod.SKU}}">View Supplier
                 </a></td>
             <td>{{forloop.counter|add:"55"}}</td>
             <td>Within 2 Days</td>
@@ -150,14 +152,14 @@
                 </div>
             </div>
         </td> {% endcomment %}
-            <td><a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'updateproduct' prod.id %}">
+            <td><a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'wayrem_admin:updateproduct' prod.id %}">
 
                     <i class="fas fa-edit text-dark"></i>
                 </a> <a type="button" class="btn btn-sm" data-bs-toggle="modal"
                     data-bs-target="#deleteModal{{prod.id}}">
                     <i class="fas fa-trash-alt text-danger"></i>
                 </a>
-                <a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'productdetails' prod.id %}">
+                <a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'wayrem_admin:productdetails' prod.id %}">
                     <i class="mx-1 fas fa-eye text-success" style="font-size:15px;"></i>
                 </a>
             </td>
@@ -175,7 +177,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
-                            <form method="POST" action="{% url 'deleteproduct' %}">
+                            <form method="POST" action="{% url 'wayrem_admin:deleteproduct' %}">
                                 {% csrf_token %}
                                 <input type="hidden" value="{{prod.id}}" name="product_id">
                                 <button type="submit" class="btn btn-danger">Delete</button>

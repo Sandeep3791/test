@@ -114,14 +114,14 @@ endcomment %}
                         class="fas fa-toggle-off"> Blocked</i> </a>
                 {% endif %} </td>
             <td>
-                <a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'updatesupplier' suppl.id %}">
+                <a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'wayrem_admin:updatesupplier' suppl.id %}">
                     <i class="fas fa-edit text-dark"></i>
                     <a type="button" class="btn btn-sm" data-bs-toggle="modal"
                         data-bs-target="#deleteModal{{suppl.id}}">
                         <i class="fas fa-trash-alt text-danger"></i>
                     </a>
                     <a type="button" class="btn btn-sm " data-bs-toggle="modal"
-                        href="{% url 'supplierdetails' suppl.id %}">
+                        href="{% url 'wayrem_admin:supplierdetails' suppl.id %}">
                         <i class="mx-1 fas fa-eye text-success" style="font-size:15px;"></i>
                     </a>
             </td>
@@ -139,7 +139,7 @@ endcomment %}
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
-                            <form method="POST" action="{% url 'deletesupplier' %}">
+                            <form method="POST" action="{% url 'wayrem_admin:deletesupplier' %}">
                                 {% csrf_token %}
                                 <input type="hidden" value="{{suppl.id}}" name="supplier_id">
                                 <button type="submit" class="btn btn-danger">Delete</button>

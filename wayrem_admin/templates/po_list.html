@@ -96,7 +96,7 @@ endcomment %}
             <td>{{item1.po_name}}</td>
             <td>{{item2}}</td>
             <td>
-            <form action="{% url 'po_status' item1.po_id %}"  method="post">
+            <form action="{% url 'wayrem_admin:po_status' item1.po_id %}"  method="post">
             {% csrf_token %}
                 <select class="form-select form-select-sm" name="status" onchange='this.form.submit()' aria-label=".form-select-sm example">
                     <option selected>{{item1.status|title}}</option>
@@ -109,10 +109,10 @@ endcomment %}
             </form>
             </td>
             <td>
-                <a type="button" data-toggle="tooltip" data-placement="bottom" title="View" href="{% url 'viewpo' item1.po_id %}" class="btn btn-sm"><i
+                <a type="button" data-toggle="tooltip" data-placement="bottom" title="View" href="{% url 'wayrem_admin:viewpo' item1.po_id %}" class="btn btn-sm"><i
                         class="fas fa-eye text-success"></i>
                 </a>
-                <a type="button" data-toggle="tooltip" data-placement="bottom" title="Edit" href="{% url 'editpo' item1.po_id %}" class="btn btn-sm"><i
+                <a type="button" data-toggle="tooltip" data-placement="bottom" title="Edit" href="{% url 'wayrem_admin:editpo' item1.po_id %}" class="btn btn-sm"><i
                         class="fas fa-edit text-primary"></i>
                 </a>
                 <a type="button" data-toggle="tooltip" data-placement="bottom" title="Cancel" class="btn btn-sm" data-bs-toggle="modal"
@@ -136,7 +136,7 @@ endcomment %}
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
-                            <form method="POST" action="{% url 'statuspo' %}">
+                            <form method="POST" action="{% url 'wayrem_admin:statuspo' %}">
                                 {% csrf_token %}
                                 <input type="hidden" value="{{item1.po_id}}" name="po_id">
                                 <button type="submit" class="btn btn-danger">Cancel</button>
@@ -161,7 +161,7 @@ endcomment %}
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
-                            <form method="POST" action="{% url 'deletepo' %}">
+                            <form method="POST" action="{% url 'wayrem_admin:deletepo' %}">
                                 {% csrf_token %}
                                 <input type="hidden" value="{{item1.po_id}}" name="po_id">
                                 <button type="submit" class="btn btn-danger">Delete</button>

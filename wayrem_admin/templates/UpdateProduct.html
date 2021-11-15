@@ -67,7 +67,7 @@
 {% endif %}
 
 
-                        <form method="POST" action="{% url 'updateproduct' id %}"  id="product" enctype="multipart/form-data" novalidate>
+                        <form method="POST" action="{% url 'wayrem_admin:updateproduct' id %}"  id="product" enctype="multipart/form-data" novalidate>
                                 {% csrf_token %}
                                 {{ form.non_field_errors }}
                                 <div class="row">
