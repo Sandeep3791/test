@@ -1,5 +1,8 @@
+from wayrem_admin.forms.account import *
+from wayrem_admin.forms.supplier import *
+from wayrem_admin.forms.roles import *
+from wayrem_admin.forms.purchase_order import *
+from wayrem_admin.forms.product import *
+from wayrem_admin.forms.ingredients import *
+from wayrem_admin.forms.categories import *
 from django import forms
-
-
-class DateInput(forms.DateInput):
-    input_type = 'date'

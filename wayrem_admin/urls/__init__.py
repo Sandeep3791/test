@@ -12,5 +12,6 @@ urlpatterns = [
     path('product/', include('wayrem_admin.urls.product')),
     path('purchase_order/', include('wayrem_admin.urls.purchase_order')),
     path('roles/', include('wayrem_admin.urls.roles')),
+    path('supplier/', include('wayrem_admin.urls.supplier')),
     path('', views.RootUrlView.as_view(), name='root')
 ]

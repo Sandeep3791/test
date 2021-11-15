@@ -6,3 +6,4 @@ from wayrem_admin.views.ingredients import *
 from wayrem_admin.views.product import *
 from wayrem_admin.views.purchase_order import *
 from wayrem_admin.views.roles import *
+from wayrem_admin.views.supplier import *

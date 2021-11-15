@@ -12,15 +12,5 @@ urlpatterns = [
     path('deleteuser/', views.DeleteUser.as_view(), name='deleteuser'),
     path('activeblock/<str:id>/',
          views.Active_BlockUser.as_view(), name='activeblock'),
-    path('excel_supplier/', views.supplier_excel, name='excelsupplier'),
-    path('pdf_supplier/', views.supplier_pdf, name='supplierpdf'),
-    path('supplier-registration/', views.supplier_register, name='suppregister'),
-    path('supplier-list/', views.SupplierList.as_view(), name='supplierlist'),
-    path('delete-supplier/', views.DeleteSupplier.as_view(), name='deletesupplier'),
-    path('activeblock-supplier/<str:id>/',
-         views.Active_BlockSupplier.as_view(), name='activeblocksupplier'),
-    path('update-supplier/<str:id>/',
-         views.update_supplier, name='updatesupplier'),
-    path('supplier-details/<str:id>/',
-         views.supplier_details, name='supplierdetails'),
+
 ]

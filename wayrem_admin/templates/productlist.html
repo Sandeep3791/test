@@ -97,7 +97,9 @@
             <th scope="row">{{forloop.counter}}</th>
             <td>{{prod.SKU}}</td>
             <td>{{prod.product_name}}</td>
-            <td>{% for i in prod.product_category.all%}
+            <td>
+            {% for i in prod.product_category.all%}
+            
                 {{i}}
                 {% endfor %}
                 </td>
