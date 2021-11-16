@@ -19,9 +19,8 @@
                    
                     <div class="col-md-6 mb-3">
                         <div>
-                            <label for="name">Category Name</label>
+                            <label for="name">Category Name  <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.name.errors | striptags}}</em></span></label>
                             {{form.name}}
-                            {{form.name.errors}}
                             <!-- <input class="form-control" id="first_name" type="text" placeholder="Enter your first name" required> -->
                         </div>
                     </div>
@@ -36,13 +35,12 @@
                 </div>
                 <div class="row align-items-center">
                     <div class="col-md-12 mb-3">
-                        <label for="description">Description</label>
+                        <label for="description">Description <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.description.errors | striptags}}</em></span></label>
                         <!-- <div class="input-group">
                             <span class="input-group-text"><span class="far fa-calendar-alt"></span></span>
                             <input data-datepicker="" class="form-control" id="birthday" type="text" placeholder="dd/mm/yyyy" required>                                               
                           </div> -->
                           {{form.description}}
-                          {{form.description.errors}}
                     </div>               
                
                 <div class="mt-3">

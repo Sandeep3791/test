@@ -200,9 +200,9 @@ def product_view_four(request):
     #     'wayrem_abs_percent': request.session.get('wayrem_abs_percent', None),
     # }
     context = {}
-    form = ProductFormFour(request.POST, request.FILES)
-    context['form'] = form
     if request.method == 'POST':
+        form = ProductFormFour(request.POST, request.FILES)
+        context['form'] = form
         print("Post")
         if form.is_valid():
             print("Valid Form")
@@ -228,10 +228,22 @@ def product_view_four(request):
             wayrem_margin = request.session['wayrem_margin']
             wayrem_abs_percent = request.session['wayrem_abs_percent']
             package_count = request.session['package_count']
-            ingredients1 = inst_Ingridient(request.session['ingredients1'])
-            ingredients2 = inst_Ingridient(request.session['ingredients2'])
-            ingredients3 = inst_Ingridient(request.session['ingredients3'])
-            ingredients4 = inst_Ingridient(request.session['ingredients4'])
+            if request.session['ingredients1'] == "":
+                ingredients1 = None
+            else:
+                ingredients1 = inst_Ingridient(request.session['ingredients1'])
+            if request.session['ingredients2'] == "":
+                ingredients2 = None
+            else:
+                ingredients2 = inst_Ingridient(request.session['ingredients2'])
+            if request.session['ingredients3'] == "":
+                ingredients3 = None
+            else:
+                ingredients3 = inst_Ingridient(request.session['ingredients3'])
+            if request.session['ingredients4'] == "":
+                ingredients4 = None
+            else:
+                ingredients4 = inst_Ingridient(request.session['ingredients4'])
             category = [inst_Category(i)
                         for i in request.session['product_category']]
             supplier = [inst_Supplier(i)

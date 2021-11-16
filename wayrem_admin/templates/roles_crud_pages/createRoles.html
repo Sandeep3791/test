@@ -1,7 +1,7 @@
 {% extends "layouts/base.html" %}
 {% load static %}
 
-{% block title %} Create Purchase Order {% endblock %} 
+{% block title %} Roles {% endblock %} 
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
@@ -25,11 +25,12 @@
                               
                           {% endif %}
                             <!-- <h1 class="h3 mb-4">Create Roles</h1> -->
-                                <form method="post" enctype="multipart/form-data" class="role-permission">
+                                <form method="post" enctype="multipart/form-data" class="role-permission" novalidate>
                                   {% csrf_token %}
                                   <div class="row">
                                     {% for field in form %}
                                       <div class="{% if field.name == 'status' or field.name == 'role' %}col-md-6 mt-2{% else %}col-md-12 mt-2{% endif %}">
+                                      {% comment %} <span class="text-danger"><em>{{ field.errors }}</em></span> {% endcomment %}
                                         <div class="{% if field.name == 'permission' %}permission-clss{% else %}form-group{% endif %}">
                                               
                                             {% if field.name == 'permission'%} 
@@ -626,9 +627,8 @@
                       
                                                   </div>
                                               {% else %}
-                                                  <label>{{ field.label_tag }}</label>
-                                                  {{ field }}
-                                                  {% if field.errors %}<li class='form-error'>{{ field.label }}: {{ field.errors|striptags }}</li>{% endif %}
+                                                  <label>{{ field.label_tag }} <span class="text-danger">*</span> {% if field.errors %} <span class="text-danger"><em>{{ field.errors|striptags }}</em></span> {% endif %}</label>
+                                                  {{ field }} 
                                               {% endif %}
                                         </div>
                                       </div>
