@@ -15,16 +15,16 @@ def rolesList(request):
 
 @role_required('Roles Add')
 def createRoles(request):
-    context = {}
-    form = RoleForm(label_suffix='')
-    context['form'] = form
     if request.method == 'POST':
         form = RoleForm(request.POST)
         if form.is_valid():
+            print("not valid")
             form.save()
             messages.success(request, "Role Added")
             return redirect('wayrem_admin:roles_list')
-    return render(request, 'roles_crud_pages/createRoles.html', context)
+    else:
+        form = RoleForm(label_suffix='')
+    return render(request, 'roles_crud_pages/createRoles.html', {"form": form})
 
 
 @role_required('Roles Edit')

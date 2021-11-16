@@ -36,7 +36,7 @@ status = (("Active", "Active"), ("Inactive", "Inactive"))
 
 class Roles(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
-    role = models.CharField(max_length=50)
+    role = models.CharField(max_length=50, unique=True)
     permission = MultiSelectField(choices=roles_options, default="Stats")
     content = models.TextField(blank=True, null=True)
     status = models.CharField(max_length=10, choices=status, default='Active')
@@ -140,7 +140,7 @@ class Products(models.Model):
     # product_category = models.ForeignKey(Categories, on_delete=models.CASCADE,null=True,blank=True)
     product_category = models.ManyToManyField('Categories', null=True)
     product_code = models.CharField(max_length=255, null=True)
-    product_meta_key = models.CharField(max_length=250)
+    product_meta_key = models.TextField()
     feature_product = models.BooleanField(default=True)
     product_deliverable = models.BooleanField(default=True)
     date_of_mfg = models.DateField()
@@ -162,7 +162,7 @@ class Products(models.Model):
     image4 = models.ImageField(upload_to='images/', null=True)
     image5 = models.ImageField(upload_to='images/', null=True)
     product_name = models.CharField(max_length=255, null=True, blank=True)
-    description = models.CharField(max_length=255)
+    description = models.TextField()
     ingredients1 = models.ForeignKey(
         Ingredients, on_delete=models.CASCADE, related_name='Products1', null=True, blank=True)
     ingredients2 = models.ForeignKey(

@@ -21,7 +21,7 @@
 
 
 <div class="subheader row pe-4 ps-4 mt-5">
-    <div class="row add_btn col-xl-4 col-lg-4 col-md-5 d-flex align-items-center">
+    <div class="row add_btn col-xl-4 col-md-4 col-lg-4 col-md-5 d-flex align-items-center">
         <div class="col">
         <div class="dropdown">
   <button class="button button1 mt-2 export_file dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -36,15 +36,15 @@
         </div>
     </div>
 
-    <div class="col-xl-8 col-lg-8 col-12">
+    <div class="col-xl-8 col-md-8 col-lg-8 col-12">
         <div class="row d-flex align-items-center">
-            <div class="col-xl-4 col-lg-3 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 " style="height:40px;">
+            <div class="col-xl-4 col-md-4 col-lg-3 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 " style="height:40px;">
                 <label class="subadmin_search d-flex align-items-center">
                     <input class="table_searchbar" id="table_search" type="search" placeholder="Search">
                 </label>
 
             </div>
-            <div class="col-xl-4 col-md-4">
+            <div class="col-xl-4 col-md-4 col-md-4">
             <form action="#"  method="post">
             {% csrf_token %}
                 <select class="form-select form-select-md filter_select" name="status" onchange='this.form.submit()' aria-label=".form-select-md example">
@@ -54,7 +54,7 @@
                 </select>
                 </form>
             </div>
-            <div class="col-xl-4 col-lg-5 col-md-5"><a class="btn w-100 anchor_btn ps-0 pe-0"
+            <div class="col-xl-4 col-md-4 col-lg-5 col-md-5"><a class="btn w-100 anchor_btn ps-0 pe-0"
                     href="{% url 'wayrem_admin:product' %}">
                     <button class="btn col-sm-12 col-md-12 col-12 create_new">Create New Product</button>
                 </a></div>

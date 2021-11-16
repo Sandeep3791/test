@@ -108,19 +108,22 @@ class ProductFormThree(forms.Form):
 
     def get_ingredients():
         obj = Ingredients.objects.all()
-        choice = [(r.id, r.ingredients_name) for r in obj]
+        choice = [(None, "Select Ingredients")]
+        ch = [(r.id, r.ingredients_name) for r in obj]
+        choice.extend(ch)
+        print(choice)
         return choice
 
     choices_role = get_ingredients
 
     ingredients1 = forms.ChoiceField(
-        choices=choices_role, widget=forms.Select(attrs={'class': 'form-select'}))
+        choices=choices_role, widget=forms.Select(attrs={'class': 'form-select'}), required=False)
     ingredients2 = forms.ChoiceField(
-        choices=choices_role, widget=forms.Select(attrs={'class': 'form-select'}))
+        choices=choices_role, widget=forms.Select(attrs={'class': 'form-select'}), required=False)
     ingredients3 = forms.ChoiceField(
-        choices=choices_role, widget=forms.Select(attrs={'class': 'form-select'}))
+        choices=choices_role, widget=forms.Select(attrs={'class': 'form-select'}), required=False)
     ingredients4 = forms.ChoiceField(
-        choices=choices_role, widget=forms.Select(attrs={'class': 'form-select'}))
+        choices=choices_role, widget=forms.Select(attrs={'class': 'form-select'}), required=False)
 
 
 class ProductFormFour(forms.Form):
