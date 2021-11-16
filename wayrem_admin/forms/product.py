@@ -1,5 +1,6 @@
 from django import forms
 from wayrem_admin.models import Supplier, Categories, Ingredients, Products
+from datetime import datetime
 
 
 class DateInput(forms.DateInput):
@@ -45,15 +46,23 @@ class ProductFormOne(forms.Form):
     supplier_name = forms.MultipleChoiceField(
         choices=choices_role, widget=forms.SelectMultiple(attrs={'class': 'form-control'}), required=False)
 
-    # def get_category():
-    #     obj = Categories.objects.all()
-    #     choice = [(r.id, r.name) for r in obj]
-    #     return choice
+    def clean(self):
+        form_data = self.cleaned_data
+        if form_data['date_of_exp'] < form_data['date_of_mfg']:
+            # Will raise a error message
+            self._errors["date_of_exp"] = "Invalid Date"
+            del form_data['date_of_mfg']
+        return form_data
+    # def clean(self):
+    #     cleaned_data = super(ProductFormOne, self).clean()
+    #     date_of_mfg = cleaned_data.get("date_of_mfg")
+    #     date_of_exp = cleaned_data.get("date_of_exp")
 
-    # choices_role = get_category
-
-    # category = forms.ChoiceField(choices=choices_role, widget=forms.Select(
-    #     attrs={'class': 'form-select'}))
+    #     if date_of_mfg != date_of_exp:
+    #         raise forms.ValidationError(
+    #             "Manufacture date should be different!"
+    #         )
+    #     return cleaned_data
 
 
 class ProductFormTwo(forms.Form):

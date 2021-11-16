@@ -85,7 +85,7 @@ class Otp(models.Model):
 
 class Categories(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, unique=True)
     category_image = models.ImageField(
         upload_to='images/', blank=True, null=True)
     description = models.CharField(max_length=500, null=True)
