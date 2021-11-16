@@ -20,6 +20,6 @@ class POEditForm(forms.ModelForm):
         fields = ("product_name", "product_qty")
 
         widgets = {
-            'product_name': forms.Select(attrs={'class': 'form-select'}),
+            'product_name': forms.Select(attrs={'class': 'form-select form-select-sm'}),
             'product_qty': forms.NumberInput(attrs={'class': "form-control form-control-sm"}),
         }

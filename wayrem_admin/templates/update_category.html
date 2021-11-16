@@ -36,7 +36,7 @@
                     </div>
                 </div>
                 <div class="row align-items-center">
-                    <div class="col-md-6 mb-3">
+                      <div class="col-md-12 mb-3">
                         <label for="description">Description</label>
                         <!-- <div class="input-group">
                             <span class="input-group-text"><span class="far fa-calendar-alt"></span></span>
@@ -47,7 +47,12 @@
                     </div>               
                
                 <div class="mt-3">
-                    <button type="submit" class="btn  btn-dark">Save</button>
+                    {% comment %} <button type="submit" class="btn  btn-dark">Save</button> {% endcomment %}
+                    <div class="mt-3">
+                    <a href="{% url 'wayrem_admin:categorieslist' %}"
+                                    class="btn  btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Cancel</a>
+                    <button type="submit" class="btn  btn-dark btn-block col-xl-3 col-md-5 col-12">Save</button>
+                </div>
                 </div>
             </form>
         </div>

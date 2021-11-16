@@ -16,29 +16,36 @@
             <form action="{% url 'wayrem_admin:updateingredients' id %}" method="POST" enctype="multipart/form-data" novalidate>
               {% csrf_token %}
                 <div class="row">
-                   
-                    <div class="col-md-6 mb-3">
-                        <div>
+                    <!-- Form -->
+                    <div class="col-lg-6">
+                        <div class="form-group mb-4">
                             <label for="name">Ingredients Name <span class="text-danger">*</span> <span class="text-danger"><em> {{form.ingredients_name.errors | striptags}}
                             </em></span></label>
-                            {{form.ingredients_name}}
-                            <!-- <input class="form-control" id="first_name" type="text" placeholder="Enter your first name" required> -->
+                            <div class="input-group">   
+                                {{form.ingredients_name}}
+                            </div>
+                            
                         </div>
                     </div>
-                </div>
-                <div class="row align-items-center">
-                    <div class="col-md-12 mb-3">
-                        <label for="status">Status</label>
-                        <!-- <div class="input-group">
-                            <span class="input-group-text"><span class="far fa-calendar-alt"></span></span>
-                            <input data-datepicker="" class="form-control" id="birthday" type="text" placeholder="dd/mm/yyyy" required>                                               
-                          </div> -->
-                          {{form.ingredients_status}}
-                          {{form.ingredients_status.errors}}
-                    </div>               
+                    <!-- End of Form -->
+
+                    <!-- Form -->
+                    <div class="col-lg-6">
+                        <div class="form-group mb-4">
+                            <label for="image"> Ingredients Status <span class="text-danger">*</span> <span class="text-danger"> <em> {{form.ingredients_status.errors | striptags}}
+                            </em> </span></label>
+                            <div class="input-group">                                
+                                {{form.ingredients_status}}                          
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <!-- End of Form -->
+                </div>          
                
                 <div class="mt-3">
-                    <button type="reset" class="btn  btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Reset</button>
+                    <a href="{% url 'wayrem_admin:ingredientslist' %}"
+                                    class="btn  btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Cancel</a>
                     <button type="submit" class="btn  btn-dark btn-block col-xl-3 col-md-5 col-12">Save</button>
                 </div>
             </form>
