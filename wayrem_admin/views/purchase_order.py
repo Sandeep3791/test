@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views import View
-from wayrem_admin.models import PurchaseOrder, Products, SupplierRegister
+from wayrem_admin.models import PurchaseOrder, Products, Supplier
 from wayrem_admin.forms import POForm, POEditForm
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -83,7 +83,7 @@ class POList(View):
             'po_id', 'po_name', 'supplier_name', 'status').distinct()
         pol = []
         for i in polist:
-            obj = SupplierRegister.objects.filter(
+            obj = Supplier.objects.filter(
                 id=i['supplier_name']).first()
             pol.append(obj.username)
         mylist = zip(polist, pol)

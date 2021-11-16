@@ -56,15 +56,15 @@
                             <div class="row">
                                 <div class="col-lg-6">
                                     <div class="form-group mb-4">
-                                        <label for="email">Username <span class="text-danger">*</span> </label>
+                                        <label for="email">Username <span class="text-danger">*</span> <span class="text-danger"><em>{{form.username.errors | striptags}}</em></span></label>
                                         <div class="input-group">
                                             <span class="input-group-text" id="username"><span
                                                     class="fas fa-user-shield"></span></span>
                                             {{form.username}}
                                         </div>
-                                        <div class="input-group">
+                                        {% comment %} <div class="input-group">
                                             <span class="text-danger"> {{form.username.errors | striptags}} </span>
-                                        </div>
+                                        </div> {% endcomment %}
                                         <span class="text-error"></span>
                                     </div>
                                 </div>
@@ -73,16 +73,16 @@
                                 <!-- Form -->
                                 <div class="col-lg-6">
                                     <div class="form-group mb-4">
-                                        <label for="email">Email <span class="text-danger">*</span> </label>
+                                        <label for="email">Email <span class="text-danger">*</span> <span class="text-danger"><em>{{form.email.errors | striptags}}</em></span></label>
                                         <div class="input-group">
                                             <span class="input-group-text" id="email"><span
                                                     class="fas fa-envelope"></span></span>
                                             {{form.email}}
 
                                         </div>
-                                        <div class="input-group">
+                                        {% comment %} <div class="input-group">
                                             <span class="text-danger"> {{form.email.errors | striptags}} </span>
-                                        </div>
+                                        </div> {% endcomment %}
                                         <span class="text-error"></span>
                                     </div>
                                 </div>
@@ -91,30 +91,30 @@
                                 <!-- Form -->
                                 <div class="col-lg-6">
                                     <div class="form-group mb-4">
-                                        <label for="contact">Contact <span class="text-danger">*</span> </label>
+                                        <label for="contact">Contact <span class="text-danger">*</span> <span class="text-danger"><em>{{form.contact.errors | striptags}}</em></span></label>
                                         <div class="input-group">
                                             <span class="input-group-text" id="contact"><span
                                                     class="fas fa-phone-alt"></span></span>
                                             {{form.contact}}
                                         </div>
-                                        <div class="input-group">
+                                        {% comment %} <div class="input-group">
                                             <span class="text-danger"> {{form.contact.errors | striptags}} </span>
-                                        </div>
+                                        </div> {% endcomment %}
                                         <span class="text-error"></span>
                                     </div>
                                 </div>
                                 <!-- End of Form -->
                                 <div class="col-lg-6">
                                     <div class="form-group mb-4">
-                                        <label for="contact">Role </label>
+                                        <label for="contact">Role <span class="text-danger"><em>{{form.role.errors | striptags}}</em></span></label>
                                         <div class="input-group">
                                             <span class="input-group-text" id="contact"><span
                                                     class="fas fa-user-tag"></span></span>
                                             {{form.role}}
                                         </div>
-                                        <div class="input-group">
+                                        {% comment %} <div class="input-group">
                                             <span class="text-danger"> {{form.role.errors | striptags}} </span>
-                                        </div>
+                                        </div> {% endcomment %}
                                         <span class="text-error"></span>
                                     </div>
                                 </div>

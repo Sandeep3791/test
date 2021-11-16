@@ -52,9 +52,9 @@ def load_supplier(request):
     x = dict(request.GET)
     category = x.get('category_product[]')
 
-    supplier = [SupplierRegister.objects.filter(
+    supplier = [Supplier.objects.filter(
         category_name=i).all() for i in category]
-    # supplier = SupplierRegister.objects.filter(category_name=category).all()
+    # supplier = Supplier.objects.filter(category_name=category).all()
     return render(request, 'supplier_dropdown.html', {'supplier': supplier})
 
 

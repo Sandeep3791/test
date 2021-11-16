@@ -50,7 +50,7 @@ class Roles(models.Model):
         return self.role
 
 
-class CustomUser(AbstractUser):
+class User(AbstractUser):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     email = models.EmailField(_('email address'), unique=True)
     contact = models.CharField(
@@ -99,7 +99,7 @@ class Categories(models.Model):
         db_table = 'categories'
 
 
-class SupplierRegister(models.Model):
+class Supplier(models.Model):
     id = models.UUIDField(default=uuid.uuid1, primary_key=True)
     username = models.CharField(max_length=255, unique=True, null=True)
     email = models.EmailField(blank=False, unique=True, null=True)
@@ -146,8 +146,8 @@ class Products(models.Model):
     date_of_mfg = models.DateField()
     date_of_exp = models.DateField()
     mfr_name = models.CharField(max_length=100, null=True, blank=True)
-    # supplier_name = models.ForeignKey(SupplierRegister, on_delete=models.CASCADE)
-    supplier_name = models.ManyToManyField('SupplierRegister', null=True)
+    # supplier_name = models.ForeignKey(Supplier, on_delete=models.CASCADE)
+    supplier_name = models.ManyToManyField('Supplier', null=True)
     DIS_ABS_PERCENT = (
         ('(Absolute ', 'Abs'),
         ('%', '%'),
@@ -219,7 +219,7 @@ class PurchaseOrder(models.Model):
         Products, on_delete=models.CASCADE, null=True)
     product_qty = models.IntegerField(null=False, default=1)
     supplier_name = models.ForeignKey(
-        SupplierRegister, on_delete=models.CASCADE, null=False)
+        Supplier, on_delete=models.CASCADE, null=False)
     po_status = (
         ('accept', 'Accept'),
         ('deny', 'Deny'),
@@ -248,7 +248,7 @@ class OtpDetails(models.Model):
 class SupplierProducts(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     supplier_id = models.ForeignKey(
-        SupplierRegister, on_delete=models.CASCADE, null=True)
+        Supplier, on_delete=models.CASCADE, null=True)
     SKU = models.CharField(max_length=250, null=True, blank=True)
     product_name = models.CharField(max_length=500, null=True, blank=True)
     quantity = models.IntegerField(null=True, default=1)

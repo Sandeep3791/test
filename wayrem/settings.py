@@ -151,7 +151,7 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-AUTH_USER_MODEL = 'wayrem_admin.CustomUser'
+AUTH_USER_MODEL = 'wayrem_admin.User'
 
 MESSAGE_TAGS = {messages_s.ERROR: 'danger'}
 

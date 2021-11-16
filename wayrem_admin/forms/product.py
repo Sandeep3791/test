@@ -1,5 +1,5 @@
 from django import forms
-from wayrem_admin.models import SupplierRegister, Categories, Ingredients, Products
+from wayrem_admin.models import Supplier, Categories, Ingredients, Products
 
 
 class DateInput(forms.DateInput):
@@ -33,7 +33,7 @@ class ProductFormOne(forms.Form):
     choices_category = get_category
 
     def get_supplier():
-        obj = SupplierRegister.objects.all()
+        obj = Supplier.objects.all()
         choice = [(r.id, r.username) for r in obj]
         return choice
 

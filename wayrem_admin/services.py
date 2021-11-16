@@ -59,7 +59,7 @@ def barcodeDetail(code):
 
 
 def inst_Supplier(value):
-    return SupplierRegister.objects.get(id=value)
+    return Supplier.objects.get(id=value)
 
 
 def inst_Category(value):

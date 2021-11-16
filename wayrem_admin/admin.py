@@ -3,18 +3,18 @@ from .models import *
 # Register your models here.
 
 
-@admin.register(CustomUser)
-class CustomUserAdmin(admin.ModelAdmin):
+@admin.register(User)
+class UserAdmin(admin.ModelAdmin):
     list_display = ['id', 'username', 'email', 'contact', 'role']
 
 
 @admin.register(Roles)
-class CustomUserAdmin(admin.ModelAdmin):
+class UserAdmin(admin.ModelAdmin):
     list_display = ['id', 'role']
 
 
 @admin.register(Categories)
-class CustomUserAdmin(admin.ModelAdmin):
+class UserAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'category_image', 'description']
 
 

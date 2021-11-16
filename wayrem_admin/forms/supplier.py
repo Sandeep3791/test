@@ -1,13 +1,13 @@
 from django import forms
-from wayrem_admin.models import SupplierRegister
+from wayrem_admin.models import Supplier
 
 
-class SupplierRegisterForm(forms.ModelForm):
+class SupplierForm(forms.ModelForm):
     password2 = forms.CharField(
         label='Confirm Password', widget=forms.HiddenInput(attrs={'class': 'form-control'}))
 
     class Meta:
-        model = SupplierRegister
+        model = Supplier
         fields = ("username", "email", "password", "category_name")
 
         # role = forms.MultipleChoiceField(choices=Roles)
@@ -22,7 +22,7 @@ class SupplierRegisterForm(forms.ModelForm):
         }
 
     def clean(self):
-        cleaned_data = super(SupplierRegisterForm, self).clean()
+        cleaned_data = super(SupplierForm, self).clean()
         password = cleaned_data.get("password")
         password2 = cleaned_data.get("password2")
 
@@ -33,9 +33,9 @@ class SupplierRegisterForm(forms.ModelForm):
         return cleaned_data
 
 
-class SupplierRegisterUpdateForm(forms.ModelForm):
+class SupplierUpdateForm(forms.ModelForm):
     class Meta:
-        model = SupplierRegister
+        model = Supplier
         fields = ("username", "email", "category_name")
 
         # role = forms.MultipleChoiceField(choices=Roles)

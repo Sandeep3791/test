@@ -1,4 +1,4 @@
-from wayrem_admin.models import CustomUser, SupplierRegister, Products
+from wayrem_admin.models import User, Supplier, Products
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from django.views.generic import RedirectView
@@ -15,8 +15,8 @@ class RootUrlView(RedirectView):
 
 @login_required(login_url='root')
 def dashboard(request):
-    subadmins = CustomUser.objects.exclude(is_superuser=True)
-    suppliers = SupplierRegister.objects.all()
+    subadmins = User.objects.exclude(is_superuser=True)
+    suppliers = Supplier.objects.all()
     products = Products.objects.all()
     context = {
         'subadmins': len(subadmins),

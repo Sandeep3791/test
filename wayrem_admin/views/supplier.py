@@ -1,14 +1,14 @@
 # Suppliers Registration and Management Start
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from wayrem_admin.forms import SupplierRegisterForm, SupplierRegisterUpdateForm
+from wayrem_admin.forms import SupplierForm, SupplierUpdateForm
 import string
 import secrets
 from wayrem_admin.services import send_email
 from wayrem_admin.export import generate_pdf, generate_excel
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from wayrem_admin.models import SupplierRegister
+from wayrem_admin.models import Supplier
 from django.views import View
 
 
@@ -30,13 +30,13 @@ def supplier_register(request):
         alphabet = string.ascii_letters + string.digits
         auto_password = ''.join(secrets.choice(alphabet) for i in range(8))
         if request.method == 'POST':
-            form = SupplierRegisterForm(request.POST)
+            form = SupplierForm(request.POST)
             if form.is_valid():
                 username = form.cleaned_data['username']
                 email = form.cleaned_data['email']
                 password = form.cleaned_data['password']
                 category_name = form.cleaned_data['category_name']
-                user = SupplierRegister(
+                user = Supplier(
                     username=username, email=email, password=password)
                 user.save()
                 user.category_name.set(category_name)
@@ -51,7 +51,7 @@ def supplier_register(request):
                 messages.success(request, 'Supplier Created Successfully!!')
                 return redirect('wayrem_admin:supplierlist')
         else:
-            form = SupplierRegisterForm(
+            form = SupplierForm(
                 initial={'password': auto_password, 'password2': auto_password})
         return render(request, 'accounts/supplier_register.html', {"form": form})
     else:
@@ -63,14 +63,14 @@ class SupplierList(View):
 
     @method_decorator(login_required(login_url='/'))
     def get(self, request, format=None):
-        supplierlist = SupplierRegister.objects.all()
+        supplierlist = Supplier.objects.all()
         return render(request, self.template_name, {"supplierlist": supplierlist})
 
 
 class DeleteSupplier(View):
     def post(self, request):
         supplierid = request.POST.get('supplier_id')
-        user = SupplierRegister.objects.get(pk=supplierid)
+        user = Supplier.objects.get(pk=supplierid)
         user.delete()
         return redirect('wayrem_admin:supplierlist')
 
@@ -80,7 +80,7 @@ class Active_BlockSupplier(View):
 
     @method_decorator(login_required(login_url='/'))
     def get(self, request, id):
-        user = SupplierRegister.objects.get(pk=id)
+        user = Supplier.objects.get(pk=id)
         if user.is_active:
             user.is_active = False
         else:
@@ -93,8 +93,8 @@ def update_supplier(request, id=None):
     print(id)
     if request.method == "POST":
         # kwargs = { 'data' : request.POST }
-        suppl = SupplierRegister.objects.get(id=id)
-        form = SupplierRegisterUpdateForm(request.POST or None, instance=suppl)
+        suppl = Supplier.objects.get(id=id)
+        form = SupplierUpdateForm(request.POST or None, instance=suppl)
         if form.is_valid():
             username = form.cleaned_data['username']
             email = form.cleaned_data['email']
@@ -105,13 +105,13 @@ def update_supplier(request, id=None):
             suppl.category_name.set(category_name)
             suppl.save()
             return redirect('wayrem_admin:supplierlist')
-    suppl = SupplierRegister.objects.get(id=id)
-    form = SupplierRegisterUpdateForm(instance=suppl)
+    suppl = Supplier.objects.get(id=id)
+    form = SupplierUpdateForm(instance=suppl)
     return render(request, 'update_supplier.html', {'form': form, 'id': suppl.id})
 
 
 def supplier_details(request, id=None):
-    suppl = SupplierRegister.objects.filter(id=id).first()
+    suppl = Supplier.objects.filter(id=id).first()
     return render(request, 'supplier_popup.html', {'suppldata': suppl})
 
 # Suppliers Registration and Management End

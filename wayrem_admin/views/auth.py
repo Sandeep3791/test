@@ -11,7 +11,7 @@ from django.contrib import messages
 from django.utils.decorators import method_decorator
 from wayrem_admin.decorators import anonymous
 from django.contrib.auth import update_session_auth_hash
-from wayrem_admin.models import CustomUser, Otp
+from wayrem_admin.models import User, Otp
 from django.views import View
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import check_password, make_password
@@ -32,7 +32,7 @@ class LoginView(View):
         username = request.POST['username']
         password = request.POST['password']
 
-        user = CustomUser.objects.filter(username=username).first(
+        user = User.objects.filter(username=username).first(
         )
         if user is None:
             messages.error(request, "User not found!")
@@ -67,7 +67,7 @@ class Forgot_Password(View):
     def post(self, request, *args, **kwargs):
         email = request.POST.get('email')
         request.session['fpemail'] = email
-        user = CustomUser.objects.filter(email=email).first()
+        user = User.objects.filter(email=email).first()
         if not user:
             messages.error(request, "Email Doesn't Exist!")
             return redirect('wayrem_admin:forgot-password')
@@ -107,7 +107,7 @@ class Reset_Password(View):
 
         if user:
             print("Working")
-            new_user = CustomUser.objects.get(email=email)
+            new_user = User.objects.get(email=email)
             new_user.password = make_password(newpassword)
             new_user.save()
             messages.success(request, "Password Changed Successfully!")

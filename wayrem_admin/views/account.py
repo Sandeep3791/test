@@ -1,13 +1,13 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from wayrem_admin.forms import SubAdminForm, ProfileUpdateForm, SubAdminUpdateForm, SupplierRegisterForm, SupplierRegisterUpdateForm
+from wayrem_admin.forms import SubAdminForm, ProfileUpdateForm, SubAdminUpdateForm, SupplierForm, SupplierUpdateForm
 import string
 import secrets
 from wayrem_admin.services import send_email
 from wayrem_admin.export import generate_pdf, generate_excel
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from wayrem_admin.models import CustomUser, SupplierRegister
+from wayrem_admin.models import User, Supplier
 from django.views import View
 
 
@@ -57,18 +57,18 @@ class UsersList(View):
 
     @method_decorator(login_required(login_url='/'))
     def get(self, request, format=None):
-        userlist = CustomUser.objects.all()
+        userlist = User.objects.all()
         return render(request, self.template_name, {"userlist": userlist})
 
 
 def user_details(request, id=None):
-    user = CustomUser.objects.filter(id=id).first()
+    user = User.objects.filter(id=id).first()
     return render(request, 'user_popup.html', {'userdata': user})
 
 
 def update_user(request, id=None):
     print(id)
-    user = CustomUser.objects.get(id=id)
+    user = User.objects.get(id=id)
     if request.method == "POST":
         # kwargs = { 'data' : request.POST }
         form = SubAdminUpdateForm(request.POST or None, instance=user)
@@ -84,7 +84,7 @@ def update_user(request, id=None):
 def update_profile(request, *args, **kwargs):
     if request.method == "POST":
         # kwargs = { 'data' : request.POST }
-        user = CustomUser.objects.get(username=request.user.username)
+        user = User.objects.get(username=request.user.username)
 
         form = ProfileUpdateForm(request.POST, instance=user)
         if form.is_valid():
@@ -100,7 +100,7 @@ def update_profile(request, *args, **kwargs):
             address = form.cleaned_data['address']
             city = form.cleaned_data['city']
             zip_code = form.cleaned_data['zip_code']
-            user = CustomUser.objects.get(username=request.user.username)
+            user = User.objects.get(username=request.user.username)
             user.email = email
             user.first_name = fname
             user.last_name = lname
@@ -113,7 +113,7 @@ def update_profile(request, *args, **kwargs):
             user.save()
             print("Here")
             return redirect('wayrem_admin:updateprofile')
-    user = CustomUser.objects.get(username=request.user.username)
+    user = User.objects.get(username=request.user.username)
     form = ProfileUpdateForm(instance=user)
     return render(request, 'settings.html', {'form': form})
 
@@ -121,7 +121,7 @@ def update_profile(request, *args, **kwargs):
 class DeleteUser(View):
     def post(self, request):
         userid = request.POST.get('userid')
-        user = CustomUser.objects.get(pk=userid)
+        user = User.objects.get(pk=userid)
         user.delete()
         return redirect('wayrem_admin:userlist')
 
@@ -130,7 +130,7 @@ class DeleteUser(View):
 class Active_BlockUser(View):
     @method_decorator(login_required(login_url='/'))
     def get(self, request, id):
-        user = CustomUser.objects.get(pk=id)
+        user = User.objects.get(pk=id)
         if user.is_active:
             user.is_active = False
         else:
