@@ -107,7 +107,7 @@ def product_view_one(request):
 # # ----------------------------------------------------------------------------
 
 
-@ login_required(login_url='/')
+@ login_required(login_url='wayrem_admin:root')
 def product_view_two(request):
     initial = {
         'product_weight': request.session.get('product_weight', None),
@@ -269,7 +269,7 @@ def product_view_four(request):
 class ProductList(View):
     template_name = "productlist.html"
 
-    @method_decorator(login_required(login_url='/'))
+    @method_decorator(login_required(login_url='wayrem_admin:root'))
     def get(self, request, format=None):
         productslist = Products.objects.all()
         return render(request, self.template_name, {"productslist": productslist})

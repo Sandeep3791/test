@@ -19,7 +19,7 @@ def pdf_category(request):
     return generate_pdf(query_string=query, template_name=template, file_name=file)
 
 
-@login_required(login_url='/')
+@login_required(login_url='wayrem_admin:root')
 def create_category(request):
     context = {}
     form = CategoryCreateForm(request.POST or None, request.FILES or None)
@@ -38,7 +38,7 @@ def create_category(request):
 class CategoriesList(View):
     template_name = "categorieslist.html"
 
-    @method_decorator(login_required(login_url='/'))
+    @method_decorator(login_required(login_url='wayrem_admin:root'))
     def get(self, request, format=None):
         categorieslist = Categories.objects.all()
         # user_role = Roles.objects.all()
@@ -54,7 +54,7 @@ class DeleteCategories(View):
         return redirect('wayrem_admin:categorieslist')
 
 
-@login_required(login_url='/')
+@login_required(login_url='wayrem_admin:root')
 def update_categories(request, id=None, *args, **kwargs):
     print(id)
     if request.method == "POST":
@@ -87,4 +87,4 @@ class DeleteCategories(View):
         categoriesid = request.POST.get('category_id')
         categories = Categories.objects.get(id=categoriesid)
         categories.delete()
-        return redirect('/categories-list/')
+        return redirect('wayrem_admin:categorieslist')

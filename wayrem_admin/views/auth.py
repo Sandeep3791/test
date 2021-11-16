@@ -22,7 +22,7 @@ import random
 class LoginView(View):
     template_name = "accounts/login.html"
 
-    @method_decorator(anonymous(login_url='/dashboard/'))
+    @method_decorator(anonymous(login_url='wayrem_admin:root'))
     def get(self, request, format=None):
         return render(request, self.template_name)
 

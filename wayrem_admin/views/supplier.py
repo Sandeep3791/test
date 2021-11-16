@@ -23,7 +23,7 @@ def supplier_pdf(request):
     return generate_pdf(query_string=query, template_name=template, file_name=file)
 
 
-@login_required(login_url='/')
+@login_required(login_url='wayrem_admin:root')
 def supplier_register(request):
 
     if request.user.is_authenticated:
@@ -61,7 +61,7 @@ def supplier_register(request):
 class SupplierList(View):
     template_name = "supplierlist.html"
 
-    @method_decorator(login_required(login_url='/'))
+    @method_decorator(login_required(login_url='wayrem_admin:root'))
     def get(self, request, format=None):
         supplierlist = Supplier.objects.all()
         return render(request, self.template_name, {"supplierlist": supplierlist})
@@ -78,7 +78,7 @@ class DeleteSupplier(View):
 # Active/Block
 class Active_BlockSupplier(View):
 
-    @method_decorator(login_required(login_url='/'))
+    @method_decorator(login_required(login_url='wayrem_admin:root'))
     def get(self, request, id):
         user = Supplier.objects.get(pk=id)
         if user.is_active:

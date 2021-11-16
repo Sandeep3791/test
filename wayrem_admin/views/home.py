@@ -13,7 +13,7 @@ class RootUrlView(RedirectView):
         return reverse('wayrem_admin:dashboard')
 
 
-@login_required(login_url='root')
+@login_required(login_url='wayrem_admin:root')
 def dashboard(request):
     subadmins = User.objects.exclude(is_superuser=True)
     suppliers = Supplier.objects.all()

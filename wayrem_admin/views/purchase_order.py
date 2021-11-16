@@ -77,7 +77,7 @@ def create_purchase_order(request):
 class POList(View):
     template_name = "po_list.html"
 
-    @method_decorator(login_required(login_url='/'))
+    @method_decorator(login_required(login_url='wayrem_admin:root'))
     def get(self, request, format=None):
         polist = PurchaseOrder.objects.values(
             'po_id', 'po_name', 'supplier_name', 'status').distinct()

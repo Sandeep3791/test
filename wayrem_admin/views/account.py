@@ -55,7 +55,7 @@ def user_signup(request):
 class UsersList(View):
     template_name = "userlist.html"
 
-    @method_decorator(login_required(login_url='/'))
+    @method_decorator(login_required(login_url='wayrem_admin:root'))
     def get(self, request, format=None):
         userlist = User.objects.all()
         return render(request, self.template_name, {"userlist": userlist})
@@ -80,7 +80,7 @@ def update_user(request, id=None):
     return render(request, 'update_user.html', {'form': form, 'id': user.id})
 
 
-@login_required(login_url='/')
+@login_required(login_url='wayrem_admin:root')
 def update_profile(request, *args, **kwargs):
     if request.method == "POST":
         # kwargs = { 'data' : request.POST }
@@ -128,7 +128,7 @@ class DeleteUser(View):
 
 # Active/Block
 class Active_BlockUser(View):
-    @method_decorator(login_required(login_url='/'))
+    @method_decorator(login_required(login_url='wayrem_admin:root'))
     def get(self, request, id):
         user = User.objects.get(pk=id)
         if user.is_active:

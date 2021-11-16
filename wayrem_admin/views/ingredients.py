@@ -18,7 +18,7 @@ def ingredient_excel(request):
     return generate_excel("ingredients", "ingredients")
 
 
-@login_required(login_url='/')
+@login_required(login_url='wayrem_admin:root')
 def create_ingredients(request):
     context = {}
     # user = SupplierProfileModel.objects.filter(user_id = request.user.id).first()
@@ -69,7 +69,7 @@ class DeleteIngredients(View):
         return redirect('wayrem_admin:ingredientslist')
 
 
-@login_required(login_url='/')
+@login_required(login_url='wayrem_admin:root')
 def update_ingredients(request, id=None, *args, **kwargs):
     print(id)
     if request.method == "POST":
