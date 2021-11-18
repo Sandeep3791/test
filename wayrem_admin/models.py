@@ -230,6 +230,8 @@ class PurchaseOrder(models.Model):
     status = models.CharField(
         max_length=35, choices=po_status, default='in progress', null=True, blank=True)
     is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(default=datetime.now())
+
 
     class Meta:
         db_table = 'po_master'
