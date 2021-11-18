@@ -273,3 +273,30 @@ class SupplierProducts(models.Model):
 # 6281073150012
 # 6281035000034
 # 69321494000400
+
+
+class Invoice(models.Model):
+    inovice_id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    invoice_no = models.CharField(max_length=250, null=True)
+    po_name = models.CharField(max_length=250, null=True)
+    file = models.FileField(upload_to='images/', null=True)
+    supplier_name = models.CharField(max_length=250, null=True)
+    invoice_status = (
+        ('released', 'Released'),
+        ('complete', 'Complete'), 
+        ('cancel', 'Cancel'),
+    )
+    status = models.CharField(max_length=35, choices=invoice_status, default='released', null=True, blank=True)   
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(default=datetime.now())
+
+    class Meta:
+        db_table = 'invoice_supplier'
+
+
+# class AIcodeGS1(models.Model):
+#     AI = models.CharField(max_length=15,unique=True)
+#     value = models.CharField(max_length=255)
+
+# class Gs1MApping(models)
+

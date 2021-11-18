@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from wayrem_admin.models import Supplier
 from django.views import View
+from django.db import connection
 
 
 def supplier_excel(request):
@@ -41,8 +42,11 @@ def supplier_register(request):
                 user.save()
                 user.category_name.set(category_name)
                 user.save()
-                # form.save()
-
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        f'CREATE TABLE If NOT Exists {username}_Invoice(`invoice_id` Varchar(250), `invoice_no` Varchar(250),`po_name` Varchar(250), `file` BLOB , `supplier_name`  Varchar(250),`status` Varchar(250), `is active` boolean not null default 1 ,`created_ at` DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL ,PRIMARY KEY(`invoice_id`));')
+                    cursor.execute(
+                        f'CREATE TABLE If NOT Exists {username}_purchase_order(`id` varchar(250) NOT NULL,`po_id` varchar(250) NOT NULL,`po_name` varchar(250) DEFAULT NULL,`product_qty` int NOT NULL,`status` varchar(250) DEFAULT NULL, `is_active` tinyint(1) NOT NULL,`created_at`  DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,`product_name_id` varchar(250) DEFAULT NULL,`supplier_name_id` varchar(250) NOT NULL,PRIMARY KEY (`id`),FOREIGN KEY (`product_name_id`) REFERENCES `product_master` (`id`), FOREIGN KEY (`supplier_name_id`) REFERENCES `supplier_master` (`id`));')
                 to = email
                 subject = 'Welcome to Wayrem Supplier'
                 body = f'Your credential for <strong> Wayrem Supplier</strong> are:\n <br> Username: <em>{username}</em>\n  <br> Password: <em>{password}</em>\n <br> Email: <em>{email}</em>\n'
@@ -113,5 +117,3 @@ def update_supplier(request, id=None):
 def supplier_details(request, id=None):
     suppl = Supplier.objects.filter(id=id).first()
     return render(request, 'supplier_popup.html', {'suppldata': suppl})
-
-# Suppliers Registration and Management End

@@ -31138,6 +31138,7 @@ article .h1, article .h2, article .h3, article .h4, article .h5, article .h6 {
 }
 
 /*====================sachin========================*/
+
 .export_file{
     border: none;
     border-radius: 8px;
@@ -31208,4 +31209,29 @@ form.role-permission .row div.col-md-12.mt-2:nth-child(3) {
     color: #D1D5DB;
     background-color: #6f8fc2;
 }
+
+
+/*==============filter dropdown======================*/
+.filter_dropdown:hover .dropdown_content {
+    display: block;
+  }
+  
+  .dropdown_content{
+    display: none;
+    position: absolute;
+    background-color: white;
+    min-width: 810px;
+    box-shadow: 0px 8px 16px 0px rgb(0 0 0 / 20%);
+    padding: 12px 16px;
+    z-index: 1;
+    top: 184px;
+    left: 453px;
+    border-radius: 10px;
+  }
+
+  .filter_width{
+      min-width:55rem!important;
+      inset: 0px auto auto 120px!important;
+  }
+
 /*============================================*/

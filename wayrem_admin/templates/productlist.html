@@ -44,7 +44,7 @@
                 </label>
 
             </div>
-            <div class="col-xl-4 col-md-4 col-md-4">
+            <!-- <div class="col-xl-4 col-md-4 col-md-4">
             <form action="#"  method="post">
             {% csrf_token %}
                 <select class="form-select form-select-md filter_select" name="status" onchange='this.form.submit()' aria-label=".form-select-md example">
@@ -53,7 +53,124 @@
                     <option value="2">Deliverable Product</option>
                 </select>
                 </form>
+            </div> -->
+
+
+
+<!--====================filterbtn============================-->
+            <div class="col-xl-3 col-md-3 col-md-3">
+                <div class="dropdown">
+                    <a class="btn btn-dark dropdown-toggle col-xl-12 col-md-12 col-md-12" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                      Filter
+                      <img src="/static/assets/img/logo/filter1.svg" height="" width="">
+                    </a>
+
+                  <!--=====================filter_dropdown============================-->
+                        <div class="filter_width p-4 dropdown-menu dropdown-content " aria-labelledby="dropdownMenuLink">
+                                <div class="row">
+            
+                                    <div class="col-4">
+                                        <div class="input_border m-0 text-center d-flex alifn-item-center"><label for="inputPassword4">Lorem Ipsum</label></div>
+                                            <div class="col-8 input_border"><input type="text" class="form-control p-2"></div>
+                                    </div>
+            
+                                    <div class="col-4">
+                                        <div class="input_border m-0 text-center d-flex alifn-item-center"><label for="inputPassword4">Lorem Ipsum</label></div>
+                                            <div class="col-8 input_border"><input type="text" class="form-control p-2"></div>
+                                    </div>
+            
+                                    <div class="col-4">
+                                        <div class="input_border m-0 text-center d-flex alifn-item-center"><label for="inputPassword4">Lorem Ipsum</label></div>
+                                            <div class="col-8 input_border"><input type="text" class="form-control p-2"></div>
+                                    </div>
+            
+                                </div>
+            
+                                <div class="row mt-4">
+                                    <div class="col-4">
+                                        <div class="input_border m-0 text-center d-flex alifn-item-center">
+                                            <label for="inputPassword4">Lorem Ipsum</label>
+                                        </div>
+                                        <div class="col-8 input_border">
+                                            <select class="form-select form-select-md rounded-1" aria-label=".form-select-md example">
+                                            <option selected="">lorem</option>
+                                            <option value="1">lorem</option>
+                                            <option value="2">lorem</option>
+                                            <option value="3">lorem</option>
+                                          </select>
+                                        </div>
+                                    </div>
+            
+                                    <div class="col-4">
+                                        <div class="input_border m-0 text-center d-flex alifn-item-center"><label for="inputPassword4">Lorem Ipsum</label></div>
+                                            <div class="col-8 input_border">
+                                                <select class="form-select form-select-md rounded-1" aria-label=".form-select-md example">
+                                                    <option selected="">lorem</option>
+                                                    <option value="1">lorem</option>
+                                                    <option value="2">lorem</option>
+                                                    <option value="3">lorem</option>
+                                                  </select>
+                                            </div>
+                                    </div>
+            
+                                    <div class="col-4">
+                                        <div class="input_border m-0 text-center d-flex alifn-item-center">
+                                            <label for="inputPassword4">Lorem Ipsum</label>
+                                        </div>
+                                        <div class="col-8 input_border">
+                                            <select class="form-select form-select-md rounded-1" aria-label=".form-select-md example">
+                                                <option selected="">lorem</option>
+                                                <option value="1">lorem</option>
+                                                <option value="2">lorem</option>
+                                                <option value="3">lorem</option>
+                                                </select>
+                                        </div>
+                                    </div>
+                                </div>
+            
+                                <div class="row mt-4">
+                                    <div class="col-4">
+                                        <div class="input_border m-0 text-center d-flex alifn-item-center">
+                                            <label for="inputPassword4">Lorem Ipsum</label>
+                                        </div>
+                                        <div class="col-8 input_border">
+                                            <div class="form-check" style="line-height: 27px;">lorem ipsum
+                                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" style="display: flex;width: 20px;height: 20px;"></div>
+                                        </div>
+                                    </div>
+            
+                                    <div class="col-4">
+                                        <div class="input_border m-0 text-center d-flex alifn-item-center">
+                                            <label for="inputPassword4">Lorem Ipsum</label>
+                                        </div>
+                                        <div class="col-8 input_border">
+                                            <div class="form-check" style="line-height: 27px;">lorem ipsum
+                                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" style="display: flex;width: 20px;height: 20px;"></div>
+                                        </div>
+                                    </div>
+            
+                                    <div class="col-4">
+                                        <div class="input_border m-0 text-center d-flex alifn-item-center">
+                                            <label for="inputPassword4">Lorem Ipsum</label>
+                                        </div>
+                                        <div class="col-8 input_border">
+                                            <div class="form-check" style="line-height: 27px;">lorem ipsum
+                                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" style="display: flex;width: 20px;height: 20px;"></div>
+                                        </div>
+                                    </div>
+            
+                                </div>
+            
+                                <div class="row mt-4 d-flex justify-content-end">
+                                        <a href="/roles/list/" class="btn  btn-danger me-2 btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Cancel</a>
+                                        <button type="submit" class="btn btn-dark border-0 col-xl-3 col-md-5 col-12">Apply</button>
+                                </div>
+                        </div>
+            <!--=====================================-->
+                    
+                  </div>
             </div>
+
             <div class="col-xl-4 col-md-4 col-lg-5 col-md-5"><a class="btn w-100 anchor_btn ps-0 pe-0"
                     href="{% url 'wayrem_admin:product' %}">
                     <button class="btn col-sm-12 col-md-12 col-12 create_new">Create New Product</button>
