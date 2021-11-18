@@ -46,14 +46,12 @@
         </span>
         <div class="multi-level collapse " role="list" id="submenu-pages" aria-expanded="false">
           <ul class="flex-column nav">
-            <!-- <li class="nav-item">
-                <a class="nav-link" href="/sign-in.html">
-                  <span class="sidebar-text">Sign In</span>
-                </a>
-              </li> -->
             {% if request.user.is_superuser %}
-            
-
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'wayrem_admin:roles_list' %}">
+                <span class="sidebar-text">Roles</span>
+              </a>
+            </li>
             <li class="nav-item">
               <a class="nav-link" href="{% url 'wayrem_admin:userlist' %}">
                 <span class="sidebar-text">Users </span>
@@ -73,7 +71,7 @@
 {% comment %} <!-- ---------------------------------------------------------------------------- --> {% endcomment %}
 
 
-<li class="nav-item">
+{% comment %} <li class="nav-item">
         {% if 'Roles View' in request.user.role.permission or request.user.is_superuser %}
           <li class="nav-item {% if 'dashboard' in segment %} active {% endif %}">
             <a href="{% url 'wayrem_admin:roles_list' %}" class="nav-link">
@@ -82,7 +80,7 @@
             </a>
           </li>
           {% endif %}
-</li>
+</li> {% endcomment %}
 
 <ul class="nav">
 <li class="nav-item w-100 {% if 'dashboard' in segment %} active {% endif %}">
@@ -93,14 +91,42 @@
 </li>
 </ul>
 
-<ul class="nav">
+{% comment %} <ul class="nav">
 <li class="nav-item w-100 {% if 'dashboard' in segment %} active {% endif %}">
   <a href="{% url 'wayrem_admin:productlist' %}" class="nav-link">
     <span class="sidebar-icon"><i class="fas fa-gift"></i></span></span>
     <span class="sidebar-text">Product Manager</span>
   </a>
 </li>
-</ul>
+</ul> {% endcomment %}
+<li class="nav-item">
+        <span class="nav-link  collapsed  d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
+          data-bs-target="#submenu-pages1" >
+          <span>
+            <span class="sidebar-icon"><i class="fas fa-gift"></i></i></span>
+            <span class="sidebar-text">Product Manager</span>
+          </span>
+          <span class="link-arrow"><span class="fas fa-chevron-right"></span></span>
+        </span>
+        <div class="multi-level collapse" role="list" id="submenu-pages1" aria-expanded="false">
+          <ul class="flex-column nav">
+            {% if request.user.is_superuser %}
+            <li class="nav-item">
+              <a class="nav-link" href="{% url 'wayrem_admin:productlist' %}">
+                <span class="sidebar-text">Products </span>
+              </a>
+            </li>
+             <li class="nav-item">
+              <a class="nav-link" href="{% url 'wayrem_admin:ingredientslist' %}">
+                <span class="sidebar-text">Ingredients </span>
+              </a>
+            </li>
+            {% endif %}
+            
+           
+          </ul>
+        </div>
+      </li>
 
 <ul class="nav">
 <li class="nav-item w-100 {% if 'dashboard' in segment %} active {% endif %}">
@@ -113,9 +139,9 @@
 
 <ul class="nav">
 <li class="nav-item w-100 {% if 'dashboard' in segment %} active {% endif %}">
-  <a href="{% url 'wayrem_admin:ingredientslist' %}" class="nav-link">
-    <span class="sidebar-icon"><i class="fas fa-cheese"></i></span></span>
-    <span class="sidebar-text">Ingredients</span>
+  <a href="{% url 'wayrem_admin:customerslist' %}" class="nav-link">
+    <span class="sidebar-icon"><i class="fas fa-users"></i></span></span>
+    <span class="sidebar-text">Customers</span>
   </a>
 </li>
 </ul>

@@ -140,3 +140,7 @@ class Change_PasswordView(PasswordContextMixin, FormView):
         update_session_auth_hash(self.request, form.user)
         messages.success(self.request, "Your password has been changed.")
         return super(FormView, self).form_valid(form)
+
+
+def test(request):
+    return render(request, "test.html")

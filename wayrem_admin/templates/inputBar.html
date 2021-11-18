@@ -75,19 +75,19 @@
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
 <script src="https://code.jquery.com/jquery-2.2.4.js"></script>
-<script>
+{% comment %} <script>
 
   $('#code').keyup(function(){
       if(this.value.length >=12){
       $('#subHere').click();
       }
   });
-</script>
+</script> {% endcomment %}
 
-<script>
+{% comment %} <script>
   document.addEventListener('keydown', function(event) {
     if( event.keyCode == 13 || event.keyCode == 17 || event.keyCode == 74 )
       event.preventDefault();
   });
-</script>
+</script> {% endcomment %}
 {% endblock javascripts %}

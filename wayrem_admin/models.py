@@ -270,6 +270,19 @@ class SupplierProducts(models.Model):
         db_table = 'product_suppliers'
 
 
+class Customer(models.Model):
+    id = models.CharField(max_length=255, default=uuid.uuid4, primary_key=True)
+    first_name = models.CharField(max_length=255, null=True)
+    last_name = models.CharField(max_length=255, null=True)
+    email = models.EmailField(blank=False, unique=True, null=True)
+    password = models.CharField(max_length=255, null=True)
+    phone_no = models.CharField(max_length=12, null=True, unique=True)
+    address = models.CharField(max_length=500, null=True)
+    status = models.BooleanField(default=True)
+
+    class Meta:
+        db_table = 'customer_master'
+
 # 6281073150012
 # 6281035000034
 # 69321494000400
