@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from wayrem_admin.services import *
 from wayrem_admin.export import generate_excel, generate_pdf
 from wayrem_admin.forms import ProductUpdateForm, ProductFormOne, ProductFormTwo, ProductFormThree, ProductFormFour
+import biip
 
 
 def product_excel(request):
@@ -24,18 +25,28 @@ def inputBar(request):
     if request.method == "POST":
         delSession(request)
         user_code = request.POST.get('code')
-        data = barcodeDetail(user_code)
+        user_code = user_code.replace('\\x1d', '\x1d')
+        # data = barcodeDetail(user_code)
 # data['products'][0]['barcode_number']
         try:
-            request.session['SKU'] = data['products'][0]['barcode_number']
-            request.session['product_name'] = data['products'][0]['title']
-            request.session['description'] = data['products'][0]['description']
-            request.session['model'] = data['products'][0]['model']
-            request.session['product_meta_key'] = data['products'][0]['features']
-            request.session['weight'] = data['products'][0]['weight']
-            request.session['mfr_name'] = data['products'][0]['manufacturer']
-            # request.session['product_code'] = data['products'][0]['asin']
-            request.session['price'] = data['products'][0]['price']
+            result = biip.parse(user_code)
+            request.session['SKU'] = result.gs1_message.element_strings[0].value
+            request.session['price'] = str(
+                result.gs1_message.element_strings[5].decimal)
+            request.session['date_of_exp'] = str(
+                result.gs1_message.element_strings[1].date)
+            request.session['product_weight'] = str(
+                result.gs1_message.element_strings[4].decimal)
+            request.session['unit'] = "KILO-GRAM"
+            #  data['products'][0]['weight']
+            # data['products'][0]['price']
+            # data['products'][0]['barcode_number']
+            # request.session['product_name'] = data['products'][0]['title']
+            # request.session['description'] = data['products'][0]['description']
+            # request.session['model'] = data['products'][0]['model']
+            # request.session['product_meta_key'] = data['products'][0]['features']
+            # request.session['mfr_name'] = data['products'][0]['manufacturer']
+            # # request.session['product_code'] = data['products'][0]['asin']
         except:
             pass
         return redirect('wayrem_admin:productviewone')

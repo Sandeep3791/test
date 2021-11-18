@@ -48,7 +48,7 @@ class ProductFormOne(forms.Form):
 
     def clean(self):
         form_data = self.cleaned_data
-        if form_data['date_of_exp'] < form_data['date_of_mfg']:
+        if "date_of_exp" and "date_of_mfg" in form_data and form_data['date_of_exp'] < form_data['date_of_mfg']:
             # Will raise a error message
             self._errors["date_of_exp"] = "Invalid Date"
             del form_data['date_of_mfg']

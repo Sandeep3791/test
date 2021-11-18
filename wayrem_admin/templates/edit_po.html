@@ -1,7 +1,7 @@
 {% extends "layouts/base.html" %}
 {% load static %}
 
-{% block title %} Input Ingredients {% endblock %}
+{% block title %} Edit PO{% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
@@ -58,7 +58,7 @@
                 {{form.product_qty}}
                 </div>
                 <div class="col-md-3 mt-4 text-right offset-3">
-                    <button class="btn btn-success mt-2" name="addMore" type="submit" >Add More</button>
+                    <button class="btn btn-success mt-2" name="addMore" type="submit" >Add</button>
                 </div>
             </div>
         </div>
@@ -84,13 +84,13 @@
                                     </tbody>
                                 </table>
                                 <div class="mt-4">
-                                <button type="reset" class="btn  btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Reset</button>
+                                <a href="{% url 'wayrem_admin:polist' %}"
+                                    class="btn  btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Cancel</a>
+                                
                                 <button type="submit" class="btn btn-dark border-0 col-xl-3 col-md-5 col-12" >Update</button>
                             </div>
                                     </form>
-                                <div class="text-right">
-                                <a href="{% url 'wayrem_admin:polist' %}" class="btn btn-dark my-3" >Back</a>
-                                </div>
+                               
                             </div>
                         </div>
                     </div>

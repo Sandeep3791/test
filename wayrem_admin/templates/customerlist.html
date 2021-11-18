@@ -1,0 +1,242 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% block title %} Customerlist {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+{% block head %}
+<script src="{% static 'assets/js/datatable_ajax.js' %}"></script>
+<link rel="stylesheet" href="{% static 'assets/css/datatable.css' %}">
+<link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+<script src="{% static 'assets/js/datatable_1.js' %}"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+<script src="{% static 'assets/js/datatable.js' %}"></script>
+
+{% comment %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"> {%
+endcomment %}
+{% comment %}
+<link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,800&display=swap"
+    rel="stylesheet"> {% endcomment %}
+
+
+
+{% endblock head %}
+
+{% block content %}
+<!-- <div class="text-left">
+    <a class="nav-link" href="{% url 'wayrem_admin:sub-admin-register' %}">
+        <button class="btn btn-secondary" style="background-color: #f2e600; position: relative;left: 850px;">Create New User</button>
+        </a>
+</div> -->
+
+<!-- <div class="col-xl-4 col-lg-4 col-md-6 d-flex align-items-center"><span class="page_title mb-md-2" style="font-size: 28px; font-weight:600;">User</span>
+</div> -->
+
+<div class="subheader row pe-4 ps-4 mt-5">
+    <div class="row add_btn col-xl-4 col-lg-4 col-md-5 d-flex align-items-center">
+        <div class="col">
+    <div class="dropdown">
+  <button class="button button1 mt-2 export_file dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+    Export
+  </button>
+  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+    <li><a class="dropdown-item" href="{% url 'wayrem_admin:userpdf' %}">Export to Pdf</a></li>
+    <li><a class="dropdown-item" href="{% url 'wayrem_admin:exceluser' %}">Export to Excel</a></li>
+  </ul>
+</div>
+            {% comment %} <a href="{% url 'wayrem_admin:userpdf' %}" class="button button1 mt-2 export_file">Export to pdf</a> {% endcomment %}
+        </div>
+    </div>
+
+    <div class="col-xl-8 col-lg-8 col-12">
+        <div class="row d-flex align-items-center ">
+            <div class="col-xl-4 col-lg-3 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 " style="height:40px;">
+                <!-- <input type="search" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Search"> -->
+                <label class="subadmin_search d-flex align-items-center">
+                    <input class="table_searchbar" id="table_search" type="search" placeholder="Search">
+                    <!-- <img src="images/Search.svg" alt=""> -->
+                </label>
+
+            </div>
+            <div class="col-xl-4 col-md-4">
+                <select class="form-select form-select-md filter_select" aria-label=".form-select-md example" disabled>
+                    <option selected="">All</option>
+                    <option value="1">...</option>
+                    <option value="2">...</option>
+                    <option value="3">...</option>
+                </select>
+            </div>
+            <div class="col-xl-4 col-lg-5 col-md-5" >
+            <a class="btn w-100 anchor_btn ps-0 pe-0"
+                    href="{% url 'wayrem_admin:sub-admin-register' %}">
+                    <button class="btn col-sm-12 col-md-12 col-12 create_new">Create New Customer</button>
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+{% if messages %}
+{% for message in messages %}
+<div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
+    <strong> {{ message }}!</strong>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endfor %}
+{% endif %}
+<table class="table  text-center" id="filtertable">
+    <thead class="table-dark ">
+        <tr>
+            <th scope="col">S. No.</th>
+            <th scope="col">Username</th>
+            <th scope="col">Email</th>
+            <th scope="col">Contact</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody class="bg-white">
+        {% for user in userlist %}
+        {% if user.is_superuser %}
+        {% else %}
+        <tr>
+            <th scope="row">{{forloop.counter}}</th>
+            <td>{{user.first_name}} {{user.last_name}}</td>
+            <td>{{user.email}}</td>
+            <td>{{user.phone_no}}</td>
+            <td>
+                {% if 'User Edit' in request.user.role.permission or request.user.is_superuser %}
+                {% if user.status %} <a href="{% url 'wayrem_admin:customerstatus' user.id %}"
+                    class="btn-sm text-success"><i class="fas fa-toggle-on text-success"> Active</i></a> 
+                    {% else %}
+                     <a href="{% url 'wayrem_admin:customerstatus' user.id %}" class="btn-sm text-danger"><i
+                        class="fas fa-toggle-off"> Blocked</i></a>
+
+                {% endif %}
+{% comment %} href="{% url 'wayrem_admin:customerdetails' user.id %}" {% endcomment %}
+                <a type="button" class="btn btn-sm " data-bs-toggle="modal" data-bs-target="#customerModal{{user.id}}" >
+                        <i class="mx-1 fas fa-eye text-success" style="font-size:15px;"></i>
+                    </a>
+
+                <!-- Modal -->
+            <div class="modal fade" id="customerModal{{user.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">{{user.first_name | title}}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="card shadow-sm text-center p-0">
+                      <div class="profile-cover rounded-top" data-background="/static/assets/img/profile-cover.jpg" style="background: url(&quot;/static/assets/img/profile-cover.jpg&quot;);"></div>
+                      <div class="card-body pb-5">
+                          {% comment %} <img src="/static/assets/img/team/profile-picture-2.jpg" class="user-avatar large-avatar rounded-circle mx-auto mt-n7 mb-4" alt="Neil Portrait"> {% endcomment %}
+                          <h5 class="fw-normal ">
+                            {{user.email}}
+                          </h5>
+                          <h4 class="h3">
+                            {{user.first_name | title}} {{user.last_name | title}}
+                          </h4>
+                          <p class="text-gray mb-4">{{user.phone_no}}</p>
+                      </div>
+                    </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+                {% else %}
+                No Permission
+            </td>
+            {% endif %}
+            {% comment %} <td>{{user.role.content}}</td> {% endcomment %}
+
+            {% comment %} <td>
+                {% if 'User Delete' in request.user.role.permission or request.user.is_superuser %}
+                <a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'wayrem_admin:updateuser' user.id %}">
+                    <i class="fas fa-edit text-dark"></i>
+                    <a type="button" class="btn btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{user.id}}">
+                        <i class="fas fa-trash-alt text-danger"></i>
+                    </a>
+                    <a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'wayrem_admin:userdetails' user.id %}">
+                        <i class="mx-1 fas fa-eye text-success" style="font-size:15px;"></i>
+                    </a>
+                    {% else %}
+                    No Permission
+                    {% endif %}
+            </td>
+
+            <!-- Modal -->
+            <div class="modal fade" id="deleteModal{{user.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="exampleModalLabel">Delete {{user.username | title}}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            Are you sure want to delete {{user.username | title}} ??
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+                            <form method="POST" action="{% url 'wayrem_admin:deleteuser' %}">
+                                {% csrf_token %}
+                                <input type="hidden" value="{{user.id}}" name="userid">
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div> {% endcomment %}
+        </tr>
+        {% endif %}
+        {% endfor %}
+
+    </tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<script>
+
+    $(document).ready(function () {
+        oTable = $('#filtertable').DataTable({
+            dom: 'rtip',
+            'columnDefs': [{ 'orderable': false, 'targets': 4 }],
+            "oLanguage": {
+                "oPaginate": {
+                    "sNext": '<i class="fas fa-arrow-circle-right text-primary"></i>',
+                    "sPrevious": '<i class="fas fa-arrow-circle-left text-primary"></i>'
+                }
+            },
+            "fnDrawCallback": function (oSettings) {
+                if (oSettings._iDisplayLength > oSettings.fnRecordsDisplay()) {
+                    $(oSettings.nTableWrapper).find('.dataTables_paginate').hide();
+                } else {
+                    $(oSettings.nTableWrapper).find('.dataTables_paginate').show();
+                }
+            }
+        });
+        $('#table_search').keyup(function () {
+            oTable.search($(this).val()).draw();
+        })
+    });
+</script>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}
