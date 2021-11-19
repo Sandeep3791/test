@@ -220,8 +220,26 @@
                 {{i}}
                 {% endfor %}
                 </td>
-                <td><a class="btn btn-sm" href="{% url 'wayrem_admin:viewprodsupplier' %}?product={{prod.SKU}}">View Supplier
+                <td>
+                {% comment %} <a class="btn btn-sm" href="{% url 'wayrem_admin:viewprodsupplier' %}?product={{prod.SKU}}"> {% endcomment %}
+                <a type="button" class="btn btn-sm" onclick="supplierFunc('{{prod.SKU}}')">
+                View Supplier
                 </a></td>
+                <div class="modal fade" id="supplier{{prod.SKU}}" tabindex="-1" aria-labelledby="exampleModalLabel1"
+                aria-hidden="true">
+                <div class="modal-dialog  modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="">{{prod.product_name |title}}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="test{{prod.SKU}}"></div>
+                            
+                        </div>                    
+                    </div>
+                </div> 
+            </div>
             <td>{{forloop.counter|add:"55"}}</td>
             <td>Within 2 Days</td>
 
@@ -341,6 +359,31 @@
         $('#table_search').keyup(function () {
             oTable.search($(this).val()).draw();
         })
+    });
+</script>
+
+<script>
+function supplierFunc(SKU){
+  
+    const url="{% url 'wayrem_admin:viewprodsupplier' %}";
+    $.ajax({
+        
+        url:url,
+        data: {
+                    'product': SKU       // add the country id to the GET parameters
+                },
+        success:function(data){
+        $("#test"+SKU).html(data);
+        
+        $("#supplier"+SKU).modal('show');
+        },
+    });
+
+    }
+    $(document).ready(function(){
+    
+        $('#supplier').modal('hide');
+    
     });
 </script>
 
