@@ -332,3 +332,16 @@ def view_product_suppliers(request):
     product = request.GET.get('product')
     po = SupplierProducts.objects.filter(SKU=product).order_by('price')
     return render(request, 'product_supplier.html', {"list": po})
+
+
+def lowest_price_supplier(request):
+    product = request.GET.get('product')
+    po = SupplierProducts.objects.filter(SKU=product).order_by('price').first()
+    return render(request, 'lowest_price.html', {"i": po})
+
+
+def lowest_deliverytime_supplier(request):
+    product = request.GET.get('product')
+    po = SupplierProducts.objects.filter(
+        SKU=product).order_by('deliverable_days').first()
+    return render(request, 'lowest_price.html', {"i": po})

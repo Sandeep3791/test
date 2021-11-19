@@ -225,6 +225,7 @@
                 <a type="button" class="btn btn-sm" onclick="supplierFunc('{{prod.SKU}}')">
                 View Supplier
                 </a></td>
+                <!-- Modal View Supplier -->
                 <div class="modal fade" id="supplier{{prod.SKU}}" tabindex="-1" aria-labelledby="exampleModalLabel1"
                 aria-hidden="true">
                 <div class="modal-dialog  modal-dialog-centered">
@@ -240,8 +241,46 @@
                     </div>
                 </div> 
             </div>
-            <td>{{forloop.counter|add:"55"}}</td>
-            <td>Within 2 Days</td>
+            <td>
+            {% comment %} <a class="btn btn-sm" href="{% url 'wayrem_admin:lowest_price' %}?product={{prod.SKU}}"> {% endcomment %}
+            <a type="button" class="btn btn-sm" onclick="lowestFunc('{{prod.SKU}}')">View</a></td>
+             <!-- Modal Lowest Price -->
+                <div class="modal fade" id="lowest{{prod.SKU}}" tabindex="-1" aria-labelledby="exampleModalLabel1"
+                aria-hidden="true">
+                <div class="modal-dialog  modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="">{{prod.product_name |title}}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="lowest_price{{prod.SKU}}"></div>
+                            
+                        </div>                    
+                    </div>
+                </div> 
+            </div>
+            <td>
+            <a type="button" class="btn btn-sm" onclick="lowesttimeFunc('{{prod.SKU}}')">
+            View
+            </a></td>
+
+            <!-- Modal Lowest Time -->
+                <div class="modal fade" id="lowesttime{{prod.SKU}}" tabindex="-1" aria-labelledby="exampleModalLabel1"
+                aria-hidden="true">
+                <div class="modal-dialog  modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="">{{prod.product_name |title}}</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="lowest_time{{prod.SKU}}"></div>
+                            
+                        </div>                    
+                    </div>
+                </div> 
+            </div>
 
 
             {% comment %} <td><a type="button" class="btn btn-sm" data-bs-toggle="modal"
@@ -383,6 +422,56 @@ function supplierFunc(SKU){
     $(document).ready(function(){
     
         $('#supplier').modal('hide');
+    
+    });
+</script>
+
+<script>
+function lowestFunc(SKU){
+  
+    const url="{% url 'wayrem_admin:lowest_price' %}";
+    $.ajax({
+        
+        url:url,
+        data: {
+                    'product': SKU       // add the country id to the GET parameters
+                },
+        success:function(data){
+        $("#lowest_price"+SKU).html(data);
+        
+        $("#lowest"+SKU).modal('show');
+        },
+    });
+
+    }
+    $(document).ready(function(){
+    
+        $('#lowest').modal('hide');
+    
+    });
+</script>
+
+<script>
+function lowesttimeFunc(SKU){
+  
+    const url="{% url 'wayrem_admin:lowest_time' %}";
+    $.ajax({
+        
+        url:url,
+        data: {
+                    'product': SKU       // add the country id to the GET parameters
+                },
+        success:function(data){
+        $("#lowest_time"+SKU).html(data);
+        
+        $("#lowesttime"+SKU).modal('show');
+        },
+    });
+
+    }
+    $(document).ready(function(){
+    
+        $('#lowest').modal('hide');
     
     });
 </script>

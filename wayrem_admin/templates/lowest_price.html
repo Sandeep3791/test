@@ -1,0 +1,26 @@
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">S. No.</th>
+      <th scope="col">Suppliers</th>
+      <th scope="col">Price</th>
+      <th scope="col">Deliverable Time</th>
+      <th scope="col">PO</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">1</th>
+      <td>{{i.supplier_id}}</td>
+      <td>{{i.price}}</td>
+      <td>Within {{i.deliverable_days}} days</td>
+      <td>
+       <a class="btn btn-sm btn-dark" href="{% url 'wayrem_admin:create_po' %}?suprod={{i.supplier_id.id}}?{{i.SKU}}">Raise PO</a>
+       </td>
+    </tr>
+  </tbody>
+</table>
+                                
+                                
+
+
