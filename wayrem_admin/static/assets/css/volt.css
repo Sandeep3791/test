@@ -31234,4 +31234,8 @@ form.role-permission .row div.col-md-12.mt-2:nth-child(3) {
       inset: 0px auto auto 120px!important;
   }
 
+  .filter_width.p-4.dropdown-menu.dropdown-content{
+    width:55rem!  important;
+    inset: 0px auto auto 120px!important;
+}
 /*============================================*/
