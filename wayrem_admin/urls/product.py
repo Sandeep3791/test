@@ -18,7 +18,7 @@ urlpatterns = [
     path('product-suppliers/', views.view_product_suppliers,
          name='viewprodsupplier'),
     path('lowest-price-suppliers/',
-         views.view_product_suppliers, name='lowest_price'),
+         views.lowest_price_supplier, name='lowest_price'),
     path('lowest-deliverable-suppliers/',
          views.lowest_deliverytime_supplier, name='lowest_time'),
 
