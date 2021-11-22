@@ -285,7 +285,9 @@ class Customer(models.Model):
     last_name = models.CharField(max_length=255, null=True)
     email = models.EmailField(blank=False, unique=True, null=True)
     password = models.CharField(max_length=255, null=True)
-    phone_no = models.CharField(max_length=12, null=True, unique=True)
+    contact = models.CharField(max_length=12, null=True, unique=True)
+    city = models.CharField(max_length=500, null=True)
+    country = models.CharField(max_length=500, null=True)
     address = models.CharField(max_length=500, null=True)
     status = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -317,7 +319,7 @@ class Invoice(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        db_table = 'invoice_master'
+        db_table = 'invoice_master'r2wXJfUs78NczMFWRXcV
 
 
 # class AIcodeGS1(models.Model):

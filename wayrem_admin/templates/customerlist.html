@@ -109,7 +109,7 @@ endcomment %}
             <th scope="row">{{forloop.counter}}</th>
             <td>{{user.first_name}} {{user.last_name}}</td>
             <td>{{user.email}}</td>
-            <td>{{user.phone_no}}</td>
+            <td>{{user.contact}}</td>
             <td>
                 {% if 'User Edit' in request.user.role.permission or request.user.is_superuser %}
                 {% if user.status %} <a href="{% url 'wayrem_admin:customerstatus' user.id %}"
@@ -144,7 +144,7 @@ endcomment %}
                           <h4 class="h3">
                             {{user.first_name | title}} {{user.last_name | title}}
                           </h4>
-                          <p class="text-gray mb-4">{{user.phone_no}}</p>
+                          <p class="text-gray mb-4">{{user.contact}}</p>
                       </div>
                     </div>
                         </div>
