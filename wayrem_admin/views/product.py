@@ -26,6 +26,7 @@ def inputBar(request):
         delSession(request)
         user_code = request.POST.get('code')
         user_code = user_code.replace('\\x1d', '\x1d')
+
         # data = barcodeDetail(user_code)
 # data['products'][0]['barcode_number']
         try:
@@ -38,6 +39,7 @@ def inputBar(request):
             request.session['product_weight'] = str(
                 result.gs1_message.element_strings[4].decimal)
             request.session['unit'] = "KILO-GRAM"
+            request.session['gs1'] = user_code
             #  data['products'][0]['weight']
             # data['products'][0]['price']
             # data['products'][0]['barcode_number']
@@ -217,6 +219,8 @@ def product_view_four(request):
         print("Post")
         if form.is_valid():
             print("Valid Form")
+
+            gs1 = request.session.get('gs1', None)
             sku = request.session['SKU']
             product_code = request.session['product_code']
             product_meta_key = request.session['product_meta_key']
@@ -270,7 +274,7 @@ def product_view_four(request):
                             mfr_name=mfr_name, product_name=product_name, description=description,
                             calories1=calories1, calories2=calories2, calories3=calories3, calories4=calories4, ingredients1=ingredients1,
                             ingredients2=ingredients2, ingredients3=ingredients3, ingredients4=ingredients4, product_qty=product_qty, product_weight=product_weight,
-                            unit=unit, price=price, discount=discount, package_count=package_count, wayrem_margin=wayrem_margin, image1=image1, image2=image2, image3=image3, image4=image4, image5=image5, wayrem_abs_percent=wayrem_abs_percent)
+                            unit=unit, price=price, discount=discount, package_count=package_count, wayrem_margin=wayrem_margin, image1=image1, image2=image2, image3=image3, image4=image4, image5=image5, wayrem_abs_percent=wayrem_abs_percent, gs1=gs1)
             prod.save()
             prod.product_category.set(category)
             prod.supplier_name.set(supplier)

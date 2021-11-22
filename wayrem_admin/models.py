@@ -208,6 +208,7 @@ class Products(models.Model):
     )
     wayrem_abs_percent = models.CharField(max_length=20,
                                           choices=DIS_ABS_PERCENT, null=True, blank=True)
+    gs1 = models.CharField(max_length=255, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -319,7 +320,7 @@ class Invoice(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        db_table = 'invoice_master'r2wXJfUs78NczMFWRXcV
+        db_table = 'invoice_master'
 
 
 # class AIcodeGS1(models.Model):
