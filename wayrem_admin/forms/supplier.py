@@ -8,7 +8,8 @@ class SupplierForm(forms.ModelForm):
 
     class Meta:
         model = Supplier
-        fields = ("username", "email", "password", "category_name")
+        fields = ("username", "email", "password",
+                  "category_name", "company_name")
 
         # role = forms.MultipleChoiceField(choices=Roles)
 
@@ -17,8 +18,8 @@ class SupplierForm(forms.ModelForm):
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
             # 'contact': forms.NumberInput(attrs={'class': 'form-control'}),
             'password': forms.HiddenInput(attrs={'class': 'form-control'}),
-            'category_name': forms.SelectMultiple(attrs={'class': 'form-control'})
-            # 'role': forms.TextInput(attrs={'class': 'form-control'}),
+            'category_name': forms.SelectMultiple(attrs={'class': 'form-control'}),
+            'company_name': forms.TextInput(attrs={'class': 'form-control'})
         }
 
     def clean(self):
@@ -36,13 +37,14 @@ class SupplierForm(forms.ModelForm):
 class SupplierUpdateForm(forms.ModelForm):
     class Meta:
         model = Supplier
-        fields = ("username", "email", "category_name")
+        fields = ("username", "email", "category_name", "company_name")
 
         # role = forms.MultipleChoiceField(choices=Roles)
 
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
-            'category_name': forms.SelectMultiple(attrs={'class': 'form-control'})
-            # 'role': forms.TextInput(attrs={'class': 'form-control'}),
+            'category_name': forms.SelectMultiple(attrs={'class': 'form-control'}),
+            'company_name': forms.TextInput(attrs={'class': 'form-control'})
+
         }

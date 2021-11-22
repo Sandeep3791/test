@@ -35,7 +35,7 @@ class ProductFormOne(forms.Form):
 
     def get_supplier():
         obj = Supplier.objects.all()
-        choice = [(r.id, r.username) for r in obj]
+        choice = [(r.id, r.company_name) for r in obj]
         return choice
 
     choices_role = get_supplier
@@ -144,8 +144,8 @@ class ProductFormFour(forms.Form):
     # )
     # wayrem_abs_percent = forms.ChoiceField(
     #     choices=WAYREM_ABS_PERCENT, widget=forms.Select(attrs={'class': 'form-select'}))
-    image1 = forms.ImageField(widget=forms.FileInput(
-        attrs={'class': "form-control-file"}))
+    image1 = forms.ImageField(widget=forms.ClearableFileInput(
+        attrs={'class': "form-control-file", 'multiple': True}))
     image2 = forms.ImageField(widget=forms.FileInput(
         attrs={'class': "form-control-file"}))
     image3 = forms.ImageField(widget=forms.FileInput(

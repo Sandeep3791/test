@@ -9,11 +9,11 @@ from wayrem_admin.export import generate_pdf, generate_excel
 
 
 def categories_excel(request):
-    return generate_excel("categories", "categories")
+    return generate_excel("categories_master", "categories")
 
 
 def pdf_category(request):
-    query = 'SELECT id, name, category_image, description, created_at, updated_at FROM categories'
+    query = 'SELECT id, name, category_image, description, created_at, updated_at FROM categories_master'
     template = "pdf_category.html"
     file = "categories.pdf"
     return generate_pdf(query_string=query, template_name=template, file_name=file)

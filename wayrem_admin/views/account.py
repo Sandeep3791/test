@@ -12,11 +12,11 @@ from django.views import View
 
 
 def user_excel(request):
-    return generate_excel("custom_user", "users")
+    return generate_excel("users", "users")
 
 
 def user_pdf(request):
-    query = 'SELECT username, first_name, last_name, is_active, date_joined, email, contact,  dob, gender, address, city, zip_code FROM custom_user'
+    query = 'SELECT username, first_name, last_name, is_active, date_joined, email, contact,  dob, gender, address, city, zip_code FROM users'
     template = "pdf_user.html"
     file = "users.pdf"
     return generate_pdf(query_string=query, template_name=template, file_name=file)

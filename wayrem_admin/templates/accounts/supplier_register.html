@@ -161,6 +161,19 @@
                                 </div>
                                 </div>
                                 <!-- End of Form -->
+                                <!-- Form -->
+                                <div class="col-lg-6">
+                                <div class="form-group mb-4">
+                                    <label for="password">Company <span class="text-danger">*</span> <span class="text-danger"><em> {{form.company_name.errors | striptags}}
+                                            </em></span></label>
+                                    <div class="input-group">
+                                        {% comment %} <span class="input-group-text" id="cpassword"><span
+                                                class="fas fa-lock"></span></span> {% endcomment %}
+                                        {{form.company_name}}
+                                    </div>                                        
+                                    <span class="text-error"></span>
+                                </div>
+                                </div>
                         </div>
                             
                             {% comment %} <div class="d-grid">

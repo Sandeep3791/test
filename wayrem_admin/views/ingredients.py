@@ -15,7 +15,7 @@ from wayrem_admin.export import generate_excel
 
 
 def ingredient_excel(request):
-    return generate_excel("ingredients", "ingredients")
+    return generate_excel("ingredient_master", "ingredients")
 
 
 @login_required(login_url='wayrem_admin:root')
@@ -106,7 +106,8 @@ def import_ingredients(request):
             # con = connect(user="admin", password="Merlin007#",
             #               host="wayrem.c08qmktlafbu.us-east-1.rds.amazonaws.com", database="wayrem_8.2")
 
-            df_ingredients = pd.read_sql('select * from ingredients', con)
+            df_ingredients = pd.read_sql(
+                'select * from ingredient_master', con)
             df = pd.read_excel(file)
             # df.columns = df.iloc[0]
             # df = df.drop(0)

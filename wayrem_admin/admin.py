@@ -26,3 +26,8 @@ class IngredientsAdmin(admin.ModelAdmin):
 @admin.register(SupplierProducts)
 class SuProductAdmin(admin.ModelAdmin):
     list_display = ['id', "product_name", "SKU"]
+
+
+@admin.register(Products)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ['id', "product_name", "SKU"]

@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from wayrem_admin.services import inst_Product, inst_Supplier
 from wayrem_admin.export import generate_excel
-import random
+import datetime
 import uuid
 from django.db import connection
 
@@ -43,18 +43,30 @@ def create_purchase_order(request):
                 print("supplier")
                 supplier_name = inst_Supplier(request.POST['supplier_name'])
                 x = request.POST['supplier_name']
-                random_no = random.randint(1000, 99999)
+                # random_no = random.randint(1000, 99999)
                 po_id = uuid.uuid4()
-                po_name = "PO"+str(random_no)
+                # po_name = "PO"+str(random_no)
+                today = str(datetime.date.today())
+                curr_year = int(today[:4])
+                curr_month = int(today[5:7])
+                curr_date = int(today[8:10])
+                po = PurchaseOrder.objects.all()
+                aa = po.count()+1
+                q = ["{0:04}".format(aa)]
+                p = q[0]
+                po_name = "PO/"+str(curr_date) + \
+                    str(curr_month)+str(curr_year)+'/'+p
+
                 for data in request.session['products']:
                     supp_po_id = uuid.uuid4()
                     print(data)
                     product_instance = inst_Product(data[0])
                     product_qty = data[2]
                     with connection.cursor() as cursor:
-                        cursor.execute(f"INSERT INTO {supplier_name.username}_purchase_order(`id`,`po_id`,`po_name`,`product_qty`,`product_name_id`,`supplier_name_id`) VALUES('{supp_po_id}','{po_id}','{po_name}','{data[2]}','{product_instance.id.hex}','{x.replace('-','')}');")                    
+                        cursor.execute(
+                            f"INSERT INTO {supplier_name.username}_purchase_order(`id`,`po_id`,`po_name`,`product_qty`,`product_name_id`,`supplier_name_id`) VALUES('{supp_po_id}','{po_id}','{po_name}','{data[2]}','{product_instance.id.hex}','{x.replace('-','')}');")
                         product_order = PurchaseOrder(
-                        po_id=po_id, po_name=po_name, product_name=product_instance, product_qty=product_qty, supplier_name=supplier_name)
+                            po_id=po_id, po_name=po_name, product_name=product_instance, product_qty=product_qty, supplier_name=supplier_name)
                     product_order.save()
                 messages.success(
                     request, f"Purchase Order Created Successfully!")

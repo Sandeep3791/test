@@ -35,10 +35,11 @@ def supplier_register(request):
             if form.is_valid():
                 username = form.cleaned_data['username']
                 email = form.cleaned_data['email']
+                company_name = form.cleaned_data['company_name']
                 password = form.cleaned_data['password']
                 category_name = form.cleaned_data['category_name']
                 user = Supplier(
-                    username=username, email=email, password=password)
+                    username=username, email=email, password=password, company_name=company_name)
                 user.save()
                 user.category_name.set(category_name)
                 user.save()
@@ -46,7 +47,7 @@ def supplier_register(request):
                     cursor.execute(
                         f'CREATE TABLE If NOT Exists {username}_Invoice(`invoice_id` Varchar(250), `invoice_no` Varchar(250),`po_name` Varchar(250), `file` BLOB , `supplier_name`  Varchar(250),`status` Varchar(250), `is active` boolean not null default 1 ,`created_ at` DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL ,PRIMARY KEY(`invoice_id`));')
                     cursor.execute(
-                        f'CREATE TABLE If NOT Exists {username}_purchase_order(`id` varchar(250) NOT NULL,`po_id` varchar(250) NOT NULL,`po_name` varchar(250) DEFAULT NULL,`product_qty` int NOT NULL,`status` varchar(250) DEFAULT NULL, `is_active` tinyint(1) NOT NULL,`created_at`  DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,`product_name_id` varchar(250) DEFAULT NULL,`supplier_name_id` varchar(250) NOT NULL,PRIMARY KEY (`id`),FOREIGN KEY (`product_name_id`) REFERENCES `product_master` (`id`), FOREIGN KEY (`supplier_name_id`) REFERENCES `supplier_master` (`id`));')
+                        f'CREATE TABLE If NOT Exists {username}_purchase_order(`id` varchar(250) NOT NULL,`po_id` varchar(250) NOT NULL,`po_name` varchar(250) DEFAULT NULL,`product_qty` int NOT NULL,`status` varchar(250) DEFAULT NULL,`created_at`  DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,`product_name_id` varchar(250) DEFAULT NULL,`supplier_name_id` varchar(250) NOT NULL,PRIMARY KEY (`id`),FOREIGN KEY (`product_name_id`) REFERENCES `products_master` (`id`), FOREIGN KEY (`supplier_name_id`) REFERENCES `supplier_master` (`id`));')
                 to = email
                 subject = 'Welcome to Wayrem Supplier'
                 body = f'Your credential for <strong> Wayrem Supplier</strong> are:\n <br> Username: <em>{username}</em>\n  <br> Password: <em>{password}</em>\n <br> Email: <em>{email}</em>\n'

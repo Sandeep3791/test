@@ -40,8 +40,8 @@ class Roles(models.Model):
     permission = MultiSelectField(choices=roles_options, default="Stats")
     content = models.TextField(blank=True, null=True)
     status = models.CharField(max_length=10, choices=status, default='Active')
-    created_at = models.DateTimeField(default=datetime.now)
-    updated_at = models.DateTimeField(default=datetime.now)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'wayrem_roles'
@@ -71,13 +71,14 @@ class User(AbstractUser):
     REQUIRED_FIELDS = []
 
     class Meta:
-        db_table = 'custom_user'
+        db_table = 'users_master'
 
 
 class Otp(models.Model):
     email = models.EmailField()
     otp = models.IntegerField()
-    created_at = models.DateTimeField(default=datetime.now)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'otp'
@@ -85,18 +86,18 @@ class Otp(models.Model):
 
 class Categories(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
-    name = models.CharField(max_length=255, unique=True)
+    name = models.CharField(max_length=35, unique=True)
     category_image = models.ImageField(
         upload_to='images/', blank=True, null=True)
-    description = models.CharField(max_length=500, null=True)
-    created_at = models.DateTimeField(default=datetime.now())
-    updated_at = models.DateTimeField(default=datetime.now())
+    description = models.TextField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.name
 
     class Meta:
-        db_table = 'categories'
+        db_table = 'categories_master'
 
 
 class Supplier(models.Model):
@@ -108,9 +109,11 @@ class Supplier(models.Model):
     logo = models.ImageField(upload_to='images/', null=True)
     address = models.CharField(max_length=500, blank=True, null=True)
     delivery_incharge = models.CharField(max_length=500, blank=True, null=True)
-    company_name = models.CharField(max_length=100, blank=True, null=True)
+    company_name = models.CharField(max_length=100, blank=False, null=True)
     is_active = models.BooleanField(default=True)
     category_name = models.ManyToManyField('Categories', null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.username
@@ -125,12 +128,14 @@ class Ingredients(models.Model):
         max_length=100, unique=True, null=True, blank=False)
     ingredients_status = models.CharField(
         max_length=10, choices=status, default='Active')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.ingredients_name
 
     class Meta:
-        db_table = 'ingredients'
+        db_table = 'ingredient_master'
 
 
 class Products(models.Model):
@@ -203,12 +208,14 @@ class Products(models.Model):
     )
     wayrem_abs_percent = models.CharField(max_length=20,
                                           choices=DIS_ABS_PERCENT, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return self.product_name
 
     class Meta:
-        db_table = 'product_master'
+        db_table = 'products_master'
 
 
 class PurchaseOrder(models.Model):
@@ -229,9 +236,8 @@ class PurchaseOrder(models.Model):
     )
     status = models.CharField(
         max_length=35, choices=po_status, default='in progress', null=True, blank=True)
-    is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(default=datetime.now())
-
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'po_master'
@@ -241,7 +247,8 @@ class OtpDetails(models.Model):
     id = models.CharField(primary_key=True, editable=False, max_length=255)
     email = models.EmailField()
     otp = models.CharField(max_length=10)
-    created_at = models.DateTimeField(default=datetime.now())
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'supplier_otp'
@@ -265,6 +272,8 @@ class SupplierProducts(models.Model):
     )
     deliverable_days = models.CharField(max_length=20,
                                         choices=deliverable, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'product_suppliers'
@@ -279,9 +288,11 @@ class Customer(models.Model):
     phone_no = models.CharField(max_length=12, null=True, unique=True)
     address = models.CharField(max_length=500, null=True)
     status = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        db_table = 'customer_master'
+        db_table = 'customers_master'
 
 # 6281073150012
 # 6281035000034
@@ -296,15 +307,17 @@ class Invoice(models.Model):
     supplier_name = models.CharField(max_length=250, null=True)
     invoice_status = (
         ('released', 'Released'),
-        ('complete', 'Complete'), 
+        ('complete', 'Complete'),
         ('cancel', 'Cancel'),
     )
-    status = models.CharField(max_length=35, choices=invoice_status, default='released', null=True, blank=True)   
+    status = models.CharField(
+        max_length=35, choices=invoice_status, default='released', null=True, blank=True)
     is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(default=datetime.now())
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        db_table = 'invoice_supplier'
+        db_table = 'invoice_master'
 
 
 # class AIcodeGS1(models.Model):
@@ -312,4 +325,3 @@ class Invoice(models.Model):
 #     value = models.CharField(max_length=255)
 
 # class Gs1MApping(models)
-
