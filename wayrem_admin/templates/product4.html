@@ -67,20 +67,19 @@
 {% endif %}
 
 
-                         <form method="post" action="{% url 'wayrem_admin:productviewfour' %}" enctype="multipart/form-data" novalidate>
+                         <form method="post" action="{% url 'wayrem_admin:productviewfour' %}" enctype="multipart/form-data" validate>
                                 {% csrf_token %}
                                 {{ form.non_field_errors }}
                                 <div class="row">
-                                    
-
-                                    
+                            
                                     <!-- Form -->
                                     <div class="col-lg-6">
                                         <div class="form-group mb-4">
                                             <label for="name">Primary Image<span class="text-danger">*</span> <span class="text-danger"> <em> {{form.image1.errors | striptags}}
                                             </em> </span></label>
                                             <div class="input-group">
-                                                 {{form.image1}}                                                          
+                                                 {{form.image1}}    
+                                                 <span class="input-group submit" id="error" style="color: #d12525;"></span>                                                         
                                             </div>
                                             <span class="text-error"></span>
                                         </div>
@@ -93,7 +92,8 @@
                                             <label for="name">Image <span class="text-danger">*</span> <span class="text-danger"> <em> {{form.image2.errors | striptags}}
                                             </em> </span></label>
                                             <div class="input-group">
-                                                {{form.image2}}         
+                                                {{form.image2}}      
+                                                <span class="input-group submit" id="error1" style="color: #d12525;"></span>      
                                             </div>                                    
                                             <span class="text-error"></span>
                                         </div>
@@ -105,7 +105,9 @@
                                             <label for="name">Image <span class="text-danger">*</span> <span class="text-danger"> <em> {{form.image3.errors | striptags}}
                                             </em> </span></label>
                                             <div class="input-group">                                       
-                                                {{form.image3}}      
+                                                {{form.image3}}  
+                                                <!-- <div class="input-group" id="image3_error_message" style="color: #d12525;"></div>  -->
+                                                <span class="input-group submit" id="error2" style="color: #d12525;"></span>   
                                             </div>                                            
                                             <span class="text-error"></span>
                                         </div>
@@ -158,4 +160,74 @@
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
-{% block javascripts %}{% endblock javascripts %}
+{% block javascripts %}
+
+<script>
+
+    $("#id_image1").on("change", function () {
+    
+    var extension = $(this).val().split('.').pop().toLowerCase();
+    var validFileExtensions = ['jpeg', 'jpg', 'png', 'gif', 'bmp'];
+    if(this.files[0].size > 2000000) {
+    // alert("Sorry!! Max allowed file size is 2 MB");
+    $("#error").text("Sorry!! Max allowed file size is 2 MB").show();
+    $(this).val('');
+    }
+    else if ($.inArray(extension, validFileExtensions) == -1) {
+        $("#error").text("Sorry!! Upload only jpg, jpeg, png, gif, bmp file").show();
+                $(this).replaceWith($(this).val('').clone(true));
+                // $('#submit').prop('disabled', true);
+        }
+    else {
+        $("#error").text('').hide();
+    // $('#submit').prop('disabled', false);
+    
+    }
+    });
+    
+    $("#id_image2").on("change", function () {
+    
+    var extension = $(this).val().split('.').pop().toLowerCase();
+    var validFileExtensions = ['jpeg', 'jpg', 'png', 'gif', 'bmp'];
+    if(this.files[0].size > 2000000) {
+    // alert("Sorry!! Max allowed file size is 2 MB");
+    $("#error1").text("Sorry!! Max allowed file size is 2 MB").show();
+    $(this).val('');
+    }
+    else if ($.inArray(extension, validFileExtensions) == -1) {
+        $("#error1").text("Sorry!! Upload only jpg, jpeg, png, gif, bmp file").show();
+                $(this).replaceWith($(this).val('').clone(true));
+                // $('#submit').prop('disabled', true);
+        }
+    else {
+        $("#error1").text('').hide();
+    // $('#submit').prop('disabled', false);
+    
+    }
+    });
+
+    $("#id_image3").on("change", function () {
+    
+    var extension = $(this).val().split('.').pop().toLowerCase();
+    var validFileExtensions = ['jpeg', 'jpg', 'png', 'gif', 'bmp'];
+    if(this.files[0].size > 2000000) {
+    // alert("Sorry!! Max allowed file size is 2 MB");
+    $("#error2").text("Sorry!! Max allowed file size is 2 MB").show();
+    $(this).val('');
+    }
+    else if ($.inArray(extension, validFileExtensions) == -1) {
+        $("#error2").text("Sorry!! Upload only jpg, jpeg, png, gif, bmp file").show();
+                $(this).replaceWith($(this).val('').clone(true));
+                // $('#submit').prop('disabled', true);
+        }
+    else {
+        $("#error2").text('').hide();
+    // $('#submit').prop('disabled', false);
+    
+    }
+    });
+    
+    
+    </script>
+
+{% endblock javascripts %}

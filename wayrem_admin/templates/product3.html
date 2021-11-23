@@ -136,6 +136,7 @@
                                             </span></label>
                                             <div class="input-group">   
                                                 {{form.product_qty}}
+                                                <div class="input-group" id="quantity_error_message" style="color: #d12525;"></div>
                                             </div>
                                             <div class="input-group">
                                                 <span class="text-danger"><em> 
@@ -189,4 +190,29 @@
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
-{% block javascripts %}{% endblock javascripts %}
+{% block javascripts %}
+
+<script>
+    $(function() {
+   
+   var error_data = false;
+   
+   $("#id_product_qty").focusout(function(){
+    check_ProductQuantity();
+   });
+     
+   function check_ProductQuantity() {
+      var Weight = $("#id_product_qty").val();
+      if (Weight !== '') {
+         $("#quantity_error_message").hide();
+         $("#id_product_qty").css("border-bottom","2px solid #34F458");
+      } else {
+         $("#quantity_error_message").html("Please Enter Product Quantity ");
+         $("#quantity_error_message").show();
+         error_data = true;
+      }
+   }
+   });
+   
+   </script>
+{% endblock javascripts %}

@@ -65,7 +65,7 @@
 {% endif %}
 
 
-                        <form method="post" action="{% url 'wayrem_admin:productviewone' %}"  id="product1" data-supplier-url = "{% url 'wayrem_admin:ajax_load_supplier' %}" enctype="multipart/form-data" novalidate>
+                        <form method="post" action="{% url 'wayrem_admin:productviewone' %}"  id="product1" data-supplier-url = "{% url 'wayrem_admin:ajax_load_supplier' %}" enctype="multipart/form-data" validate>
                                 {% csrf_token %}
                                 {{ form.non_field_errors }}
                                 <div class="row">
@@ -76,6 +76,7 @@
                                             </em></span></label>
                                             <div class="input-group">   
                                                 {{form.SKU}}
+                                                <div class="input-group" id="sku_error_message" style="color: #d12525;"></div>
                                             </div>
                                             
                                         </div>
@@ -90,6 +91,7 @@
                                             <div class="input-group">
                                                 
                                                 {{form.product_name}}
+                                                <div class="input-group" id="name_error_message" style="color: #d12525;"></div>
                                             </div>
                                             
                                         </div>
@@ -106,6 +108,7 @@
                                             <div class="input-group">
                                                 
                                                 {{form.product_code}}
+                                                <div class="input-group" id="code_error_message" style="color: #d12525;"></div>
                                             </div>
                                            
                                         </div>
@@ -143,6 +146,7 @@
                                             <div class="input-group">
                                                 
                                                 {{form.date_of_mfg}}
+                                                <div class="input-group" id="dom_error_message" style="color: #d12525;"></div>
                                             </div>
                                             
                                         </div>
@@ -159,6 +163,7 @@
                                             <div class="input-group">
                                                
                                                 {{form.date_of_exp}}
+                                                <div class="input-group" id="doe_error_message" style="color: #d12525;"></div>
                                             </div>
                                             
                                         </div>
@@ -174,6 +179,7 @@
                                             <div class="input-group">
                                                
                                                 {{form.mfr_name}}
+                                                <div class="input-group" id="mfr_error_message" style="color: #d12525;"></div>
                                             </div>
                                            
                                         </div>
@@ -263,4 +269,109 @@
 
     });
 </script>
+
+<script>
+    $(function() {
+   
+   var error_data = false;
+   
+   $("#id_SKU").focusout(function(){
+      check_sku();
+   });
+   $("#id_product_name").focusout(function() {
+      check_productName();
+   });
+   $("#id_product_code").focusout(function() {
+      check_productCode();
+   });
+   $("#id_mfr_name").focusout(function() {
+       check_mfr();
+   });
+   $("#id_dom").focusout(function() {
+       check_dom();
+   });
+   $("#id_doe").focusout(function() {
+       check_doe();
+   });
+   
+   
+   
+   
+   function check_sku() {
+      var skudata = $("#id_SKU").val();
+      if (skudata !== '') {
+         $("#sku_error_message").hide();
+         $("#id_SKU").css("border-bottom","2px solid #34F458");
+      } else {
+         $("#sku_error_message").html("Please Enter Valid SKU");
+         $("#sku_error_message").show();
+         error_data = true;
+      }
+   }
+   
+   function check_productName() {
+      var p_name = $("#id_product_name").val()
+      if ( p_name !== '') {
+         $("#name_error_message").hide();
+         $("#id_product_name").css("border-bottom","2px solid #34F458");
+      } else {
+         $("#name_error_message").html("Please Enter Valid Product Name ");
+         $("#name_error_message").show();
+         error_data = true;
+      }
+   }
+   
+   function check_productCode() {
+      var p_code = $("#id_product_code").val()
+      if ( p_code !== '') {
+         $("#code_error_message").hide();
+         $("#id_product_code").css("border-bottom","2px solid #34F458");
+      } else {
+         $("#code_error_message").html("Please Enter Valid Product Code ");
+         $("#code_error_message").show();
+         error_data = true;
+      }
+   }
+   
+   function check_mfr() {
+      var mfr = $("#id_mfr_name").val()
+      if ( mfr !== '') {
+         $("#mfr_error_message").hide();
+         $("#id_mfr_name").css("border-bottom","2px solid #34F458");
+      } else {
+         $("#mfr_error_message").html("Please Enter Valid Manufacturer Name");
+         $("#mfr_error_message").show();
+         error_data = true;
+      }
+   }
+   
+   function check_dom() {
+      var mfr = $("#id_dom").val()
+      if ( mfr !== '') {
+         $("#dom_error_message").hide();
+         $("#id_dom").css("border-bottom","2px solid #34F458");
+      } else {
+         $("#dom_error_message").html("Please Enter Valid Manufacture Date");
+         $("#dom_error_message").show();
+         error_data = true;
+      }
+   }
+   
+   function check_doe() {
+      var mfr = $("#id_doe").val()
+      if ( mfr !== '') {
+         $("#doe_error_message").hide();
+         $("#id_doe").css("border-bottom","2px solid #34F458");
+      } else {
+         $("#doe_error_message").html("Please Enter Valid Expiry Data");
+         $("#doe_error_message").show();
+         error_data = true;
+      }
+   }
+   
+   
+   
+   });
+   
+   </script>
 {% endblock javascripts %}

@@ -1,3 +1,4 @@
+from datetime import datetime
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views import View
@@ -125,9 +126,12 @@ def import_ingredients(request):
             for i in ids:
                 uuids.append((uuid.UUID(i)).hex)
             df3['id'] = uuids
+            df3['created_at'] = datetime.now()
+            df3['updated_at'] = datetime.now()
             df3 = df3.drop('_merge', axis=1)
 
-            df3.to_sql('ingredients', engine, if_exists='append', index=False)
+            df3.to_sql('ingredient_master', engine,
+                       if_exists='append', index=False)
             messages.success(request, "Ingredients imported successfully!")
             return redirect('wayrem_admin:ingredientslist')
         except:

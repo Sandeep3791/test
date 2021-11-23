@@ -7,6 +7,10 @@
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.css" integrity="sha512-p209YNS54RKxuGVBVhL+pZPTioVDcYPZPYYlKWS9qVvQwrlzxBxkR8/48SCP58ieEuBosYiPUS970ixAfI/w/A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
 
 <main class="align-items-center admin_signup_lg">
     <section class="d-flex   align-items-center my-5 mt-lg-6 mb-lg-5">
@@ -49,7 +53,7 @@
                         {% endif %}
 
 
-                        <form method="post" action="{% url 'wayrem_admin:sub-admin-register' %}" novalidate>
+                        <form method="post" action="{% url 'wayrem_admin:sub-admin-register' %}" validate>
 
                             {% csrf_token %}
                             {{form.non_field_errors}}
@@ -61,6 +65,7 @@
                                             <span class="input-group-text" id="username"><span
                                                     class="fas fa-user-shield"></span></span>
                                             {{form.username}}
+                                            <div class="input-group" id="name_error_message" style="color: #d12525;"></div>
                                         </div>
                                         {% comment %} <div class="input-group">
                                             <span class="text-danger"> {{form.username.errors | striptags}} </span>
@@ -78,6 +83,7 @@
                                             <span class="input-group-text" id="email"><span
                                                     class="fas fa-envelope"></span></span>
                                             {{form.email}}
+                                            <div class="input-group" id="email_error_message" style="color: #d12525;"></div>
 
                                         </div>
                                         {% comment %} <div class="input-group">
@@ -96,6 +102,7 @@
                                             <span class="input-group-text" id="contact"><span
                                                     class="fas fa-phone-alt"></span></span>
                                             {{form.contact}}
+                                            <div class="input-group" id="contact_error_message" style="color: #d12525;"></div>
                                         </div>
                                         {% comment %} <div class="input-group">
                                             <span class="text-danger"> {{form.contact.errors | striptags}} </span>
@@ -204,5 +211,58 @@
         this.classList.toggle('fa-eye-slash');
     });
 </script>
+<script>
+    $(function() {
+   
+   var error_data = false;
+   
+   $("#id_username").focusout(function(){
+    check_name();
+   });
+   $("#id_email").focusout(function() {
+      check_email();
+   });
+   $("#id_contact").focusout(function() {
+      check_contact();
+   });
+   
+     
+   function check_name() {
+      var name = $("#id_username").val();
+      if (name !== '') {
+         $("#name_error_message").hide();
+         $("#id_username").css("border-bottom","2px solid #34F458");
+      } else {
+         $("#name_error_message").html("Please Enter User Name ");
+         $("#name_error_message").show();
+         error_data = true;
+      }
+   }
+   
+   function check_email() {
+      var Email = $("#id_email").val();
+      if (Email !== '') {
+         $("#email_error_message").hide();
+         $("#id_email").css("border-bottom","2px solid #34F458");
+      } else {
+         $("#email_error_message").html("Please Enter EmailId ");
+         $("#email_error_message").show();
+         error_data = true;
+      }
+   }
 
+   function check_contact() {
+      var contacts = $("#id_contact").val();
+      if (contacts !== '') {
+         $("#contact_error_message").hide();
+         $("#id_contact").css("border-bottom","2px solid #34F458");
+      } else {
+         $("#contact_error_message").html("Please Enter Contact ");
+         $("#contact_error_message").show();
+         error_data = true;
+      }
+   }
+   });
+   
+   </script>
 {% endblock javascripts %}

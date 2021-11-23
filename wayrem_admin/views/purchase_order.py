@@ -117,17 +117,6 @@ class DeletePO(View):
         return redirect('wayrem_admin:polist')
 
 
-class POStatus(View):
-    def post(self, request):
-        po_id = request.POST.get('po_id')
-        po_obj = PurchaseOrder.objects.filter(po_id=po_id).all()
-        if po_obj[0].is_active:
-            po_obj.update(is_active=False)
-        else:
-            po_obj.update(is_active=True)
-        return redirect('wayrem_admin:polist')
-
-
 def viewpo(request, id=None):
     po = PurchaseOrder.objects.filter(po_id=id).all()
     return render(request, 'view_po.html', {"po": po})

@@ -234,37 +234,12 @@ endcomment %}
                 <a type="button" data-toggle="tooltip" data-placement="bottom" title="Edit" href="{% url 'wayrem_admin:editpo' item1.po_id %}" class="btn btn-sm"><i
                         class="fas fa-edit text-primary"></i>
                 </a>
-                <a type="button" data-toggle="tooltip" data-placement="bottom" title="Cancel" class="btn btn-sm" data-bs-toggle="modal"
-                    data-bs-target="#statusModal{{item1.po_id}}"><i class="fas fa-ban text-secondary"></i>
-                </a>
+                
                 <a type="button" data-toggle="tooltip" data-placement="bottom" title="Delete" class="btn btn-sm" data-bs-toggle="modal"
                     data-bs-target="#deleteModal{{item1.po_id}}"><i class="fas fa-trash-alt text-danger"></i>
                 </a>
             </td>
-            <!-- Modal -->
-            <div class="modal fade" id="statusModal{{item1.po_id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Cancel {{item1.po_name}}</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            Are you sure want to cancel ??
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
-                            <form method="POST" action="{% url 'wayrem_admin:statuspo' %}">
-                                {% csrf_token %}
-                                <input type="hidden" value="{{item1.po_id}}" name="po_id">
-                                <button type="submit" class="btn btn-danger">Cancel</button>
-                            </form>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
+            
 
             <!-- Modal -->
             <div class="modal fade" id="deleteModal{{item1.po_id}}" tabindex="-1" aria-labelledby="exampleModalLabel"

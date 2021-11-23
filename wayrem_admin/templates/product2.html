@@ -66,7 +66,7 @@
   {% endfor %}
 {% endif %}
 
-                         <form method="post" action="{% url 'wayrem_admin:productviewtwo' %}" enctype="multipart/form-data" novalidate>
+                         <form method="post" action="{% url 'wayrem_admin:productviewtwo' %}" enctype="multipart/form-data" validate>
                                 {% csrf_token %}
                                 {{ form.non_field_errors }}
                                 <div class="row">
@@ -79,6 +79,7 @@
                                             <div class="input-group first">   
                                              {{form.product_weight}} 
                                                {{form.unit}}
+                                               <div class="input-group" id="weight_error_message" style="color: #d12525;"></div>
                                             </div>
                                             
                                             <span class="text-error"></span>
@@ -94,6 +95,7 @@
                                             </span></label>
                                             <div class="input-group">   
                                                 {{form.price}}
+                                                <div class="input-group" id="price_error_message" style="color: #d12525;"></div>
                                             </div>
                                            
                                             <span class="text-error"></span>
@@ -109,6 +111,7 @@
                                             <div class="input-group first">   
                                                 {{form.discount}}
                                                 {{form.dis_abs_percent}}
+                                                <div class="input-group" id="discount_error_message" style="color: #d12525;"></div>
                                             </div>
                                             <!-- <div class="input-group">
                                                 <span class="text-danger"><em> {{form.image4.errors | striptags}}
@@ -126,6 +129,7 @@
                                             <div class="input-group">
                                                 {{form.wayrem_margin}}
                                                 {{form.wayrem_abs_percent}}
+                                                <div class="input-group" id="margin_error_message" style="color: #d12525;"></div>
                                             </div>
                                             <span class="text-error"></span>
                                         </div>
@@ -142,6 +146,7 @@
                                                 {% comment %} <span class="input-group-text" id="product_code"><span
                                                         class="fas fa-lock"></span></span> {% endcomment %}
                                                 {{form.package_count}}
+                                                <div class="input-group" id="pcount_error_message" style="color: #d12525;"></div>
                                             </div>
                                            
                                         </div>
@@ -158,6 +163,7 @@
                                             </span></label>
                                             <div class="input-group">
                                                 {{form.product_meta_key}}
+                                                <div class="input-group" id="metaKey_error_message" style="color: #d12525;"></div>
                                             </div>
                                            
                                         </div>
@@ -191,4 +197,105 @@
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
-{% block javascripts %}{% endblock javascripts %}
+{% block javascripts %}
+
+<script>
+    $(function() {
+   
+   var error_data = false;
+   
+   $("#id_product_weight").focusout(function(){
+    check_weight();
+   });
+   $("#id_price").focusout(function() {
+      check_price();
+   });
+   $("#id_discount").focusout(function() {
+      check_discount();
+   });
+   $("#id_wayrem_margin").focusout(function() {
+       check_margin();
+   });
+   $("#id_package_count").focusout(function() {
+       check_packageCount();
+   });
+   $("#id_product_meta_key").focusout(function() {
+       check_PMK();
+   });
+   
+     
+   function check_weight() {
+      var Weight = $("#id_product_weight").val();
+      if (Weight !== '') {
+         $("#weight_error_message").hide();
+         $("#id_product_weight").css("border-bottom","2px solid #34F458");
+      } else {
+         $("#weight_error_message").html("Please Enter Valid Weight ");
+         $("#weight_error_message").show();
+         error_data = true;
+      }
+   }
+   
+   function check_price() {
+      var price = $("#id_price").val();
+      if (price !== '') {
+         $("#price_error_message").hide();
+         $("#id_price").css("border-bottom","2px solid #34F458");
+      } else {
+         $("#price_error_message").html("Please Enter Valid Price ");
+         $("#price_error_message").show();
+         error_data = true;
+      }
+   }
+
+   function check_discount() {
+      var disc = $("#id_discount").val();
+      if (disc !== '') {
+         $("#discount_error_message").hide();
+         $("#id_discount").css("border-bottom","2px solid #34F458");
+      } else {
+         $("#discount_error_message").html("Please Enter Valid Discount ");
+         $("#discount_error_message").show();
+         error_data = true;
+      }
+   }
+
+   function check_margin() {
+      var margin = $("#id_wayrem_margin").val();
+      if (margin !== '') {
+         $("#margin_error_message").hide();
+         $("#id_wayrem_margin").css("border-bottom","2px solid #34F458");
+      } else {
+         $("#margin_error_message").html("Please Enter Valid Wayrem Margin ");
+         $("#margin_error_message").show();
+         error_data = true;
+      }
+   }
+
+   function check_packageCount() {
+      var count = $("#id_package_count").val();
+      if (count !== '') {
+         $("#pcount_error_message").hide();
+         $("#id_package_count").css("border-bottom","2px solid #34F458");
+      } else {
+         $("#pcount_error_message").html("Please Enter Valid Package Count");
+         $("#pcount_error_message").show();
+         error_data = true;
+      }
+   }
+
+   function check_PMK() {
+      var pmk = $("#id_product_meta_key").val();
+      if (pmk !== '') {
+         $("#metaKey_error_message").hide();
+         $("#id_price").css("border-bottom","2px solid #34F458");
+      } else {
+         $("#metaKey_error_message").html("Please Enter Product Meta key");
+         $("#metaKey_error_message").show();
+         error_data = true;
+      }
+   }
+   });
+   
+   </script>
+{% endblock javascripts %}

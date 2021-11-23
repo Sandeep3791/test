@@ -88,7 +88,7 @@ class Categories(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     name = models.CharField(max_length=35, unique=True)
     category_image = models.ImageField(
-        upload_to='images/', blank=True, null=True)
+        upload_to='images/', blank=False, null=True)
     description = models.TextField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

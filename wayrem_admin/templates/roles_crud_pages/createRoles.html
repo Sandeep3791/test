@@ -7,6 +7,10 @@
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.css" integrity="sha512-p209YNS54RKxuGVBVhL+pZPTioVDcYPZPYYlKWS9qVvQwrlzxBxkR8/48SCP58ieEuBosYiPUS970ixAfI/w/A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
 
     <main>
         <!-- Section -->
@@ -25,7 +29,7 @@
                               
                           {% endif %}
                             <!-- <h1 class="h3 mb-4">Create Roles</h1> -->
-                                <form method="post" enctype="multipart/form-data" class="role-permission" novalidate>
+                                <form method="post" enctype="multipart/form-data" class="role-permission" validate>
                                   {% csrf_token %}
                                   <div class="row">
                                     {% for field in form %}
@@ -897,5 +901,45 @@
   });
 });
 </script>
+<script>
+  $(function() {
+ 
+ var error_data = false;
+ 
+ $("#id_role").focusout(function(){
+  check_role();
+ });
+ $("#id_content").focusout(function() {
+    check_content();
+ });
+ 
+   
+ function check_role() {
+    var role = $("#id_role").val();
+    if (role !== '') {
+       $("#role1").hide();
+       $("#id_role").css("border-bottom","2px solid #34F458");
+    } else {
+       $("#role1").html("Please Enter Role ");
+       $("#role1").show();
+       error_data = true;
+    }
+ }
+ 
+ function check_content() {
+    var content = $("#id_content").val();
+    if (content !== '') {
+       $("#role3").hide();
+       $("#id_content").css("border-bottom","2px solid #34F458");
+    } else {
+       $("#role3").html("Please Enter content");
+       $("#role3").show();
+       error_data = true;
+    }
+ }
+
+ });
+ 
+ </script>
 
 {% endblock javascripts %}

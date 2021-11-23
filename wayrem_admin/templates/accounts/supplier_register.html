@@ -9,19 +9,23 @@
 {% block content %}
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.css" integrity="sha512-p209YNS54RKxuGVBVhL+pZPTioVDcYPZPYYlKWS9qVvQwrlzxBxkR8/48SCP58ieEuBosYiPUS970ixAfI/w/A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"
+    integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.css"
+    integrity="sha512-p209YNS54RKxuGVBVhL+pZPTioVDcYPZPYYlKWS9qVvQwrlzxBxkR8/48SCP58ieEuBosYiPUS970ixAfI/w/A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 
 
 <script type="text/javascript">
-       $(document).ready(function () {
-            $('#id_category_name').select2({
+    $(document).ready(function () {
+        $('#id_category_name').select2({
             placeholder: 'Select Category',
-            })
-           
-     });
-    </script>
+        })
+
+    });
+</script>
 
 
 
@@ -30,15 +34,15 @@
         <div class="container ">
             <div class="row justify-content-center form-bg-image">
                 <div class="col-12 d-flex align-items-center justify-content-center">
-                    <div
-                        class="mb-4 mb-lg-0 bg-white  rounded p-4 p-lg-4 w-100" style="box-shadow: 0px 14px 20px 0px #00000014;">
+                    <div class="mb-4 mb-lg-0 bg-white  rounded p-4 p-lg-4 w-100"
+                        style="box-shadow: 0px 14px 20px 0px #00000014;">
                         <div class="mb-4 mt-md-0">
                             <h1 class="mb-0 h3">
                                 <!-- <img src="{% static '/assets/img/logo/Wayrem_logo..svg'%}" alt=""> -->
-                                 Supplier Registration
+                                Supplier Registration
                             </h1>
                             <hr>
-                            
+
                             <p>
                                 {% if messages %}
                                 {% for message in messages %}
@@ -55,134 +59,149 @@
                             </p>
                         </div>
 
- {% if form.non_field_errors %}
-  {% for error in form.non_field_errors %}
-  <div class="alert alert-danger alert-dismissible fade show" role="alert">
-  {{error}}
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-  <span aria-hidden="true">&times;</span>
-</div>
-  {% endfor %}
-{% endif %}
+                        {% if form.non_field_errors %}
+                        {% for error in form.non_field_errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{error}}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
 
 
-            <form method="post" action="{% url 'wayrem_admin:suppregister' %}" novalidate>
+                        <form method="post" action="{% url 'wayrem_admin:suppregister' %}" validate>
 
                             {% csrf_token %}
                             {% comment %} {{form.non_field_errors}} {% endcomment %}
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <div class="form-group mb-4">
-                                <label for="email">Username<span class="text-danger">*</span> <span class="text-danger"><em> {{form.username.errors | striptags}}
-                                            </em></span></label>
-                                <div class="input-group">
-                                    <span class="input-group-text" id="username"><span
-                                            class="fas fa-user-shield"></span></span>
-                                    {{form.username}}
-                                </div>                                
-                                <span class="text-error"></span>
-                            </div>
-                        </div>                            <!-- Form -->
-                            
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-4">
+                                        <label for="email">Username<span class="text-danger">*</span> <span
+                                                class="text-danger"><em> {{form.username.errors | striptags}}
+                                                </em></span></label>
+                                        <div class="input-group">
+                                            <span class="input-group-text" id="username"><span
+                                                    class="fas fa-user-shield"></span></span>
+                                            {{form.username}}
+                                            <div class="input-group" id="name_error_message" style="color: #d12525;">
+                                            </div>
+                                        </div>
+                                        <span class="text-error"></span>
+                                    </div>
+                                </div> <!-- Form -->
 
-                            <!-- Form -->
-                            <div class="col-lg-6">
-                            <div class="form-group mb-4">
-                                <label for="email">Email <span class="text-danger">*</span> <span class="text-danger"><em> {{form.email.errors | striptags}}
-                                            </em></span></label>
-                                <div class="input-group">
-                                    <span class="input-group-text" id="email"><span
-                                            class="fas fa-envelope"></span></span>
-                                    {{form.email}}
-                                    
-                                </div>                                   
-                                <span class="text-error"></span>
-                            </div>
-                            </div>
-                            <!-- End of Form -->
-                           
-                        
-                            <!-- End of Form -->
 
-                            <!-- <div class="form-group"> -->
+                                <!-- Form -->
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-4">
+                                        <label for="email">Email <span class="text-danger">*</span> <span
+                                                class="text-danger"><em> {{form.email.errors | striptags}}
+                                                </em></span></label>
+                                        <div class="input-group">
+                                            <span class="input-group-text" id="email"><span
+                                                    class="fas fa-envelope"></span></span>
+                                            {{form.email}}
+                                            <div class="input-group" id="email_error_message" style="color: #d12525;">
+                                            </div>
+                                        </div>
+                                        <span class="text-error"></span>
+                                    </div>
+                                </div>
+                                <!-- End of Form -->
+
+
+                                <!-- End of Form -->
+
+                                <!-- <div class="form-group"> -->
 
                                 <!-- Form -->
                                 {% comment %} <div class="col-lg-6">
-                                <div class="form-group mb-4">
-                                    <label for="password">Password <span class="text-danger">*</span> <span class="text-danger"><em> {{form.password.errors | striptags}}
-                                            </em></span></label>
-                                    <div class="input-group">
-                                        <span class="input-group-text" id="password"><span
-                                                class="fas fa-lock"></span></span> {% endcomment %}
+                                    <div class="form-group mb-4">
+                                        <label for="password">Password <span class="text-danger">*</span> <span
+                                                class="text-danger"><em> {{form.password.errors | striptags}}
+                                                </em></span></label>
+                                        <div class="input-group">
+                                            <span class="input-group-text" id="password"><span
+                                                    class="fas fa-lock"></span></span> {% endcomment %}
 
-                                        {{form.password}}
-                                        {% comment %} <span class="input-group-text" id="cpassword"><i class="far fa-eye"
-                                                    id="togglePassword"></i></span>
+                                            {{form.password}}
+                                            {% comment %} <span class="input-group-text" id="cpassword"><i
+                                                    class="far fa-eye" id="togglePassword"></i></span>
                                         </div>
                                         <div class="input-group">
                                             <span class="text-danger"> {{form.password.errors | striptags}} </span>
                                         </div>
 
-                                    <span class="text-error"></span>
-                                </div>
+                                        <span class="text-error"></span>
+                                    </div>
                                 </div> {% endcomment %}
                                 <!-- End of Form -->
 
                                 <!-- Form -->
                                 {% comment %} <div class="col-lg-6">
-                                <div class="form-group mb-4">
-                                    <label for="password">Confirm Password <span class="text-danger">*</span> <span class="text-danger"><em> {{form.password2.errors | striptags}} 
-                                            </em></span></label>
-                                    <div class="input-group">
-                                        <span class="input-group-text" id="cpassword"><span
-                                                class="fas fa-unlock-alt"></span></span> {% endcomment %}
-                                        {{form.password2}}
-                                        {% comment %} <span class="input-group-text" id="cpassword"><i class="far fa-eye"
-                                                    id="toggleCPassword"></i></span>
-                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label for="password">Confirm Password <span class="text-danger">*</span> <span
+                                                class="text-danger"><em> {{form.password2.errors | striptags}}
+                                                </em></span></label>
+                                        <div class="input-group">
+                                            <span class="input-group-text" id="cpassword"><span
+                                                    class="fas fa-unlock-alt"></span></span> {% endcomment %}
+                                            {{form.password2}}
+                                            {% comment %} <span class="input-group-text" id="cpassword"><i
+                                                    class="far fa-eye" id="toggleCPassword"></i></span>
+                                        </div>
                                         <div class="input-group">
                                             <span class="text-danger"> {{form.password2.errors | striptags}} </span>
-                                        </div>   
-                                    <span class="text-error"></span>
-                                </div>
+                                        </div>
+                                        <span class="text-error"></span>
+                                    </div>
                                 </div> {% endcomment %}
                                 <!-- End of Form -->
-                               <!-- Form -->
+                                <!-- Form -->
                                 <div class="col-lg-6">
-                                <div class="form-group mb-4">
-                                    <label for="password">Category <span class="text-danger">*</span> <span class="text-danger"><em> {{form.category_name.errors | striptags}}
-                                            </em></span></label>
-                                    <div class="input-group">
-                                        {% comment %} <span class="input-group-text" id="cpassword"><span
-                                                class="fas fa-lock"></span></span> {% endcomment %}
-                                        {{form.category_name}}
-                                    </div>                                        
-                                    <span class="text-error"></span>
-                                </div>
+                                    <div class="form-group mb-4">
+                                        <label for="password">Category <span class="text-danger">*</span> <span
+                                                class="text-danger"><em> {{form.category_name.errors | striptags}}
+                                                </em></span></label>
+                                        <div class="input-group" id="id_category">
+                                            {% comment %} <span class="input-group-text" id="cpassword"><span
+                                                    class="fas fa-lock"></span></span> {% endcomment %}
+                                            {{form.category_name}}
+                                            <div class="input-group" id="category_error_message"
+                                                style="color: #d12525;"></div>
+                                        </div>
+                                        <span class="text-error"></span>
+                                    </div>
                                 </div>
                                 <!-- End of Form -->
                                 <!-- Form -->
                                 <div class="col-lg-6">
-                                <div class="form-group mb-4">
-                                    <label for="password">Company <span class="text-danger">*</span> <span class="text-danger"><em> {{form.company_name.errors | striptags}}
-                                            </em></span></label>
-                                    <div class="input-group">
-                                        {% comment %} <span class="input-group-text" id="cpassword"><span
-                                                class="fas fa-lock"></span></span> {% endcomment %}
-                                        {{form.company_name}}
-                                    </div>                                        
-                                    <span class="text-error"></span>
+                                    <div class="form-group mb-4">
+                                        <label for="password">Company <span class="text-danger">*</span> <span
+                                                class="text-danger"><em> {{form.company_name.errors | striptags}}
+                                                </em></span></label>
+                                        <div class="input-group">
+                                            {% comment %} <span class="input-group-text" id="cpassword"><span
+                                                    class="fas fa-lock"></span></span> {% endcomment %}
+                                            {{form.company_name}}
+                                            <div class="input-group" id="company_error_message" style="color: #d12525;">
+                                            </div>
+                                           
+                                        </div>
+                                        <span class="text-error"></span>
+                                    </div>
                                 </div>
-                                </div>
-                        </div>
-                            
+                            </div>
+
                             {% comment %} <div class="d-grid">
                                 <button type="submit" class="btn  btn-dark">Register</button>
                             </div> {% endcomment %}
                             <div class="mt-4">
                                 <a href="{% url 'wayrem_admin:supplierlist' %}"
                                     class="btn  btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Cancel</a>
-                                <button type="submit" class="btn btn-dark border-0 col-xl-3 col-md-5 col-12" >Register</button>
+                                <button type="submit"
+                                    class="btn btn-dark border-0 col-xl-3 col-md-5 col-12">Register</button>
                             </div>
                         </form>
                     </div>
@@ -217,6 +236,75 @@
         // toggle the eye slash icon
         this.classList.toggle('fa-eye-slash');
     });
+</script>
+
+<script>
+    $(function () {
+
+        var error_data = false;
+
+        $("#id_username").focusout(function () {
+            check_name();
+        });
+        $("#id_email").focusout(function () {
+            check_email();
+        });
+        $("#id_category").focusout(function () {
+            check_category();
+        });
+        $("#id_company_name").focusout(function () {
+            check_company();
+        });
+
+
+        function check_name() {
+            var name = $("#id_username").val();
+            if (name !== '') {
+                $("#name_error_message").hide();
+                $("#id_username").css("border-bottom", "2px solid #34F458");
+            } else {
+                $("#name_error_message").html("Please Enter User Name ");
+                $("#name_error_message").show();
+                error_data = true;
+            }
+        }
+
+        function check_email() {
+            var Email = $("#id_email").val();
+            if (Email !== '') {
+                $("#email_error_message").hide();
+                $("#id_email").css("border-bottom", "2px solid #34F458");
+            } else {
+                $("#email_error_message").html("Please Enter EmailId ");
+                $("#email_error_message").show();
+                error_data = true;
+            }
+        }
+
+        function check_category() {
+            var contacts = $("#id_category").val();
+            if (contacts !== '') {
+                $("#category_error_message").hide();
+                $("#id_category").css("border-bottom", "2px solid #34F458");
+            } else {
+                $("#category_error_message").html("Please Enter category ");
+                $("#category_error_message").show();
+                error_data = true;
+            }
+        }
+        function check_company() {
+            var contacts = $("#id_company_name").val();
+            if (contacts !== '') {
+                $("#company_error_message").hide();
+                $("#id_company_name").css("border-bottom", "2px solid #34F458");
+            } else {
+                $("#company_error_message").html("Please Enter company ");
+                $("#company_error_message").show();
+                error_data = true;
+            }
+        }
+    });
+
 </script>
 
 {% endblock javascripts %}
