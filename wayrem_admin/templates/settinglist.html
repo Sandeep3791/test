@@ -1,0 +1,211 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% block title %} Settings {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+{% block head %}
+<script src="{% static 'assets/js/datatable_ajax.js' %}"></script>
+<link rel="stylesheet" href="{% static 'assets/css/datatable.css' %}">
+<link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+<script src="{% static 'assets/js/datatable_1.js' %}"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+<script src="{% static 'assets/js/datatable.js' %}"></script>
+
+{% comment %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"> {%
+endcomment %}
+{% comment %}
+<link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,800&display=swap"
+    rel="stylesheet"> {% endcomment %}
+
+
+
+{% endblock head %}
+
+{% block content %}
+<!-- <div class="text-left">
+    <a class="nav-link" href="{% url 'wayrem_admin:sub-admin-register' %}">
+        <button class="btn btn-secondary" style="background-color: #f2e600; position: relative;left: 850px;">Create New User</button>
+        </a>
+</div> -->
+
+<!-- <div class="col-xl-4 col-lg-4 col-md-6 d-flex align-items-center"><span class="page_title mb-md-2" style="font-size: 28px; font-weight:600;">User</span>
+</div> -->
+
+<div class="subheader row pe-4 ps-4 mt-5">
+    <div class="row add_btn col-xl-4 col-lg-4 col-md-5 d-flex align-items-center">
+        <div class="col">
+    <div class="dropdown">
+  <button class="button button1 mt-2 export_file dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" disabled>
+    Export
+  </button>
+  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+    <li><a class="dropdown-item" href="{% url 'wayrem_admin:userpdf' %}">Export to Pdf</a></li>
+    <li><a class="dropdown-item" href="{% url 'wayrem_admin:exceluser' %}">Export to Excel</a></li>
+  </ul>
+</div>
+            {% comment %} <a href="{% url 'wayrem_admin:userpdf' %}" class="button button1 mt-2 export_file">Export to pdf</a> {% endcomment %}
+        </div>
+    </div>
+
+    <div class="col-xl-8 col-lg-8 col-12">
+        <div class="row d-flex align-items-center ">
+            {% comment %} <div class="col-xl-4 col-lg-3 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 " style="height:40px;"> {% endcomment %}
+            <div class="col-xl-4 col-lg-3 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 ml-0 " style="height:40px; margin-left: auto;">
+                <!-- <input type="search" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Search"> -->
+                <label class="subadmin_search d-flex align-items-center">
+                    <input class="table_searchbar" id="table_search" type="search" placeholder="Search">
+                    <!-- <img src="images/Search.svg" alt=""> -->
+                </label>
+
+            </div>
+            {% comment %} <div class="col-xl-4 col-md-4">
+                <select class="form-select form-select-md filter_select" aria-label=".form-select-md example" disabled>
+                    <option selected="">All</option>
+                    <option value="1">...</option>
+                    <option value="2">...</option>
+                    <option value="3">...</option>
+                </select>
+            </div> {% endcomment %}
+             <div class="col-xl-4 col-lg-5 col-md-5" >
+                <button class="btn col-sm-12 col-md-12 col-12 create_new" data-bs-toggle="modal" data-bs-target="#exampleModal">Create Settings</button>
+                <!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form action="{% url 'wayrem_admin:settings' %}" method="POST" enctype="multipart/form-data" validate>
+              {% csrf_token %}
+              
+    <div class="row">
+    <div class="col-md-6">
+      <label for="exampleInputEmail1" class="form-label">Key  <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.key.errors | striptags}}</em></span></label>
+      {{form.key}}
+
+    </div>
+    <div class="col-md-6">
+      <label for="exampleInputPassword1" class="form-label">Display Name  <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.display_name.errors | striptags}}</em></span></label>
+      {{form.display_name}}
+    </div>
+  </div>
+  <div class="form-floating mt-3">
+    <label for="floatingTextarea">Value  <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.value.errors | striptags}}</em></span></label>
+    {{form.value}}
+  </div>
+  <div class="form-floating mt-3">
+    <label for="description">Details <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.details.errors | striptags}}</em></span></label>
+    {{form.details}}
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <label for="exampleInputEmail1" class="form-label">Type  <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.type.errors | striptags}}</em></span></label>
+      {{form.type}}
+
+    </div>
+    <div class="col-md-6">
+      <label for="exampleInputPassword1" class="form-label">Order <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.order.errors | striptags}}</em></span></label>
+      {{form.order}}
+    </div>
+  </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save</button>
+      </div>
+  </form>
+    </div>
+  </div>
+</div>
+            </div> 
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+{% if messages %}
+{% for message in messages %}
+<div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
+    <strong> {{ message }}!</strong>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endfor %}
+{% endif %}
+<table class="table  text-center" id="filtertable">
+    <thead class="table-dark ">
+        <tr>
+            <th scope="col">S. No.</th>
+            <th scope="col">Key</th>
+            <th scope="col">Display Name</th>
+            <th scope="col">Value</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody class="bg-white">
+        {% for user in userlist %}
+        {% if user.is_superuser %}
+        {% else %}
+        <tr>
+        <form method="post" action="{% url 'wayrem_admin:settings_update' user.id %}" >
+        {% csrf_token %}
+            <th scope="row">{{user.id}}</th>
+            <td>{{user.key}}</td>
+            <td><input type="text" value="{{user.display_name}}" class="form-control form-control-sm" style="height:10px;" name="display_name"></td>
+            <td><input type="text" value="{{user.value}}" class="form-control form-control-sm" style="height:10px;"  name="value"></td>
+            <td>
+                
+                <button type="submit" class="btn btn-primary btn-sm">Update</button>
+               
+            </td>
+            </form>
+        </tr>
+        {% endif %}
+        {% endfor %}
+
+    </tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+<script>
+
+    $(document).ready(function () {
+        oTable = $('#filtertable').DataTable({
+            dom: 'rtip',
+            'columnDefs': [{ 'orderable': false, 'targets': 4 }],
+            "oLanguage": {
+                "oPaginate": {
+                    "sNext": '<i class="fas fa-arrow-circle-right text-primary"></i>',
+                    "sPrevious": '<i class="fas fa-arrow-circle-left text-primary"></i>'
+                }
+            },
+            "fnDrawCallback": function (oSettings) {
+                if (oSettings._iDisplayLength > oSettings.fnRecordsDisplay()) {
+                    $(oSettings.nTableWrapper).find('.dataTables_paginate').hide();
+                } else {
+                    $(oSettings.nTableWrapper).find('.dataTables_paginate').show();
+                }
+            }
+        });
+        $('#table_search').keyup(function () {
+            oTable.search($(this).val()).draw();
+        })
+    });
+</script>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

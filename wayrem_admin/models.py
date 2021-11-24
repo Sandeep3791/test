@@ -116,7 +116,7 @@ class Supplier(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.username
+        return self.company_name
 
     class Meta:
         db_table = 'supplier_master'
@@ -303,7 +303,7 @@ class Customer(models.Model):
 
 
 class Invoice(models.Model):
-    inovice_id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    invoice_id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     invoice_no = models.CharField(max_length=250, null=True)
     po_name = models.CharField(max_length=250, null=True)
     file = models.FileField(upload_to='images/', null=True)
@@ -323,8 +323,13 @@ class Invoice(models.Model):
         db_table = 'invoice_master'
 
 
-# class AIcodeGS1(models.Model):
-#     AI = models.CharField(max_length=15,unique=True)
-#     value = models.CharField(max_length=255)
+class Settings(models.Model):
+    key = models.CharField(max_length=191,null=False,unique=True)
+    display_name = models.CharField(max_length=191,null=False,unique=True)
+    value = models.TextField()
+    details = models.TextField()
+    type = models.CharField(max_length=191,null=False)
+    order = models.IntegerField(null=False,default="1")
 
-# class Gs1MApping(models)
+    class Meta:
+        db_table = 'settings'

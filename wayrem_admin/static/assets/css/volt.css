@@ -31211,9 +31211,10 @@ form.role-permission .row div.col-md-12.mt-2:nth-child(3) {
 }
 
 
+
 /*==============filter dropdown======================*/
-.filter_dropdown:hover .dropdown_content {
-    display: block;
+.filter_btn.col-xl-12.col-md-12.col-md-12.filter_dropdown:hover .dropdown_content {
+    display: block !important;
   }
   
   .dropdown_content{
@@ -31231,11 +31232,16 @@ form.role-permission .row div.col-md-12.mt-2:nth-child(3) {
 
   .filter_width{
       min-width:55rem!important;
-      inset: 0px auto auto 120px!important;
+      /* inset: 0px auto auto 120px!important; */
   }
 
-  .filter_width.p-4.dropdown-menu.dropdown-content{
-    width:55rem!  important;
-    inset: 0px auto auto 120px!important;
-}
+  .filter_btn{
+    text-align: center;
+    background-color: #192d4d;
+    color: white;
+    border-radius: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
+
 /*============================================*/

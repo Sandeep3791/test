@@ -146,6 +146,15 @@
 </li>
 </ul>
 
+<ul class="nav">
+<li class="nav-item w-100 {% if 'dashboard' in segment %} active {% endif %}">
+  <a href="{% url 'wayrem_admin:settings' %}" class="nav-link">
+    <span class="sidebar-icon"><i class="fas fa-cogs"></i></span></span>
+    <span class="sidebar-text">Settings</span>
+  </a>
+</li>
+</ul>
+
 {% comment %} ---------------------------<i class="fas fa-gift"></i>----------------------------------------------- {% endcomment %}
   
  

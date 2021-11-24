@@ -7,4 +7,5 @@ from wayrem_admin.views.product import *
 from wayrem_admin.views.purchase_order import *
 from wayrem_admin.views.roles import *
 from wayrem_admin.views.supplier import *
+from wayrem_admin.views.setting import *
 from wayrem_admin.views.customer import *

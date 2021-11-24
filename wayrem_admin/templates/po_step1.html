@@ -29,7 +29,7 @@
             placeholder: 'Select Product',
             })
             $('#id_supplier_name').select2({
-            placeholder: 'Select Supplier',
+            placeholder: 'Select Supplier Company',
             });
      });
     </script>
@@ -42,7 +42,7 @@
 {% csrf_token %}
 
 <div class="container p-3 mt-4 w-75">
-  <label for="supplier">Supplier Name</label>
+  <label for="supplier">Supplier Company</label>
                     {{form.supplier_name}}
       
   </div>
