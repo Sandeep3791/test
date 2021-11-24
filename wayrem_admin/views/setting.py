@@ -8,6 +8,20 @@ from wayrem_admin.models import Settings
 from wayrem_admin.forms import SettingsForm
 
 
+from wayrem_admin.export import generate_pdf, generate_excel
+
+
+def settings_excel(request):
+    return generate_excel("settings", "settings")
+
+
+def pdf_settings(request):
+    query = 'SELECT id, key, display_name, value, details, type, order FROM settings'
+    template = "pdf_settings.html"
+    file = "settings.pdf"
+    return generate_pdf(query_string=query, template_name=template, file_name=file)
+
+
 class SettingList(View):
     template_name = "settinglist.html"
     form = SettingsForm()
