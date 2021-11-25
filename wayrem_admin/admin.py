@@ -31,3 +31,8 @@ class SuProductAdmin(admin.ModelAdmin):
 @admin.register(Products)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ['id', "product_name", "SKU"]
+
+
+@admin.register(SubCategories)
+class SubCategoriesAdmin(admin.ModelAdmin):
+    list_display = ['id', "name", "tag"]

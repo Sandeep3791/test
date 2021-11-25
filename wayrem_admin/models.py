@@ -100,6 +100,23 @@ class Categories(models.Model):
         db_table = 'categories_master'
 
 
+class SubCategories(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    name = models.CharField(max_length=35, unique=True)
+    tag = models.TextField(null=True, blank=True)
+    margin = models.IntegerField()
+    category = models.ForeignKey(
+        Categories, on_delete=models.CASCADE, blank=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        db_table = 'subcategories_master'
+
+
 class Supplier(models.Model):
     id = models.UUIDField(default=uuid.uuid1, primary_key=True)
     username = models.CharField(max_length=255, unique=True, null=True)
@@ -324,12 +341,12 @@ class Invoice(models.Model):
 
 
 class Settings(models.Model):
-    key = models.CharField(max_length=191,null=False,unique=True)
-    display_name = models.CharField(max_length=191,null=False,unique=True)
+    key = models.CharField(max_length=191, null=False, unique=True)
+    display_name = models.CharField(max_length=191, null=False, unique=True)
     value = models.TextField()
     details = models.TextField()
-    type = models.CharField(max_length=191,null=False)
-    order = models.IntegerField(null=False,default="1")
+    type = models.CharField(max_length=191, null=False)
+    order = models.IntegerField(null=False, default="1")
 
     class Meta:
         db_table = 'settings'
