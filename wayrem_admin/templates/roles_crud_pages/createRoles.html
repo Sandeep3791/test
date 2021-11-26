@@ -7,10 +7,6 @@
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.css" integrity="sha512-p209YNS54RKxuGVBVhL+pZPTioVDcYPZPYYlKWS9qVvQwrlzxBxkR8/48SCP58ieEuBosYiPUS970ixAfI/w/A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
 
     <main>
         <!-- Section -->
@@ -29,7 +25,7 @@
                               
                           {% endif %}
                             <!-- <h1 class="h3 mb-4">Create Roles</h1> -->
-                                <form method="post" enctype="multipart/form-data" class="role-permission" validate>
+                                <form method="post" enctype="multipart/form-data" class="role-permission" novalidate>
                                   {% csrf_token %}
                                   <div class="row">
                                     {% for field in form %}
@@ -57,7 +53,7 @@
                                                             <div class="col-md-2">
                                                               <div class="form-group">
 
-                                                                <input  type="checkbox" id="usercheck" name="permission" value="User Add" id="flexCheckReportAdd" >
+                                                                <input  type="checkbox" id="usercheck" name="permission" value="User Add" id="flexCheckReportAdd" {% if 'User Add' in form.permission.value %}{% if 'User Edit' in form.permission.value %}{% if 'User Delete' in form.permission.value %}{% if 'User View' in form.permission.value %}checked{% endif %}{% endif %}{% endif %}{% endif %}>
  
                                                                 <label class="bmd-label-floating" for="flexCheckuserDelete">
                                                                   All
@@ -139,7 +135,7 @@
                                                               <div class="col-md-2">
                                                                 <div class="form-group">
    
-                                                                <input type="checkbox" id="rolescheck" name="permission" value="Roles Add" id="flexCheckReportAdd" >
+                                                                <input type="checkbox" id="rolescheck" name="permission" value="Roles Add" id="flexCheckReportAdd" {% if 'Roles Add' in form.permission.value %}{% if 'Roles Edit' in form.permission.value %}{% if 'Roles Delete' in form.permission.value %}{% if 'Roles View' in form.permission.value %}checked{% endif %}{% endif %}{% endif %}{% endif %}>
  
 
                                                                   <label class="bmd-label-floating" for="flexCheckuserDelete">
@@ -197,7 +193,7 @@
                                                               <div class="col-md-2">
                                                                 <div class="form-group">
    
-                                                                  <input type="checkbox" id="categorycheck" name="permission" value="Categories Add" id="flexCheckReportAdd" >
+                                                                  <input type="checkbox" id="categorycheck" name="permission" value="Categories Add" id="flexCheckReportAdd" {% if 'Categories Add' in form.permission.value %}{% if 'Categories Edit' in form.permission.value %}{% if 'Categories Delete' in form.permission.value %}{% if 'Categories View' in form.permission.value %}checked{% endif %}{% endif %}{% endif %}{% endif %}>
  
 
                                                                   <label class="bmd-label-floating" for="flexCheckuserDelete">
@@ -253,7 +249,7 @@
                                                               <div class="col-md-2">
                                                                 <div class="form-group">
    
-                                                                  <input type="checkbox" id='productcheck' name="permission" value="Products Add" id="flexCheckReportAdd" >
+                                                                  <input type="checkbox" id='productcheck' name="permission" value="Products Add" id="flexCheckReportAdd" {% if 'Products Add' in form.permission.value %}{% if 'Products Edit' in form.permission.value %}{% if 'Products Delete' in form.permission.value %}{% if 'Products View' in form.permission.value %}checked{% endif %}{% endif %}{% endif %}{% endif %}>
 
                                                                   <label class="bmd-label-floating" for="flexCheckuserDelete">
                                                                     All
@@ -307,7 +303,7 @@
                                                               <div class="col-md-2">
                                                                 <div class="form-group">
    
-                                                                  <input type="checkbox" id="suppliercheck" name="permission" value="Supplier Add" id="flexCheckReportAdd" >
+                                                                  <input type="checkbox" id="suppliercheck" name="permission" value="Supplier Add" id="flexCheckReportAdd" {% if 'Supplier Add' in form.permission.value %}{% if 'Supplier Edit' in form.permission.value %}{% if 'Supplier Delete' in form.permission.value %}{% if 'Supplier View' in form.permission.value %}checked{% endif %}{% endif %}{% endif %}{% endif %} >
 
                                                                   <label class="bmd-label-floating" for="flexCheckuserDelete">
                                                                     All
@@ -362,7 +358,7 @@
                                                               <div class="col-md-2">
                                                                 <div class="form-group">
    
-                                                                  <input type="checkbox" id="purchasecheck" name="permission" value="Purchase Order Add" id="flexCheckReportAdd" >
+                                                                  <input type="checkbox" id="purchasecheck" name="permission" value="Purchase Order Add" id="flexCheckReportAdd" {% if 'Purchase Order Add' in form.permission.value %}{% if 'Purchase Order Edit' in form.permission.value %}{% if 'Purchase Order Delete' in form.permission.value %}{% if 'Purchase Order View' in form.permission.value %}checked{% endif %}{% endif %}{% endif %}{% endif %} >
 
                                                                   <label class="bmd-label-floating" for="flexCheckuserDelete">
                                                                     All
@@ -417,7 +413,7 @@
                                                               <div class="col-md-2">
                                                                 <div class="form-group">
    
-                                                                  <input type="checkbox" id="customercheck" name="permission" value="Customer Profile Add" id="flexCheckReportAdd" >
+                                                                  <input type="checkbox" id="customercheck" name="permission" value="Customer Profile Add" id="flexCheckReportAdd" {% if 'Customer Profile Add' in form.permission.value %}{% if 'Customer Profile Edit' in form.permission.value %}{% if 'Customer Profile Delete' in form.permission.value %}{% if 'Customer Profile View' in form.permission.value %}checked{% endif %}{% endif %}{% endif %}{% endif %} >
 
                                                                   <label class="bmd-label-floating" for="flexCheckuserDelete">
                                                                     All
@@ -471,9 +467,10 @@
                                                              
                                                               <div class="col-md-2">
                                                                 <div class="form-group">
-   
-                                                                  <input type="checkbox" id="ordercheck" name="permission" value="Customer Order Add" id="flexCheckReportAdd" >
-
+                                                            
+                                                                  <input type="checkbox" id="ordercheck" name="permission" value="Customer Order Add" id="flexCheckReportAdd" {% if 'Customer Order Add' in form.permission.value %}{% if 'Customer Order Edit' in form.permission.value %}{% if 'Customer Order Delete' in form.permission.value %}{% if 'Customer Order View' in form.permission.value %}checked{% endif %}{% endif %}{% endif %}{% endif %} >
+                                                           
+                                                             
                                                                   <label class="bmd-label-floating" for="flexCheckuserDelete">
                                                                     All
                                                                   </label>
@@ -527,7 +524,7 @@
                                                               <div class="col-md-2">
                                                                 <div class="form-group">
    
-                                                                  <input type="checkbox" id="financecheck" name="permission" value="Finance Add" id="flexCheckReportAdd" >
+                                                                  <input type="checkbox" id="financecheck" name="permission" value="Finance Add" id="flexCheckReportAdd" {% if 'Finance Add' in form.permission.value %}{% if 'Finance Edit' in form.permission.value %}{% if 'Finance Delete' in form.permission.value %}{% if 'Finance View' in form.permission.value %}checked{% endif %}{% endif %}{% endif %}{% endif %}  >
 
                                                                   <label class="bmd-label-floating" for="flexCheckuserDelete">
                                                                     All
@@ -582,7 +579,7 @@
                                                               <div class="col-md-2">
                                                                 <div class="form-group">
    
-                                                                  <input type="checkbox" id="reportscheck" name="permission" value="Reports Add" id="flexCheckReportAdd" >
+                                                                  <input type="checkbox" id="reportscheck" name="permission" value="Reports Add" id="flexCheckReportAdd"  {% if 'Reports Add' in form.permission.value %}{% if 'Reports Edit' in form.permission.value %}{% if 'Reports Delete' in form.permission.value %}{% if 'Reports View' in form.permission.value %}checked{% endif %}{% endif %}{% endif %}{% endif %} >
 
                                                                   <label class="bmd-label-floating" for="flexCheckuserDelete">
                                                                     All
@@ -901,45 +898,5 @@
   });
 });
 </script>
-<script>
-  $(function() {
- 
- var error_data = false;
- 
- $("#id_role").focusout(function(){
-  check_role();
- });
- $("#id_content").focusout(function() {
-    check_content();
- });
- 
-   
- function check_role() {
-    var role = $("#id_role").val();
-    if (role !== '') {
-       $("#role1").hide();
-       $("#id_role").css("border-bottom","2px solid #34F458");
-    } else {
-       $("#role1").html("Please Enter Role ");
-       $("#role1").show();
-       error_data = true;
-    }
- }
- 
- function check_content() {
-    var content = $("#id_content").val();
-    if (content !== '') {
-       $("#role3").hide();
-       $("#id_content").css("border-bottom","2px solid #34F458");
-    } else {
-       $("#role3").html("Please Enter content");
-       $("#role3").show();
-       error_data = true;
-    }
- }
-
- });
- 
- </script>
 
 {% endblock javascripts %}

@@ -249,9 +249,9 @@
         $("#id_email").focusout(function () {
             check_email();
         });
-        $("#id_category").focusout(function () {
+        {% comment %} $("#id_category").focusout(function () {
             check_category();
-        });
+        }); {% endcomment %}
         $("#id_company_name").focusout(function () {
             check_company();
         });
@@ -281,7 +281,7 @@
             }
         }
 
-        function check_category() {
+        {% comment %} function check_category() {
             var contacts = $("#id_category").val();
             if (contacts !== '') {
                 $("#category_error_message").hide();
@@ -291,7 +291,7 @@
                 $("#category_error_message").show();
                 error_data = true;
             }
-        }
+        } {% endcomment %}
         function check_company() {
             var contacts = $("#id_company_name").val();
             if (contacts !== '') {

@@ -36,6 +36,8 @@ class SettingList(View):
         if self.form.is_valid():
             self.form.save()
             return redirect('wayrem_admin:settings')
+        else:
+            return redirect('wayrem_admin:settings')
 
 
 def update_settings(request, id=None):

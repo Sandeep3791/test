@@ -41,7 +41,7 @@ endcomment %}
     Export
   </button>
   <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-    <li><a class="dropdown-item" href="{% url 'wayrem_admin:settingspdf' %}">Export to Pdf</a></li>
+    {% comment %} <li><a class="dropdown-item" href="{% url 'wayrem_admin:settingspdf' %}">Export to Pdf</a></li> {% endcomment %}
     <li><a class="dropdown-item" href="{% url 'wayrem_admin:excelsettings' %}">Export to Excel</a></li>
   </ul>
 </div>
@@ -75,7 +75,7 @@ endcomment %}
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Add Settings</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
@@ -93,12 +93,16 @@ endcomment %}
       {{form.display_name}}
     </div>
   </div>
-  <div class="form-floating mt-3">
+    <div class="col-md-6 mt-2">
     <label for="floatingTextarea">Value  <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.value.errors | striptags}}</em></span></label>
+      </div>
+  <div class="form-floating ">
     {{form.value}}
   </div>
-  <div class="form-floating mt-3">
+  <div class="col-md-6 mt-2">
     <label for="description">Details <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.details.errors | striptags}}</em></span></label>
+      </div>
+  <div class="form-floating ">
     {{form.details}}
   </div>
   <div class="row">

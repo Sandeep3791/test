@@ -16,5 +16,6 @@ urlpatterns = [
     path('roles/', include('wayrem_admin.urls.roles')),
     path('supplier/', include('wayrem_admin.urls.supplier')),
     path('settings/', include('wayrem_admin.urls.setting')),
+    path('invoices/', include('wayrem_admin.urls.invoice')),
     path('', views.RootUrlView.as_view(), name='root')
 ]
