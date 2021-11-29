@@ -5,7 +5,7 @@ from wayrem_admin.models import SubCategories
 class SubCategoryCreateForm(forms.ModelForm):
     class Meta:
         model = SubCategories
-        fields = ("name", "tag", "margin", "category")
+        fields = ("name", "tag", "margin", "category", "image")
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),

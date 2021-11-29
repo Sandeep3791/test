@@ -15,7 +15,7 @@ class UserAdmin(admin.ModelAdmin):
 
 @admin.register(Categories)
 class UserAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'category_image', 'description']
+    list_display = ['id', 'name', 'category_image', 'tag']
 
 
 @admin.register(Ingredients)

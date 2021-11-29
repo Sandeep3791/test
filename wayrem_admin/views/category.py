@@ -4,8 +4,10 @@ from django.contrib.auth.decorators import login_required
 from wayrem_admin.forms import CategoryCreateForm
 from django.views import View
 from django.utils.decorators import method_decorator
-from wayrem_admin.models import Categories
+from wayrem_admin.forms.categories import CategoryForm
+from wayrem_admin.models import Categories, SubCategories
 from wayrem_admin.export import generate_pdf, generate_excel
+from wayrem_admin.services import inst_Category
 
 
 def categories_excel(request):
@@ -13,7 +15,7 @@ def categories_excel(request):
 
 
 def pdf_category(request):
-    query = 'SELECT id, name, category_image, description, created_at, updated_at FROM categories_master'
+    query = 'SELECT id, name, category_image, tag,margin, created_at, updated_at FROM categories_master'
     template = "pdf_category.html"
     file = "categories.pdf"
     return generate_pdf(query_string=query, template_name=template, file_name=file)
@@ -65,10 +67,10 @@ def update_categories(request, id=None, *args, **kwargs):
             print("FORM")
             name = form.cleaned_data['name']
             category_image = form.cleaned_data['category_image']
-            description = form.cleaned_data['description']
+            tag = form.cleaned_data['tag']
             user.name = name
             user.category_image = category_image
-            user.description = description
+            user.tag = tag
             user.save()
             print("Here")
             return redirect('wayrem_admin:categorieslist')
@@ -88,3 +90,38 @@ class DeleteCategories(View):
         categories = Categories.objects.get(id=categoriesid)
         categories.delete()
         return redirect('wayrem_admin:categorieslist')
+
+
+@login_required(login_url='wayrem_admin:root')
+def add_category(request):
+    context = {}
+    form = CategoryForm(request.POST or None, request.FILES or None)
+    context['form'] = form
+    if request.method == "POST":
+        print("POST")
+        if form.is_valid():
+            if request.POST.get('parent_category'):
+                subcategory = SubCategories()
+                subcategory.name = form.cleaned_data['name']
+                subcategory.category_image = form.cleaned_data['image']
+                subcategory.tag = form.cleaned_data['tag']
+                subcategory.margin = form.cleaned_data['margin']
+                category_obj = inst_Category(
+                    form.cleaned_data['parent_category'])
+                subcategory.category = category_obj
+                subcategory.save()
+                return redirect('wayrem_admin:subcategorieslist')
+
+            else:
+                category = Categories()
+                category.name = form.cleaned_data['name']
+                category.category_image = form.cleaned_data['image']
+                category.tag = form.cleaned_data['tag']
+                category.margin = form.cleaned_data['margin']
+                category.save()
+                print('valid')
+                return redirect('wayrem_admin:subcategorieslist')
+
+        else:
+            print("Invalid")
+    return render(request, 'add_category.html', context)

@@ -99,23 +99,7 @@ endcomment %}
   <div class="form-floating ">
     {{form.value}}
   </div>
-  <div class="col-md-6 mt-2">
-    <label for="description">Details <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.details.errors | striptags}}</em></span></label>
-      </div>
-  <div class="form-floating ">
-    {{form.details}}
-  </div>
-  <div class="row">
-    <div class="col-md-6">
-      <label for="exampleInputEmail1" class="form-label">Type  <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.type.errors | striptags}}</em></span></label>
-      {{form.type}}
-
-    </div>
-    <div class="col-md-6">
-      <label for="exampleInputPassword1" class="form-label">Order <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.order.errors | striptags}}</em></span></label>
-      {{form.order}}
-    </div>
-  </div>
+ 
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
