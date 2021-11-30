@@ -17,15 +17,15 @@
    
     <div class="col-12 col-xl-8">
         <div class="card card-body card_shadow mb-4">
-            <h2 class="h3 ">Add SubCategory</h2>
+            <h2 class="h3 ">Add Category</h2>
             <hr class="mb-4 ">
-            <form action="{% url 'wayrem_admin:createsubcategory' %}" method="POST" enctype="multipart/form-data" validate>
+            <form action="{% url 'wayrem_admin:addcategory' %}" method="POST" enctype="multipart/form-data" validate>
               {% csrf_token %}
                 <div class="row">
                    
                     <div class="col-md-6 mb-3">
                         <div>
-                            <label for="name">Sub Category Name  <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.name.errors | striptags}}</em></span></label>
+                            <label for="name">Category Name  <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.name.errors | striptags}}</em></span></label>
                             {{form.name}}
                             <div class="input-group" id="name_error_message" style="color: #d12525;"></div>
                         </div>
@@ -34,8 +34,8 @@
                         <div>
                             <label for="category_image">Category </label>
                             <!-- <input class="form-control" id="last_name" type="text" placeholder="Also your last name" required> -->
-                            {{form.category}}
-                            {{form.category.errors}}
+                            {{form.parent_category}}
+                            {{form.parent_category.errors}}
                             <span class="input-group submit" id="error" style="color: #d12525;"></span>
                         </div>
                     </div>

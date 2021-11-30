@@ -1,6 +1,6 @@
 {% extends "layouts/base.html" %}
 {% load static %}
-{% block title %} Sub Categories List {% endblock %}
+{% block title %}Categories List {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
@@ -59,8 +59,8 @@ endcomment %}
                 </select>
             </div>
             <div class="col-xl-4 col-lg-5 col-md-5"><a class="btn w-100 anchor_btn ps-0 pe-0"
-                    href="{% url 'wayrem_admin:createsubcategory' %}">
-                    <button class="btn col-sm-12 col-md-12 col-12 create_new">Create Sub-Category</button>
+                    href="{% url 'wayrem_admin:addcategory' %}">
+                    <button class="btn col-sm-12 col-md-12 col-12 create_new">Create Category</button>
                 </a></div>
         </div>
 

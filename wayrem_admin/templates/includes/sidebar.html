@@ -131,17 +131,17 @@
   </a>
 </li>
 </ul>
-
+{% endcomment %}
 <ul class="nav">
 <li class="nav-item w-100 {% if 'dashboard' in segment %} active {% endif %}">
   <a href="{% url 'wayrem_admin:subcategorieslist' %}" class="nav-link">
     <span class="sidebar-icon"><i class="fas fa-grip-horizontal"></i></span></span>
-    <span class="sidebar-text">Sub Categories</span>
+    <span class="sidebar-text">Categories</span>
   </a>
 </li>
-</ul> {% endcomment %}
+</ul> 
 
-<li class="nav-item">
+{% comment %} <li class="nav-item">
         <span class="nav-link  collapsed  d-flex justify-content-between align-items-center" data-bs-toggle="collapse"
           data-bs-target="#submenu-pages1" >
           <span>
@@ -168,7 +168,7 @@
            
           </ul>
         </div>
-</li>
+</li> {% endcomment %}
 
 {% comment %} <ul class="nav">
 <li class="nav-item w-100 {% if 'dashboard' in segment %} active {% endif %}">

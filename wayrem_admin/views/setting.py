@@ -24,12 +24,12 @@ def pdf_settings(request):
 
 class SettingList(View):
     template_name = "settinglist.html"
-    form = SettingsForm()
+    form = SettingsForm
+    userlist = Settings.objects.all()
 
     @method_decorator(login_required(login_url='wayrem_admin:root'))
     def get(self, request, format=None):
-        userlist = Settings.objects.all()
-        return render(request, self.template_name, {"userlist": userlist, "form": self.form})
+        return render(request, self.template_name, {"userlist": self.userlist, "form": self.form})
 
     def post(self, request):
         self.form = SettingsForm(request.POST)
@@ -37,7 +37,7 @@ class SettingList(View):
             self.form.save()
             return redirect('wayrem_admin:settings')
         else:
-            return redirect('wayrem_admin:settings')
+            return render(request, self.template_name, {"userlist": self.userlist, "form": self.form})
 
 
 def update_settings(request, id=None):

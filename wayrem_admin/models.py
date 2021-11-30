@@ -88,8 +88,9 @@ class Categories(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     name = models.CharField(max_length=35, unique=True)
     category_image = models.ImageField(
-        upload_to='images/', blank=False, null=True)
-    description = models.TextField(null=True, blank=True)
+        upload_to='assets/category/', blank=False, null=True)
+    tag = models.TextField(null=True, blank=True)
+    margin = models.IntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -105,6 +106,8 @@ class SubCategories(models.Model):
     name = models.CharField(max_length=35, unique=True)
     tag = models.TextField(null=True, blank=True)
     margin = models.IntegerField()
+    image = models.ImageField(
+        upload_to='assets/subcategory/', blank=False, null=True)
     category = models.ForeignKey(
         Categories, on_delete=models.CASCADE, blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
