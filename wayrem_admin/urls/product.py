@@ -4,7 +4,7 @@ from wayrem_admin import views
 urlpatterns = [
     path('excel_product/', views.product_excel, name='excelproduct'),
     path('pdf_product/', views.pdf_product, name='productpdf'),
-    path('inputBar/', views.inputBar, name='inputBar'),
+    #     path('inputBar/', views.inputBar, name='inputBar'),
     path('product/', views.product, name='product'),
     path('ajax/load-supplier/', views.load_supplier, name='ajax_load_supplier'),
     path('product-view-one/', views.product_view_one, name='productviewone'),

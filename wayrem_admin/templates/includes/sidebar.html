@@ -191,8 +191,13 @@
           <ul class="flex-column nav">
             {% if request.user.is_superuser %}
             <li class="nav-item">
+              <a class="nav-link" href="{% url 'wayrem_admin:product' %}">
+                <span class="sidebar-text">Create Product </span>
+              </a>
+            </li>
+            <li class="nav-item">
               <a class="nav-link" href="{% url 'wayrem_admin:productlist' %}">
-                <span class="sidebar-text">Products </span>
+                <span class="sidebar-text">Manage Products </span>
               </a>
             </li>
              <li class="nav-item">
