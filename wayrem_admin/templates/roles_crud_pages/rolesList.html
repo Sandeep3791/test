@@ -1,6 +1,6 @@
 {% extends "layouts/base.html" %}
 {% load static %}
-{% block title %} Supplier List {% endblock %}
+{% block title %} Role List {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
@@ -81,7 +81,7 @@ endcomment %}
 <table class="table  text-center" id="filtertable">
     <thead class="table-dark">
         <tr>
-            <th scope="col">S. No.</th>
+            {% comment %} <th scope="col">S. No.</th> {% endcomment %}
             <th scope="col">Role Name</th>
             {% comment %} <th scope="col">Status</th> {% endcomment %}
             <th scope="col">Access</th>
@@ -96,7 +96,7 @@ endcomment %}
     <tbody>
         {% for role in roles %}
         <tr>
-            <th scope="row">{{forloop.counter}}</th>
+            {% comment %} <th scope="row">{{forloop.counter}}</th> {% endcomment %}
             <td>{{role.role}}</td>
             {% comment %} <td>{{role.status}}</td> {% endcomment %}
             <td> <a href="{% url 'wayrem_admin:roles_view' %}?id={{role.id}}" class="text-dark">View Permissions</a></td>

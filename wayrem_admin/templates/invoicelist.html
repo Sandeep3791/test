@@ -91,11 +91,11 @@ endcomment %}
 <table class="table  text-center" id="filtertable">
     <thead class="table-dark ">
         <tr>
-            <th scope="col">S. No.</th>
-            <th scope="col">Invoice NO.</th>
-            <th scope="col">PO Name</th>
+            {% comment %} <th scope="col">S. No.</th> {% endcomment %}
+            {% comment %} <th scope="col">Invoice NO.</th> {% endcomment %}
+            <th scope="col">Purchase Order</th>
             <th scope="col">Supplier Name</th>
-            <th scope="col">File</th>
+            <th scope="col">Invoice</th>
             {% comment %} <th scope="col">Access</th> {% endcomment %}
         </tr>
     </thead>
@@ -104,8 +104,8 @@ endcomment %}
         {% if user.is_superuser %}
         {% else %}
         <tr>
-            <th scope="row">{{forloop.counter}}</th>
-            <td>{{user.invoice_no}}</td>
+            {% comment %} <th scope="row">{{forloop.counter}}</th>
+            <td>{{user.invoice_no}}</td> {% endcomment %}
             <td>{{user.po_name}}</td>
             <td>{{user.supplier_name}}</td>
             <td><a type="button" class="btn btn-sm " target="_blank" href="{% url 'wayrem_admin:downloadinvoice' %}?invoice_no={{user.invoice_no}}"><i class="fas fa-file-invoice"></i></a></td>

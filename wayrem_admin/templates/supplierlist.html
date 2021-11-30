@@ -91,7 +91,7 @@ endcomment %}
 <table class="table  text-center" id="filtertable">
     <thead class="table-dark">
         <tr>
-            <th scope="col">S. No.</th>
+            {% comment %} <th scope="col">S. No.</th> {% endcomment %}
             <th scope="col">Username</th>
             <th scope="col">Email</th>
 
@@ -104,7 +104,7 @@ endcomment %}
         {% if .is_superuser %}
         {% else %}
         <tr>
-            <th scope="row">{{forloop.counter}}</th>
+            {% comment %} <th scope="row">{{forloop.counter}}</th> {% endcomment %}
             <td>{{suppl.username}}</td>
             <td>{{suppl.email}}</td>
 

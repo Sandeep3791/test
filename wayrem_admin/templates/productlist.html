@@ -199,7 +199,7 @@
 <table class="table  text-center" id="filtertable">
     <thead class="table-dark">
         <tr>
-            <th scope="col">S. No.</th>
+            {% comment %} <th scope="col">S. No.</th> {% endcomment %}
             <th scope="col">SKU</th>
             <th scope="col">Product Name</th>
             {% comment %} <th scope="col">Category Name</th> {% endcomment %}
@@ -214,7 +214,7 @@
     {% for prod in productslist %}
 
         <tr>
-            <th scope="row">{{forloop.counter}}</th>
+            {% comment %} <th scope="row">{{forloop.counter}}</th> {% endcomment %}
             <td>{{prod.SKU}}</td>
             <td>{{prod.product_name |truncatechars:9 }}</td>
             {% comment %} <td>
