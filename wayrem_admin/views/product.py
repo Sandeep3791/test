@@ -44,9 +44,31 @@ def product(request):
     return render(request, 'inputBar.html')
 
 
+def details_gs1(request):
+    delSession(request)
+    user_code = request.GET.get('barcode')
+    user_code = user_code.replace('\\x1d', '\x1d')
+    try:
+        result = biip.parse(user_code)
+        request.session['gs1'] = user_code
+        request.session['SKU'] = result.gs1_message.element_strings[0].value
+        request.session['price'] = str(
+            result.gs1_message.element_strings[5].decimal)
+        request.session['date_of_exp'] = str(
+            result.gs1_message.element_strings[1].date)
+        request.session['product_weight'] = str(
+            result.gs1_message.element_strings[4].decimal)
+        request.session['unit'] = "KILO-GRAM"
+    except:
+        pass
+    data = [request.session.get('SKU'), request.session.get(
+        'price'), request.session.get('date_of_exp'), request.session.get('product_weight')]
+    return render(request, 'barcode_details.html', {'data': data})
+
+
 def inputBar(request):
     delSession(request)
-    return redirect('wayrem_admin:productviewone')
+    return redirect('wayrem_admin:product')
 
 
 def load_supplier(request):
