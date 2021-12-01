@@ -31245,3 +31245,65 @@ form.role-permission .row div.col-md-12.mt-2:nth-child(3) {
   }
 
 /*============================================*/
+
+/*===============input box style===============================*/
+
+.input_border .form-control{
+ border-radius: 8px!important;
+}
+
+.date_input_box .form-control{
+    border-radius: 8px!important;
+}
+
+#id_SKU{
+    border-radius: 8px!important;
+}
+
+#id_product_name{
+    border-radius: 8px!important;
+}
+
+#id_product_qty{
+    border-radius:8px!important;
+}
+
+#id_ingredients1{
+    border-top-left-radius: 8px!important;
+    border-bottom-left-radius: 8px!important;
+}
+
+#id_ingredients2{
+    border-top-left-radius: 8px!important;
+    border-bottom-left-radius: 8px!important;
+}
+
+#id_ingredients3{
+    border-top-left-radius: 8px!important;
+    border-bottom-left-radius: 8px!important;
+}
+
+#id_ingredients4{
+    border-top-left-radius: 8px!important;
+    border-bottom-left-radius: 8px!important;
+}
+
+#id_parent_category{
+    border-radius: 8px!important;
+    background-color: white;
+}
+
+#id_product_meta_key{
+    border-radius:8px!important;
+}
+
+.select_ingredients_section{
+    flex-grow: 1 !important;
+    flex-shrink: 1!important;
+    flex-basis: content!important;
+}
+
+.calories_section{
+    width: 20px !important;
+}
+/*========================================*/

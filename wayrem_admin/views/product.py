@@ -21,14 +21,11 @@ def pdf_product(request):
     return generate_pdf(query_string=query, template_name=template, file_name=file)
 
 
-def inputBar(request):
+def product(request):
     if request.method == "POST":
         delSession(request)
         user_code = request.POST.get('code')
         user_code = user_code.replace('\\x1d', '\x1d')
-
-        # data = barcodeDetail(user_code)
-# data['products'][0]['barcode_number']
         try:
             result = biip.parse(user_code)
             request.session['SKU'] = result.gs1_message.element_strings[0].value
@@ -40,25 +37,16 @@ def inputBar(request):
                 result.gs1_message.element_strings[4].decimal)
             request.session['unit'] = "KILO-GRAM"
             request.session['gs1'] = user_code
-            #  data['products'][0]['weight']
-            # data['products'][0]['price']
-            # data['products'][0]['barcode_number']
-            # request.session['product_name'] = data['products'][0]['title']
-            # request.session['description'] = data['products'][0]['description']
-            # request.session['model'] = data['products'][0]['model']
-            # request.session['product_meta_key'] = data['products'][0]['features']
-            # request.session['mfr_name'] = data['products'][0]['manufacturer']
-            # # request.session['product_code'] = data['products'][0]['asin']
         except:
             pass
         return redirect('wayrem_admin:productviewone')
+    delSession(request)
     return render(request, 'inputBar.html')
 
 
-def product(request):
+def inputBar(request):
     delSession(request)
-    # messages.success(request, "Lorem ipsum")
-    return render(request, 'preproduct.html')
+    return redirect('wayrem_admin:productviewone')
 
 
 def load_supplier(request):
