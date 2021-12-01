@@ -5,7 +5,7 @@ from wayrem_admin.models import PurchaseOrder, Products, Supplier
 from wayrem_admin.forms import POForm, POEditForm
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from wayrem_admin.services import inst_Product, inst_Supplier
+from wayrem_admin.services import inst_Product, inst_Supplier, delSession
 from wayrem_admin.export import generate_excel
 import datetime
 import uuid
@@ -26,9 +26,13 @@ def create_purchase_order(request):
             product_id = request.POST['product_name']
             product_qty = request.POST['product_qty']
             name = inst_Product(product_id)
+            if any(e[0] == product_id for e in request.session.get('products')):
+                messages.error(request, "Product already added!")
+                return redirect("wayrem_admin:create_po")
             x = (product_id, name.product_name, product_qty)
             request.session['products'].append(x)
             po = request.session['products']
+            request.session['supplier_company'] = request.POST['supplier_name']
             request.session.modified = True
             print('add more')
             return render(request, "po_step1.html", {'form': form, 'po': po})
@@ -70,6 +74,7 @@ def create_purchase_order(request):
                     product_order.save()
                 messages.success(
                     request, f"Purchase Order Created Successfully!")
+                request.session['products'] = []
                 return redirect('wayrem_admin:polist')
         else:
             print("Invalid")
@@ -86,9 +91,21 @@ def create_purchase_order(request):
             form = POForm(
                 initial={"product_name": product, "supplier_name": x[0]})
         else:
-            form = POForm()
-    request.session['products'] = []
-    return render(request, "po_step1.html", {'form': form})
+            form = POForm(
+                initial={'supplier_name': request.session.get('supplier_company', None)})
+    po = request.session.get('products', None)
+    return render(request, "po_step1.html", {'form': form, "po": po})
+
+
+def delete_inserted_item(request, id=None):
+    product = request.session.get("products")
+    for index, num_list in enumerate(product):
+        if num_list[0] == id:
+            del product[index]
+            break
+    print(product)
+    request.session["products"] = product
+    return redirect('wayrem_admin:create_po')
 
 
 class POList(View):
@@ -96,6 +113,7 @@ class POList(View):
 
     @method_decorator(login_required(login_url='wayrem_admin:root'))
     def get(self, request, format=None):
+        delSession(request)
         polist = PurchaseOrder.objects.values(
             'po_id', 'po_name', 'supplier_name', 'status').distinct()
         pol = []
@@ -106,6 +124,7 @@ class POList(View):
         mylist = zip(polist, pol)
         # polist = PurchaseOrder.objects.values_list('po_id').distinct()
         # polist = PurchaseOrder.objects.distinct('po_id')
+        request.session['products'] = []
         return render(request, self.template_name, {"userlist": mylist})
 
 

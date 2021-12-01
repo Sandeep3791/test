@@ -35,7 +35,7 @@
                             </p>
                         </div>
 
-                        <form method="post" action="{% url 'wayrem_admin:inputBar' %}" class="mt-4">
+                        <form method="post" action="{% url 'wayrem_admin:product' %}" class="mt-4">
 
                             {% csrf_token %}
 
@@ -45,7 +45,7 @@
                                 <div class="input-group">
                                     <span class="input-group-text" id="basic-addon1"><span
                                             class="fas fa-barcode"></span></span>
-                                    <input type="text" placeholder="Barcode Number" class="form-control" id="code"
+                                    <input type="text" placeholder="Barcode Number" class="form-control" id="code" required
                                         name="code" aria-describedby="emailHelp">
                                 </div>
                             </div>

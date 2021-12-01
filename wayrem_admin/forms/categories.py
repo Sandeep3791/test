@@ -18,7 +18,7 @@ class CategoryCreateForm(forms.ModelForm):
 class CategoryForm(forms.Form):
     name = forms.CharField(widget=forms.TextInput(
         attrs={'class': "form-control"}))
-    margin = forms.CharField(widget=forms.TextInput(
+    margin = forms.CharField(widget=forms.NumberInput(
         attrs={'class': "form-control"}))
     tag = forms.CharField(
         widget=forms.Textarea(attrs={'class': "form-control", 'rows': '3'}), required=False)
@@ -45,8 +45,14 @@ class CategoryForm(forms.Form):
             obj = Categories.objects.filter(name=name).first()
             obj_sub = SubCategories.objects.filter(name=name).first()
             try:
-                if name.lower() in obj.name.lower() or name in obj_sub.name:
+                if name in obj.name:
                     # Will raise a error message
+                    self._errors["name"] = "Name already exists!"
+                    del form_data['name']
+            except:
+                pass
+            try:
+                if name in obj_sub.name:
                     self._errors["name"] = "Name already exists!"
                     del form_data['name']
             except:
