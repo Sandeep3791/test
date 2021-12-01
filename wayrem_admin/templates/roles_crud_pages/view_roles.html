@@ -563,19 +563,25 @@
                                                   {{ field }}
                                                   {% if field.errors %}<li class='form-error'>{{ field.label }}: {{ field.errors|striptags }}</li>{% endif %}
                                               {% endif %}
+                                              <hr>
+                                              <div class="text-right">
+                                                <a href="{% url 'wayrem_admin:roles_list' %}" class="btn btn-dark my-3" >Back</a>
+                                              </div>
                                         </div>
                                       </div>
                                       {% endfor %} 
                                   </div>
                                   <div class="clearfix"></div>
+                                  
+                                  
                                 </form>
+                              </div>
+                            </div>
+                          </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
+                      </section>
+                    </main>
+                    
 
 
     

@@ -135,7 +135,7 @@ endcomment %}
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            Are you sure want to delete {{suppl.username | title}} ??
+                            Are you sure want to delete {{suppl.username | title}} ?
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
@@ -167,7 +167,7 @@ endcomment %}
     $(document).ready(function () {
         oTable = $('#filtertable').DataTable({
             dom: 'rtip',
-            'columnDefs': [{ 'orderable': false, 'targets': 4 }],
+            'columnDefs': [{ 'orderable': false, 'targets': [2, 3] }],
             buttons: [
                 {
                     extend: 'collection',
