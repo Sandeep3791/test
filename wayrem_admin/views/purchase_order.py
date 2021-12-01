@@ -5,7 +5,7 @@ from wayrem_admin.models import PurchaseOrder, Products, Supplier
 from wayrem_admin.forms import POForm, POEditForm
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from wayrem_admin.services import inst_Product, inst_Supplier
+from wayrem_admin.services import inst_Product, inst_Supplier, delSession
 from wayrem_admin.export import generate_excel
 import datetime
 import uuid
@@ -32,6 +32,7 @@ def create_purchase_order(request):
             x = (product_id, name.product_name, product_qty)
             request.session['products'].append(x)
             po = request.session['products']
+            request.session['supplier_company'] = request.POST['supplier_name']
             request.session.modified = True
             print('add more')
             return render(request, "po_step1.html", {'form': form, 'po': po})
@@ -90,7 +91,8 @@ def create_purchase_order(request):
             form = POForm(
                 initial={"product_name": product, "supplier_name": x[0]})
         else:
-            form = POForm()
+            form = POForm(
+                initial={'supplier_name': request.session.get('supplier_company', None)})
     po = request.session.get('products', None)
     return render(request, "po_step1.html", {'form': form, "po": po})
 
@@ -111,6 +113,7 @@ class POList(View):
 
     @method_decorator(login_required(login_url='wayrem_admin:root'))
     def get(self, request, format=None):
+        delSession(request)
         polist = PurchaseOrder.objects.values(
             'po_id', 'po_name', 'supplier_name', 'status').distinct()
         pol = []
