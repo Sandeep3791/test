@@ -232,7 +232,7 @@ class Unit(models.Model):
 
 class ProductIngredients(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
-    product_id = models.CharField(max_length=45, null=False)
+    product = models.UUIDField()
     ingredient = models.ForeignKey(
         Ingredients, on_delete=models.CASCADE, null=True, blank=False)
     quantity = models.CharField(max_length=25, default=1)

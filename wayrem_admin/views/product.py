@@ -106,24 +106,20 @@ def product_view_one(request):
     context['form'] = form
     if request.method == 'POST':
         print("Post")
-        if form.is_valid():
-            print("Valid Form")
-            request.session['SKU'] = form.cleaned_data['SKU']
-            request.session['product_category'] = form.cleaned_data['product_category']
-            request.session['product_code'] = form.cleaned_data['product_code']
-            request.session['product_name'] = form.cleaned_data['product_name']
-            request.session['feature_product'] = form.cleaned_data['feature_product']
-            request.session['product_deliverable'] = form.cleaned_data['product_deliverable']
-            request.session['date_of_mfg'] = str(
-                form.cleaned_data['date_of_mfg'])
-            request.session['date_of_exp'] = str(
-                form.cleaned_data['date_of_exp'])
-            # json.dumps(doe, indent=4, sort_keys=True, default=str)
-            request.session['mfr_name'] = form.cleaned_data['mfr_name']
-            request.session['supplier_name'] = form.cleaned_data['supplier_name']
+        if form.is_valid() and formset.is_valid():
+            product_id = uuid.uuid4()
+            product = form.save(commit=False)
+            product.id = product_id
+            product.save()
+            obj = ProductIngredients()
+            for form in formset.forms:
+                obj.product = product_id
+                obj.ingredient = form.cleaned_data['ingredient']
+                obj.quantity = form.cleaned_data['quantity']
+                obj.unit = form.cleaned_data['unit']
+                obj.save()
 
-            # return HttpResponseRedirect(reverse('product-view-two'))
-            return redirect('wayrem_admin:productviewtwo')
+            return redirect('wayrem_admin:dashboard')
             # return HttpResponse(render(request,'path_to_your_view.html'))
     else:
         context['form'] = ProductForm(initial=initial)
