@@ -15,10 +15,10 @@
 
 <script type="text/javascript">
        $(document).ready(function () {
-            $('#id_product_category').select2({
+            $('#id_category').select2({
             placeholder: 'Select Category',
             })
-            $('#id_supplier_name').select2({
+            $('#id_supplier').select2({
             placeholder: 'Select Supplier',
             });
      });
@@ -103,7 +103,7 @@
 {% endif %}
 
 
-                        <form method="post" action="{% url 'wayrem_admin:productviewone' %}"  id="product1" data-supplier-url = "{% url 'wayrem_admin:ajax_load_supplier' %}" enctype="multipart/form-data" validate>
+                        <form method="post" action="{% url 'wayrem_admin:productviewone' %}"  id="product1" data-supplier-url = "{% url 'wayrem_admin:ajax_load_supplier' %}" enctype="multipart/form-data" novalidate>
                                 {% csrf_token %}
                                 {{ form.non_field_errors }}
                             <div class="row" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
@@ -130,11 +130,11 @@
                                     <!-- Form -->
                                     <div class="col-lg-6">
                                         <div class="form-group mb-4">
-                                            <label for="image">Product Name <span class="text-danger">*</span> <span class="text-danger"> <em> {{form.product_name.errors | striptags}}
+                                            <label for="image">Product Name <span class="text-danger">*</span> <span class="text-danger"> <em> {{form.name.errors | striptags}}
                                             </em> </span></label>
                                             <div class="input-group">
                                                 
-                                                {{form.product_name}}
+                                                {{form.name}}
                                                 <div class="input-group" id="name_error_message" style="color: #d12525;"></div>
                                             </div>
                                             
@@ -163,12 +163,12 @@
                                         <div class="form-group mb-4">
                                         
                                             <label for="description">Product Category  <span class="text-danger">
-                                                <em> {{form.product_category.errors | striptags}}
+                                                <em> {{form.category.errors | striptags}}
                                                 </em>
                                             </span></label>
                                             <div class="input-group">
                                                 
-                                                {{form.product_category}}
+                                                {{form.category}}
                                             </div>
                                             
                                         </div>
@@ -234,12 +234,12 @@
                                     <div class="col-lg-6">
                                         <div class="form-group mb-4">
 
-                                         <label for="description">Supplier Company <span class="text-danger"><em> {{form.supplier_name.errors | striptags}}
+                                         <label for="description">Supplier Company <span class="text-danger"><em> {{form.supplier.errors | striptags}}
                                                 </em>
                                             </span></label>
                                             <div class="input-group">
                                             {% comment %}  {% endcomment %}
-                                        {{form.supplier_name}}
+                                        {{form.supplier}}
                                         {% comment %} </script> {% endcomment %}
                                             </div>
 
@@ -251,7 +251,7 @@
 
                             </div>    
 
-                                <!---=-=-=-=-=-=-=-=-=-=-=-=--->
+                  
                                 <div class="row mt-4" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
 
                                  <h4 class="mb-4 mt-4">
@@ -260,11 +260,11 @@
 
                                  <div class="col-lg-6">
                                     <div class="form-group mb-4">
-                                        <label for="name">Product Quantity <span class="text-danger">*</span><span class="text-danger"><em> 
-                                            </em>
+                                        <label for="name">Product Quantity <span class="text-danger">*</span><span class="text-danger"><em> {{form.quantity.errors | striptags}}
+                                        </em>
                                         </span></label>
                                         <div class="input-group">   
-                                            <input type="number" name="product_qty" class="form-control" required="" id="id_product_qty">
+                                            {{form.quantity}}
                                             <div class="input-group" id="quantity_error_message" style="color: #d12525;"></div>
                                         </div>
                                         <div class="input-group">
@@ -277,10 +277,6 @@
 
                                 </div>
 
-                                <!---=-=-=-=-=-=-=-=-=-=-=-=-=--->
-
-
-                                <!--==================-------=======================-->
                                 <div class="row mt-4" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
 
                                   <h4 class="mb-4 mt-4">
@@ -289,17 +285,42 @@
 
                                   <div class="row">
                                     <!-- Form -->
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-12">
                                         <div class="form-group mb-4">
-                                            <label for="name">Ingredients</label>
                                             <div class="input-group">   
-                                                <select name="ingredients1" class="form-select select_ingredients_section" id="id_ingredients1">
-                                                    <option value="" selected="">Select Ingredients</option>
+                                                {{ formset.management_form }}
+                                                {{ formset.non_form_errors }}
+                                                {% for form in formset %}
+                                                <div class="row form-row spacer my-2">
+                                                    {% comment %} <div class="col-2">
+                                                        <label>Ingredients</label>
+                                                    </div> {% endcomment %}
+                                                    <div class="row">
+                                                    {% comment %} <div class="col-12 my-2"> {% endcomment %}
+                                                        <div class="col-4">
+                                                            <label>Ingredients</label>
+                                                            {{form.ingredient}}
+                                                        </div>
+                                                        <div class="col-2">
+                                                            <label>Quantity</label>
+                                                            {{form.quantity}}
+                                                        </div>
 
-                                                    <option value="b8f7b24a-9b97-4399-81b8-080ad6be5f49">bgdg</option>
+                                                            <div class="col-4">
+                                                            <label>Unit</label>
+                                                            {{form.unit}}
+                                                        </div>
+                                                            <div class="col-2">
+                                                            <div class="input-group-append">
+                                                                <button class="btn btn-success add-form-row">+</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% comment %} </div> {% endcomment %}
+                                                </div>
+                                                {% endfor %}
 
-                                                </select>
-                                                <input type="number" name="calories1" class="form-control calories_section" step="0.1" placeholder="Calories (kcal)" id="id_calories1">
+                                                
                                             </div>
                                          
 
@@ -309,89 +330,16 @@
 
                                      
 
-                                    <!-- Form -->
-                                    <div class="col-lg-6">
-                                        <div class="form-group mb-4">
-                                            <label for="name">Ingredients </label>
-                                            <div class="input-group">   
-                                                <select name="ingredients2" class="form-select select_ingredients_section" id="id_ingredients2">
-                                                    <option value="" selected="">Select Ingredients</option>
-
-                                                    <option value="b8f7b24a-9b97-4399-81b8-080ad6be5f49">bgdg</option>
-
-                                                </select>
-                                                <input type="number" name="calories2" class="form-control calories_section" step="0.1" placeholder="Calories (kcal)" id="id_calories2">
-                                            </div>
-                                            
-                                        </div>
-                                    </div>
-                                    <!-- End of Form -->
-
-
-                                    <!-- Form -->
-                                    <div class="col-lg-6">
-                                        <div class="form-group mb-4">
-                                            <label for="name">Ingredients</label>
-                                            <div class="input-group">   
-                                                <select name="ingredients3" class="form-select select_ingredients_section" id="id_ingredients3">
-  <option value="" selected="">Select Ingredients</option>
-
-  <option value="b8f7b24a-9b97-4399-81b8-080ad6be5f49">bgdg</option>
-
-</select>
-                                                <input type="number" name="calories3" class="form-control calories_section" step="0.1" placeholder="Calories (kcal)" id="id_calories3">
-                                            </div>
-                                            
-                                        </div>
-                                    </div>
-                                    <!-- End of Form -->
-
-                                    
-
-                                    <!-- Form -->
-                                    <div class="col-lg-6">
-                                        <div class="form-group mb-4">
-                                            <label for="name">Ingredients</label>
-                                            <div class="input-group">   
-                                                <select name="ingredients4" class="form-select select_ingredients_section" id="id_ingredients4">
-  <option value="" selected="">Select Ingredients</option>
-
-  <option value="b8f7b24a-9b97-4399-81b8-080ad6be5f49">bgdg</option>
-
-</select>
-                                                 <input type="number" name="calories4" class="form-control calories_section" step="0.1" placeholder="Calories (kcal)" id="id_calories4">
-                                            </div>
-                                            
-                                        </div>
-                                    </div>
-                                    <!-- End of Form -->
-                      <!-- Form -->
-                                    <!-- <div class="col-lg-6">
-                                        <div class="form-group mb-4">
-                                            <label for="name">Product Quantity <span class="text-danger">*</span><span class="text-danger"><em> 
-                                                </em>
-                                            </span></label>
-                                            <div class="input-group">   
-                                                <input type="number" name="product_qty" class="form-control" required="" id="id_product_qty">
-                                                <div class="input-group" id="quantity_error_message" style="color: #d12525;"></div>
-                                            </div>
-                                            <div class="input-group">
-                                                <span class="text-danger"><em> 
-                                                    </em></span>
-                                            </div>
-                                            <span class="text-error"></span>
-                                        </div>
-                                    </div> -->
-                                    <!-- End of Form --> 
+                                   
 
                                     <!-- Form -->
                                     <div class="col-lg-12">
                                         <div class="form-group mb-4">
-                                            <label for="name">Description <span class="text-danger"><em> 
+                                            <label for="name">Description <span class="text-danger"><em>{{form.description.error | striptags}} 
                                                 </em>
                                             </span></label>
                                             <div class="input-group">   
-                                               <textarea name="description" cols="40" rows="3" class="form-control" id="id_description"></textarea>
+                                               {{form.description}}
                                             </div>
                                         </div>
                                     </div>
@@ -414,21 +362,12 @@
                                     <!-- Form -->
                                     <div class="col-lg-6">
                                         <div class="form-group mb-4">
-                                            <label for="name">Weight <span class="text-danger">*</span><span class="text-danger"><em> 
+                                            <label for="name">Weight <span class="text-danger">*</span><span class="text-danger"><em> {{form.weight.error | striptags}} {{form.unit.error | striptags}} 
                                                 </em>
                                             </span></label>
                                             <div class="input-group first">   
-                                             <input type="number" name="product_weight" class="form-control select_ingredients_section" step="any" required="" id="id_product_weight"> 
-                                               <select name="unit" class="form-select calories_section" id="id_unit" style="border-top-right-radius: 8px !important; border-bottom-right-radius: 8px !important;">
-                                                    <option value="GRAM">gm</option>
-
-                                                    <option value="KILO-GRAM">kg</option>
-
-                                                    <option value="MILLI-LITRE">ml</option>
-
-                                                    <option value="LITRE">ltr</option>
-
-                                                </select>
+                                                {{form.weight}} 
+                                                {{form.unit}} 
                                                <div class="input-group" id="weight_error_message" style="color: #d12525;"></div>
                                             </div>
                                             
@@ -440,11 +379,11 @@
                                     <!-- Form -->
                                     <div class="col-lg-6">
                                         <div class="form-group mb-4">
-                                            <label for="name">Price <span class="text-danger">*</span><span class="text-danger"><em> 
+                                            <label for="name">Price <span class="text-danger">*</span><span class="text-danger"><em> {{form.price.error | striptags}} 
                                                 </em>
                                             </span></label>
                                             <div class="input-group">   
-                                                <input type="number" name="price" class="form-control" step="any" required="" id="id_price" style="border-top-right-radius: 8px !important; border-bottom-right-radius: 8px !important;">
+                                                {{form.price}}
                                                 <div class="input-group" id="price_error_message" style="color: #d12525;"></div>
                                             </div>
                                            
@@ -455,17 +394,12 @@
                                     <!-- Form -->
                                     <div class="col-lg-6">
                                         <div class="form-group mb-4">
-                                            <label for="name">Discount <span class="text-danger">*</span><span class="text-danger"><em> 
+                                            <label for="name">Discount <span class="text-danger">*</span><span class="text-danger"><em> {{form.discount.error | striptags}} 
                                                 </em>
                                             </span></label>
                                             <div class="input-group first">   
-                                                <input type="number" name="discount" class="form-control select_ingredients_section" step="any" required="" id="id_discount">
-                                                <select name="dis_abs_percent" class="form-select calories_section" id="id_dis_abs_percent" style="border-top-right-radius: 8px !important; border-bottom-right-radius: 8px !important;">
-                                                    <option value="(Absolute ">Abs</option>
-
-                                                    <option value="%">%</option>
-
-                                                </select>
+                                                {{form.discount}}
+                                                {{form.dis_abs_percent}}
                                                 <div class="input-group" id="discount_error_message" style="color: #d12525;"></div>
                                             </div>
                                             <!-- <div class="input-group">
@@ -479,16 +413,11 @@
                                    <!-- Form -->
                                     <div class="col-lg-6">
                                         <div class="form-group mb-4">
-                                            <label for="name">Wayrem Margin <span class="text-danger">*</span> <span class="text-danger"> <em> 
+                                            <label for="name">Wayrem Margin <span class="text-danger">*</span> <span class="text-danger"> <em> {{form.wayrem_margin.error | striptags}} 
                                             </em> </span> </label>
                                             <div class="input-group">
-                                                <input type="number" name="wayrem_margin" class="form-control select_ingredients_section" required="" id="id_wayrem_margin">
-                                                <select name="wayrem_abs_percent" class="form-select calories_section" id="id_wayrem_abs_percent" style="border-top-right-radius: 8px !important; border-bottom-right-radius: 8px !important;"">
-                                                    <option value="(Absolute ">Abs</option>
-
-                                                    <option value="%">%</option>
-
-                                                </select>
+                                                {{form.wayrem_margin}}
+                                                {{form.margin_unit}}
                                                 <div class="input-group" id="margin_error_message" style="color: #d12525;"></div>
                                             </div>
                                             <span class="text-error"></span>
@@ -499,12 +428,12 @@
                                     <!-- Form -->
                                     <div class="col-lg-6">
                                         <div class="form-group mb-4">
-                                            <label for="image">Package Count <span class="text-danger">*</span><span class="text-danger"><em> 
+                                            <label for="image">Package Count <span class="text-danger">*</span><span class="text-danger"><em> {{form.package_count.error | striptags}}
                                                 </em>
                                             </span></label>
                                             <div class="input-group">
                                                 
-                                                <input type="number" name="package_count" class="form-control" required="" id="id_package_count" style="border-top-right-radius: 8px !important; border-bottom-right-radius: 8px !important;">
+                                                {{form.package_count}}
                                                 <div class="input-group" id="pcount_error_message" style="color: #d12525;"></div>
                                             </div>
                                            
@@ -518,11 +447,11 @@
                                     <!-- Form -->
                                      <div class="col-lg-12">
                                          <div class="form-group mb-4">
-                                             <label for="name">Product Meta Key <span class="text-danger">*</span><span class="text-danger"><em> 
+                                             <label for="name">Product Meta Key <span class="text-danger">*</span><span class="text-danger"><em> {{form.meta_key.error | striptags}}
                                                  </em>
                                              </span></label>
                                              <div class="input-group">
-                                                 <textarea name="product_meta_key" cols="40" rows="3" class="form-control" required="" id="id_product_meta_key"></textarea>
+                                                 {{form.meta_key}}
                                                  <div class="input-group" id="metaKey_error_message" style="color: #d12525;"></div>
                                              </div>
                                             
@@ -557,10 +486,10 @@
                                     <div class="col-lg-6">
                                         <div class="form-group mb-4">
                                             <div class="form-check">
-                                                <label class="form-check-label" for="weight">Publish <span class="text-danger"> <em> {{form.product_deliverable.errors | striptags}}
+                                                <label class="form-check-label" for="weight">Publish <span class="text-danger"> <em> {{form.publish.errors | striptags}}
                                                 </em>
                                             </span></label>
-                                                {{form.product_deliverable}}
+                                                {{form.publish}}
                                             </div>
                                             
                                         </div>
@@ -588,6 +517,72 @@
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
+
+<script type="text/javascript">
+    function updateElementIndex(el, prefix, ndx) {
+        var id_regex = new RegExp('(' + prefix + '-\\d+)');
+        var replacement = prefix + '-' + ndx;
+        if ($(el).attr("for")) $(el).attr("for", $(el).attr("for").replace(id_regex, replacement));
+        if (el.id) el.id = el.id.replace(id_regex, replacement);
+        if (el.name) el.name = el.name.replace(id_regex, replacement);
+    }
+    function cloneMore(selector, prefix) {
+        var newElement = $(selector).clone(true);
+        var total = $('#id_' + prefix + '-TOTAL_FORMS').val();
+        newElement.find(':input:not([type=button]):not([type=submit]):not([type=reset])').each(function() {
+            var name = $(this).attr('name')
+            if(name) {
+                name = name.replace('-' + (total-1) + '-', '-' + total + '-');
+                var id = 'id_' + name;
+                $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
+            }
+        });
+        newElement.find('label').each(function() {
+            var forValue = $(this).attr('for');
+            if (forValue) {
+              forValue = forValue.replace('-' + (total-1) + '-', '-' + total + '-');
+              $(this).attr({'for': forValue});
+            }
+        });
+        total++;
+        $('#id_' + prefix + '-TOTAL_FORMS').val(total);
+        $(selector).after(newElement);
+        var conditionRow = $('.form-row:not(:last)');
+        conditionRow.find('.btn.add-form-row')
+        .removeClass('btn-success').addClass('btn-danger')
+        .removeClass('add-form-row').addClass('remove-form-row')
+        .html('-');
+        return false;
+    }
+    function deleteForm(prefix, btn) {
+        var total = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+        if (total > 1){
+            btn.closest('.form-row').remove();
+            var forms = $('.form-row');
+            $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
+            for (var i=0, formCount=forms.length; i<formCount; i++) {
+                $(forms.get(i)).find(':input').each(function() {
+                    updateElementIndex(this, prefix, i);
+                });
+            }
+        }
+        return false;
+    }
+    $(document).on('click', '.add-form-row', function(e){
+        e.preventDefault();
+        cloneMore('.form-row:last', 'form');
+        return false;
+    });
+    $(document).on('click', '.remove-form-row', function(e){
+        e.preventDefault();
+        deleteForm('form', $(this));
+        return false;
+    });
+    
+    </script>
+
+
+
     <script>
     $("#id_product_category").change(function () {
         const url = $("#product1").attr("data-supplier-url");  // get the url of the load_cities view

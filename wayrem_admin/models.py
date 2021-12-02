@@ -5,6 +5,7 @@ from django.utils.translation import ugettext_lazy as _
 from datetime import datetime
 import uuid
 from multiselectfield import MultiSelectField
+from django.template.defaultfilters import slugify
 
 
 # Create your models here.
@@ -158,76 +159,44 @@ class Ingredients(models.Model):
         db_table = 'ingredient_master'
 
 
-class Products(models.Model):
-    # ----------------------------------First slide model------------------------------------------------------------
-    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
-    SKU = models.CharField(max_length=255, null=True, blank=True)
-    # product_category = models.ForeignKey(Categories, on_delete=models.CASCADE,null=True,blank=True)
-    product_category = models.ManyToManyField('Categories', null=True)
-    product_code = models.CharField(max_length=255, null=True)
-    product_meta_key = models.TextField()
-    feature_product = models.BooleanField(default=True)
-    product_deliverable = models.BooleanField(default=True)
-    date_of_mfg = models.DateField()
-    date_of_exp = models.DateField()
-    mfr_name = models.CharField(max_length=100, null=True, blank=True)
-    # supplier_name = models.ForeignKey(Supplier, on_delete=models.CASCADE)
-    supplier_name = models.ManyToManyField('Supplier', null=True)
-    DIS_ABS_PERCENT = (
-        ('(Absolute ', 'Abs'),
-        ('%', '%'),
-    )
-    dis_abs_percent = models.CharField(max_length=20,
-                                       choices=DIS_ABS_PERCENT, null=True, blank=True)
+DIS_ABS_PERCENT = (
+    ('(Absolute ', 'Abs'),
+    ('%', '%'),
+)
+UNIT_CHOICES = (
+    ('GRAM', 'gm'),
+    ('KILO-GRAM', 'kg'),
+    ('MILLI-LITRE', 'ml'),
+    ('LITRE', 'ltr'),
+)
 
-    # -------------------------------Second slide model------------------------------------------------------------
-    image1 = models.ImageField(upload_to='images/', null=True)
-    image2 = models.ImageField(upload_to='images/', null=True)
-    image3 = models.ImageField(upload_to='images/', null=True)
-    image4 = models.ImageField(upload_to='images/', null=True)
-    image5 = models.ImageField(upload_to='images/', null=True)
-    product_name = models.CharField(max_length=255, null=True, blank=True)
+
+class Products(models.Model):
+    id = models.UUIDField(primary_key=True)
+    name = models.CharField(max_length=255, null=True, blank=False)
+    SKU = models.CharField(max_length=255, null=True, blank=False)
+    category = models.ManyToManyField('Categories', null=True)
+    product_code = models.CharField(max_length=255, null=True)
+    meta_key = models.TextField()
+    feature_product = models.BooleanField(default=True)
+    publish = models.BooleanField(default=False)
+    date_of_mfg = models.DateField(null=True)
+    date_of_exp = models.DateField(null=True)
+    mfr_name = models.CharField(max_length=100, null=True, blank=False)
+    supplier = models.ManyToManyField('Supplier', null=True)
+    dis_abs_percent = models.CharField(
+        max_length=20, choices=DIS_ABS_PERCENT, null=True, blank=False)
     description = models.TextField()
-    ingredients1 = models.ForeignKey(
-        Ingredients, on_delete=models.CASCADE, related_name='Products1', null=True, blank=True)
-    ingredients2 = models.ForeignKey(
-        Ingredients, on_delete=models.CASCADE, related_name='Products2', null=True, blank=True)
-    ingredients3 = models.ForeignKey(
-        Ingredients, on_delete=models.CASCADE, related_name='Products3', null=True, blank=True)
-    ingredients4 = models.ForeignKey(
-        Ingredients, on_delete=models.CASCADE, related_name='Products4', null=True, blank=True)
-    calories1 = models.CharField(
-        max_length=25, null=True, blank=True)
-    calories2 = models.CharField(
-        max_length=25, null=True, blank=True)
-    calories3 = models.CharField(
-        max_length=25, null=True, blank=True)
-    calories4 = models.CharField(
-        max_length=25, null=True, blank=True)
-    nutrition = models.CharField(max_length=20, null=True, blank=True)
-    product_qty = models.IntegerField(null=True, default=1)
-    # ---------------------------------Third slide model-----------------------------------------------------------
-    product_weight = models.IntegerField(null=True)
-    UNIT_CHOICES = (
-        ('GRAM', 'gm'),
-        ('KILO-GRAM', 'kg'),
-        ('MILLI-LITRE', 'ml'),
-        ('LITRE', 'ltr'),
-    )
-    unit = models.CharField(max_length=20,
-                            choices=UNIT_CHOICES, null=True, blank=True)
-    # price = models.FloatField(null=True, max_length=255, decimal_places=2)
+    quantity = models.IntegerField(null=True, default=1)
+    weight = models.IntegerField(null=True)
+    unit = models.CharField(
+        max_length=20, choices=UNIT_CHOICES, null=True, blank=False)
     price = models.DecimalField(null=True, max_digits=12, decimal_places=2)
-    discount = models.CharField(max_length=50, null=True, blank=True)
+    discount = models.CharField(max_length=50, null=True, blank=False)
     package_count = models.IntegerField(null=True)
-    # --------------------------------Fourth slide model--------------------------------------------------------------------
     wayrem_margin = models.IntegerField(null=True)
-    WAYREM_ABS_PERCENT = (
-        ('(Absolute ', 'Abs'),
-        ('%', '%'),
-    )
-    wayrem_abs_percent = models.CharField(max_length=20,
-                                          choices=DIS_ABS_PERCENT, null=True, blank=True)
+    margin_unit = models.CharField(
+        max_length=20, choices=DIS_ABS_PERCENT, null=True, blank=False)
     gs1 = models.CharField(max_length=255, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -237,6 +206,38 @@ class Products(models.Model):
 
     class Meta:
         db_table = 'products_master'
+
+
+def get_image_filename(instance, filename):
+    title = instance.products.name
+    slug = slugify(title)
+    return "product_images/%s-%s" % (slug, filename)
+
+
+class Images(models.Model):
+    product = models.ForeignKey(
+        Products, on_delete=models.CASCADE, default=None)
+    image = models.ImageField(upload_to=get_image_filename,
+                              verbose_name='product_mage')
+
+
+class Unit(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    unit_name = models.CharField(max_length=15, null=False, unique=True)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.unit_name
+
+
+class ProductIngredients(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    product_id = models.CharField(max_length=45, null=False)
+    ingredient = models.ForeignKey(
+        Ingredients, on_delete=models.CASCADE, null=True, blank=False)
+    quantity = models.CharField(max_length=25, default=1)
+    unit = models.ForeignKey(
+        Unit, on_delete=models.CASCADE, null=True, blank=False)
 
 
 class PurchaseOrder(models.Model):

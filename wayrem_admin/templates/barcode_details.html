@@ -1,18 +1,26 @@
-<table class="table">
-    <thead>
-      <tr>
-        <th scope="col">SKU</th>
-        <th scope="col">Price</th>
-        <th scope="col">Date of Expiry</th>
-        <th scope="col">Product Weight</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>{{data.0}}</td>
-        <td>{{data.1}}</td>
-        <td>{{data.2}}</td>
-        <td>{{data.3}}</td>
-      </tr>
-    </tbody>
-  </table>
+
+  <div class="form-inline  ">
+      <div class="mb-3  ">
+          <label for="recipient-name" class="col-form-label " style="margin-right: 10px;">SKU : {{data.0}}
+          </label>
+           
+          <!-- <input type="input" class="form__field" readonly /> -->
+          <!-- <input class="form-control w-75" type="input" readonly > -->
+      </div>
+      <div class="mb-3 ">
+          <label for="recipient-name" class="col-form-label" style="margin-right: 10px;">Price : {{data.1}}
+              </label>
+              <!-- <input class="form-control w-75 modal-text" type="input" readonly >                                                    </div> -->
+      <div class="mb-3  ">
+          <label for="recipient-name" class="col-form-label" style="margin-right: 30px;">Date of Expiry : {{data.2}}
+              </label>
+              <!-- <input class="form-control w-75 " type="input" readonly>                                                    </div> -->
+      <div class="mb-3  ">
+          <label for="recipient-name" class="col-form-label" style="margin-right: 45px;">Product Weight : {{data.3}}
+              </label>
+              <!-- <input class="form-control w-75" type="input" readonly> -->
+      </div>
+      <div class="mb-3 ">
+          <label for="recipient-name" class="col-form-label" style="margin-right: 25px;">Weight Unit : {{data.4}}</label>
+              <!-- <input class="form-control w-75 " type="input" readonly> -->
+      </div>

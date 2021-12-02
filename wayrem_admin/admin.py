@@ -30,7 +30,12 @@ class SuProductAdmin(admin.ModelAdmin):
 
 @admin.register(Products)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['id', "product_name", "SKU"]
+    list_display = ['id', "SKU"]
+
+
+@admin.register(Unit)
+class UnitAdmin(admin.ModelAdmin):
+    list_display = ['id', "unit_name"]
 
 
 @admin.register(SubCategories)
