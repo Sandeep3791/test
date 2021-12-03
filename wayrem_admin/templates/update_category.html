@@ -18,33 +18,49 @@
                    
                     <div class="col-md-6 mb-3">
                         <div>
-                            <label for="name">Category Name</label>
+                            <label for="name">Category Name  <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.name.errors | striptags}}</em></span></label>
                             {{form.name}}
-                            {{form.name.errors}}
-                            <!-- <input class="form-control" id="first_name" type="text" placeholder="Enter your first name" required> -->
+                            <div class="input-group" id="name_error_message" style="color: #d12525;"></div>
                         </div>
                     </div>
                     <div class="col-md-6 mb-3">
                         <div>
-                            <label for="category_image">Category Image</label>
+                            <label for="category_image">Category </label>
                             <!-- <input class="form-control" id="last_name" type="text" placeholder="Also your last name" required> -->
-                            
-                            {{form.category_image}}
-                            {{form.category_image.errors}}
-                       
+                            {{form.parent_category}}
+                            {{form.parent_category.errors}}
+                            <span class="input-group submit" id="error" style="color: #d12525;"></span>
                         </div>
                     </div>
                 </div>
                 <div class="row align-items-center">
-                      <div class="col-md-12 mb-3">
-                        <label for="description">Description</label>
-                        <!-- <div class="input-group">
-                            <span class="input-group-text"><span class="far fa-calendar-alt"></span></span>
-                            <input data-datepicker="" class="form-control" id="birthday" type="text" placeholder="dd/mm/yyyy" required>                                               
-                          </div> -->
-                          {{form.description}}
-                          {{form.description.errors}}
-                    </div>               
+                    <!-- Form -->
+                    <div class="col-lg-6">
+                        <div class="form-group mb-4">
+                            <label for="name">Margin <span class="text-danger">*</span><span class="text-danger"><em> {{form.margin.error | striptags}} {{form.unit.error | striptags}} 
+                                </em>
+                            </span></label>
+                            <div class="input-group first">   
+                                {{form.margin}} 
+                                {{form.unit}} 
+                               <div class="input-group" id="weight_error_message" style="color: #d12525;"></div>
+                            </div>
+                            
+                            <span class="text-error"></span>
+                        </div>
+                    </div>
+                    <!-- End of Form -->
+                    <div class="col-md-5 mb-3">
+                        <label for="description">Image <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.image.errors | striptags}}</em></span></label>
+                          {{form.image}}
+                          <div class="input-group" id="description_error_message" style="color: #d12525;"></div>
+                    </div>    
+               </div>
+               <div class="col-md-12 mb-3">
+                        <label for="description">Tag <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.tag.errors | striptags}}</em></span></label>
+                          {{form.tag}}
+                          <div class="input-group" id="description_error_message" style="color: #d12525;"></div>
+                    </div>    
                
                 <div class="mt-3">
                     {% comment %} <button type="submit" class="btn  btn-dark">Save</button> {% endcomment %}
