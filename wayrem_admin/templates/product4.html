@@ -67,7 +67,7 @@
 {% endif %}
 
 
-                         <form method="post" action="{% url 'wayrem_admin:productviewfour' %}" enctype="multipart/form-data" validate>
+                         <form method="post" action="{% url 'wayrem_admin:product_images' %}" enctype="multipart/form-data" validate>
                                 {% csrf_token %}
                                 {{ form.non_field_errors }}
                                 <div class="row">
@@ -75,10 +75,10 @@
                                     <!-- Form -->
                                     <div class="col-lg-6">
                                         <div class="form-group mb-4">
-                                            <label for="name">Primary Image<span class="text-danger">*</span> <span class="text-danger"> <em> {{form.image1.errors | striptags}}
+                                            <label for="name">Primary Image<span class="text-danger">*</span> <span class="text-danger"> <em> {{form.primary_image.errors | striptags}}
                                             </em> </span></label>
                                             <div class="input-group">
-                                                 {{form.image1}}    
+                                                 {{form.primary_image}}    
                                                  <span class="input-group submit" id="error" style="color: #d12525;"></span>                                                         
                                             </div>
                                             <span class="text-error"></span>
@@ -89,63 +89,20 @@
                                      <!-- Form -->
                                     <div class="col-lg-6">
                                         <div class="form-group mb-4">
-                                            <label for="name">Image <span class="text-danger">*</span> <span class="text-danger"> <em> {{form.image2.errors | striptags}}
+                                            <label for="name">Image <span class="text-danger">*</span> <span class="text-danger"> <em> {{form.images.errors | striptags}}
                                             </em> </span></label>
                                             <div class="input-group">
-                                                {{form.image2}}      
+                                                {{form.images}}      
                                                 <span class="input-group submit" id="error1" style="color: #d12525;"></span>      
                                             </div>                                    
                                             <span class="text-error"></span>
                                         </div>
                                     </div>
                                     <!-- End of Form -->
-                                    <!-- Form -->
-                                    <div class="col-lg-6">
-                                        <div class="form-group mb-4">
-                                            <label for="name">Image <span class="text-danger">*</span> <span class="text-danger"> <em> {{form.image3.errors | striptags}}
-                                            </em> </span></label>
-                                            <div class="input-group">                                       
-                                                {{form.image3}}  
-                                                <!-- <div class="input-group" id="image3_error_message" style="color: #d12525;"></div>  -->
-                                                <span class="input-group submit" id="error2" style="color: #d12525;"></span>   
-                                            </div>                                            
-                                            <span class="text-error"></span>
-                                        </div>
-                                    </div>
-                                    <!-- End of Form -->
-                                    <!-- Form -->
-                                    <div class="col-lg-6">
-                                        <div class="form-group mb-4">
-                                            <label for="name">Image</label>
-                                            <div class="input-group">
-                                                {{form.image4}}         
-                                            </div>                                        
-                                            <span class="text-error"></span>
-                                        </div>
-                                    </div>
-                                    <!-- End of Form -->
-                                    <!-- Form -->
-                                    <div class="col-lg-6">
-                                        <div class="form-group mb-4">
-                                            <label for="name">Image</label>
-                                            <div class="input-group">
-                                                {{form.image5}}         
-                                            </div>                        
-                                            <span class="text-error"></span>
-                                        </div>
-                                    </div>
-                           {% comment %} <div class="row">
-                                    <div class="col-md-6 d-grid">
-                                                <a href="{% url 'wayrem_admin:productviewthree' %}" class="btn btn-secondary">Previous</a>
-                                        </div>  
-                                <div class="col-md-6 d-grid">
-                                        <button type="submit" class="btn text-white"
-                                            style="background-color:#29313d;">Save</button>
-                                    </div> 
-                                </div> {% endcomment %}
+                                   
 
                                 <div class="mt-1">
-                                <a  href="{% url 'wayrem_admin:productviewthree' %}" class="btn  btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Previous</a>
+                                <a  href="{% url 'wayrem_admin:productviewone' %}" class="btn  btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Previous</a>
                                 <button type="submit" class="btn btn-dark border-0 col-xl-3 col-md-5 col-12" >Save</button>
                                 </div>
 

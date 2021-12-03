@@ -197,12 +197,13 @@ class Products(models.Model):
     wayrem_margin = models.IntegerField(null=True)
     margin_unit = models.CharField(
         max_length=20, choices=DIS_ABS_PERCENT, null=True, blank=False)
+    primary_image = models.ImageField(upload_to='product/images/', null=True)
     gs1 = models.CharField(max_length=255, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.product_name
+        return self.name
 
     class Meta:
         db_table = 'products_master'
@@ -217,8 +218,8 @@ def get_image_filename(instance, filename):
 class Images(models.Model):
     product = models.ForeignKey(
         Products, on_delete=models.CASCADE, default=None)
-    image = models.ImageField(upload_to=get_image_filename,
-                              verbose_name='product_mage')
+    image = models.FileField(upload_to="product/images/",
+                             verbose_name='product_mage')
 
 
 class Unit(models.Model):
@@ -234,10 +235,10 @@ class ProductIngredients(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     product = models.UUIDField()
     ingredient = models.ForeignKey(
-        Ingredients, on_delete=models.CASCADE, null=True, blank=False)
-    quantity = models.CharField(max_length=25, default=1)
+        Ingredients, on_delete=models.CASCADE, null=True, blank=True)
+    quantity = models.CharField(max_length=25, default=1, blank=True)
     unit = models.ForeignKey(
-        Unit, on_delete=models.CASCADE, null=True, blank=False)
+        Unit, on_delete=models.CASCADE, null=True, blank=True)
 
 
 class PurchaseOrder(models.Model):

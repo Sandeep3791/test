@@ -29,7 +29,7 @@ def create_purchase_order(request):
             if any(e[0] == product_id for e in request.session.get('products')):
                 messages.error(request, "Product already added!")
                 return redirect("wayrem_admin:create_po")
-            x = (product_id, name.product_name, product_qty)
+            x = (product_id, name.name, product_qty)
             request.session['products'].append(x)
             po = request.session['products']
             request.session['supplier_company'] = request.POST['supplier_name']

@@ -104,8 +104,12 @@ def product_view_one(request):
     form = ProductForm(request.POST, initial=initial)
     formset = ProductIngredientFormset(request.POST)
     context['form'] = form
+    context['formset'] = formset
     if request.method == 'POST':
         print("Post")
+        print(formset.is_valid())
+        print(formset.errors)
+        print(form.is_valid())
         if form.is_valid() and formset.is_valid():
             product_id = uuid.uuid4()
             product = form.save(commit=False)
@@ -114,12 +118,12 @@ def product_view_one(request):
             obj = ProductIngredients()
             for form in formset.forms:
                 obj.product = product_id
-                obj.ingredient = form.cleaned_data['ingredient']
-                obj.quantity = form.cleaned_data['quantity']
-                obj.unit = form.cleaned_data['unit']
+                obj.ingredient = form.cleaned_data.get('ingredient')
+                obj.quantity = form.cleaned_data.get('quantity')
+                obj.unit = form.cleaned_data.get('unit')
                 obj.save()
-
-            return redirect('wayrem_admin:dashboard')
+            request.session['product_pk'] = str(product_id)
+            return redirect('wayrem_admin:product_images')
             # return HttpResponse(render(request,'path_to_your_view.html'))
     else:
         context['form'] = ProductForm(initial=initial)
@@ -127,6 +131,27 @@ def product_view_one(request):
         context['formset'] = ProductIngredientFormset()
     return render(request, 'product1.html', context)
 
+
+def product_images(request):
+    if request.method == "POST":
+        form = ProductImageForm(request.POST, request.FILES)
+        if form.is_valid():
+            obj_id = request.session.get('product_pk')
+            obj = Products.objects.get(id=obj_id)
+            primary_image = request.FILES.get('primary_image', None)
+            obj.primary_image = primary_image
+            obj.save()
+            images = request.FILES.getlist('images')
+            for image in images:
+                img_obj = Images()
+                img_obj.image = image
+                img_obj.product = obj
+                img_obj.save()
+            return redirect('wayrem_admin:productlist')
+
+    else:
+        form = ProductImageForm()
+    return render(request, "product4.html", {'form': form})
 # # ----------------------------------------------------------------------------
 
 

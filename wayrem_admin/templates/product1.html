@@ -103,7 +103,7 @@
 {% endif %}
 
 
-                        <form method="post" action="{% url 'wayrem_admin:productviewone' %}"  id="product1" data-supplier-url = "{% url 'wayrem_admin:ajax_load_supplier' %}" enctype="multipart/form-data" novalidate>
+                        <form method="post" action="{% url 'wayrem_admin:productviewone' %}"  id="product1" data-supplier-url = "{% url 'wayrem_admin:ajax_load_supplier' %}" enctype="multipart/form-data" validate>
                                 {% csrf_token %}
                                 {{ form.non_field_errors }}
                             <div class="row" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
@@ -289,8 +289,9 @@
                                         <div class="form-group mb-4">
                                             <div class="input-group">   
                                                 {{ formset.management_form }}
-                                                {{ formset.non_form_errors }}
+                                                
                                                 {% for form in formset %}
+                                                {{ form.id }}
                                                 <div class="row form-row spacer my-2">
                                                     {% comment %} <div class="col-2">
                                                         <label>Ingredients</label>
@@ -298,19 +299,20 @@
                                                     <div class="row">
                                                     {% comment %} <div class="col-12 my-2"> {% endcomment %}
                                                         <div class="col-4">
-                                                            <label>Ingredients</label>
+                                                            <label>Ingredients </label>
                                                             {{form.ingredient}}
+                                                            
                                                         </div>
-                                                        <div class="col-2">
-                                                            <label>Quantity</label>
+                                                        <div class="col-3">
+                                                            <label>Quantity </label>
                                                             {{form.quantity}}
                                                         </div>
 
                                                             <div class="col-4">
-                                                            <label>Unit</label>
+                                                            <label>Unit </label>
                                                             {{form.unit}}
                                                         </div>
-                                                            <div class="col-2">
+                                                            <div class="col-1">
                                                             <div class="input-group-append">
                                                                 <button class="btn btn-success add-form-row">+</button>
                                                             </div>
@@ -501,7 +503,7 @@
                                
                             <div class="mt-1">
                                 <a  href="{% url 'wayrem_admin:product' %}" class="btn  btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Back</a>
-                                <button type="submit" class="btn btn-dark border-0 col-xl-3 col-md-5 col-12" >Next</button>
+                                <button type="submit" class="btn btn-dark border-0 col-xl-3 col-md-5 col-12" >Manage Product Images</button>
                             </div>
 
 

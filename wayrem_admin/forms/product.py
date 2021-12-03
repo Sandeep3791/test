@@ -39,6 +39,13 @@ class ProductForm(forms.ModelForm):
         }
 
 
+class ProductImageForm(forms.Form):
+    primary_image = forms.ImageField(
+        widget=forms.FileInput(attrs={'class': 'form-select'}))
+    images = forms.FileField(widget=forms.ClearableFileInput(
+        attrs={'class': 'form-select', 'multiple': True}))
+
+
 class ProductIngredientForm(forms.ModelForm):
 
     class Meta:
