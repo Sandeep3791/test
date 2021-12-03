@@ -121,7 +121,7 @@
 
 <script>
 
-    $("#id_image1").on("change", function () {
+    $("#id_primary_image").on("change", function () {
     
     var extension = $(this).val().split('.').pop().toLowerCase();
     var validFileExtensions = ['jpeg', 'jpg', 'png', 'gif', 'bmp'];
@@ -142,7 +142,7 @@
     }
     });
     
-    $("#id_image2").on("change", function () {
+    $("#id_images").on("change", function () {
     
     var extension = $(this).val().split('.').pop().toLowerCase();
     var validFileExtensions = ['jpeg', 'jpg', 'png', 'gif', 'bmp'];

@@ -96,7 +96,7 @@ class Categories(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.name
+        return self.name + " - " + str(self.margin)+"%"
 
     class Meta:
         db_table = 'categories_master'
