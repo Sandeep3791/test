@@ -1,4 +1,5 @@
 from django import forms
+from django.template.defaultfilters import default
 from wayrem_admin.models import Categories, SubCategories
 
 
@@ -15,11 +16,19 @@ class CategoryCreateForm(forms.ModelForm):
         }
 
 
+UNIT = (
+    ('(absolute ', 'abs'),
+    ('%', '%'),
+)
+
+
 class CategoryForm(forms.Form):
     name = forms.CharField(widget=forms.TextInput(
         attrs={'class': "form-control"}))
     margin = forms.CharField(widget=forms.NumberInput(
-        attrs={'class': "form-control"}))
+        attrs={'class': "form-control"}), initial=0)
+    unit = forms.CharField(widget=forms.Select(choices=UNIT, attrs={
+                           'class': 'form-select'}), required=True)
     tag = forms.CharField(
         widget=forms.Textarea(attrs={'class': "form-control", 'rows': '3'}), required=False)
     image = forms.ImageField(widget=forms.FileInput(
@@ -28,7 +37,7 @@ class CategoryForm(forms.Form):
     def get_category():
         obj = Categories.objects.all()
         choice = [(None, "Select Parent Category")]
-        ch = [(r.id, r.name) for r in obj]
+        ch = [(r.name, r.name) for r in obj]
         choice.extend(ch)
         print(choice)
         return choice

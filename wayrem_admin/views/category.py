@@ -101,26 +101,27 @@ def add_category(request):
         print("POST")
         if form.is_valid():
             if request.POST.get('parent_category'):
-                subcategory = SubCategories()
-                subcategory.name = form.cleaned_data['name']
-                subcategory.category_image = form.cleaned_data['image']
-                subcategory.tag = form.cleaned_data['tag']
-                subcategory.margin = form.cleaned_data['margin']
-                category_obj = inst_Category(
-                    form.cleaned_data['parent_category'])
-                subcategory.category = category_obj
+                subcategory = Categories()
+                subcategory.name = form.cleaned_data.get('name')
+                subcategory.category_image = form.cleaned_data.get('image')
+                subcategory.tag = form.cleaned_data.get('tag')
+                subcategory.margin = form.cleaned_data.get('margin')
+                subcategory.unit = form.cleaned_data.get('unit')
+                subcategory.parent = form.cleaned_data.get('parent_category')
+                subcategory.is_parent = True
                 subcategory.save()
-                return redirect('wayrem_admin:subcategorieslist')
+                return redirect('wayrem_admin:categorieslist')
 
             else:
                 category = Categories()
-                category.name = form.cleaned_data['name']
-                category.category_image = form.cleaned_data['image']
-                category.tag = form.cleaned_data['tag']
-                category.margin = form.cleaned_data['margin']
+                category.name = form.cleaned_data.get('name')
+                category.category_image = form.cleaned_data.get('image')
+                category.tag = form.cleaned_data.get('tag')
+                category.margin = form.cleaned_data.get('margin')
+                category.unit = form.cleaned_data.get('unit')
                 category.save()
                 print('valid')
-                return redirect('wayrem_admin:subcategorieslist')
+                return redirect('wayrem_admin:categorieslist')
 
         else:
             print("Invalid")
