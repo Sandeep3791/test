@@ -72,6 +72,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'wayrem.wsgi.application'
+# WSGI_APPLICATION = 'wsgi.application'
 
 
 # Database
@@ -83,7 +84,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'wayrem',
         'USER': 'root',
-        'PASSWORD': 'root1234',
+        'PASSWORD': 'root',
         'HOST': 'localhost',
         'PORT': '3306',
     }
