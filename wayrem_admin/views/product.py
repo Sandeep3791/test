@@ -97,8 +97,8 @@ def product_view_one(request):
         'product_deliverable': request.session.get('product_deliverable', None),
         'date_of_mfg': request.session.get('date_of_mfg', None),
         'date_of_exp': request.session.get('date_of_exp', None),
-        'mfr_name': request.session.get('mfr_name', None),
-        'supplier_name': request.session.get('supplier_name', None),
+        'price': request.session.get('price', None),
+        'weight': request.session.get('weight', None),
     }
     context = {}
     form = ProductForm(request.POST, initial=initial)
