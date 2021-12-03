@@ -9,6 +9,7 @@ class DateInput(forms.DateInput):
 
 
 class ProductForm(forms.ModelForm):
+
     class Meta:
         model = Products
         fields = ("name", "SKU", "category", "product_code", "meta_key", "feature_product", "publish", "date_of_mfg", "date_of_exp", "mfr_name", "supplier",
