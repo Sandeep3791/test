@@ -94,11 +94,11 @@ endcomment %}
     </div>
   </div>
     <div class="col-md-6 mt-2">
-    <label for="floatingTextarea">Value  <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.value.errors | striptags}}</em></span></label>
-      </div>
+    <label for="floatingTextarea">Type  <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.type.errors | striptags}}</em></span></label>
   <div class="form-floating ">
-    {{form.value}}
+    {{form.type}}
   </div>
+      </div>
  
       </div>
       <div class="modal-footer">
@@ -147,7 +147,13 @@ endcomment %}
             {% comment %} <th scope="row">{{user.id}}</th> {% endcomment %}
             <td>{{user.key}}</td>
             <td><input type="text" value="{{user.display_name}}" class="form-control form-control-sm" style="height:10px;" name="display_name"></td>
-            <td><input type="text" value="{{user.value}}" class="form-control form-control-sm" style="height:10px;"  name="value"></td>
+            <td>
+            {% if user.type == "text" %}
+            <input type="text" value="{{user.value}}" class="form-control form-control-sm" style="height:10px;"  name="value">
+            {% else %}
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="value">{{user.value}}</textarea>
+            {% endif %}
+            </td>
             <td>
                 
                 <button type="submit" class="btn btn-primary btn-sm">Update</button>
