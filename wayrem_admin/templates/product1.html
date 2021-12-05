@@ -23,6 +23,16 @@
             });
      });
     </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+             $('.select_ingrid').select2({
+             placeholder: 'Select Ingredient',
+             })
+             $('.select_unit').select2({
+             placeholder: 'Select Unit',
+             });
+      });
+     </script>
 
     <!---=========page popup==========-->
 <div class="modal" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -103,7 +113,7 @@
 {% endif %}
 
 
-                        <form method="post" action="{% url 'wayrem_admin:productviewone' %}"  id="product1" data-supplier-url = "{% url 'wayrem_admin:ajax_load_supplier' %}" enctype="multipart/form-data" validate>
+                        <form method="post" action="{% url 'wayrem_admin:productviewone' %}"  id="product1" data-supplier-url = "{% url 'wayrem_admin:ajax_load_supplier' %}" data-category-margin = "{% url 'wayrem_admin:ajax_load_category_margin' %}" enctype="multipart/form-data" validate>
                                 {% csrf_token %}
                                 {{ form.non_field_errors }}
                             <div class="row" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
@@ -381,7 +391,7 @@
                                                         </div>
                                                             <div class="col-3 d-flex align-items-end">
                                                             <div class="input-group-append">
-                                                                <button class="btn btn-success add-form-row ps-3 pe-3">+</button>
+                                                                <button class="btn btn-success btn-sm add-form-row ps-3 pe-3">+</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -446,6 +456,29 @@
                                                 {{form.wayrem_margin}}
                                                 {{form.margin_unit}}
                                                 <div class="input-group" id="margin_error_message" style="color: #d12525;"></div>
+                                            </div>
+                                            <span class="text-error"></span>
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+
+<!-- Form -->
+                                    <div class="col-lg-6 offset-6">
+                                        <div class="form-group mb-4">
+                                            
+                                            <div class="input-group">
+                                            <div class="form-check mx-2">
+  <input class="form-check-input" type="radio" name="cat_margin" id="cat_margin">
+  <label class="form-check-label" for="cat_margin">
+    Category Margin
+  </label>
+</div>
+<div class="form-check mx-5">
+  <input class="form-check-input" type="radio" name="cat_margin" id="cat_margin1">
+  <label class="form-check-label" for="cat_margin1">
+    Product Margin
+  </label>
+</div>
                                             </div>
                                             <span class="text-error"></span>
                                         </div>
@@ -548,6 +581,34 @@
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
 
+ <script>
+            $("#cat_margin").change(function () {
+                const url = $("#product1").attr("data-category-margin");  // get the url of the load_cities view
+                const checkbox = $(this).val();  // get the selected supplier ID from the HTML input
+                const category = $("#id_category").val();  // get the selected supplier ID from the HTML input
+        
+                $.ajax({                       // initialize an AJAX request
+                    url: url,                    // set the url of the request (= /persons/ajax/load-cities/ )
+                    data: {
+                        'cat_margin': category       // add the country id to the GET parameters
+                    },
+                    success: function (data) {   // data is the return of the load_cities view function
+                        console.log(data)
+                        console.log(data.margin)
+                        $("#id_wayrem_margin").val(data.margin);
+                        $("#id_margin_unit").val(data.unit);
+                        
+                    }
+                });
+        
+            });
+            $("#cat_margin1").change(function () {
+                $("#id_wayrem_margin").val(0);
+                $("#id_margin_unit").val("");
+
+            });
+</script>
+
 <script type="text/javascript">
     function updateElementIndex(el, prefix, ndx) {
         var id_regex = new RegExp('(' + prefix + '-\\d+)');
@@ -609,11 +670,11 @@
         return false;
     });
     
-    </script>
+</script>
 
 
 
-    <script>
+<script>
     $("#id_product_category").change(function () {
         const url = $("#product1").attr("data-supplier-url");  // get the url of the load_cities view
         const supplierId = $(this).val();  // get the selected supplier ID from the HTML input

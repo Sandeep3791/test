@@ -35,7 +35,7 @@ roles_options = (
 status = (("Active", "Active"), ("Inactive", "Inactive"))
 
 UNIT = (
-    ('(absolute ', 'abs'),
+    ('absolute ', 'abs'),
     ('%', '%'),
 )
 
@@ -354,12 +354,19 @@ class Invoice(models.Model):
         db_table = 'invoice_master'
 
 
+TYPE = (
+    ('text', 'Text'),
+    ('textarea', 'Textarea'),
+)
+
+
 class Settings(models.Model):
     key = models.CharField(max_length=191, null=False, unique=True)
     display_name = models.CharField(max_length=191, null=False, unique=True)
     value = models.TextField()
     details = models.TextField()
-    type = models.CharField(max_length=191, null=False)
+    type = models.CharField(max_length=40, choices=TYPE,
+                            null=True, default="text")
     order = models.IntegerField(null=False, default="1")
 
     class Meta:

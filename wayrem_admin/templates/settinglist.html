@@ -34,16 +34,9 @@ endcomment %}
 </div> -->
 
 <div class="subheader row pe-4 ps-4 mt-5">
+    <h1 class="text-center">Settings</h1>
     <div class="row add_btn col-xl-4 col-lg-4 col-md-5 d-flex align-items-center">
         <div class="col">
-    <div class="dropdown">
-  <button class="button button1 mt-2 export_file dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" >
-    Export
-  </button>
-  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-    {% comment %} <li><a class="dropdown-item" href="{% url 'wayrem_admin:settingspdf' %}">Export to Pdf</a></li> {% endcomment %}
-    <li><a class="dropdown-item" href="{% url 'wayrem_admin:excelsettings' %}">Export to Excel</a></li>
-  </ul>
 </div>
             {% comment %} <a href="{% url 'wayrem_admin:userpdf' %}" class="button button1 mt-2 export_file">Export to pdf</a> {% endcomment %}
         </div>
@@ -94,11 +87,11 @@ endcomment %}
     </div>
   </div>
     <div class="col-md-6 mt-2">
-    <label for="floatingTextarea">Value  <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.value.errors | striptags}}</em></span></label>
-      </div>
+    <label for="floatingTextarea">Type  <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.type.errors | striptags}}</em></span></label>
   <div class="form-floating ">
-    {{form.value}}
+    {{form.type}}
   </div>
+      </div>
  
       </div>
       <div class="modal-footer">
@@ -147,7 +140,13 @@ endcomment %}
             {% comment %} <th scope="row">{{user.id}}</th> {% endcomment %}
             <td>{{user.key}}</td>
             <td><input type="text" value="{{user.display_name}}" class="form-control form-control-sm" style="height:10px;" name="display_name"></td>
-            <td><input type="text" value="{{user.value}}" class="form-control form-control-sm" style="height:10px;"  name="value"></td>
+            <td>
+            {% if user.type == "text" %}
+            <input type="text" value="{{user.value}}" class="form-control form-control-sm" style="height:10px;"  name="value">
+            {% else %}
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="value">{{user.value}}</textarea>
+            {% endif %}
+            </td>
             <td>
                 
                 <button type="submit" class="btn btn-primary btn-sm">Update</button>
@@ -172,7 +171,6 @@ endcomment %}
     $(document).ready(function () {
         oTable = $('#filtertable').DataTable({
             dom: 'rtip',
-            'columnDefs': [{ 'orderable': false, 'targets': 4 }],
             "oLanguage": {
                 "oPaginate": {
                     "sNext": '<i class="fas fa-arrow-circle-right text-primary"></i>',

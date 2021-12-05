@@ -1,3 +1,5 @@
+import json
+from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views import View
@@ -80,6 +82,23 @@ def load_supplier(request):
         category_name=i).all() for i in category]
     # supplier = Supplier.objects.filter(category_name=category).all()
     return render(request, 'supplier_dropdown.html', {'supplier': supplier})
+
+
+def load_category_margin(request):
+    x = dict(request.GET)
+    category = x.get('cat_margin[]')
+
+    category_obj = [Categories.objects.filter(
+        pk=i).all() for i in category]
+    category = category_obj[0][0]
+    margin = category.margin
+    unit = category.unit
+    data = json.dumps({
+        'margin': margin,
+        'unit': unit,
+    })
+    # supplier = Supplier.objects.filter(category_name=category).all()
+    return HttpResponse(data, content_type='application/json')
 
 
 def product_view_one(request):
@@ -342,7 +361,6 @@ def product_details(request, id=None):
     return render(request, 'View_product.html', {'proddata': prod})
 
 
-
 def update_product(request, id=None, *args, **kwargs):
     # print(id)
 
@@ -351,7 +369,8 @@ def update_product(request, id=None, *args, **kwargs):
 
     if request.method == "POST":
         # kwargs = { 'data' : request.POST }
-        form = ProductFormImageView(request.POST or None, request.FILES or None, instance=prod)
+        form = ProductFormImageView(
+            request.POST or None, request.FILES or None, instance=prod)
         form1 = ProductIngredientFormset(request.POST or None)
         if form.is_valid() and form1.is_valid():
             ingrd.delete()
@@ -364,11 +383,9 @@ def update_product(request, id=None, *args, **kwargs):
                 obj.unit = form.cleaned_data.get('unit')
                 obj.save()
             return redirect('wayrem_admin:productlist')
-    form = ProductFormImageView(instance=prod)    
+    form = ProductFormImageView(instance=prod)
     form1 = ProductIngredientFormset(queryset=ingrd)
-    return render(request, 'product_update_latest.html', {'form': form, 'formset':form1,'image':prod.primary_image, 'id': prod.id})
-   
-
+    return render(request, 'product_update_latest.html', {'form': form, 'formset': form1, 'image': prod.primary_image, 'id': prod.id})
 
 
 class DeleteProduct(View):
@@ -402,7 +419,6 @@ def product_details(request, id=None):
     prod = Products.objects.get(id=id)
     ingrd = ProductIngredients.objects.filter(product=id).all()
     form1 = ProductIngredientFormsetView(queryset=ingrd)
-    form = ProductFormView( instance=prod)
+    form = ProductFormView(instance=prod)
     # prod = Products.objects.filter(id=id).first()
-    return render(request, 'View_product copy.html', {'form': form, 'form2': form1 ,'image':prod.primary_image, 'id': prod.id})
-
+    return render(request, 'View_product copy.html', {'form': form, 'form2': form1, 'image': prod.primary_image, 'id': prod.id})
