@@ -4,7 +4,7 @@ from django.contrib.auth.decorators import login_required
 from wayrem_admin.forms import CategoryCreateForm
 from django.views import View
 from django.utils.decorators import method_decorator
-from wayrem_admin.forms.categories import CategoryForm
+from wayrem_admin.forms.categories import CategoryForm, CategoryUpdateForm
 from wayrem_admin.models import Categories, SubCategories
 from wayrem_admin.export import generate_pdf, generate_excel
 from wayrem_admin.services import inst_Category
@@ -43,8 +43,6 @@ class CategoriesList(View):
     @method_decorator(login_required(login_url='wayrem_admin:root'))
     def get(self, request, format=None):
         categorieslist = Categories.objects.all()
-        # user_role = Roles.objects.all()
-        # "roles":user_role
         return render(request, self.template_name, {"categorieslist": categorieslist})
 
 
@@ -61,21 +59,33 @@ def update_categories(request, id=None, *args, **kwargs):
     print(id)
     if request.method == "POST":
         user = Categories.objects.get(id=id)
-        form = CategoryCreateForm(
+        form = CategoryUpdateForm(
             request.POST or None, request.FILES or None, instance=user)
         if form.is_valid():
             print("FORM")
-            name = form.cleaned_data['name']
-            category_image = form.cleaned_data['category_image']
-            tag = form.cleaned_data['tag']
+            name = form.cleaned_data.get('name')
+            parent = form.cleaned_data.get('parent_category')
+            image = form.cleaned_data.get('image')
+            margin = form.cleaned_data.get('margin')
+            unit = form.cleaned_data.get('unit')
+            tag = form.cleaned_data.get('tag')
             user.name = name
-            user.category_image = category_image
+            user.image = image
+            user.margin = margin
+            user.unit = unit
             user.tag = tag
+            if parent:
+                user.parent = parent
+                user.is_parent = True
+            else:
+                user.parent = None
+                user.is_parent = False
             user.save()
             print("Here")
             return redirect('wayrem_admin:categorieslist')
     user = Categories.objects.get(id=id)
-    form = CategoryCreateForm(instance=user)
+    form = CategoryUpdateForm(instance=user, initial={
+                              'parent_category': user.parent})
     return render(request, 'update_category.html', {'form': form, 'id': user.id})
 
 
@@ -101,26 +111,27 @@ def add_category(request):
         print("POST")
         if form.is_valid():
             if request.POST.get('parent_category'):
-                subcategory = SubCategories()
-                subcategory.name = form.cleaned_data['name']
-                subcategory.category_image = form.cleaned_data['image']
-                subcategory.tag = form.cleaned_data['tag']
-                subcategory.margin = form.cleaned_data['margin']
-                category_obj = inst_Category(
-                    form.cleaned_data['parent_category'])
-                subcategory.category = category_obj
+                subcategory = Categories()
+                subcategory.name = form.cleaned_data.get('name')
+                subcategory.image = form.cleaned_data.get('image')
+                subcategory.tag = form.cleaned_data.get('tag')
+                subcategory.margin = form.cleaned_data.get('margin')
+                subcategory.unit = form.cleaned_data.get('unit')
+                subcategory.parent = form.cleaned_data.get('parent_category')
+                subcategory.is_parent = True
                 subcategory.save()
-                return redirect('wayrem_admin:subcategorieslist')
+                return redirect('wayrem_admin:categorieslist')
 
             else:
                 category = Categories()
-                category.name = form.cleaned_data['name']
-                category.category_image = form.cleaned_data['image']
-                category.tag = form.cleaned_data['tag']
-                category.margin = form.cleaned_data['margin']
+                category.name = form.cleaned_data.get('name')
+                category.image = form.cleaned_data.get('image')
+                category.tag = form.cleaned_data.get('tag')
+                category.margin = form.cleaned_data.get('margin')
+                category.unit = form.cleaned_data.get('unit')
                 category.save()
                 print('valid')
-                return redirect('wayrem_admin:subcategorieslist')
+                return redirect('wayrem_admin:categorieslist')
 
         else:
             print("Invalid")

@@ -41,12 +41,23 @@
                     </div>
                 </div>
                 <div class="row align-items-center">
-                    <div class="col-md-6 mb-3">
-                        <label for="description">Margin <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.margin.errors | striptags}}</em></span></label>
-                          {{form.margin}}
-                          <div class="input-group" id="description_error_message" style="color: #d12525;"></div>
+                    <!-- Form -->
+                    <div class="col-lg-6">
+                        <div class="form-group mb-4">
+                            <label for="name">Margin <span class="text-danger">*</span><span class="text-danger"><em> {{form.margin.error | striptags}} {{form.unit.error | striptags}} 
+                                </em>
+                            </span></label>
+                            <div class="input-group first">   
+                                {{form.margin}} 
+                                {{form.unit}} 
+                               <div class="input-group" id="weight_error_message" style="color: #d12525;"></div>
+                            </div>
+                            
+                            <span class="text-error"></span>
+                        </div>
                     </div>
-                    <div class="col-md-6 mb-3">
+                    <!-- End of Form -->
+                    <div class="col-md-5 mb-3">
                         <label for="description">Image <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.image.errors | striptags}}</em></span></label>
                           {{form.image}}
                           <div class="input-group" id="description_error_message" style="color: #d12525;"></div>

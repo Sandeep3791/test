@@ -11,7 +11,7 @@ urlpatterns = [
     path('customer/', include('wayrem_admin.urls.customer')),
     path('home/', include('wayrem_admin.urls.home')),
     path('ingredient/', include('wayrem_admin.urls.ingredients')),
-    path('product/', include('wayrem_admin.urls.product')),
+    path('products/', include('wayrem_admin.urls.product')),
     path('purchase_order/', include('wayrem_admin.urls.purchase_order')),
     path('roles/', include('wayrem_admin.urls.roles')),
     path('supplier/', include('wayrem_admin.urls.supplier')),

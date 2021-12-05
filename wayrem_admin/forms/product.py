@@ -9,6 +9,7 @@ class DateInput(forms.DateInput):
 
 
 class ProductForm(forms.ModelForm):
+
     class Meta:
         model = Products
         fields = ("name", "SKU", "category", "product_code", "meta_key", "feature_product", "publish", "date_of_mfg", "date_of_exp", "mfr_name", "supplier",
@@ -41,9 +42,9 @@ class ProductForm(forms.ModelForm):
 
 class ProductImageForm(forms.Form):
     primary_image = forms.ImageField(
-        widget=forms.FileInput(attrs={'class': 'form-select'}))
+        widget=forms.FileInput(attrs={'class': 'form-control-select'}))
     images = forms.FileField(widget=forms.ClearableFileInput(
-        attrs={'class': 'form-select', 'multiple': True}))
+        attrs={'class': 'form-control-select', 'multiple': True}))
 
 
 class ProductIngredientForm(forms.ModelForm):

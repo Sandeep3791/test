@@ -34,7 +34,7 @@ def product(request):
                 result.gs1_message.element_strings[5].decimal)
             request.session['date_of_exp'] = str(
                 result.gs1_message.element_strings[1].date)
-            request.session['product_weight'] = str(
+            request.session['weight'] = str(
                 result.gs1_message.element_strings[4].decimal)
             request.session['unit'] = "KILO-GRAM"
             request.session['gs1'] = user_code
@@ -57,13 +57,13 @@ def details_gs1(request):
             result.gs1_message.element_strings[5].decimal)
         request.session['date_of_exp'] = str(
             result.gs1_message.element_strings[1].date)
-        request.session['product_weight'] = str(
+        request.session['weight'] = str(
             result.gs1_message.element_strings[4].decimal)
         request.session['unit'] = "KILO-GRAM"
     except:
         pass
     data = [request.session.get('SKU'), request.session.get(
-        'price'), request.session.get('date_of_exp'), request.session.get('product_weight'), request.session.get('unit')]
+        'price'), request.session.get('date_of_exp'), request.session.get('weight'), request.session.get('unit')]
     return render(request, 'barcode_details.html', {'data': data})
 
 
@@ -94,11 +94,11 @@ def product_view_one(request):
         'product_code': request.session.get('product_code', None),
         'product_name': request.session.get('product_name', None),
         'feature_product': request.session.get('feature_product', None),
-        'product_deliverable': request.session.get('product_deliverable', None),
+        'unit': request.session.get('unit', None),
         'date_of_mfg': request.session.get('date_of_mfg', None),
         'date_of_exp': request.session.get('date_of_exp', None),
-        'mfr_name': request.session.get('mfr_name', None),
-        'supplier_name': request.session.get('supplier_name', None),
+        'price': request.session.get('price', None),
+        'weight': request.session.get('weight', None),
     }
     context = {}
     form = ProductForm(request.POST, initial=initial)

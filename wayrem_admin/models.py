@@ -34,6 +34,11 @@ roles_options = (
 
 status = (("Active", "Active"), ("Inactive", "Inactive"))
 
+UNIT = (
+    ('(absolute ', 'abs'),
+    ('%', '%'),
+)
+
 
 class Roles(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
@@ -88,15 +93,19 @@ class Otp(models.Model):
 class Categories(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4)
     name = models.CharField(max_length=35, unique=True)
-    category_image = models.ImageField(
+    image = models.ImageField(
         upload_to='assets/category/', blank=False, null=True)
     tag = models.TextField(null=True, blank=True)
+    parent = models.CharField(max_length=35,  null=True)
     margin = models.IntegerField()
+    unit = models.CharField(
+        max_length=20, choices=UNIT, null=True, default="%")
+    is_parent = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.name
+        return self.name + " - " + str(self.margin)+self.unit
 
     class Meta:
         db_table = 'categories_master'
