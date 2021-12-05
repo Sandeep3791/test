@@ -71,3 +71,85 @@ ProductIngredientFormset = modelformset_factory(
         'unit': forms.Select(attrs={'class': 'form-select'}),
     }
 )
+ProductIngredientFormsetView = modelformset_factory(
+    ProductIngredients,
+    fields=("ingredient", "quantity", "unit"),
+    extra=0,
+    widgets={
+        'ingredient': forms.Select(attrs={'class': 'form-select','disabled':True, 'placeholder': 'select'}),
+        'quantity': forms.NumberInput(attrs={'class': 'form-control','readonly':'readonly', 'placeholder': 'Quantity'}),
+        'unit': forms.Select(attrs={'class': 'form-select','disabled':True}),
+    }
+)
+
+class ProductFormView(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(ProductFormView, self).__init__(*args, **kwargs)
+        # self.fields['field'].widget.attrs['readonly'] = True
+        # self.fields.widgets.attrs['readonly'] = True
+        for field in self.fields:
+                self.fields[field].disabled = True
+
+    class Meta:
+        model = Products
+        fields = ("name", "SKU", "category", "product_code", "meta_key", "feature_product", "publish", "date_of_mfg", "date_of_exp", "mfr_name", "supplier",
+                  "dis_abs_percent", "description", "quantity", "weight", "unit", "price", "discount", "package_count", "wayrem_margin", "margin_unit","primary_image")
+
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'SKU': forms.TextInput(attrs={'class': 'form-control'}),
+            'product_code': forms.TextInput(attrs={'class': 'form-control'}),
+            'meta_key': forms.Textarea(attrs={'class': "form-control", 'rows': '3'}),
+            'feature_product': forms.CheckboxInput(attrs={'class': "form-check-input"}),
+            'publish': forms.CheckboxInput(attrs={'class': "form-check-input"}),
+            'date_of_mfg': DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'date_of_exp': DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'mfr_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'dis_abs_percent': forms.Select(attrs={'class': 'form-select'}),
+            'description': forms.Textarea(attrs={'class': "form-control", 'rows': '3'}),
+            'quantity': forms.NumberInput(attrs={'class': 'form-control'}),
+            'weight': forms.NumberInput(attrs={'class': 'form-control'}),
+            'unit': forms.Select(attrs={'class': 'form-select'}),
+            'price': forms.NumberInput(attrs={'class': 'form-control'}),
+            'discount': forms.NumberInput(attrs={'class': "form-control"}),
+            'package_count': forms.NumberInput(attrs={'class': "form-control"}),
+            'wayrem_margin': forms.NumberInput(attrs={'class': "form-control"}),
+            'margin_unit': forms.Select(attrs={'class': 'form-select'}),
+            'primary_image': forms.FileInput( attrs={'class': "form-control-file"}),
+            'category': forms.SelectMultiple(attrs={'class': 'form-control'}),
+            'supplier': forms.SelectMultiple(attrs={'class': 'form-control'}),
+        }
+
+
+
+class ProductFormImageView(forms.ModelForm):
+
+    class Meta:
+        model = Products
+        fields = ("name", "SKU", "category", "product_code", "meta_key", "feature_product", "publish", "date_of_mfg", "date_of_exp", "mfr_name", "supplier",
+                  "dis_abs_percent", "description", "quantity", "weight", "unit", "price", "discount", "package_count", "wayrem_margin", "margin_unit","primary_image")
+
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'SKU': forms.TextInput(attrs={'class': 'form-control'}),
+            'product_code': forms.TextInput(attrs={'class': 'form-control'}),
+            'meta_key': forms.Textarea(attrs={'class': "form-control", 'rows': '3'}),
+            'feature_product': forms.CheckboxInput(attrs={'class': "form-check-input"}),
+            'publish': forms.CheckboxInput(attrs={'class': "form-check-input"}),
+            'date_of_mfg': DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'date_of_exp': DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'mfr_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'dis_abs_percent': forms.Select(attrs={'class': 'form-select'}),
+            'description': forms.Textarea(attrs={'class': "form-control", 'rows': '3'}),
+            'quantity': forms.NumberInput(attrs={'class': 'form-control'}),
+            'weight': forms.NumberInput(attrs={'class': 'form-control'}),
+            'unit': forms.Select(attrs={'class': 'form-select'}),
+            'price': forms.NumberInput(attrs={'class': 'form-control'}),
+            'discount': forms.NumberInput(attrs={'class': "form-control"}),
+            'package_count': forms.NumberInput(attrs={'class': "form-control"}),
+            'wayrem_margin': forms.NumberInput(attrs={'class': "form-control"}),
+            'margin_unit': forms.Select(attrs={'class': 'form-select'}),
+            'primary_image': forms.FileInput( attrs={'class': "form-control-file"}),
+            'category': forms.SelectMultiple(attrs={'class': 'form-control'}),
+            'supplier': forms.SelectMultiple(attrs={'class': 'form-control'}),
+        }

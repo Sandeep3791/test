@@ -1,7 +1,7 @@
 {% extends "layouts/base.html" %}
 {% load static %}
 
-{% block title %} Create Product {% endblock %}
+{% block title %} Update Product {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
@@ -72,7 +72,7 @@
                         <div class="mb-4 mt-md-0">
                             <h1 class="mb-0 h3">
                                 <!-- <img src="{% static '/assets/img/logo/Wayrem_logo..svg'%}" alt=""> -->
-                                 Add Product | Step - 1
+                                 Update Product
                             </h1>
                             <hr>
                             
@@ -103,7 +103,7 @@
 {% endif %}
 
 
-                        <form method="post" action="{% url 'wayrem_admin:productviewone' %}"  id="product1" data-supplier-url = "{% url 'wayrem_admin:ajax_load_supplier' %}" enctype="multipart/form-data" validate>
+                        <form method="post" action="{% url 'wayrem_admin:updateproduct' id %}"  id="product1" data-supplier-url = "{% url 'wayrem_admin:ajax_load_supplier' %}" enctype="multipart/form-data" validate>
                                 {% csrf_token %}
                                 {{ form.non_field_errors }}
                             <div class="row" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
@@ -524,10 +524,42 @@
 
                                 </div>
                                 <!--================row end==================-->
+                                <div class="row mt-4" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
+
+                                    <h4 class=" mb-4 mt-4">
+                                        Product Images
+                                    </h4>
+   
+                                    <div class="row">
+                                       
+                                        <!-- Form -->
+                                     <div class="col-lg-12">
+                                        <div class="form-group mb-4">
+                                            <label for="name">Primary image <span class="text-danger">*</span><span class="text-danger"><em> {{form.meta_key.error | striptags}}
+                                                </em>
+                                            </span></label>
+                                            <div class="input-group">
+                                                
+                                                <img src="{{image.url}}" style="height:55px" class='me-5'>
+
+                                                {{ form.primary_image}}
+
+                                                <div class="input-group" id="metaKey_error_message" style="color: #d12525;"></div>
+                                            </div>
+                                           
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->              
+                                       
+                                    </div>
+   
+                                   </div>
+
+                            
                                
                             <div class="mt-1">
                                 <a  href="{% url 'wayrem_admin:product' %}" class="btn  btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Back</a>
-                                <button type="submit" class="btn btn-dark border-0 col-xl-3 col-md-5 col-12" >Manage Product Images</button>
+                                <button type="submit" class="btn btn-dark border-0 col-xl-3 col-md-5 col-12" >Update</button>
                             </div>
 
 

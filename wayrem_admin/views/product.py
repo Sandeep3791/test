@@ -115,8 +115,8 @@ def product_view_one(request):
             product = form.save(commit=False)
             product.id = product_id
             product.save()
-            obj = ProductIngredients()
             for form in formset.forms:
+                obj = ProductIngredients()
                 obj.product = product_id
                 obj.ingredient = form.cleaned_data.get('ingredient')
                 obj.quantity = form.cleaned_data.get('quantity')
@@ -342,21 +342,33 @@ def product_details(request, id=None):
     return render(request, 'View_product.html', {'proddata': prod})
 
 
+
 def update_product(request, id=None, *args, **kwargs):
     # print(id)
+
+    ingrd = ProductIngredients.objects.filter(product=id).all()
+    prod = Products.objects.get(id=id)
+
     if request.method == "POST":
         # kwargs = { 'data' : request.POST }
-        prod = Products.objects.get(id=id)
-        form = ProductUpdateForm(request.POST or None,
-                                 request.FILES or None, instance=prod)
-        if form.is_valid():
-            print("FORM")
-
+        form = ProductFormImageView(request.POST or None, request.FILES or None, instance=prod)
+        form1 = ProductIngredientFormset(request.POST or None)
+        if form.is_valid() and form1.is_valid():
+            ingrd.delete()
             form.save()
+            for form in form1.forms:
+                obj = ProductIngredients()
+                obj.product = id
+                obj.ingredient = form.cleaned_data.get('ingredient')
+                obj.quantity = form.cleaned_data.get('quantity')
+                obj.unit = form.cleaned_data.get('unit')
+                obj.save()
             return redirect('wayrem_admin:productlist')
-    prod = Products.objects.get(id=id)
-    form = ProductUpdateForm(instance=prod)
-    return render(request, 'UpdateProduct.html', {'form': form, 'id': prod.id})
+    form = ProductFormImageView(instance=prod)    
+    form1 = ProductIngredientFormset(queryset=ingrd)
+    return render(request, 'product_update_latest.html', {'form': form, 'formset':form1,'image':prod.primary_image, 'id': prod.id})
+   
+
 
 
 class DeleteProduct(View):
@@ -384,3 +396,13 @@ def lowest_deliverytime_supplier(request):
     po = SupplierProducts.objects.filter(
         SKU=product).order_by('deliverable_days').first()
     return render(request, 'lowest_price.html', {"i": po})
+
+
+def product_details(request, id=None):
+    prod = Products.objects.get(id=id)
+    ingrd = ProductIngredients.objects.filter(product=id).all()
+    form1 = ProductIngredientFormsetView(queryset=ingrd)
+    form = ProductFormView( instance=prod)
+    # prod = Products.objects.filter(id=id).first()
+    return render(request, 'View_product copy.html', {'form': form, 'form2': form1 ,'image':prod.primary_image, 'id': prod.id})
+
