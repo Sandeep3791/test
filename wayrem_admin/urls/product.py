@@ -8,6 +8,8 @@ urlpatterns = [
     path('product/', views.product, name='product'),
     path('details/', views.details_gs1, name='get_detail'),
     path('ajax/load-supplier/', views.load_supplier, name='ajax_load_supplier'),
+    path('ajax/load-category-margin/', views.load_category_margin,
+         name='ajax_load_category_margin'),
     path('product-view-one/', views.product_view_one, name='productviewone'),
     path('product-view-two/', views.product_images, name='product_images'),
     #    path('product-view-three/', views.product_view_three, name='productviewthree'),
