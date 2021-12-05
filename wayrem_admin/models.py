@@ -197,7 +197,7 @@ class Products(models.Model):
         max_length=20, choices=DIS_ABS_PERCENT, null=True, blank=False)
     description = models.TextField()
     quantity = models.IntegerField(null=True, default=1)
-    weight = models.IntegerField(null=True)
+    weight = models.CharField(null=True,max_length=255)
     unit = models.CharField(
         max_length=20, choices=UNIT_CHOICES, null=True, blank=False)
     price = models.DecimalField(null=True, max_digits=12, decimal_places=2)
@@ -364,3 +364,4 @@ class Settings(models.Model):
 
     class Meta:
         db_table = 'settings'
+

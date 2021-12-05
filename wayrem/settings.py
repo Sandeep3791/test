@@ -104,7 +104,7 @@ WSGI_APPLICATION = 'wayrem.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'wayrem_v12',
+        'NAME': 'wayrem_v50',
         'USER': 'admin',
         'PASSWORD': 'Merlin007#',
         'HOST': 'wayrem.c08qmktlafbu.us-east-1.rds.amazonaws.com',

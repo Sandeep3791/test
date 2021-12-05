@@ -69,6 +69,7 @@ ProductIngredientFormset = modelformset_factory(
         'ingredient': forms.Select(attrs={'class': 'form-select', 'placeholder': 'select'}),
         'quantity': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Quantity'}),
         'unit': forms.Select(attrs={'class': 'form-select'}),
+
     }
 )
 ProductIngredientFormsetView = modelformset_factory(
