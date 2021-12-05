@@ -66,9 +66,9 @@ ProductIngredientFormset = modelformset_factory(
     fields=("ingredient", "quantity", "unit"),
     extra=1,
     widgets={
-        'ingredient': forms.Select(attrs={'class': 'form-select', 'placeholder': 'select'}),
-        'quantity': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Quantity'}),
-        'unit': forms.Select(attrs={'class': 'form-select'}),
+        'ingredient': forms.Select(attrs={'class': 'form-select select_ingrid', 'placeholder': 'select'}),
+        'quantity': forms.NumberInput(attrs={'class': 'form-control form-control-sm', 'placeholder': 'Quantity'}),
+        'unit': forms.Select(attrs={'class': 'form-select select_unit'}),
     }
 )
 ProductIngredientFormsetView = modelformset_factory(
@@ -76,11 +76,12 @@ ProductIngredientFormsetView = modelformset_factory(
     fields=("ingredient", "quantity", "unit"),
     extra=0,
     widgets={
-        'ingredient': forms.Select(attrs={'class': 'form-select','disabled':True, 'placeholder': 'select'}),
-        'quantity': forms.NumberInput(attrs={'class': 'form-control','readonly':'readonly', 'placeholder': 'Quantity'}),
-        'unit': forms.Select(attrs={'class': 'form-select','disabled':True}),
+        'ingredient': forms.Select(attrs={'class': 'form-select', 'disabled': True, 'placeholder': 'select'}),
+        'quantity': forms.NumberInput(attrs={'class': 'form-control', 'readonly': 'readonly', 'placeholder': 'Quantity'}),
+        'unit': forms.Select(attrs={'class': 'form-select', 'disabled': True}),
     }
 )
+
 
 class ProductFormView(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -88,12 +89,12 @@ class ProductFormView(forms.ModelForm):
         # self.fields['field'].widget.attrs['readonly'] = True
         # self.fields.widgets.attrs['readonly'] = True
         for field in self.fields:
-                self.fields[field].disabled = True
+            self.fields[field].disabled = True
 
     class Meta:
         model = Products
         fields = ("name", "SKU", "category", "product_code", "meta_key", "feature_product", "publish", "date_of_mfg", "date_of_exp", "mfr_name", "supplier",
-                  "dis_abs_percent", "description", "quantity", "weight", "unit", "price", "discount", "package_count", "wayrem_margin", "margin_unit","primary_image")
+                  "dis_abs_percent", "description", "quantity", "weight", "unit", "price", "discount", "package_count", "wayrem_margin", "margin_unit", "primary_image")
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
@@ -115,11 +116,10 @@ class ProductFormView(forms.ModelForm):
             'package_count': forms.NumberInput(attrs={'class': "form-control"}),
             'wayrem_margin': forms.NumberInput(attrs={'class': "form-control"}),
             'margin_unit': forms.Select(attrs={'class': 'form-select'}),
-            'primary_image': forms.FileInput( attrs={'class': "form-control-file"}),
+            'primary_image': forms.FileInput(attrs={'class': "form-control-file"}),
             'category': forms.SelectMultiple(attrs={'class': 'form-control'}),
             'supplier': forms.SelectMultiple(attrs={'class': 'form-control'}),
         }
-
 
 
 class ProductFormImageView(forms.ModelForm):
@@ -127,7 +127,7 @@ class ProductFormImageView(forms.ModelForm):
     class Meta:
         model = Products
         fields = ("name", "SKU", "category", "product_code", "meta_key", "feature_product", "publish", "date_of_mfg", "date_of_exp", "mfr_name", "supplier",
-                  "dis_abs_percent", "description", "quantity", "weight", "unit", "price", "discount", "package_count", "wayrem_margin", "margin_unit","primary_image")
+                  "dis_abs_percent", "description", "quantity", "weight", "unit", "price", "discount", "package_count", "wayrem_margin", "margin_unit", "primary_image")
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
@@ -149,7 +149,7 @@ class ProductFormImageView(forms.ModelForm):
             'package_count': forms.NumberInput(attrs={'class': "form-control"}),
             'wayrem_margin': forms.NumberInput(attrs={'class': "form-control"}),
             'margin_unit': forms.Select(attrs={'class': 'form-select'}),
-            'primary_image': forms.FileInput( attrs={'class': "form-control-file"}),
+            'primary_image': forms.FileInput(attrs={'class': "form-control-file"}),
             'category': forms.SelectMultiple(attrs={'class': 'form-control'}),
             'supplier': forms.SelectMultiple(attrs={'class': 'form-control'}),
         }

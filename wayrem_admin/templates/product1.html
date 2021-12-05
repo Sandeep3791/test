@@ -23,6 +23,16 @@
             });
      });
     </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+             $('.select_ingrid').select2({
+             placeholder: 'Select Ingredient',
+             })
+             $('.select_unit').select2({
+             placeholder: 'Select Unit',
+             });
+      });
+     </script>
 
     <!---=========page popup==========-->
 <div class="modal" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -377,7 +387,7 @@
                                                         </div>
                                                             <div class="col-3 d-flex align-items-end">
                                                             <div class="input-group-append">
-                                                                <button class="btn btn-success add-form-row ps-3 pe-3">+</button>
+                                                                <button class="btn btn-success btn-sm add-form-row ps-3 pe-3">+</button>
                                                             </div>
                                                         </div>
                                                     </div>

@@ -34,16 +34,9 @@ endcomment %}
 </div> -->
 
 <div class="subheader row pe-4 ps-4 mt-5">
+    <h1 class="text-center">Settings</h1>
     <div class="row add_btn col-xl-4 col-lg-4 col-md-5 d-flex align-items-center">
         <div class="col">
-    <div class="dropdown">
-  <button class="button button1 mt-2 export_file dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false" >
-    Export
-  </button>
-  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-    {% comment %} <li><a class="dropdown-item" href="{% url 'wayrem_admin:settingspdf' %}">Export to Pdf</a></li> {% endcomment %}
-    <li><a class="dropdown-item" href="{% url 'wayrem_admin:excelsettings' %}">Export to Excel</a></li>
-  </ul>
 </div>
             {% comment %} <a href="{% url 'wayrem_admin:userpdf' %}" class="button button1 mt-2 export_file">Export to pdf</a> {% endcomment %}
         </div>
@@ -178,7 +171,6 @@ endcomment %}
     $(document).ready(function () {
         oTable = $('#filtertable').DataTable({
             dom: 'rtip',
-            'columnDefs': [{ 'orderable': false, 'targets': 4 }],
             "oLanguage": {
                 "oPaginate": {
                     "sNext": '<i class="fas fa-arrow-circle-right text-primary"></i>',
