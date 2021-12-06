@@ -3,6 +3,7 @@ from django.contrib import messages
 from wayrem_admin.forms import SubAdminForm, ProfileUpdateForm, SubAdminUpdateForm, SupplierForm, SupplierUpdateForm
 import string
 import secrets
+from wayrem_admin.decorators import role_required
 from wayrem_admin.services import send_email
 from wayrem_admin.export import generate_pdf, generate_excel
 from django.contrib.auth.decorators import login_required
@@ -22,6 +23,7 @@ def user_pdf(request):
     return generate_pdf(query_string=query, template_name=template, file_name=file)
 
 
+@role_required('User Add')
 def user_signup(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
@@ -34,6 +36,7 @@ def user_signup(request):
                 role = form.cleaned_data['role']
                 print(role)
                 password = form.cleaned_data['password1']
+                print(password)
                 form.save()
                 to = email
                 subject = 'Welcome to Wayrem'
@@ -56,16 +59,19 @@ class UsersList(View):
     template_name = "userlist.html"
 
     @method_decorator(login_required(login_url='wayrem_admin:root'))
+    @method_decorator(role_required('User View'))
     def get(self, request, format=None):
         userlist = User.objects.all()
         return render(request, self.template_name, {"userlist": userlist})
 
 
+@role_required('User View')
 def user_details(request, id=None):
     user = User.objects.filter(id=id).first()
     return render(request, 'user_popup.html', {'userdata': user})
 
 
+@role_required('User Edit')
 def update_user(request, id=None):
     print(id)
     user = User.objects.get(id=id)
@@ -119,6 +125,8 @@ def update_profile(request, *args, **kwargs):
 
 
 class DeleteUser(View):
+
+    @method_decorator(role_required('User Delete'))
     def post(self, request):
         userid = request.POST.get('userid')
         user = User.objects.get(pk=userid)
@@ -129,6 +137,7 @@ class DeleteUser(View):
 # Active/Block
 class Active_BlockUser(View):
     @method_decorator(login_required(login_url='wayrem_admin:root'))
+    @method_decorator(role_required('User Edit'))
     def get(self, request, id):
         user = User.objects.get(pk=id)
         if user.is_active:

@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from wayrem_admin.services import inst_Product, inst_Supplier, delSession
 from wayrem_admin.export import generate_excel
+from wayrem_admin.decorators import role_required
 import datetime
 import uuid
 from django.db import connection
@@ -16,6 +17,7 @@ def po_excel(request):
     return generate_excel("po_master", "purchase_order")
 
 
+@role_required('Purchase Order Add')
 def create_purchase_order(request):
     if request.method == "POST":
         form = POForm(request.POST or None, request.FILES or None)
@@ -112,6 +114,7 @@ class POList(View):
     template_name = "po_list.html"
 
     @method_decorator(login_required(login_url='wayrem_admin:root'))
+    @method_decorator(role_required('Purchase Order View'))
     def get(self, request, format=None):
         delSession(request)
         polist = PurchaseOrder.objects.values(
@@ -129,6 +132,8 @@ class POList(View):
 
 
 class DeletePO(View):
+
+    @method_decorator(role_required('Purchase Order Delete'))
     def post(self, request):
         po_id = request.POST.get('po_id')
         po_obj = PurchaseOrder.objects.filter(po_id=po_id).all()
@@ -136,11 +141,13 @@ class DeletePO(View):
         return redirect('wayrem_admin:polist')
 
 
+@role_required('Purchase Order View')
 def viewpo(request, id=None):
     po = PurchaseOrder.objects.filter(po_id=id).all()
     return render(request, 'view_po.html', {"po": po})
 
 
+@role_required('Purchase Order Edit')
 def editpo(request, id=None):
     po = PurchaseOrder.objects.filter(po_id=id).all()
     if request.method == "POST":
@@ -172,6 +179,7 @@ def editpo(request, id=None):
     return render(request, 'edit_po.html', {"po": po, "form": form})
 
 
+@role_required('Purchase Order Edit')
 def statuspo(request, id=None):
     po = PurchaseOrder.objects.filter(po_id=id).all()
     if request.method == "POST":

@@ -43,7 +43,8 @@ UNIT = (
 class Roles(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     role = models.CharField(max_length=50, unique=True)
-    permission = MultiSelectField(choices=roles_options, default="Stats")
+    permission = MultiSelectField(
+        choices=roles_options, max_length=800, default="Stats")
     content = models.TextField(blank=True, null=True)
     status = models.CharField(max_length=10, choices=status, default='Active')
     created_at = models.DateTimeField(auto_now_add=True)
@@ -197,7 +198,7 @@ class Products(models.Model):
         max_length=20, choices=DIS_ABS_PERCENT, null=True, blank=False)
     description = models.TextField()
     quantity = models.IntegerField(null=True, default=1)
-    weight = models.CharField(null=True,max_length=255)
+    weight = models.CharField(null=True, max_length=255)
     unit = models.CharField(
         max_length=20, choices=UNIT_CHOICES, null=True, blank=False)
     price = models.DecimalField(null=True, max_digits=12, decimal_places=2)
@@ -371,4 +372,3 @@ class Settings(models.Model):
 
     class Meta:
         db_table = 'settings'
-
