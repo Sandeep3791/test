@@ -356,7 +356,7 @@
                                     Ingredients
                                   </h4>
 
-                                  <div class="row">
+                                  <div class="row ingredients_form">
                                     <!-- Form -->
                                     <div class="col-lg-12">
                                         <div class="form-group mb-4">
@@ -385,13 +385,13 @@
                                                             {{form.quantity}}
                                                         </div>
 
-                                                            <div class="col-3">
+                                                        <div class="col-3">
                                                             <label>Unit </label>
                                                             {{form.unit}}
                                                         </div>
                                                             <div class="col-3 d-flex align-items-end">
                                                             <div class="input-group-append">
-                                                                <button class="btn btn-success btn-sm add-form-row ps-3 pe-3">+</button>
+                                                                <button class="btn btn-success btn-sm add-form-row ps-3 pe-3 addmmoreaction" data-formid="0">+</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -617,9 +617,13 @@
         if (el.id) el.id = el.id.replace(id_regex, replacement);
         if (el.name) el.name = el.name.replace(id_regex, replacement);
     }
-    function cloneMore(selector, prefix) {
+    function cloneMore(selector, prefix,clickid) {
+        
         var newElement = $(selector).clone(true);
         var total = $('#id_' + prefix + '-TOTAL_FORMS').val();
+        var currentrow = total;
+       
+        //newElement.find('select_ingrid').attr({'name': 'form-'+currentrow+'-ingredient', 'id': 'id_form-'+currentrow+'-ingredient'});
         newElement.find(':input:not([type=button]):not([type=submit]):not([type=reset])').each(function() {
             var name = $(this).attr('name')
             if(name) {
@@ -635,16 +639,39 @@
               $(this).attr({'for': forValue});
             }
         });
+        newElement.find('.addmmoreaction').attr('data-formid',currentrow);
+        
+
         total++;
         $('#id_' + prefix + '-TOTAL_FORMS').val(total);
         $(selector).after(newElement);
+        jQuery('#id_form-'+currentrow+'-ingredient + .select2.select2-container').remove();
+        jQuery('#id_form-'+currentrow+'-ingredient').select2();
+
+        jQuery('#id_form-'+currentrow+'-unit + .select2.select2-container').remove();
+        jQuery('#id_form-'+currentrow+'-unit').select2();
+
+        $('.select_ingrid').select2({
+             placeholder: 'Select Ingredient',
+             })
+             $('.select_unit').select2({
+             placeholder: 'Select Unit',
+             });
+             
         var conditionRow = $('.form-row:not(:last)');
         conditionRow.find('.btn.add-form-row')
-        .removeClass('btn-success').addClass('btn-danger')
-        .removeClass('add-form-row').addClass('remove-form-row')
-        .html('-');
+            .removeClass('btn-success').addClass('btn-danger')
+            .removeClass('add-form-row').addClass('remove-form-row')
+            .html('-')
+           
+        jQuery('.addmmoreaction[data-formid="0"]').removeClass('remove-form-row').addClass('add-form-row')
+        .removeClass('btn-danger').addClass('btn-success').html('+');
+        jQuery('.ingredients_form .input-group > .row.col-12.form-row.spacer.my-2:last-child .addmmoreaction').removeClass('btn-success').addClass('btn-danger')
+            .removeClass('add-form-row').addClass('remove-form-row')
+            .html('-')
         return false;
     }
+
     function deleteForm(prefix, btn) {
         var total = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
         if (total > 1){
@@ -659,9 +686,16 @@
         }
         return false;
     }
+
     $(document).on('click', '.add-form-row', function(e){
         e.preventDefault();
-        cloneMore('.form-row:last', 'form');
+        var clickid = jQuery(this).attr('data-formid');
+        cloneMore('.form-row:last', 'form',clickid);
+        if(clickid==0){
+            jQuery(this).removeClass('remove-form-row');
+            jQuery(this).addClass('add-form-row');
+        }
+        
         return false;
     });
     $(document).on('click', '.remove-form-row', function(e){
