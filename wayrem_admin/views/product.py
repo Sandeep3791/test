@@ -1,8 +1,10 @@
+from django.db.models import Q
 import json
 from django.http.response import HttpResponse
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views import View
+from wayrem_admin.forms import supplier
 from wayrem_admin.models import Products
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
@@ -175,6 +177,7 @@ def product_images(request):
     else:
         form = ProductImageForm()
     return render(request, "product4.html", {'form': form})
+
 # # ----------------------------------------------------------------------------
 
 
@@ -185,7 +188,19 @@ class ProductList(View):
     @method_decorator(role_required('Products View'))
     def get(self, request, format=None):
         productslist = Products.objects.all()
-        return render(request, self.template_name, {"productslist": productslist})
+        search_filter = Q()
+        product_name = request.GET.get('product_name')
+        product_sku = request.GET.get('product_sku')
+        supplier_name = request.GET.get('suppliers')
+        if product_name:
+            search_filter |= Q(name=product_name)
+        if product_sku:
+            search_filter |= Q(SKU=product_sku)
+        if product_sku:
+            search_filter |= Q(supplier__username=supplier_name)
+        productslist = productslist.filter(search_filter)
+        suppliers = Supplier.objects.values_list('username', flat=True)
+        return render(request, self.template_name, {"productslist": productslist, 'suppliers_name': suppliers})
 
 
 @role_required('Product View')
@@ -200,12 +215,14 @@ def update_product(request, id=None, *args, **kwargs):
 
     ingrd = ProductIngredients.objects.filter(product=id).all()
     prod = Products.objects.get(id=id)
-
+    product_images = Images.objects.filter(product=id)
     if request.method == "POST":
         # kwargs = { 'data' : request.POST }
         form = ProductFormImageView(
             request.POST or None, request.FILES or None, instance=prod)
         form1 = ProductIngredientFormset1(request.POST or None)
+        # form2 = ProductImageFormset(
+        # request.POST or None, request.FILES or None)
         if form.is_valid() and form1.is_valid():
             ingrd.delete()
             form.save()
@@ -219,6 +236,7 @@ def update_product(request, id=None, *args, **kwargs):
             return redirect('wayrem_admin:productlist')
     form = ProductFormImageView(instance=prod)
     form1 = ProductIngredientFormset1(queryset=ingrd)
+    # form2 = ProductImageFormset(queryset=product_images)
     return render(request, 'product_update_latest.html', {'form': form, 'formset': form1, 'image': prod.primary_image, 'id': prod.id})
 
 

@@ -1,7 +1,7 @@
 from django.forms import (
     formset_factory, modelformset_factory, BaseModelFormSet)
 from django import forms
-from wayrem_admin.models import ProductIngredients, Supplier, Categories, Ingredients, Products
+from wayrem_admin.models import ProductIngredients, Supplier, Categories, Images, Ingredients, Products
 from datetime import datetime
 
 
@@ -174,3 +174,14 @@ class ProductFormImageView(forms.ModelForm):
             'category': forms.SelectMultiple(attrs={'class': 'form-control'}),
             'supplier': forms.SelectMultiple(attrs={'class': 'form-control'}),
         }
+
+
+ProductImageFormset = modelformset_factory(
+    Images,
+    fields=("image",),
+    extra=0,
+    widgets={
+        'image':  forms.FileInput(attrs={'class': 'form-control-select'}),
+    },
+
+)
