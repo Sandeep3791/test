@@ -205,7 +205,7 @@ def update_product(request, id=None, *args, **kwargs):
         # kwargs = { 'data' : request.POST }
         form = ProductFormImageView(
             request.POST or None, request.FILES or None, instance=prod)
-        form1 = ProductIngredientFormset(request.POST or None)
+        form1 = ProductIngredientFormset1(request.POST or None)
         if form.is_valid() and form1.is_valid():
             ingrd.delete()
             form.save()
@@ -218,7 +218,7 @@ def update_product(request, id=None, *args, **kwargs):
                 obj.save()
             return redirect('wayrem_admin:productlist')
     form = ProductFormImageView(instance=prod)
-    form1 = ProductIngredientFormset(queryset=ingrd)
+    form1 = ProductIngredientFormset1(queryset=ingrd)
     return render(request, 'product_update_latest.html', {'form': form, 'formset': form1, 'image': prod.primary_image, 'id': prod.id})
 
 
