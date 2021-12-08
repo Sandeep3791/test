@@ -24,6 +24,7 @@ def createRoles(request):
             return redirect('wayrem_admin:roles_list')
     else:
         form = RoleForm(label_suffix='')
+    # return render(request, 'roles_crud_pages/create_role.html', {"form": form})
     return render(request, 'roles_crud_pages/createRoles.html', {"form": form})
 
 

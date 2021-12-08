@@ -13,4 +13,6 @@ urlpatterns = [
          views.update_supplier, name='updatesupplier'),
     path('supplier-details/<str:id>/',
          views.supplier_details, name='supplierdetails'),
+    path('allproduct-supplier/', views.allproductsupplier, name='allproductsupplier'),
+
 ]

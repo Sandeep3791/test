@@ -47,6 +47,8 @@
                                         <div class="{% if field.name == 'permission' %}permission-clss{% else %}form-group{% endif %}">
                                               
                                             {% if field.name == 'permission'%} 
+                                            <span class="text-danger"><em>{{ field.errors|striptags }}</em></span> 
+                                           
                                                 <label class="mt-4">{{ field.label_tag }}</label>
                                                   <div class="row">
 

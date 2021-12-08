@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.shortcuts import redirect
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.decorators import user_passes_test
+from django.http import HttpResponseRedirect
 
 
 def role_required(allowed_roles=[]):
@@ -12,7 +13,8 @@ def role_required(allowed_roles=[]):
                     return view_func(request, *args, **kwargs)
                 else:
                     messages.error(request, "Permission Denied")
-                    return redirect('updateprofile')
+                    return redirect('wayrem_admin:root')
+                    # return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
         return wrap
     return decorator
 

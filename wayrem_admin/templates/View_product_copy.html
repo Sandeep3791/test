@@ -553,12 +553,14 @@
                                             <label for="name">Product Images <span class="text-danger">*</span><span class="text-danger"><em> {{form.meta_key.error | striptags}}
                                                 </em>
                                             </span></label>
+                                            <div class="row">
                                             {% for pdimg in prodimg %}
-                                            <div class="input-group"> 
+                                            <div class="col"> 
                                                 <img src="{{pdimg.image.url}}" style="height:150px" class='me-5'>
                                                 <div class="input-group" id="metaKey_error_message" style="color: #d12525;"></div>
                                             </div>
                                             {% endfor %}
+                                        </div>
                                            
                                         </div>
                                     </div>

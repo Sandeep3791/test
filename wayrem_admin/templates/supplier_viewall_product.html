@@ -1,0 +1,32 @@
+<table class="table">
+    <thead>
+      <tr>
+        <th scope="col">S. No.</th>
+        <th scope="col">Products</th>
+        <th scope="col">Price</th>
+        <th scope="col">Deliverable Time</th>
+        <th scope="col">Lowest Deliverable Time</th>
+        <th scope="col">Lowest Quoted Price</th>
+
+        
+      </tr>
+    </thead>
+    <tbody>
+    {% for i in list %}
+      <tr>
+        <th scope="row">{{forloop.counter}}</th>
+        <td>{{i.product_name}}</td>
+        <td>{{i.price}}</td>
+        <td>Within {{i.deliverable_days}} days</td>
+        {% comment %} <td>
+         <a class="btn btn-sm btn-dark" href="{% url 'wayrem_admin:create_po' %}?suprod={{i.supplier_id.id}}?{{i.SKU}}">Raise PO</a>
+         </td> {% endcomment %}
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+                                  
+                                  
+  
+  
+  

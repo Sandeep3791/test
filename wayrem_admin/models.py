@@ -44,7 +44,8 @@ UNIT = (
 class Roles(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     role = models.CharField(max_length=50, unique=True)
-    permission = MultiSelectField(choices=roles_options, default="Stats")
+    permission = MultiSelectField(
+        choices=roles_options, max_length=800, default="Stats")
     content = models.TextField(blank=True, null=True)
     status = models.CharField(max_length=10, choices=status, default='Active')
     created_at = models.DateTimeField(auto_now_add=True)
@@ -184,7 +185,7 @@ UNIT_CHOICES = (
 class Products(models.Model):
     id = models.UUIDField(primary_key=True)
     name = models.CharField(max_length=255, null=True, blank=False)
-    SKU = models.CharField(max_length=255, null=True, blank=False)
+    SKU = models.CharField(max_length=255, null=True, blank=False,unique=True)
     category = models.ManyToManyField('Categories', null=True)
     product_code = models.CharField(max_length=255, null=True)
     meta_key = models.TextField()
@@ -198,7 +199,7 @@ class Products(models.Model):
         max_length=20, choices=DIS_ABS_PERCENT, null=True, blank=False)
     description = models.TextField()
     quantity = models.IntegerField(null=True, default=1)
-    weight = models.CharField(null=True,max_length=255)
+    weight = models.CharField(null=True, max_length=255)
     unit = models.CharField(
         max_length=20, choices=UNIT_CHOICES, null=True, blank=False)
     price = models.DecimalField(null=True, max_digits=12, decimal_places=2)
@@ -297,6 +298,7 @@ class SupplierProducts(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     supplier_id = models.ForeignKey(
         Supplier, on_delete=models.CASCADE, null=True)
+    product_id = models.UUIDField()
     SKU = models.CharField(max_length=250, null=True, blank=True)
     product_name = models.CharField(max_length=500, null=True, blank=True)
     quantity = models.IntegerField(null=True, default=1)
@@ -378,4 +380,11 @@ class Settings(models.Model):
 
     class Meta:
         db_table = 'settings'
+
+
+class BestProductsSupplier(models.Model):
+    product_id = models.UUIDField()
+    supplier_id = models.UUIDField()
+    lowest_price = models.CharField(max_length=255)
+    lowest_delivery_time = models.CharField(max_length=255)
 
