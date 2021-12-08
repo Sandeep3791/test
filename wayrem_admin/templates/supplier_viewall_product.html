@@ -27,7 +27,7 @@
         <td class = "text-center">{{i.price}}</td>
         <td class = "text-center">Within {{i.deliverable_days}} days</td>
          <td class = "text-center">
-           <a type="button" class="btn btn-sm"  onclick="supplierprodFunc(' ')" {% if i.price == j.lowest_price %}
+           <a type="button" class="btn btn-sm"  onclick="supplierprodFunc('{{j.supplier_id}}')" {% if i.price == j.lowest_price %}
            title="This supplier is providing this product in lowest price">
            {% else %}
           title="Lowest quoted price for this product is '{{j.lowest_price}}' click to view supplier">

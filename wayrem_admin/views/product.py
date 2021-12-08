@@ -235,6 +235,9 @@ def update_product(request, id=None, *args, **kwargs):
         form = ProductFormImageView(
             request.POST or None, request.FILES or None, instance=prod)
         form1 = ProductIngredientFormset1(request.POST or None)
+        form3 = ProductImgUpdateForm(
+            request.POST or None, request.FILES or None)
+
         # form2 = ProductImageFormset(
         # request.POST or None, request.FILES or None)
         if form.is_valid() and form1.is_valid():
