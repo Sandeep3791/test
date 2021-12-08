@@ -75,7 +75,7 @@
                                     <!-- Form -->
                                     <div class="col-lg-6">
                                         <div class="form-group mb-4">
-                                            <label for="name">Primary Image<span class="text-danger">*</span> <span class="text-danger"> <em> {{form.primary_image.errors | striptags}}
+                                            <label for="name">Product Primary Image<span class="text-danger">*</span> <span class="text-danger"> <em> {{form.primary_image.errors | striptags}}
                                             </em> </span></label>
                                             <div class="input-group">
                                                  {{form.primary_image}}    
@@ -89,7 +89,7 @@
                                      <!-- Form -->
                                     <div class="col-lg-6">
                                         <div class="form-group mb-4">
-                                            <label for="name">Image <span class="text-danger">*</span> <span class="text-danger"> <em> {{form.images.errors | striptags}}
+                                            <label for="name">Product Images <span class="text-danger">*</span> <span class="text-danger"> <em> {{form.images.errors | striptags}}
                                             </em> </span></label>
                                             <div class="input-group">
                                                 {{form.images}}      
@@ -99,10 +99,13 @@
                                         </div>
                                     </div>
                                     <!-- End of Form -->
-                                   
-
+                                    &nbsp;
+                                    <span><h5>Instructions</h5></span>
+                                   <span>* Only the .png .jpg, .jpeg Image Format is Acceptable.</span>
+                                   <span>* The Image Dimensions Should be (Width x Height).</span>
+                                    &nbsp;
                                 <div class="mt-1">
-                                <a  href="{% url 'wayrem_admin:productviewone' %}" class="btn  btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Previous</a>
+                                <a  href="{% url 'wayrem_admin:product' %}" class="btn  btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Cancel</a>
                                 <button type="submit" class="btn btn-dark border-0 col-xl-3 col-md-5 col-12" >Save</button>
                                 </div>
 

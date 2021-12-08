@@ -171,7 +171,7 @@ class Ingredients(models.Model):
 
 
 DIS_ABS_PERCENT = (
-    ('(Absolute ', 'Abs'),
+    ('Absolute ', 'Abs'),
     ('%', '%'),
 )
 UNIT_CHOICES = (
@@ -308,7 +308,7 @@ class SupplierProducts(models.Model):
     SKU = models.CharField(max_length=250, null=True, blank=True)
     product_name = models.CharField(max_length=500, null=True, blank=True)
     quantity = models.IntegerField(null=True, default=1)
-    price = models.DecimalField(null=True, max_digits=12, decimal_places=2)
+    price = models.CharField(null=True, max_length=255)
     available = models.BooleanField(default=True)
     deliverable = (
         ('1', 'within 1 day'),
@@ -393,3 +393,7 @@ class BestProductsSupplier(models.Model):
     supplier_id = models.UUIDField()
     lowest_price = models.CharField(max_length=255)
     lowest_delivery_time = models.CharField(max_length=255)
+
+    class Meta:
+        db_table = 'best_products_supplier'
+

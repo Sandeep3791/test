@@ -81,9 +81,9 @@ WSGI_APPLICATION = 'wayrem.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'wayrem',
+        'NAME': 'wayrem_new2',
         'USER': 'root',
-        'PASSWORD': 'root1234',
+        'PASSWORD': 'shubham123',
         'HOST': 'localhost',
         'PORT': '3306',
     }
