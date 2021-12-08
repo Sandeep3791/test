@@ -11,7 +11,11 @@ from django.utils.decorators import method_decorator
 from wayrem_admin.models import Supplier, SupplierProducts, BestProductsSupplier
 from wayrem_admin.decorators import role_required
 from django.views import View
-from django.db import connection
+from django.db import connection 
+import uuid
+import datetime
+from wayrem_admin.models import PurchaseOrder
+from wayrem_admin.services import inst_Product,inst_Supplier
 
 from wayrem_admin.views.product import product
 
@@ -144,10 +148,11 @@ def allproductsupplier(request):
     print(best_product)
     list = zip(products,best_product)
     return render(request, 'supplier_viewall_product.html', {"list": list,'supplier':supplierid})
-import uuid
-import datetime
-from wayrem_admin.models import PurchaseOrder
-from wayrem_admin.services import inst_Product,inst_Supplier
+
+
+
+
+
 def supplier_products_po(request):
     if request.method == "POST":
         supplier = request.POST.get('supplier')
@@ -179,3 +184,13 @@ def supplier_products_po(request):
         return redirect("wayrem_admin:editpo",id=po_id)
 
     return redirect("wayrem_admin:create_po")
+
+
+# def lowest_price_supplierview(request, id=None):
+#     low_price = request.GET.get('lowest_price')
+#     data = BestProductsSupplier.objects.filter(product_id = id, lowest_price = low_price)
+#     for i in data:
+#        supplierid = i.supplier_id
+#     a = allproductsupplier(request,supplierid)
+#     return 'success'
+    
