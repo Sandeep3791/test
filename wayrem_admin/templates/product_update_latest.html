@@ -584,7 +584,14 @@
                                 </div>
 
                             </div>
-
+                        <div class="row">
+                            <h6>Images</h6>
+                            {% for product in product_images %}
+                            <div class="col">
+                            <img src="{{product.image.url}}" style="width:200px; height:150px;" class='me-5 mt-2'>
+                            </div>
+                            {% endfor %}
+                        </div>
                         
                         
                         <div class="mt-1">

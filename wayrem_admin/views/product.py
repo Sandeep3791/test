@@ -207,11 +207,11 @@ class ProductList(View):
 def product_details(request, id=None):
     prod = Products.objects.get(id=id)
     ingrd = ProductIngredients.objects.filter(product=id).all()
-    prodimage = Images.objects.filter(product_id = id).all()
+    prodimage = Images.objects.filter(product_id=id).all()
     form1 = ProductIngredientFormsetView(queryset=ingrd)
     form = ProductFormView(instance=prod)
     # prod = Products.objects.filter(id=id).first()
-    return render(request, 'View_product_copy.html', {'form': form, 'form2': form1, 'image': prod.primary_image, 'prodimg':prodimage, 'id': prod.id})
+    return render(request, 'View_product_copy.html', {'form': form, 'form2': form1, 'image': prod.primary_image, 'prodimg': prodimage, 'id': prod.id})
 
 
 @role_required('Products Edit')
@@ -242,7 +242,7 @@ def update_product(request, id=None, *args, **kwargs):
     form = ProductFormImageView(instance=prod)
     form1 = ProductIngredientFormset1(queryset=ingrd)
     # form2 = ProductImageFormset(queryset=product_images)
-    return render(request, 'product_update_latest.html', {'form': form, 'formset': form1, 'image': prod.primary_image, 'id': prod.id})
+    return render(request, 'product_update_latest.html', {'form': form, 'formset': form1, 'image': prod.primary_image, 'product_images': product_images, 'id': prod.id})
 
 
 class DeleteProduct(View):

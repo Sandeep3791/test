@@ -185,7 +185,7 @@ UNIT_CHOICES = (
 class Products(models.Model):
     id = models.UUIDField(primary_key=True)
     name = models.CharField(max_length=255, null=True, blank=False)
-    SKU = models.CharField(max_length=255, null=True, blank=False,unique=True)
+    SKU = models.CharField(max_length=255, null=True, blank=False, unique=True)
     category = models.ManyToManyField('Categories', null=True)
     product_code = models.CharField(max_length=255, null=True)
     meta_key = models.TextField()
@@ -227,10 +227,14 @@ def get_image_filename(instance, filename):
 
 
 class Images(models.Model):
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     product = models.ForeignKey(
         Products, on_delete=models.CASCADE, default=None)
     image = models.FileField(upload_to="product/images/",
                              verbose_name='product_mage')
+
+    class Meta:
+        db_table = 'product_images'
 
 
 class Unit(models.Model):
@@ -240,6 +244,9 @@ class Unit(models.Model):
 
     def __str__(self):
         return self.unit_name
+
+    class Meta:
+        db_table = 'unit_master'
 
 
 class ProductIngredients(models.Model):
@@ -255,7 +262,6 @@ class ProductIngredients(models.Model):
 #     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
 #     product_id = models.UUIDField()
 #     margin =
-
 
 
 class PurchaseOrder(models.Model):
@@ -387,4 +393,3 @@ class BestProductsSupplier(models.Model):
     supplier_id = models.UUIDField()
     lowest_price = models.CharField(max_length=255)
     lowest_delivery_time = models.CharField(max_length=255)
-
