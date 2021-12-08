@@ -477,7 +477,7 @@
                                     <div class="col-lg-6">
                                         <div class="form-group mb-4">
                                             
-                                            <div class="input-group">
+                                            <div class="input-group my-2">
                                                 <div class="form-check mx-2">
                                                     
                                                     <label class="form-check-label" for="cat_marginopen">
@@ -722,9 +722,11 @@
         var mainvalnum = '';
         var mainvalnumtype = '';
         var selText = '';
+        optionhtml += '<select name="cat_marginselected" class="cat_marginselected form-select">';
+            optionhtml += '<option>select</option>';
         $("#id_category option:selected").each(function () {
             var $this = $(this);
-            if ($this.length) {
+            if($this.length) {
                 selText = $this.text();
                 var selTextsplit = selText.split(' - ');
                 var selTextsnumber = selTextsplit[1].split('%');
@@ -737,20 +739,19 @@
                     mainvalnum = selTextsplit[1].split('(absolute')[0];
                     mainvalnumtype = '(Absolute ';
                 }
-                optionhtml += '<div class="form-check mx-2">';
-                optionhtml += '<input class="form-check-input" type="radio" name="cat_marginselected" class="cat_marginselected" id="'+$this.attr('value')+'" val-text="'+selTextsplit[0]+'" val-autoops="'+mainvalnum+'" val-autoopstype = "'+mainvalnumtype+'">';
-                optionhtml += '<label class="form-check-label" for="'+$this.attr('value')+'">'+selText+'</label>';
-                optionhtml += '</div>';
-
+                
+                optionhtml += '<option class="form-check-input" id="'+$this.attr('value')+'" val-text="'+selTextsplit[0]+'" val-autoops="'+mainvalnum+'" val-autoopstype = "'+mainvalnumtype+'">'+selText+'</option>';
                 jQuery('.selectedcat_margin').html(optionhtml);
                 clickaction();
             }
         });
+        optionhtml += '</select>';
     });
     
     function clickaction(){
-      $('.selectedcat_margin input').click(function(){
-          var checkedval = $('input[name=cat_marginselected]:checked');
+      $('.selectedcat_margin select').change(function(){
+
+          var checkedval = $('.selectedcat_margin select option:selected');
           $('#id_wayrem_margin').val(checkedval.attr('val-autoops'));
           $('#id_margin_unit').val(checkedval.attr('val-autoopstype'));
       });

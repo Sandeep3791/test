@@ -183,7 +183,7 @@ UNIT_CHOICES = (
 
 
 class Products(models.Model):
-    id = models.UUIDField(primary_key=True)
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     name = models.CharField(max_length=255, null=True, blank=False)
     SKU = models.CharField(max_length=255, null=True, blank=False, unique=True)
     category = models.ManyToManyField('Categories', null=True)

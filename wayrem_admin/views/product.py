@@ -135,10 +135,10 @@ def product_view_one(request):
         print(formset.errors)
         print(form.is_valid())
         if form.is_valid() and formset.is_valid():
-            product_id = uuid.uuid4()
-            product = form.save(commit=False)
-            product.id = product_id
-            product.save()
+            # product_id = uuid.uuid4()
+            # product.save()
+            product = form.save()
+            product_id = product.id
             for form in formset.forms:
                 obj = ProductIngredients()
                 obj.product = product_id
@@ -192,15 +192,24 @@ class ProductList(View):
         product_name = request.GET.get('product_name')
         product_sku = request.GET.get('product_sku')
         supplier_name = request.GET.get('suppliers')
+        product_category = request.GET.get('product_category')
         if product_name:
             search_filter |= Q(name=product_name)
         if product_sku:
             search_filter |= Q(SKU=product_sku)
-        if product_sku:
-            search_filter |= Q(supplier__username=supplier_name)
+        if supplier_name:
+            search_filter |= Q(supplier__company_name=supplier_name)
+        if product_category:
+            search_filter |= Q(category__name=product_category)
         productslist = productslist.filter(search_filter)
-        suppliers = Supplier.objects.values_list('username', flat=True)
-        return render(request, self.template_name, {"productslist": productslist, 'suppliers_name': suppliers})
+        suppliers = Supplier.objects.values_list('company_name', flat=True)
+        categories = Categories.objects.values_list('name', flat=True)
+        context = {
+            "productslist": productslist,
+            "suppliers_name": suppliers,
+            "categories": categories
+        }
+        return render(request, self.template_name, context)
 
 
 @role_required('Product View')
@@ -271,6 +280,17 @@ def lowest_deliverytime_supplier(request):
     po = SupplierProducts.objects.filter(
         SKU=product).order_by('deliverable_days').first()
     return render(request, 'lowest_price.html', {"i": po})
+
+
+def update_product_images(request):
+    if request.method == "POST":
+        image = request.FILES.get('updateimage')
+        product_id = request.POST.get('updateimageID')
+        obj = Images.objects.get(id=product_id)
+        obj.image = image
+        obj.save()
+        return HttpResponse("Image updated Successfully!!")
+    return HttpResponse("Please provide Image!")
 
 
 # @role_required('Products View')

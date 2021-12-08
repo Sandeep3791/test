@@ -5,6 +5,8 @@ urlpatterns = [
     path('excel_product/', views.product_excel, name='excelproduct'),
     path('pdf_product/', views.pdf_product, name='productpdf'),
     path('inputBar/', views.inputBar, name='inputBar'),
+    path('update_prodimg/', views.update_product_images,
+         name='update_product_images'),
     path('product/', views.product, name='product'),
     path('details/', views.details_gs1, name='get_detail'),
     path('ajax/load-supplier/', views.load_supplier, name='ajax_load_supplier'),
