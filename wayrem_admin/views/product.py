@@ -356,9 +356,18 @@ class ProductList(View):
         return render(request, self.template_name, {"productslist": productslist})
 
 
+# def product_details(request, id=None):
+#     prod = Products.objects.filter(id=id).first()
+#     return render(request, 'View_product.html', {'proddata': prod})
+
 def product_details(request, id=None):
-    prod = Products.objects.filter(id=id).first()
-    return render(request, 'View_product.html', {'proddata': prod})
+    prod = Products.objects.get(id=id)
+    ingrd = ProductIngredients.objects.filter(product=id).all()
+    prodimage = Images.objects.filter(product_id = id).all()
+    form1 = ProductIngredientFormsetView(queryset=ingrd)
+    form = ProductFormView(instance=prod)
+    # prod = Products.objects.filter(id=id).first()
+    return render(request, 'View_product_copy.html', {'form': form, 'form2': form1, 'image': prod.primary_image, 'prodimg':prodimage, 'id': prod.id})
 
 
 def update_product(request, id=None, *args, **kwargs):
@@ -415,10 +424,4 @@ def lowest_deliverytime_supplier(request):
     return render(request, 'lowest_price.html', {"i": po})
 
 
-def product_details(request, id=None):
-    prod = Products.objects.get(id=id)
-    ingrd = ProductIngredients.objects.filter(product=id).all()
-    form1 = ProductIngredientFormsetView(queryset=ingrd)
-    form = ProductFormView(instance=prod)
-    # prod = Products.objects.filter(id=id).first()
-    return render(request, 'View_product copy.html', {'form': form, 'form2': form1, 'image': prod.primary_image, 'id': prod.id})
+

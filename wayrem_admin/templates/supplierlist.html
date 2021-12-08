@@ -98,6 +98,7 @@ endcomment %}
             <th scope="col">Email</th>
 
             <th scope="col">Status</th>
+            <th scope="col">Products</th>
             <th scope="col">Action</th>
         </tr>
     </thead>
@@ -127,6 +128,32 @@ endcomment %}
                         <i class="fas fa-eye text-success"></i>
                     </a>
             </td>
+
+            <td>
+                {% comment %} <a class="btn btn-sm" href="{% url 'wayrem_admin:viewprodsupplier' %}?product={{prod.SKU}}"> {% endcomment %}
+                <a type="button" class="btn btn-sm" onclick="supplierprodFunc('{{suppl.id}}')">
+                View Products
+                </a></td>
+                <!-- Modal View Supplier -->
+                
+                <div class="modal fade" id="supplier{{suppl.id}}" tabindex="-1" aria-labelledby="exampleModalLabel1"
+                aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="">{{suppl.username |title}} Products</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div id="test{{suppl.id}}"></div>
+                            
+                        </div>                    
+                    </div>
+                </div> 
+            </div>
+            <td>
+
+
             <!-- Modal -->
             <div class="modal fade" id="deleteModal{{suppl.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
                 aria-hidden="true">
@@ -161,6 +188,34 @@ endcomment %}
 </div>
 </div>
 </div>
+
+
+
+<script>
+    function supplierprodFunc(id){
+      
+        const url="{% url 'wayrem_admin:allproductsupplier' %}";
+        $.ajax({
+            
+            url:url,
+            data: {
+                        'supplierid': id       // add the country id to the GET parameters
+                    },
+            success:function(data){
+                console.log(data)
+            $("#test"+id).html(data);
+            
+            $("#supplier"+id).modal('show');
+            },
+        });
+    
+        }
+        $(document).ready(function(){
+        
+            $('#supplier').modal('hide');
+        
+        });
+    </script>
 
 
 

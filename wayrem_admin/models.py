@@ -1,6 +1,7 @@
 # from typing_extensions import Required
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db.models.base import Model
 from django.utils.translation import ugettext_lazy as _
 from datetime import datetime
 import uuid
@@ -183,7 +184,7 @@ UNIT_CHOICES = (
 class Products(models.Model):
     id = models.UUIDField(primary_key=True)
     name = models.CharField(max_length=255, null=True, blank=False)
-    SKU = models.CharField(max_length=255, null=True, blank=False)
+    SKU = models.CharField(max_length=255, null=True, blank=False,unique=True)
     category = models.ManyToManyField('Categories', null=True)
     product_code = models.CharField(max_length=255, null=True)
     meta_key = models.TextField()
@@ -249,6 +250,12 @@ class ProductIngredients(models.Model):
     unit = models.ForeignKey(
         Unit, on_delete=models.CASCADE, null=True, blank=True)
 
+# class ProductMargin(models,Model):
+#     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+#     product_id = models.UUIDField()
+#     margin =
+
+
 
 class PurchaseOrder(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
@@ -290,6 +297,7 @@ class SupplierProducts(models.Model):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
     supplier_id = models.ForeignKey(
         Supplier, on_delete=models.CASCADE, null=True)
+    product_id = models.UUIDField()
     SKU = models.CharField(max_length=250, null=True, blank=True)
     product_name = models.CharField(max_length=500, null=True, blank=True)
     quantity = models.IntegerField(null=True, default=1)
@@ -371,4 +379,11 @@ class Settings(models.Model):
 
     class Meta:
         db_table = 'settings'
+
+
+class BestProductsSupplier(models.Model):
+    product_id = models.UUIDField()
+    supplier_id = models.UUIDField()
+    lowest_price = models.CharField(max_length=255)
+    lowest_delivery_time = models.CharField(max_length=255)
 

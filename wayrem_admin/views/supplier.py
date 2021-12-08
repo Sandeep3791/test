@@ -8,9 +8,11 @@ from wayrem_admin.services import send_email
 from wayrem_admin.export import generate_pdf, generate_excel
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from wayrem_admin.models import Supplier
+from wayrem_admin.models import Supplier,SupplierProducts
 from django.views import View
 from django.db import connection
+
+from wayrem_admin.views.product import product
 
 
 def supplier_excel(request):
@@ -118,3 +120,9 @@ def update_supplier(request, id=None):
 def supplier_details(request, id=None):
     suppl = Supplier.objects.filter(id=id).first()
     return render(request, 'supplier_popup.html', {'suppldata': suppl})
+
+def allproductsupplier(request):
+    supplierid = request.GET.get('supplierid')
+    products = SupplierProducts.objects.filter(supplier_id_id=supplierid)
+
+    return render(request, 'supplier_viewall_product.html', {"list": products})

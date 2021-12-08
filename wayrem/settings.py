@@ -45,11 +45,10 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django_session_timeout.middleware.SessionTimeoutMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware', 
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
@@ -79,49 +78,31 @@ WSGI_APPLICATION = 'wayrem.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 
+
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'wayrem',
+        'NAME': 'wayrem_new',
         'USER': 'root',
-        'PASSWORD': 'root1234',
+        'PASSWORD': 'shubham123',
         'HOST': 'localhost',
         'PORT': '3306',
     }
 }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'wayrem',
-#         'USER': 'root',
-#         'PASSWORD': 'root',
-#         'HOST': 'localhost',
-#         'PORT': '3306',
-#     }
-# }
+
 
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'wayrem_v12',
+#         'NAME': 'wayrem_v50',
 #         'USER': 'admin',
 #         'PASSWORD': 'Merlin007#',
 #         'HOST': 'wayrem.c08qmktlafbu.us-east-1.rds.amazonaws.com',
 #         'PORT': '3306',
 #     }
 # }
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'wayrem_v50',
-        'USER': 'admin',
-        'PASSWORD': 'Merlin007#',
-        'HOST': 'wayrem.c08qmktlafbu.us-east-1.rds.amazonaws.com',
-        'PORT': '3306',
-    }
-}
 
 
 # DATABASES = {
@@ -183,5 +164,3 @@ MESSAGE_TAGS = {messages_s.ERROR: 'danger'}
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
-SESSION_EXPIRE_SECONDS = 6000000
-LOGIN_URL = 'wayrem_admin:root'
