@@ -6,6 +6,8 @@ from django.views import View
 from django.utils.decorators import method_decorator
 from wayrem_admin.models import Settings
 from wayrem_admin.forms import SettingsForm
+from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 from wayrem_admin.export import generate_pdf, generate_excel
@@ -29,7 +31,17 @@ class SettingList(View):
     @method_decorator(login_required(login_url='wayrem_admin:root'))
     def get(self, request, format=None):
         userlist = Settings.objects.all()
-        return render(request, self.template_name, {"userlist": userlist, "form": self.form})
+        paginator = Paginator(userlist, 25)
+        page = request.GET.get('page')
+        try:
+            slist = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            slist = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            slist = paginator.page(paginator.num_pages)
+        return render(request, self.template_name, {"userlist": slist, "form": self.form})
 
     def post(self, request):
         self.form = SettingsForm(request.POST)

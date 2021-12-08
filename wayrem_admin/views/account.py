@@ -10,6 +10,8 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from wayrem_admin.models import User, Supplier
 from django.views import View
+from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 def user_excel(request):
@@ -62,7 +64,17 @@ class UsersList(View):
     @method_decorator(role_required('User View'))
     def get(self, request, format=None):
         userlist = User.objects.all()
-        return render(request, self.template_name, {"userlist": userlist})
+        paginator = Paginator(userlist, 25)
+        page = request.GET.get('page')
+        try:
+            ulist = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            ulist = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            ulist = paginator.page(paginator.num_pages)
+        return render(request, self.template_name, {"userlist": ulist})
 
 
 @role_required('User View')

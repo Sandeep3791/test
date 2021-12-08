@@ -12,6 +12,8 @@ from wayrem_admin.models import Supplier, SupplierProducts
 from wayrem_admin.decorators import role_required
 from django.views import View
 from django.db import connection
+from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from wayrem_admin.views.product import product
 
@@ -74,7 +76,17 @@ class SupplierList(View):
     @method_decorator(role_required('Supplier View'))
     def get(self, request, format=None):
         supplierlist = Supplier.objects.all()
-        return render(request, self.template_name, {"supplierlist": supplierlist})
+        paginator = Paginator(supplierlist, 25)
+        page = request.GET.get('page')
+        try:
+            slist = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            slist = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            slist = paginator.page(paginator.num_pages)
+        return render(request, self.template_name, {"supplierlist": slist})
 
 
 class DeleteSupplier(View):
@@ -132,5 +144,14 @@ def supplier_details(request, id=None):
 def allproductsupplier(request):
     supplierid = request.GET.get('supplierid')
     products = SupplierProducts.objects.filter(supplier_id_id=supplierid)
-
-    return render(request, 'supplier_viewall_product.html', {"list": products})
+    paginator = Paginator(products, 25)
+    page = request.GET.get('page')
+    try:
+        splist = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        splist = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        splist = paginator.page(paginator.num_pages)
+    return render(request, 'supplier_viewall_product.html', {"list": splist})

@@ -12,26 +12,10 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
 <script src="{% static 'assets/js/datatable.js' %}"></script>
 
-{% comment %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"> {%
-endcomment %}
-{% comment %}
-<link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,800&display=swap"
-    rel="stylesheet"> {% endcomment %}
-
-
-
 {% endblock head %}
 
 {% block content %}
-<!-- <div class="text-left">
-    <a class="nav-link" href="{% url 'wayrem_admin:sub-admin-register' %}">
-        <button class="btn btn-secondary" style="background-color: #f2e600; position: relative;left: 850px;">Create New User</button>
-        </a>
-</div> -->
 
-<!-- <div class="col-xl-4 col-lg-4 col-md-6 d-flex align-items-center"><span class="page_title mb-md-2" style="font-size: 28px; font-weight:600;">User</span>
-</div> -->
 <div class="topbar_pages padding-0">
     <div class="container ">
         <h4 class="text-title">Settings</h2>
@@ -47,139 +31,134 @@ endcomment %}
 </div>
 <main class="content_admin_dashbboard">
     <div class="container ">
-<div class="subheader row ">
-    <div class="col-xl-2 col-lg-2 col-md-2" >
-        <button class="btn col-sm-12 col-md-12 col-12 create_new" data-bs-toggle="modal" data-bs-target="#exampleModal">Create Settings</button>
+        <div class="subheader row ">
+            <div class="col-xl-2 col-lg-2 col-md-2" >
+                <button class="btn col-sm-12 col-md-12 col-12 create_new" data-bs-toggle="modal" data-bs-target="#exampleModal">Create Settings</button>
         <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-<div class="modal-dialog">
-<div class="modal-content">
-<div class="modal-header">
-<h5 class="modal-title" id="exampleModalLabel">Add Settings</h5>
-<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-</div>
-<div class="modal-body">
-<form action="{% url 'wayrem_admin:settings' %}" method="POST" enctype="multipart/form-data" validate>
-      {% csrf_token %}
+                <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Add Settings</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                        <div class="modal-body">
+                        <form action="{% url 'wayrem_admin:settings' %}" method="POST" enctype="multipart/form-data" validate>
+                            {% csrf_token %}
       
-<div class="row">
-<div class="col-md-6">
-<label for="exampleInputEmail1" class="form-label">Key  <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.key.errors | striptags}}</em></span></label>
-{{form.key}}
-
-</div>
-<div class="col-md-6">
-<label for="exampleInputPassword1" class="form-label">Display Name  <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.display_name.errors | striptags}}</em></span></label>
-{{form.display_name}}
-</div>
-</div>
-<div class="col-md-6 mt-2">
-<label for="floatingTextarea">Type  <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.type.errors | striptags}}</em></span></label>
-<div class="form-floating ">
-{{form.type}}
-</div>
-</div>
-
-</div>
-<div class="modal-footer">
-<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-<button type="submit" class="btn btn-primary">Save</button>
-</div>
-</form>
-</div>
-</div>
-</div>
-    </div> 
-    <div class="row add_btn col-xl-3 col-lg-3 col-md-3 d-flex align-items-center">
-        <div class="col">
-</div>
-            {% comment %} <a href="{% url 'wayrem_admin:userpdf' %}" class="button button1 mt-2 export_file">Export to pdf</a> {% endcomment %}
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <label for="exampleInputEmail1" class="form-label">Key  <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.key.errors | striptags}}</em></span></label>
+                                        {{form.key}}
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="exampleInputPassword1" class="form-label">Display Name  <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.display_name.errors | striptags}}</em></span></label>
+                                        {{form.display_name}}
+                                </div>
+                            </div>
+                            <div class="col-md-6 mt-2">
+                                <label for="floatingTextarea">Type  <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.type.errors | striptags}}</em></span></label>
+                                <div class="form-floating ">
+                                    {{form.type}}
+                                </div>
+                            </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-primary">Save</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div> 
+        <div class="row add_btn col-xl-3 col-lg-3 col-md-3 d-flex align-items-center">
+            <div class="col">
+            </div>
         </div>
     </div>
-
     <div class="col-xl-7 col-lg-7 col-12 mt-2">
         <div class="row d-flex align-items-center ">
-            {% comment %} <div class="col-xl-4 col-lg-3 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 " style="height:40px;"> {% endcomment %}
             <div class="col-xl-4 col-lg-3 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 ml-0 " style="height:40px; margin-left: auto;">
-                <!-- <input type="search" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Search"> -->
                 <label class="subadmin_search d-flex align-items-center">
                     <input class="table_searchbar" id="table_search" type="search" placeholder="Search">
-                    <!-- <img src="images/Search.svg" alt=""> -->
                 </label>
-
-            </div>
-            {% comment %} <div class="col-xl-4 col-md-4">
-                <select class="form-select form-select-md filter_select" aria-label=".form-select-md example" disabled>
-                    <option selected="">All</option>
-                    <option value="1">...</option>
-                    <option value="2">...</option>
-                    <option value="3">...</option>
-                </select>
-            </div> {% endcomment %}
- 
+            </div>           
         </div>
-
     </div>
-
-
-
-
-
-{% if messages %}
-{% for message in messages %}
-<div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
-    <strong> {{ message }}!</strong>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-{% endfor %}
-{% endif %}
-<table class="table  text-center" id="filtertable">
-    <thead class="table-dark ">
-        <tr>
-            {% comment %} <th scope="col">S. No.</th> {% endcomment %}
-            <th scope="col">Key</th>
-            <th scope="col">Display Name</th>
-            <th scope="col">Value</th>
-            <th scope="col">Action</th>
-        </tr>
-    </thead>
-    <tbody class="bg-white">
-        {% for user in userlist %}
-        {% if user.is_superuser %}
-        {% else %}
-        <tr>
-        <form method="post" action="{% url 'wayrem_admin:settings_update' user.id %}" >
-        {% csrf_token %}
-            {% comment %} <th scope="row">{{user.id}}</th> {% endcomment %}
-            <td>{{user.key}}</td>
-            <td><input type="text" value="{{user.display_name}}" class="form-control form-control-sm" style="height:10px;" name="display_name"></td>
-            <td>
-            {% if user.type == "text" %}
-            <input type="text" value="{{user.value}}" class="form-control form-control-sm" style="height:10px;"  name="value">
+    {% if messages %}
+    {% for message in messages %}
+    <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
+        <strong> {{ message }}!</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    <table class="table  text-center" id="filtertable">
+        <thead class="table-dark ">
+            <tr>
+                {% comment %} <th scope="col">S. No.</th> {% endcomment %}
+                <th scope="col">Key</th>
+                <th scope="col">Display Name</th>
+                <th scope="col">Value</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody class="bg-white">
+            {% for user in userlist %}
+            {% if user.is_superuser %}
             {% else %}
-            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="value">{{user.value}}</textarea>
+            <tr>
+            <form method="post" action="{% url 'wayrem_admin:settings_update' user.id %}" >
+            {% csrf_token %}
+                <td>{{user.key}}</td>
+                <td><input type="text" value="{{user.display_name}}" class="form-control form-control-sm" style="height:10px;" name="display_name"></td>
+                <td>
+                {% if user.type == "text" %}
+                <input type="text" value="{{user.value}}" class="form-control form-control-sm" style="height:10px;"  name="value">
+                {% else %}
+                <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="value">{{user.value}}</textarea>
+                {% endif %}
+                </td>
+                <td>                    
+                    <button type="submit" class="btn btn-primary btn-sm">Update</button>                
+                </td>
+                </form>
+            </tr>
             {% endif %}
-            </td>
-            <td>
-                
-                <button type="submit" class="btn btn-primary btn-sm">Update</button>
-               
-            </td>
-            </form>
-        </tr>
-        {% endif %}
-        {% endfor %}
-
-    </tbody>
-</table>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
+            {% endfor %}
+        </tbody>
+    </table>
+    <nav aria-label="...">
+        <ul class="pagination">
+            {% if userlist.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ userlist.previous_page_number }}">Previous</a>
+                </li>
+            {% endif %}
+            {% if userlist.number|add:'-4' > 1 %}
+                <li class="page-item"><a class="page-link" href="?page={{ userlist.number|add:'-5' }}">&hellip;</a></li>
+            {% endif %}
+            {% for num in userlist.paginator.page_range %}
+                {% if num == userlist.number %}
+                    <li class="page-item active" aria-current="page">
+                        <a class="page-link" href="#">{{ num }}</a>
+                    </li>
+                {% elif num > userlist.number|add:'-5' and num < userlist.number|add:'5' %}
+                    <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>            
+                {% endif %} 
+            {% endfor %}
+            {% if userlist.paginator.num_pages > userlist.number|add:'4' %}
+                <li class="page-item"><a class="page-link" href="?page={{ userlist.number|add:'5' }}">&hellip;</a></li>
+            {% endif %}
+            {% if userlist.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ userlist.next_page_number }}">Next</a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
 </main>
-
 <script>
 
     $(document).ready(function () {

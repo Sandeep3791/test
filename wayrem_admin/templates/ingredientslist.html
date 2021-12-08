@@ -19,15 +19,6 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
 <script src="{% static 'assets/js/datatable.js' %}"></script>
 
-{% comment %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"> {%
-endcomment %}
-{% comment %}
-<link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,800&display=swap"
-    rel="stylesheet"> {% endcomment %}
-
-
-
 {% endblock head %}
 
 {% block content %}
@@ -58,11 +49,7 @@ endcomment %}
            
             <div class="subheader row pe-4 ps-4  padding-right-0">
            
-                <!-- <div class="row add_btn col-xl-4 col-lg-4 col-md-5 d-flex align-items-center">
-                    <div class="col">
-                        <a href="{% url 'wayrem_admin:importingredients' %}" class="button button1 mt-2 export_file">Import Data</a>
-                    </div>
-                </div>  -->
+    
                
                 <div class="row add_btn col-xl-4 col-lg-4 col-md-5 d-flex align-items-center">
                     <div class="col">
@@ -77,10 +64,8 @@ endcomment %}
                 <div class="col-xl-8 col-lg-8 col-12">
                     <div class="row d-flex align-items-center">
                         <div class="col-xl-4 col-lg-3 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 " style="height:40px;">
-                            <!-- <input type="search" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Search"> -->
                             <label class="subadmin_search d-flex align-items-center">
                                 <input class="table_searchbar" id="table_search" type="search" placeholder="Search">
-                                <!-- <img src="images/Search.svg" alt=""> -->
                             </label>
 
                         </div>
@@ -125,7 +110,7 @@ endcomment %}
                             {% comment %} <th scope="col">Action</th> {% endcomment %}
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="bg-white">
                         {% for ingre in list %}
 
                         <tr>
@@ -172,52 +157,50 @@ endcomment %}
 
 
 
-        <nav aria-label="...">
-        <ul class="pagination">
-        {% if list.has_previous %}
-            <li class="page-item">
-            <a class="page-link" href="?page={{ list.previous_page_number }}">Previous</a>
-            </li>
+            <nav aria-label="...">
+            <ul class="pagination">
+            {% if list.has_previous %}
+                <li class="page-item">
+                <a class="page-link" href="?page={{ list.previous_page_number }}">Previous</a>
+                </li>
+                {% endif %}
+                {% if list.number|add:'-4' > 1 %}
+                <li class="page-item"><a class="page-link" href="?page={{ list.number|add:'-5' }}">&hellip;</a></li>
             {% endif %}
-            {% if list.number|add:'-4' > 1 %}
-            <li class="page-item"><a class="page-link" href="?page={{ list.number|add:'-5' }}">&hellip;</a></li>
-        {% endif %}
 
 
-            {% for num in list.paginator.page_range %}
-        {% if num == list.number %}
-            <li class="page-item active" aria-current="page">
-            <a class="page-link" href="#">{{ num }}</a>
-            </li>
-            {% elif num > list.number|add:'-5' and num < list.number|add:'5' %}
-            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
-            {% comment %} {% else %}
-            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li> {% endcomment %}
-            {% endif %} 
-        {% endfor %}
+                {% for num in list.paginator.page_range %}
+            {% if num == list.number %}
+                <li class="page-item active" aria-current="page">
+                <a class="page-link" href="#">{{ num }}</a>
+                </li>
+                {% elif num > list.number|add:'-5' and num < list.number|add:'5' %}
+                <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                {% comment %} {% else %}
+                <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li> {% endcomment %}
+                {% endif %} 
+            {% endfor %}
 
-        {% if list.paginator.num_pages > list.number|add:'4' %}
-            <li class="page-item"><a class="page-link" href="?page={{ list.number|add:'5' }}">&hellip;</a></li>
-        {% endif %}
-
-        {% if list.has_next %}
-            <li class="page-item">
-            <a class="page-link" href="?page={{ list.next_page_number }}">Next</a>
-            </li>
+            {% if list.paginator.num_pages > list.number|add:'4' %}
+                <li class="page-item"><a class="page-link" href="?page={{ list.number|add:'5' }}">&hellip;</a></li>
             {% endif %}
-        </ul>
-        </nav>
+
+            {% if list.has_next %}
+                <li class="page-item">
+                <a class="page-link" href="?page={{ list.next_page_number }}">Next</a>
+                </li>
+                {% endif %}
+            </ul>
+            </nav>
     </div>
 </main>
 
 
-<script>
-
-
+<script> 
     $(document).ready(function () {
         oTable = $('#filtertable').DataTable({
             dom: 'rtip',
-            'columnDefs': [{ 'orderable': false, 'targets': 3 }],
+            'columnDefs': [{ 'orderable': false, 'targets': [2, 3] }],
             "oLanguage": {
                 "oPaginate": {
                     "sNext": '<i class="fas fa-arrow-circle-right text-primary"></i>',

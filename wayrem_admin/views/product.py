@@ -14,6 +14,8 @@ from wayrem_admin.forms import *
 from wayrem_admin.decorators import role_required
 import biip
 from django.forms import formset_factory
+from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 def product_excel(request):
@@ -200,7 +202,17 @@ class ProductList(View):
             search_filter |= Q(supplier__username=supplier_name)
         productslist = productslist.filter(search_filter)
         suppliers = Supplier.objects.values_list('username', flat=True)
-        return render(request, self.template_name, {"productslist": productslist, 'suppliers_name': suppliers})
+        paginator = Paginator(productslist, 25)
+        page = request.GET.get('page')
+        try:
+            plist = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            plist = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            plist = paginator.page(paginator.num_pages)
+        return render(request, self.template_name, {"productslist": plist, 'suppliers_name': suppliers})
 
 
 @role_required('Product View')

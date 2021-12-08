@@ -7,6 +7,8 @@ from django.utils.decorators import method_decorator
 from wayrem_admin.models import Customer
 from wayrem_admin.decorators import role_required
 from wayrem_admin.export import generate_pdf, generate_excel
+from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 def customers_excel(request):
@@ -20,7 +22,17 @@ class CustomersList(View):
     @method_decorator(role_required('Customer Profile View'))
     def get(self, request, format=None):
         userlist = Customer.objects.all()
-        return render(request, self.template_name, {"userlist": userlist})
+        paginator = Paginator(userlist, 25)
+        page = request.GET.get('page')
+        try:
+            clist = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            clist = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            clist = paginator.page(paginator.num_pages)
+        return render(request, self.template_name, {"userlist": clist})
 
 
 class Active_BlockCustomer(View):

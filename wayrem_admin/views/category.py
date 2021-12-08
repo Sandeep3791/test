@@ -9,6 +9,8 @@ from wayrem_admin.forms.categories import CategoryForm, CategoryUpdateForm
 from wayrem_admin.models import Categories, SubCategories
 from wayrem_admin.export import generate_pdf, generate_excel
 from wayrem_admin.services import inst_Category
+from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 def categories_excel(request):
@@ -46,7 +48,17 @@ class CategoriesList(View):
     @method_decorator(role_required('Categories View'))
     def get(self, request, format=None):
         categorieslist = Categories.objects.all()
-        return render(request, self.template_name, {"categorieslist": categorieslist})
+        paginator = Paginator(categorieslist, 25)
+        page = request.GET.get('page')
+        try:
+            clist = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            clist = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            clist = paginator.page(paginator.num_pages)
+        return render(request, self.template_name, {"categorieslist": clist})
 
 
 # class DeleteCategories(View):

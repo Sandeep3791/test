@@ -3,13 +3,25 @@ from wayrem_admin.models import Roles
 from wayrem_admin.decorators import role_required
 from wayrem_admin.forms import RoleForm, RoleViewForm
 from django.contrib import messages
+from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 @role_required('Roles View')
 def rolesList(request):
     context = {}
     roles = Roles.objects.all().order_by('-pk')
-    context['roles'] = roles
+    paginator = Paginator(roles, 25)
+    page = request.GET.get('page')
+    try:
+        rolelist = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        rolelist = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        rolelist = paginator.page(paginator.num_pages)
+    context['roles'] = rolelist
     return render(request, 'roles_crud_pages/rolesList.html', context)
 
 

@@ -128,7 +128,7 @@ class POList(View):
         # polist = PurchaseOrder.objects.values_list('po_id').distinct()
         # polist = PurchaseOrder.objects.distinct('po_id')
         request.session['products'] = []
-        return render(request, self.template_name, {"userlist": mylist})
+        return render(request, self.template_name, {"userlist": mylist, "polist":polist})
 
 
 class DeletePO(View):
