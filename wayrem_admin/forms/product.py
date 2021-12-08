@@ -1,6 +1,7 @@
-from django.forms import (formset_factory, modelformset_factory,BaseModelFormSet)
+from django.forms import (
+    formset_factory, modelformset_factory, BaseModelFormSet)
 from django import forms
-from wayrem_admin.models import ProductIngredients, Supplier, Categories, Ingredients, Products
+from wayrem_admin.models import ProductIngredients, Supplier, Categories, Images, Ingredients, Products
 from datetime import datetime
 
 
@@ -59,13 +60,14 @@ class ProductIngredientForm(forms.ModelForm):
             'unit': forms.Select(attrs={'class': 'form-select'}),
         }
 
+
 class BaseProductIngredients(BaseModelFormSet):
     def __init__(self, *args, **kwargs):
         super(BaseProductIngredients, self).__init__(*args, **kwargs)
         self.queryset = ProductIngredients.objects.none()
 
 
-# ProductIngredientFormset = formset_factory(ProductIngredientForm, extra=1)
+# ProductIngredientFormset1 = formset_factory(ProductIngredientForm, extra=0)
 ProductIngredientFormset = modelformset_factory(
     ProductIngredients,
     fields=("ingredient", "quantity", "unit"),
@@ -75,8 +77,21 @@ ProductIngredientFormset = modelformset_factory(
         'quantity': forms.NumberInput(attrs={'class': 'form-control form-control-sm', 'placeholder': 'Quantity'}),
         'unit': forms.Select(attrs={'class': 'form-select select_unit'}),
     },
-    formset = BaseProductIngredients
+    formset=BaseProductIngredients
 )
+
+ProductIngredientFormset1 = modelformset_factory(
+    ProductIngredients,
+    fields=("ingredient", "quantity", "unit"),
+    extra=0,
+    widgets={
+        'ingredient': forms.Select(attrs={'class': 'form-select select_ingrid x', 'placeholder': 'select'}),
+        'quantity': forms.NumberInput(attrs={'class': 'form-control form-control-sm', 'placeholder': 'Quantity'}),
+        'unit': forms.Select(attrs={'class': 'form-select select_unit'}),
+    },
+
+)
+
 ProductIngredientFormsetView = modelformset_factory(
     ProductIngredients,
     fields=("ingredient", "quantity", "unit"),
@@ -159,3 +174,14 @@ class ProductFormImageView(forms.ModelForm):
             'category': forms.SelectMultiple(attrs={'class': 'form-control'}),
             'supplier': forms.SelectMultiple(attrs={'class': 'form-control'}),
         }
+
+
+ProductImageFormset = modelformset_factory(
+    Images,
+    fields=("image",),
+    extra=0,
+    widgets={
+        'image':  forms.FileInput(attrs={'class': 'form-control-select'}),
+    },
+
+)

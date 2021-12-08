@@ -1,16 +1,16 @@
 from django import forms
 from django.core.validators import validate_image_file_extension
-from wayrem_admin.models import Roles
+from wayrem_admin.models import Roles, roles_options
 
 
 class RoleForm(forms.ModelForm):
     content = forms.CharField(widget=forms.Textarea(
         attrs={'class': 'form-control', 'rows': '3', 'placeholder': 'Add Role Description...'}))
-    
+
     choice_status = (("Active", "Active"), ("Inactive", "Inactive"))
 
     status = forms.ChoiceField(
-        choices=choice_status, widget=forms.Select(attrs={'class': 'form-select',}))
+        choices=choice_status, widget=forms.Select(attrs={'class': 'form-select', }))
 
     class Meta:
         model = Roles

@@ -104,6 +104,17 @@ DATABASES = {
 #     }
 # }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'wayrem_v50',
+#         'USER': 'admin',
+#         'PASSWORD': 'Merlin007#',
+#         'HOST': 'wayrem.c08qmktlafbu.us-east-1.rds.amazonaws.com',
+#         'PORT': '3306',
+#     }
+# }
+
 
 # DATABASES = {
 #     'default': {
