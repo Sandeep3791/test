@@ -1,6 +1,7 @@
 # from typing_extensions import Required
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.db.models.base import Model
 from django.utils.translation import ugettext_lazy as _
 from datetime import datetime
 import uuid
@@ -248,6 +249,12 @@ class ProductIngredients(models.Model):
     quantity = models.CharField(max_length=25, default=1, blank=True)
     unit = models.ForeignKey(
         Unit, on_delete=models.CASCADE, null=True, blank=True)
+
+# class ProductMargin(models,Model):
+#     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+#     product_id = models.UUIDField()
+#     margin =
+
 
 
 class PurchaseOrder(models.Model):

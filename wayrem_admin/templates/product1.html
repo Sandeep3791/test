@@ -18,6 +18,10 @@
             $('#id_category').select2({
             placeholder: 'Select Category',
             })
+            $('#id_unit, #id_dis_abs_percent').select2({
+            placeholder: 'Select Unit',
+            })
+            
             $('#id_supplier').select2({
             placeholder: 'Select Supplier',
             });
@@ -31,6 +35,14 @@
              $('.select_unit').select2({
              placeholder: 'Select Unit',
              });
+             $(".simplebar-mask .sidebar-inner ul.nav a").each(function(){
+                var path = window.location.pathname;
+                $(".simplebar-mask .sidebar-inner ul.nav a[href*='"+path+"']").addClass("active");
+                if(path==$(this).attr('href')){
+                    $(this).parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
+                    $(this).parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
+                }
+            });
       });
      </script>
 
@@ -71,52 +83,49 @@
     </div>
   </div>
     <!--==============================-->
-
+<div class="topbar_pages padding-0">
+    <div class="container ">
+        <h4 class="text-title">Add Product | Step - 1</h2>
+        <div class="breadcrumb-section">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb padding-left-0">
+                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="#"><span class="sidebar-icon"><i class="fas fa-gift"></i></span> <span class="sidebar-text">Product Management &nbsp; </span></a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:product' %}"><span class="sidebar-icon"><i class="fas fa-gift"></i></span> <span class="sidebar-text">Create Product   &nbsp; </span></a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Step 1</li>
+                </ol>
+            </nav>
+        </div>
+    </div> 
+</div>
 <main class="align-items-center admin_signup_lg">
-    <section class="d-flex   align-items-center my-5 mt-lg-6 mb-lg-5">
+    <section class="d-flex   align-items-center my-1 mb-lg-5">
         <div class="container ">
             <div class="row justify-content-center form-bg-image">
                 <div class="col-12 d-flex align-items-center justify-content-center">
-                    <div
-                        class="mb-4 mb-lg-0 bg-white  rounded p-4 p-lg-4 w-100" style="box-shadow: 0px 14px 20px 0px #00000014;">
-                        <div class="mb-4 mt-md-0">
-                            <h1 class="mb-0 h3">
-                                <!-- <img src="{% static '/assets/img/logo/Wayrem_logo..svg'%}" alt=""> -->
-                                 Add Product | Step - 1
-                            </h1>
-                            <hr>
-                            
-                            <p>
-                                {% if messages %}
-                                {% for message in messages %}
-                            <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show"
-                                {% endif %} role="alert">
+                        {% if messages %}
+                            <div class="mb-4 mb-lg-0 bg-white  rounded p-4 p-lg-4 w-100" style="box-shadow: 0px 14px 20px 0px #00000014;"></div>
+                            {% for message in messages %}
+                            <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
                                 <strong> {{ message }}</strong>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                    aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                             </div>
                             {% endfor %}
-                            {% endif %}
-
-
-                            </p>
+                            </div>
+                        {% endif %}
+                        {% if form.non_field_errors %}
+                        {% for error in form.non_field_errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{error}}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
                         </div>
-
- {% if form.non_field_errors %}
-  {% for error in form.non_field_errors %}
-  <div class="alert alert-danger alert-dismissible fade show" role="alert">
-  {{error}}
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-  <span aria-hidden="true">&times;</span>
-</div>
-  {% endfor %}
-{% endif %}
-
-
+                        {% endfor %}
+                        {% endif %}
                         <form method="post" action="{% url 'wayrem_admin:productviewone' %}"  id="product1" data-supplier-url = "{% url 'wayrem_admin:ajax_load_supplier' %}" data-category-margin = "{% url 'wayrem_admin:ajax_load_category_margin' %}" enctype="multipart/form-data" validate>
                                 {% csrf_token %}
                                 {{ form.non_field_errors }}
-                            <div class="row" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
+                            <div class="row bg-white" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
 
                                 <h4 class="mb-4 mt-4">
                                      Product Information
@@ -304,12 +313,30 @@
                                     </div>
                                     <!-- End of Form -->
 
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="name">Discount <span class="text-danger">*</span><span class="text-danger"><em> {{form.discount.error | striptags}} 
+                                                </em>
+                                            </span></label>
+                                            <div class="input-group first">   
+                                                {{form.discount}}
+                                                {{form.dis_abs_percent}}
+                                                <div class="input-group" id="discount_error_message" style="color: #d12525;"></div>
+                                            </div>
+                                            <!-- <div class="input-group">
+                                                <span class="text-danger"><em> 
+                                                    </em></span>
+                                            </div> -->
+                                            <span class="text-error"></span>
+                                        </div>
+                                    </div>
+
                                 </div>
 
                             </div>    
 
                   
-                                <div class="row mt-4" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
+                                <div class="row mt-4 bg-white" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
 
                                  <h4 class="mb-4 mt-4">
                                     Stock Management
@@ -350,7 +377,7 @@
 
                                 </div>
 
-                                <div class="row mt-4" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
+                                <div class="row mt-4 bg-white" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
 
                                   <h4 class="mb-4 mt-4">
                                     Ingredients
@@ -420,7 +447,7 @@
 
 
                                 <!--==================row====================-->
-                                <div class="row mt-4" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
+                                <div class="row mt-4 bg-white" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
 
                                  <h4 class="mb-4 mt-4">
                                     Product Margin
@@ -429,26 +456,10 @@
                                  <div class="row">
                                     
                                     <!-- Form -->
-                                    <div class="col-lg-6">
-                                        <div class="form-group mb-4">
-                                            <label for="name">Discount <span class="text-danger">*</span><span class="text-danger"><em> {{form.discount.error | striptags}} 
-                                                </em>
-                                            </span></label>
-                                            <div class="input-group first">   
-                                                {{form.discount}}
-                                                {{form.dis_abs_percent}}
-                                                <div class="input-group" id="discount_error_message" style="color: #d12525;"></div>
-                                            </div>
-                                            <!-- <div class="input-group">
-                                                <span class="text-danger"><em> 
-                                                    </em></span>
-                                            </div> -->
-                                            <span class="text-error"></span>
-                                        </div>
-                                    </div>
+                                 
                                     <!-- End of Form -->
                                    <!-- Form -->
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-12">
                                         <div class="form-group mb-4">
                                             <label for="name">Wayrem Margin <span class="text-danger">*</span> <span class="text-danger"> <em> {{form.wayrem_margin.error | striptags}} 
                                             </em> </span> </label>
@@ -463,22 +474,24 @@
                                     <!-- End of Form -->
 
 <!-- Form -->
-                                    <div class="col-lg-6 offset-6">
+                                    <div class="col-lg-6">
                                         <div class="form-group mb-4">
                                             
                                             <div class="input-group">
-                                            <div class="form-check mx-2">
-  <input class="form-check-input" type="radio" name="cat_margin" id="cat_margin">
-  <label class="form-check-label" for="cat_margin">
-    Category Margin
-  </label>
-</div>
-<div class="form-check mx-5">
-  <input class="form-check-input" type="radio" name="cat_margin" id="cat_margin1">
-  <label class="form-check-label" for="cat_margin1">
-    Product Margin
-  </label>
-</div>
+                                                <div class="form-check mx-2">
+                                                    
+                                                    <label class="form-check-label" for="cat_marginopen">
+                                                        Category Margin
+                                                    </label>
+                                                    <input class="form-check-input" type="radio" name="cat_margin" id="cat_marginopen">
+                                                    <div class='selectedcat_margin'></div>
+                                                </div>
+                                                <div class="form-check mx-5">
+                                                    <input class="form-check-input" type="radio" name="cat_margin" id="cat_margin1">
+                                                    <label class="form-check-label" for="cat_margin1">
+                                                        Product Margin
+                                                    </label>
+                                                </div>
                                             </div>
                                             <span class="text-error"></span>
                                         </div>
@@ -493,7 +506,7 @@
 
 
                                 <!--==========row====================-->
-                                <div class="row mt-4" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
+                                <div class="row mt-4 bg-white" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
 
                                     <h4 class=" mb-4 mt-4">
                                         Meta Information
@@ -524,7 +537,7 @@
 
 
                                 <!--===================row===================-->
-                                <div class="row mt-4 mb-4" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
+                                <div class="row mt-4 mb-4 bg-white" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
 
                                  <h4 class="mb-4 mt-4">
                                      Status
@@ -568,8 +581,8 @@
                             </div>
 
 
-                            </form>
-                    </div>
+                        </form>
+                    
                 </div>
             </div>
         </div>
@@ -703,7 +716,45 @@
         deleteForm('form', $(this));
         return false;
     });
+    jQuery('#id_category').change(function(){
+        var catvals = jQuery(this).val();
+        var optionhtml = '';
+        var mainvalnum = '';
+        var mainvalnumtype = '';
+        var selText = '';
+        $("#id_category option:selected").each(function () {
+            var $this = $(this);
+            if ($this.length) {
+                selText = $this.text();
+                var selTextsplit = selText.split(' - ');
+                var selTextsnumber = selTextsplit[1].split('%');
+                
+                if(selTextsplit[1].indexOf("%")>0){
+                    mainvalnum = selTextsnumber[0];
+                    mainvalnumtype = '%';
+                } else {
+
+                    mainvalnum = selTextsplit[1].split('(absolute')[0];
+                    mainvalnumtype = '(Absolute ';
+                }
+                optionhtml += '<div class="form-check mx-2">';
+                optionhtml += '<input class="form-check-input" type="radio" name="cat_marginselected" class="cat_marginselected" id="'+$this.attr('value')+'" val-text="'+selTextsplit[0]+'" val-autoops="'+mainvalnum+'" val-autoopstype = "'+mainvalnumtype+'">';
+                optionhtml += '<label class="form-check-label" for="'+$this.attr('value')+'">'+selText+'</label>';
+                optionhtml += '</div>';
+
+                jQuery('.selectedcat_margin').html(optionhtml);
+                clickaction();
+            }
+        });
+    });
     
+    function clickaction(){
+      $('.selectedcat_margin input').click(function(){
+          var checkedval = $('input[name=cat_marginselected]:checked');
+          $('#id_wayrem_margin').val(checkedval.attr('val-autoops'));
+          $('#id_margin_unit').val(checkedval.attr('val-autoopstype'));
+      });
+    }
 </script>
 
 

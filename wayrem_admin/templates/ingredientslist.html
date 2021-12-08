@@ -39,170 +39,176 @@ endcomment %}
 
 <!-- <div class="col-xl-4 col-lg-4 col-md-6 d-flex align-items-center"><span class="page_title mb-md-2" style="font-size: 28px; font-weight:600;">User</span>
 </div> -->
-
-{% comment %} <div class="subheader row pe-4 ps-4 mt-5">
-    <div class="row add_btn col-xl-4 col-lg-4 col-md-5 d-flex align-items-center">
-        <div class="col">
-            <a href="{% url 'wayrem_admin:importingredients' %}" class="button button1 mt-2 export_file">Import Data</a>
+<div class="topbar_pages padding-0">
+    <div class="container ">
+        <h4 class="text-title">All Ingredients</h2>
+        <div class="breadcrumb-section">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb padding-left-0">
+                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="#"><span class="sidebar-icon"><i class="fas fa-gift"></i></span> <span class="sidebar-text">Product Management &nbsp; </span></a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Manage Ingredients</li>
+                </ol>
+            </nav>
         </div>
-    </div> {% endcomment %}
-
-    <div class="subheader row pe-4 ps-4 mt-5">
-        <h1 class="text-center">Ingredients</h1>
-
-        <div class="row add_btn col-xl-4 col-lg-4 col-md-5 d-flex align-items-center">
-            <div class="col">
-                <form action="{% url 'wayrem_admin:importingredients' %}" method="POST" enctype="multipart/form-data" >
-                    {% csrf_token %}
-                    <input type="file" name="myFileInput" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onchange="form.submit()" id="myFileInput" />
-                </form>
-                <input type="button" class="button button1 mt-2 export_file"
-                    onclick="document.getElementById('myFileInput').click()" value="Import Data" />
-            </div>
-        </div>
-
-
-        <div class="col-xl-8 col-lg-8 col-12">
-            <div class="row d-flex align-items-center">
-                <div class="col-xl-4 col-lg-3 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 " style="height:40px;">
-                    <!-- <input type="search" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Search"> -->
-                    <label class="subadmin_search d-flex align-items-center">
-                        <input class="table_searchbar" id="table_search" type="search" placeholder="Search">
-                        <!-- <img src="images/Search.svg" alt=""> -->
-                    </label>
-
-                </div>
-                <div class="col-xl-4 col-md-4">
-                    <select class="form-select form-select-md filter_select" aria-label=".form-select-md example"
-                        disabled>
-                        <option selected="">All</option>
-                        <option value="1">...</option>
-                        <option value="2">...</option>
-                        <option value="3">...</option>
-                    </select>
-                </div>
-                <div class="col-xl-4 col-lg-5 col-md-5"><a class="btn w-100 anchor_btn ps-0 pe-0"
-                        href="{% url 'wayrem_admin:createingredients' %}">
-                        <button class="btn col-sm-12 col-md-12 col-12 create_new">Create New Ingredients</button>
-                    </a></div>
-            </div>
-
-        </div>
-
     </div>
-
-
-
-
-{% if messages %}
-{% for message in messages %}
-<div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
-    <strong> {{ message }}!</strong>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
-{% endfor %}
-{% endif %}
+<main class="content_admin_dashbboard">
+    <div class="container ">
+           
+            <div class="subheader row pe-4 ps-4  padding-right-0">
+           
+                <!-- <div class="row add_btn col-xl-4 col-lg-4 col-md-5 d-flex align-items-center">
+                    <div class="col">
+                        <a href="{% url 'wayrem_admin:importingredients' %}" class="button button1 mt-2 export_file">Import Data</a>
+                    </div>
+                </div>  -->
+               
+                <div class="row add_btn col-xl-4 col-lg-4 col-md-5 d-flex align-items-center">
+                    <div class="col">
+                        <form action="{% url 'wayrem_admin:importingredients' %}" method="POST" enctype="multipart/form-data" >
+                            {% csrf_token %}
+                            <input type="file" name="myFileInput" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onchange="form.submit()" id="myFileInput" />
+                        </form>
+                        <input type="button" class="button button1 mt-2 export_file"
+                            onclick="document.getElementById('myFileInput').click()" value="Import Data" />
+                    </div>
+                </div>
+                <div class="col-xl-8 col-lg-8 col-12">
+                    <div class="row d-flex align-items-center">
+                        <div class="col-xl-4 col-lg-3 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 " style="height:40px;">
+                            <!-- <input type="search" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Search"> -->
+                            <label class="subadmin_search d-flex align-items-center">
+                                <input class="table_searchbar" id="table_search" type="search" placeholder="Search">
+                                <!-- <img src="images/Search.svg" alt=""> -->
+                            </label>
 
-    <table class="table  text-center" id="filtertable">
-        <thead class="table-dark">
-            <tr>
-                {% comment %} <th scope="col">S. No.</th> {% endcomment %}
-
-                {% comment %} <th scope="col">Product Image</th> {% endcomment %}
-                {% comment %} <th scope="col">Category</th> {% endcomment %}
-                <th scope="col">Ingredient Name</th>
-                <th scope="col">Ingredient Status</th>
-                <th scope="col">Actions</th>
-
-                {% comment %} <th scope="col">Action</th> {% endcomment %}
-            </tr>
-        </thead>
-        <tbody>
-            {% for ingre in list %}
-
-            <tr>
-                {% comment %} <th scope="row">{{forloop.counter}}</th> {% endcomment %}
-                <td>{{ingre.ingredients_name}}</td>
-                <td>{{ingre.ingredients_status}}</td>
-                <td><a type="button" class="btn btn-sm " data-bs-toggle="modal"
-                        href="{% url 'wayrem_admin:updateingredients' ingre.id %}">
-                        <i class="fas fa-edit text-dark"></i>
-                    </a> <a type="button" class="btn btn-sm" data-bs-toggle="modal"
-                        data-bs-target="#deleteModal{{ingre.id}}">
-                        <i class="fas fa-trash-alt text-danger"></i>
-                    </a></td>
-                <!-- Modal -->
-                <div class="modal fade" id="deleteModal{{ingre.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
-                    aria-hidden="true">
-                    <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLabel">Delete {{ingre.ingredients_name | title}}</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                Are you sure want to delete {{ingre.ingredients_name | title}} ?
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
-                                <form method="POST" action="{% url 'wayrem_admin:deleteingredients' %}">
-                                    {% csrf_token %}
-                                    <input type="hidden" value="{{ingre.id}}" name="ingredients_id">
-                                    <button type="submit" class="btn btn-danger">Delete</button>
-                                </form>
-                            </div>
+                        </div>
+                        <div class="col-xl-4 col-md-4">
+                            <select class="form-select form-select-md filter_select" aria-label=".form-select-md example"
+                                disabled>
+                                <option selected="">All</option>
+                                <option value="1">...</option>
+                                <option value="2">...</option>
+                                <option value="3">...</option>
+                            </select>
+                        </div>
+                        <div class="col-xl-4 col-lg-5 col-md-5"><a class="btn w-100 anchor_btn ps-0 pe-0"
+                                href="{% url 'wayrem_admin:createingredients' %}">
+                                <button class="btn col-sm-12 col-md-12 col-12 create_new">Create New Ingredients</button>
+                            </a>
                         </div>
                     </div>
                 </div>
-            </tr>
+            </div>
+            
+            {% if messages %}
+            {% for message in messages %}
+            <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
+                <strong> {{ message }}!</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
             {% endfor %}
+            {% endif %}
+            <div class="card-tabe ">
+                <table class="table  text-center" id="filtertable">
+                    <thead class="table-dark">
+                        <tr>
+                            {% comment %} <th scope="col">S. No.</th> {% endcomment %}
 
-        </tbody>
-    </table>
-</div>
-</div>
-</div>
-</div>
-</div>
+                            {% comment %} <th scope="col">Product Image</th> {% endcomment %}
+                            {% comment %} <th scope="col">Category</th> {% endcomment %}
+                            <th scope="col">Ingredient Name</th>
+                            <th scope="col">Ingredient Status</th>
+                            <th scope="col">Actions</th>
+
+                            {% comment %} <th scope="col">Action</th> {% endcomment %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for ingre in list %}
+
+                        <tr>
+                            {% comment %} <th scope="row">{{forloop.counter}}</th> {% endcomment %}
+                            <td>{{ingre.ingredients_name}}</td>
+                            <td>{{ingre.ingredients_status}}</td>
+                            <td><a type="button" class="btn btn-sm " data-bs-toggle="modal"
+                                    href="{% url 'wayrem_admin:updateingredients' ingre.id %}">
+                                    <i class="fas fa-edit text-dark"></i>
+                                </a> <a type="button" class="btn btn-sm" data-bs-toggle="modal"
+                                    data-bs-target="#deleteModal{{ingre.id}}">
+                                    <i class="fas fa-trash-alt text-danger"></i>
+                                </a></td>
+                            <!-- Modal -->
+                            <div class="modal fade" id="deleteModal{{ingre.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                                aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLabel">Delete {{ingre.ingredients_name | title}}</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Are you sure want to delete {{ingre.ingredients_name | title}} ?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+                                            <form method="POST" action="{% url 'wayrem_admin:deleteingredients' %}">
+                                                {% csrf_token %}
+                                                <input type="hidden" value="{{ingre.id}}" name="ingredients_id">
+                                                <button type="submit" class="btn btn-danger">Delete</button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </tr>
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
 
 
-<nav aria-label="...">
-  <ul class="pagination">
-{% if list.has_previous %}
-    <li class="page-item">
-      <a class="page-link" href="?page={{ list.previous_page_number }}">Previous</a>
-    </li>
-    {% endif %}
-    {% if list.number|add:'-4' > 1 %}
-    <li class="page-item"><a class="page-link" href="?page={{ list.number|add:'-5' }}">&hellip;</a></li>
-{% endif %}
+
+        <nav aria-label="...">
+        <ul class="pagination">
+        {% if list.has_previous %}
+            <li class="page-item">
+            <a class="page-link" href="?page={{ list.previous_page_number }}">Previous</a>
+            </li>
+            {% endif %}
+            {% if list.number|add:'-4' > 1 %}
+            <li class="page-item"><a class="page-link" href="?page={{ list.number|add:'-5' }}">&hellip;</a></li>
+        {% endif %}
 
 
-     {% for num in list.paginator.page_range %}
-  {% if num == list.number %}
-    <li class="page-item active" aria-current="page">
-      <a class="page-link" href="#">{{ num }}</a>
-    </li>
-    {% elif num > list.number|add:'-5' and num < list.number|add:'5' %}
-    <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
-    {% comment %} {% else %}
-    <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li> {% endcomment %}
-     {% endif %} 
-{% endfor %}
+            {% for num in list.paginator.page_range %}
+        {% if num == list.number %}
+            <li class="page-item active" aria-current="page">
+            <a class="page-link" href="#">{{ num }}</a>
+            </li>
+            {% elif num > list.number|add:'-5' and num < list.number|add:'5' %}
+            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+            {% comment %} {% else %}
+            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li> {% endcomment %}
+            {% endif %} 
+        {% endfor %}
 
-{% if list.paginator.num_pages > list.number|add:'4' %}
-    <li class="page-item"><a class="page-link" href="?page={{ list.number|add:'5' }}">&hellip;</a></li>
-{% endif %}
+        {% if list.paginator.num_pages > list.number|add:'4' %}
+            <li class="page-item"><a class="page-link" href="?page={{ list.number|add:'5' }}">&hellip;</a></li>
+        {% endif %}
 
-{% if list.has_next %}
-    <li class="page-item">
-      <a class="page-link" href="?page={{ list.next_page_number }}">Next</a>
-    </li>
-    {% endif %}
-  </ul>
-</nav>
-
+        {% if list.has_next %}
+            <li class="page-item">
+            <a class="page-link" href="?page={{ list.next_page_number }}">Next</a>
+            </li>
+            {% endif %}
+        </ul>
+        </nav>
+    </div>
+</main>
 
 
 <script>

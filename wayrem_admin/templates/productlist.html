@@ -18,10 +18,9 @@
 {% endblock head %}
 
 {% block content %}
-
-<div class="subheader row pe-4 ps-4 mt-3">
-    <div class="topbar_pages padding-0">
-        <h2 class="text-title">All Products</h2>
+<div class="topbar_pages padding-0">
+    <div class="container ">
+        <h4 class="text-title">All Products</h2>
         <div class="breadcrumb-section">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb padding-left-0">
@@ -31,380 +30,365 @@
                 </ol>
             </nav>
         </div>
-    </div>   
-  
-    <div class="row add_btn col-xl-3 col-md-3 col-lg-4 col-md-5 d-flex align-items-righ padding-0">
-        <div class="col">
-        <a class=" w-100 anchor_btn ps-0 pe-0 align-items-left"
-            href="{% url 'wayrem_admin:excelproduct' %}">
-            <button class="btn button button1 w-100 create_new" type="button" aria-expanded="false">Export Product List</button>
-        </a>
-            </div>
     </div>
-    <div class="col-xl-3 col-md-3 col-lg-5 col-md-5">
-        <a class="btn w-100 anchor_btn ps-0 pe-0"
-            href="{% url 'wayrem_admin:product' %}">
-            <button class="btn col-sm-12 col-md-12 col-12 create_new">Create New Product</button>
-        </a>
-    </div>
-
-    {% comment %} {% comment %} <div class="row add_btn col-xl-4 col-md-4 col-lg-4 col-md-5 d-flex align-items-center">
-        <div class="col">
-        <div class="dropdown">
-  <a class="dropdown-item" href="{% url 'wayrem_admin:excelproduct' %}">
-
-  <button class="button button1 mt-2 export_file dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-    Export Product List
-    </a> {% endcomment %}
-
-  {% comment %} </button> {% endcomment %}
-  {% comment %} <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-    <li><a class="dropdown-item" href="{% url 'wayrem_admin:productpdf' %}">Export to Pdf</a></li>
-    <li><a class="dropdown-item" href="{% url 'wayrem_admin:excelproduct' %}">Export to Excel</a></li>
-  </ul> {% endcomment %}
-{% comment %} </div> {% endcomment %}
-            {% comment %} <a href="{% url 'wayrem_admin:productpdf' %}" class="button button1 mt-2 export_file">Export to pdf</a> {% endcomment %}
-        {% comment %} </div> {% endcomment %}
-    {% comment %} </div> {% endcomment %}
-
-    <div class="col-xl-6 col-md-6 col-lg-6 col-12 padding-right-0">
-        <div class="row d-flex align-items-center">
-            <div class="col-xl-2 col-md-2">
-                
-            </div>
-            <div class="col-xl-7 col-md-7 col-lg-7 " style="height:40px;">
-                <label class="subadmin_search d-flex align-items-center">
-                    <input class="table_searchbar" id="table_search" type="search" placeholder="Search">
-                </label>
-            </div>
-            <div class="col-xl-3 col-md-3 col-md-3 padding-right-0">
-                    <div class="">
-                        <div class="filter_btn col-xl-12 col-md-12 col-md-12 filter_dropdown" href="#" >
-                        Filter
-                        <img src="/static/assets/img/logo/filter1.svg" height="" width="">
+</div> 
+<main class="content_admin_dashbboard">
+        <div class="container ">
+    <div class="subheader row pe-4 ps-4 mt-3">
+         
     
-                            <!--=====================filter_dropdown============================-->
-                                        <div class="filter_width p-4 dropdown_content">
-                                                <div class="row">
-                            
-                                                    <div class="col-4">
-                                                        <div class="input_border text-black m-0 text-center d-flex alifn-item-center"><label for="inputPassword4">Lorem Ipsum</label></div>
-                                                            <div class="col-8 input_border"><input type="text" class="form-control p-2"></div>
-                                                    </div>
-                            
-                                                    <div class="col-4">
-                                                        <div class="input_border text-black m-0 text-center d-flex alifn-item-center"><label for="inputPassword4">Lorem Ipsum</label></div>
-                                                            <div class="col-8 input_border"><input type="text" class="form-control p-2"></div>
-                                                    </div>
-                            
-                                                    <div class="col-4">
-                                                        <div class="input_border text-black m-0 text-center d-flex alifn-item-center"><label for="inputPassword4">Lorem Ipsum</label></div>
-                                                            <div class="col-8 input_border"><input type="text" class="form-control p-2"></div>
-                                                    </div>
-                            
-                                                </div>
-                            
-                                                <div class="row mt-4">
-                                                    <div class="col-4">
-                                                        <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
-                                                            <label for="inputPassword4">Lorem Ipsum</label>
+        <div class="row add_btn col-xl-3 col-md-3 col-lg-4 col-md-5 d-flex align-items-righ padding-0">
+            <div class="col">
+            <a class=" w-100 anchor_btn ps-0 pe-0 align-items-left"
+                href="{% url 'wayrem_admin:excelproduct' %}">
+                <button class="btn button button1 w-100 create_new" type="button" aria-expanded="false">Export Product List</button>
+            </a>
+                </div>
+        </div>
+        <div class="col-xl-3 col-md-3 col-lg-5 col-md-5">
+            <a class="btn w-100 anchor_btn ps-0 pe-0"
+                href="{% url 'wayrem_admin:product' %}">
+                <button class="btn col-sm-12 col-md-12 col-12 create_new">Create New Product</button>
+            </a>
+        </div>
+
+        {% comment %} {% comment %} <div class="row add_btn col-xl-4 col-md-4 col-lg-4 col-md-5 d-flex align-items-center">
+            <div class="col">
+            <div class="dropdown">
+                <a class="dropdown-item" href="{% url 'wayrem_admin:excelproduct' %}">
+
+    <button class="button button1 mt-2 export_file dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+        Export Product List
+        </a> {% endcomment %}
+
+        {% comment %} </button> {% endcomment %}
+        {% comment %} <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+            <li><a class="dropdown-item" href="{% url 'wayrem_admin:productpdf' %}">Export to Pdf</a></li>
+            <li><a class="dropdown-item" href="{% url 'wayrem_admin:excelproduct' %}">Export to Excel</a></li>
+        </ul> {% endcomment %}
+        {% comment %} 
+            </div> {% endcomment %}
+                {% comment %} <a href="{% url 'wayrem_admin:productpdf' %}" class="button button1 mt-2 export_file">Export to pdf</a> {% endcomment %}
+            {% comment %} </div> {% endcomment %}
+        {% comment %} </div> {% endcomment %}
+
+        <div class="col-xl-6 col-md-6 col-lg-6 col-12 padding-right-0">
+            <div class="row d-flex align-items-center">
+                <div class="col-xl-2 col-md-2">
+                    
+                </div>
+                <div class="col-xl-7 col-md-7 col-lg-7 " style="height:40px;">
+                    <label class="subadmin_search d-flex align-items-center">
+                        <input class="table_searchbar" id="table_search" type="search" placeholder="Search">
+                    </label>
+                </div>
+                <div class="col-xl-3 col-md-3 col-md-3 padding-right-0">
+                        <div class="">
+                            <div class="filter_btn col-xl-12 col-md-12 col-md-12 filter_dropdown" href="#" >
+                            Filter
+                            <img src="/static/assets/img/logo/filter1.svg" height="" width="">
+        
+                                <!--=====================filter_dropdown============================-->
+                                            <div class="filter_width p-4 dropdown_content">
+                                                    <div class="row">
+                                
+                                                        <div class="col-4">
+                                                            <div class="input_border text-black m-0 text-center d-flex alifn-item-center"><label for="inputPassword4">Lorem Ipsum</label></div>
+                                                                <div class="col-8 input_border"><input type="text" class="form-control p-2"></div>
                                                         </div>
-                                                        <div class="col-8 input_border">
-                                                            <select class="form-select form-select-md rounded-1" aria-label=".form-select-md example">
-                                                            <option selected="">lorem</option>
-                                                            <option value="1">lorem1</option>
-                                                            <option value="2">lorem2</option>
-                                                            <option value="3">lorem3</option>
-                                                        </select>
+                                
+                                                        <div class="col-4">
+                                                            <div class="input_border text-black m-0 text-center d-flex alifn-item-center"><label for="inputPassword4">Lorem Ipsum</label></div>
+                                                                <div class="col-8 input_border"><input type="text" class="form-control p-2"></div>
                                                         </div>
+                                
+                                                        <div class="col-4">
+                                                            <div class="input_border text-black m-0 text-center d-flex alifn-item-center"><label for="inputPassword4">Lorem Ipsum</label></div>
+                                                                <div class="col-8 input_border"><input type="text" class="form-control p-2"></div>
+                                                        </div>
+                                
                                                     </div>
-                            
-                                                    <div class="col-4">
-                                                        <div class="input_border text-black m-0 text-center d-flex alifn-item-center"><label for="inputPassword4">Lorem Ipsum</label></div>
+                                
+                                                    <div class="row mt-4">
+                                                        <div class="col-4">
+                                                            <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
+                                                                <label for="inputPassword4">Lorem Ipsum</label>
+                                                            </div>
+                                                            <div class="col-8 input_border">
+                                                                <select class="form-select form-select-md rounded-1" aria-label=".form-select-md example">
+                                                                <option selected="">lorem</option>
+                                                                <option value="1">lorem1</option>
+                                                                <option value="2">lorem2</option>
+                                                                <option value="3">lorem3</option>
+                                                            </select>
+                                                            </div>
+                                                        </div>
+                                
+                                                        <div class="col-4">
+                                                            <div class="input_border text-black m-0 text-center d-flex alifn-item-center"><label for="inputPassword4">Lorem Ipsum</label></div>
+                                                                <div class="col-8 input_border">
+                                                                    <select class="form-select form-select-md rounded-1" aria-label=".form-select-md example">
+                                                                        <option selected="">lorem</option>
+                                                                        <option value="1">lorem1</option>
+                                                                        <option value="2">lorem2</option>
+                                                                        <option value="3">lorem3</option>
+                                                                    </select>
+                                                                </div>
+                                                        </div>
+                                
+                                                        <div class="col-4">
+                                                            <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
+                                                                <label for="inputPassword4">Lorem Ipsum</label>
+                                                            </div>
                                                             <div class="col-8 input_border">
                                                                 <select class="form-select form-select-md rounded-1" aria-label=".form-select-md example">
                                                                     <option selected="">lorem</option>
                                                                     <option value="1">lorem1</option>
                                                                     <option value="2">lorem2</option>
                                                                     <option value="3">lorem3</option>
-                                                                </select>
+                                                                    </select>
                                                             </div>
-                                                    </div>
-                            
-                                                    <div class="col-4">
-                                                        <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
-                                                            <label for="inputPassword4">Lorem Ipsum</label>
-                                                        </div>
-                                                        <div class="col-8 input_border">
-                                                            <select class="form-select form-select-md rounded-1" aria-label=".form-select-md example">
-                                                                <option selected="">lorem</option>
-                                                                <option value="1">lorem1</option>
-                                                                <option value="2">lorem2</option>
-                                                                <option value="3">lorem3</option>
-                                                                </select>
                                                         </div>
                                                     </div>
-                                                </div>
-                            
-                                                <div class="row mt-4">
-                                                    <div class="col-4">
-                                                        <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
-                                                            <label for="inputPassword4">Lorem Ipsum</label>
+                                
+                                                    <div class="row mt-4">
+                                                        <div class="col-4">
+                                                            <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
+                                                                <label for="inputPassword4">Lorem Ipsum</label>
+                                                            </div>
+                                                            <div class="col-8 input_border text-black">
+                                                                <div class="form-check" style="line-height: 27px;">lorem ipsum
+                                                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" style="display: flex;width: 20px;height: 20px;"></div>
+                                                            </div>
                                                         </div>
-                                                        <div class="col-8 input_border text-black">
-                                                            <div class="form-check" style="line-height: 27px;">lorem ipsum
-                                                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" style="display: flex;width: 20px;height: 20px;"></div>
+                                
+                                                        <div class="col-4">
+                                                            <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
+                                                                <label for="inputPassword4">Lorem Ipsum</label>
+                                                            </div>
+                                                            <div class="col-8 input_border text-black">
+                                                                <div class="form-check" style="line-height: 27px;">lorem ipsum
+                                                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" style="display: flex;width: 20px;height: 20px;"></div>
+                                                            </div>
                                                         </div>
+                                
+                                                        <div class="col-4">
+                                                            <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
+                                                                <label for="inputPassword4">Lorem Ipsum</label>
+                                                            </div>
+                                                            <div class="col-8 input_border text-black">
+                                                                <div class="form-check" style="line-height: 27px;">lorem ipsum
+                                                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" style="display: flex;width: 20px;height: 20px;"></div>
+                                                            </div>
+                                                        </div>
+                                
                                                     </div>
-                            
-                                                    <div class="col-4">
-                                                        <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
-                                                            <label for="inputPassword4">Lorem Ipsum</label>
-                                                        </div>
-                                                        <div class="col-8 input_border text-black">
-                                                            <div class="form-check" style="line-height: 27px;">lorem ipsum
-                                                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" style="display: flex;width: 20px;height: 20px;"></div>
-                                                        </div>
+                                
+                                                    <div class="row mt-4 d-flex justify-content-end">
+                                                            <a href="/roles/list/" class="btn  btn-danger me-2 btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Cancel</a>
+                                                            <button type="submit" class="btn btn-dark border-0 col-xl-3 col-md-5 col-12">Apply</button>
                                                     </div>
+                                            </div>
+                                <!--=====================================-->
+                            </div>
+        
+        
                             
-                                                    <div class="col-4">
-                                                        <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
-                                                            <label for="inputPassword4">Lorem Ipsum</label>
-                                                        </div>
-                                                        <div class="col-8 input_border text-black">
-                                                            <div class="form-check" style="line-height: 27px;">lorem ipsum
-                                                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" style="display: flex;width: 20px;height: 20px;"></div>
-                                                        </div>
-                                                    </div>
-                            
-                                                </div>
-                            
-                                                <div class="row mt-4 d-flex justify-content-end">
-                                                        <a href="/roles/list/" class="btn  btn-danger me-2 btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Cancel</a>
-                                                        <button type="submit" class="btn btn-dark border-0 col-xl-3 col-md-5 col-12">Apply</button>
-                                                </div>
-                                        </div>
-                            <!--=====================================-->
                         </div>
-    
-    
-                        
-                    </div>
+                </div>
             </div>
-            <!-- <div class="col-xl-4 col-md-4 col-md-4">
-            <form action="#"  method="post">
-            {% csrf_token %}
-                <select class="form-select form-select-md filter_select" name="status" onchange='this.form.submit()' aria-label=".form-select-md example">
-                    <option selected="">All</option>
-                    <option value="1">Featured product</option>
-                    <option value="2">Deliverable Product</option>
-                </select>
-                </form>
-            </div> -->
-            <!--====================filterbtn============================-->
-            
-
-
-            
         </div>
-
     </div>
 
-</div>
+        {% if messages %}
+        {% for message in messages %}
+        <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
+            <strong> {{ message }}!</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        <div class="card-tabe ">
+            <table class="table  text-center" id="filtertable">
+            <thead class="table-dark">
+            <tr>
+                {% comment %} <th scope="col">S. No.</th> {% endcomment %}
+                <th scope="col">SKU</th>
+                <th scope="col">Product Name</th>
+                {% comment %} <th scope="col">Category Name</th> {% endcomment %}
+                <th scope="col">Suppliers</th>
+                <th scope="col">lowest quoted price</th>
+                <th scope="col">lowest delivery time</th>
+                <th scope="col">Actions</th>
+                <th scope="col">PO</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for prod in productslist %}
 
-
-
-
-{% if messages %}
-{% for message in messages %}
-<div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
-    <strong> {{ message }}!</strong>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-{% endfor %}
-{% endif %}
-
-<table class="table  text-center" id="filtertable">
-    <thead class="table-dark">
-        <tr>
-            {% comment %} <th scope="col">S. No.</th> {% endcomment %}
-            <th scope="col">SKU</th>
-            <th scope="col">Product Name</th>
-            {% comment %} <th scope="col">Category Name</th> {% endcomment %}
-            <th scope="col">Suppliers</th>
-            <th scope="col">lowest quoted price</th>
-            <th scope="col">lowest delivery time</th>
-            <th scope="col">Actions</th>
-            <th scope="col">PO</th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for prod in productslist %}
-
-        <tr>
-            {% comment %} <th scope="row">{{forloop.counter}}</th> {% endcomment %}
-            <td>{{prod.SKU}}</td>
-            <td>{{prod.name |truncatechars:9 }}</td>
-            {% comment %} <td>
-            {% for i in prod.product_category.all%}
-            
-                {{i}}
-                {% endfor %}
-                </td> {% endcomment %}
+            <tr>
+                {% comment %} <th scope="row">{{forloop.counter}}</th> {% endcomment %}
+                <td>{{prod.SKU}}</td>
+                <td>{{prod.name |truncatechars:9 }}</td>
+                {% comment %} <td>
+                {% for i in prod.product_category.all%}
+                
+                    {{i}}
+                    {% endfor %}
+                    </td> {% endcomment %}
+                    <td>
+                    {% comment %} <a class="btn btn-sm" href="{% url 'wayrem_admin:viewprodsupplier' %}?product={{prod.SKU}}"> {% endcomment %}
+                    <a type="button" class="btn btn-sm" onclick="supplierFunc('{{prod.SKU}}')">
+                    View Supplier
+                    </a></td>
+                    <!-- Modal View Supplier -->
+                    <div class="modal fade" id="supplier{{prod.SKU}}" tabindex="-1" aria-labelledby="exampleModalLabel1"
+                    aria-hidden="true">
+                    <div class="modal-dialog  modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="">{{prod.product_name |title}}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div id="test{{prod.SKU}}"></div>
+                                
+                            </div>                    
+                        </div>
+                    </div> 
+                </div>
                 <td>
-                {% comment %} <a class="btn btn-sm" href="{% url 'wayrem_admin:viewprodsupplier' %}?product={{prod.SKU}}"> {% endcomment %}
-                <a type="button" class="btn btn-sm" onclick="supplierFunc('{{prod.SKU}}')">
-                View Supplier
-                </a></td>
-                <!-- Modal View Supplier -->
-                <div class="modal fade" id="supplier{{prod.SKU}}" tabindex="-1" aria-labelledby="exampleModalLabel1"
-                aria-hidden="true">
-                <div class="modal-dialog  modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="">{{prod.product_name |title}}</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                {% comment %} <a class="btn btn-sm" href="{% url 'wayrem_admin:lowest_price' %}?product={{prod.SKU}}"> {% endcomment %}
+                <a type="button" class="btn btn-sm" onclick="lowestFunc('{{prod.SKU}}')">View</a></td>
+                    <!-- Modal Lowest Price -->
+                    <div class="modal fade" id="lowest{{prod.SKU}}" tabindex="-1" aria-labelledby="exampleModalLabel1"
+                    aria-hidden="true">
+                    <div class="modal-dialog  modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="">{{prod.product_name |title}}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div id="lowest_price{{prod.SKU}}"></div>
+                                
+                            </div>                    
                         </div>
-                        <div class="modal-body">
-                            <div id="test{{prod.SKU}}"></div>
-                            
-                        </div>                    
-                    </div>
-                </div> 
-            </div>
-            <td>
-            {% comment %} <a class="btn btn-sm" href="{% url 'wayrem_admin:lowest_price' %}?product={{prod.SKU}}"> {% endcomment %}
-            <a type="button" class="btn btn-sm" onclick="lowestFunc('{{prod.SKU}}')">View</a></td>
-             <!-- Modal Lowest Price -->
-                <div class="modal fade" id="lowest{{prod.SKU}}" tabindex="-1" aria-labelledby="exampleModalLabel1"
-                aria-hidden="true">
-                <div class="modal-dialog  modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="">{{prod.product_name |title}}</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div id="lowest_price{{prod.SKU}}"></div>
-                            
-                        </div>                    
-                    </div>
-                </div> 
-            </div>
-            <td>
-            <a type="button" class="btn btn-sm" onclick="lowesttimeFunc('{{prod.SKU}}')">
-            View
-            </a></td>
-
-            <!-- Modal Lowest Time -->
-                <div class="modal fade" id="lowesttime{{prod.SKU}}" tabindex="-1" aria-labelledby="exampleModalLabel1"
-                aria-hidden="true">
-                <div class="modal-dialog  modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="">{{prod.product_name |title}}</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div id="lowest_time{{prod.SKU}}"></div>
-                            
-                        </div>                    
-                    </div>
-                </div> 
-            </div>
-
-
-            {% comment %} <td><a type="button" class="btn btn-sm" data-bs-toggle="modal"
-                data-bs-target="#supplier1{{prod.id}}">
-                View Supplier
-            </a>
-            <div class="modal fade" id="supplier1{{prod.id}}" tabindex="-1" aria-labelledby="exampleModalLabel1"
-                aria-hidden="true">
-                <div class="modal-dialog  modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="">{{prod.product_name}}</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <table class="table  text-center">
-                                <thead class="table-white">
-                                    <tr>
-                                        <th scope="col">Suppliers</th>
-                                        <th scope="col">Deliverable Time</th>
-                                        <th scope="col">Price</th>
-                                        <th scope="col">PO</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for i in prod.supplier_name.all%}
-                                    <tr>
-                                        <td class="btn w-100 anchor_btn ps-0 pe-0 " > 
-                                            {{i}} 
-                                        </td>
-                                        <td>Within 1 day</td>
-                                        <td>{{prod.price}}</td>
-                                        <td>
-                                            <a class="btn btn-sm btn-dark" href="{% url 'wayrem_admin:create_po' %}?supplier={{i.id}}">
-                                                Raise PO
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                            
-                        </div>                    
-                    </div>
+                    </div> 
                 </div>
-            </div>
-        </td> {% endcomment %}
-            <td><a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'wayrem_admin:updateproduct' prod.id %}">
+                <td>
+                <a type="button" class="btn btn-sm" onclick="lowesttimeFunc('{{prod.SKU}}')">
+                View
+                </a></td>
 
-                    <i class="fas fa-edit text-dark"></i>
-                </a> <a type="button" class="btn btn-sm" data-bs-toggle="modal"
-                    data-bs-target="#deleteModal{{prod.id}}">
-                    <i class="fas fa-trash-alt text-danger"></i>
-                </a>
-                <a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'wayrem_admin:productdetails' prod.id %}">
-                    <i class="mx-1 fas fa-eye text-success" style="font-size:15px;"></i>
-                </a>
-            </td>
-            <!-- Modal -->
-            <div class="modal fade" id="deleteModal{{prod.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Delete {{prod.product_name | title}}</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <!-- Modal Lowest Time -->
+                    <div class="modal fade" id="lowesttime{{prod.SKU}}" tabindex="-1" aria-labelledby="exampleModalLabel1"
+                    aria-hidden="true">
+                    <div class="modal-dialog  modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="">{{prod.product_name |title}}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div id="lowest_time{{prod.SKU}}"></div>
+                                
+                            </div>                    
                         </div>
-                        <div class="modal-body">
-                            Are you sure want to delete {{prod.product_name | title}} ?
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
-                            <form method="POST" action="{% url 'wayrem_admin:deleteproduct' %}">
-                                {% csrf_token %}
-                                <input type="hidden" value="{{prod.id}}" name="product_id">
-                                <button type="submit" class="btn btn-danger">Delete</button>
-                            </form>
+                    </div> 
+                </div>
+
+
+                {% comment %} <td><a type="button" class="btn btn-sm" data-bs-toggle="modal"
+                    data-bs-target="#supplier1{{prod.id}}">
+                    View Supplier
+                </a>
+                <div class="modal fade" id="supplier1{{prod.id}}" tabindex="-1" aria-labelledby="exampleModalLabel1"
+                    aria-hidden="true">
+                    <div class="modal-dialog  modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="">{{prod.product_name}}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <table class="table  text-center">
+                                    <thead class="table-white">
+                                        <tr>
+                                            <th scope="col">Suppliers</th>
+                                            <th scope="col">Deliverable Time</th>
+                                            <th scope="col">Price</th>
+                                            <th scope="col">PO</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for i in prod.supplier_name.all%}
+                                        <tr>
+                                            <td class="btn w-100 anchor_btn ps-0 pe-0 " > 
+                                                {{i}} 
+                                            </td>
+                                            <td>Within 1 day</td>
+                                            <td>{{prod.price}}</td>
+                                            <td>
+                                                <a class="btn btn-sm btn-dark" href="{% url 'wayrem_admin:create_po' %}?supplier={{i.id}}">
+                                                    Raise PO
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                
+                            </div>                    
                         </div>
                     </div>
                 </div>
-            </div>
-        <td><a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'wayrem_admin:create_po' %}?product={{prod.id}}">Raise PO
-                </a></td>
-        </tr>
-    {% endfor %}
+            </td> {% endcomment %}
+                <td><a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'wayrem_admin:updateproduct' prod.id %}">
 
-    </tbody>
-</table>
-</div>
-</div>
-</div>
-</div>
-</div>
+                        <i class="fas fa-edit text-dark"></i>
+                    </a> <a type="button" class="btn btn-sm" data-bs-toggle="modal"
+                        data-bs-target="#deleteModal{{prod.id}}">
+                        <i class="fas fa-trash-alt text-danger"></i>
+                    </a>
+                    <a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'wayrem_admin:productdetails' prod.id %}">
+                        <i class="mx-1 fas fa-eye text-success" style="font-size:15px;"></i>
+                    </a>
+                </td>
+                <!-- Modal -->
+                <div class="modal fade" id="deleteModal{{prod.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Delete {{prod.product_name | title}}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                Are you sure want to delete {{prod.product_name | title}} ?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+                                <form method="POST" action="{% url 'wayrem_admin:deleteproduct' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" value="{{prod.id}}" name="product_id">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <td><a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'wayrem_admin:create_po' %}?product={{prod.id}}">Raise PO
+                    </a></td>
+            </tr>
+            {% endfor %}
+
+            </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
 
 <script>
 

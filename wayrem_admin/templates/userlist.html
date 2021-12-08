@@ -32,10 +32,28 @@ endcomment %}
 
 <!-- <div class="col-xl-4 col-lg-4 col-md-6 d-flex align-items-center"><span class="page_title mb-md-2" style="font-size: 28px; font-weight:600;">User</span>
 </div> -->
-
-<div class="subheader row pe-4 ps-4 mt-5">
-    <h1 class="text-center">Users</h1>
-    <div class="row add_btn col-xl-4 col-lg-4 col-md-5 d-flex align-items-center">
+<div class="topbar_pages padding-0">
+    <div class="container ">
+        <h4 class="text-title">Users</h2>
+        <div class="breadcrumb-section">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb padding-left-0">
+                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="#"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> User Management</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Users</li>
+                </ol>
+            </nav>
+        </div>
+    </div> 
+</div>
+<main class="content_admin_dashbboard">
+    <div class="container ">
+<div class="subheader row">
+    <div class="col-xl-2 col-lg-2 col-md-2"><a class="btn w-100 anchor_btn ps-0 pe-0"
+        href="{% url 'wayrem_admin:sub-admin-register' %}">
+        <button class="btn col-sm-12 col-md-12 col-12 create_new">Create New User</button>
+    </a></div>
+    <div class="row add_btn col-xl-3 col-lg-3 col-md-3 d-flex align-items-center">
         <div class="col">
     <div class="dropdown">
   <button class="button button1 mt-2 export_file dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
@@ -49,10 +67,10 @@ endcomment %}
             {% comment %} <a href="{% url 'wayrem_admin:userpdf' %}" class="button button1 mt-2 export_file">Export to pdf</a> {% endcomment %}
         </div>
     </div>
-
-    <div class="col-xl-8 col-lg-8 col-12">
+    
+    <div class="col-xl-7 col-lg-7 col-12 mt-2">
         <div class="row d-flex align-items-center">
-            <div class="col-xl-4 col-lg-3 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 " style="height:40px;">
+            <div class="col-xl-8 col-lg-8 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 " style="height:40px;">
                 <!-- <input type="search" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Search"> -->
                 <label class="subadmin_search d-flex align-items-center">
                     <input class="table_searchbar" id="table_search" type="search" placeholder="Search">
@@ -60,7 +78,7 @@ endcomment %}
                 </label>
 
             </div>
-            <div class="col-xl-4 col-md-4">
+            <div class="col-xl-4 col-lg-4 col-md-4">
                 <select class="form-select form-select-md filter_select" aria-label=".form-select-md example" disabled>
                     <option selected="">All</option>
                     <option value="1">...</option>
@@ -68,10 +86,7 @@ endcomment %}
                     <option value="3">...</option>
                 </select>
             </div>
-            <div class="col-xl-4 col-lg-5 col-md-5"><a class="btn w-100 anchor_btn ps-0 pe-0"
-                    href="{% url 'wayrem_admin:sub-admin-register' %}">
-                    <button class="btn col-sm-12 col-md-12 col-12 create_new">Create New User</button>
-                </a></div>
+            
         </div>
 
     </div>
@@ -175,7 +190,8 @@ endcomment %}
 </div>
 </div>
 </div>
-
+</div>
+</main>
 
 <script>
 

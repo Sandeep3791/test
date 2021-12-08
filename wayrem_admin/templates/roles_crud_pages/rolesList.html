@@ -32,18 +32,41 @@ endcomment %}
 
 <!-- <div class="col-xl-4 col-lg-4 col-md-6 d-flex align-items-center"><span class="page_title mb-md-2" style="font-size: 28px; font-weight:600;">User</span>
 </div> -->
-
-<div class="subheader row pe-4 ps-4 mt-5">
-    <h1 class="text-center">Roles</h1>
-    {% comment %} <div class="row add_btn col-xl-4 col-lg-4 col-md-5 d-flex align-items-center">
-        <div class="col">
-            <button class="button button1 mt-2 export_file">Export to pdf</button>
+<div class="topbar_pages padding-0">
+    <div class="container ">
+        <h4 class="text-title">Roles</h2>
+        <div class="breadcrumb-section">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb padding-left-0">
+                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="#"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> User Management</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Roles</li>
+                </ol>
+            </nav>
         </div>
-    </div> {% endcomment %}
+    </div> 
+</div>
+<main class="content_admin_dashbboard">
+    <div class="container ">
+<div class="subheader row">
+    <div class="col-xl-6 col-lg-6 col-12">
+        <div class="col-xl-4 col-lg-5 col-md-5">
+            <a class="btn w-100 anchor_btn ps-0 pe-0" href="{% url 'wayrem_admin:roles_create' %}">
+                <button class="btn col-sm-12 col-md-12 col-12 create_new">Create New Role</button>
+            </a>
+        </div>
+        {% comment %} <div class="row add_btn col-xl-4 col-lg-4 col-md-5 d-flex align-items-center">
+            <div class="col">
+                <button class="button button1 mt-2 export_file">Export to pdf</button>
+            </div>
+        </div> {% endcomment %}
+    </div>
+    
 
-    <div class="col-xl-8 col-lg-8 col-12 offset-4">
+    <div class="col-xl-6 col-lg-6 col-12">
         <div class="row d-flex align-items-center">
-            <div class="col-xl-4 col-lg-3 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 " style="height:40px;">
+           
+            <div class="col-xl-8 col-lg-3 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 " style="height:40px;">
                 <!-- <input type="search" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Search"> -->
                 <label class="subadmin_search d-flex align-items-center">
                     <input class="table_searchbar" id="table_search" type="search" placeholder="Search">
@@ -59,11 +82,7 @@ endcomment %}
                     <option value="3">...</option>
                 </select>
             </div>
-            <div class="col-xl-4 col-lg-5 col-md-5">
-                <a class="btn w-100 anchor_btn ps-0 pe-0" href="{% url 'wayrem_admin:roles_create' %}">
-                    <button class="btn col-sm-12 col-md-12 col-12 create_new">Create New Role</button>
-                </a>
-            </div>
+            
         </div>
 
     </div>
@@ -79,7 +98,7 @@ endcomment %}
 {% endfor %}
 {% endif %}
 
-<table class="table  text-center" id="filtertable">
+<table class="table  text-center padding-0" id="filtertable">
     <thead class="table-dark">
         <tr>
             {% comment %} <th scope="col">S. No.</th> {% endcomment %}
@@ -164,6 +183,8 @@ endcomment %}
 </div>
 </div>
 </div>
+</div>
+</main>
 
 <script>
 

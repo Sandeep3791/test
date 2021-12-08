@@ -22,6 +22,7 @@
 <head> 
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <!-- Primary Meta Tags -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
 <title>
   Wayrem - {% block title %}{% endblock %} 
@@ -116,3 +117,64 @@
 
 </body>
 </html>
+<script>
+  $(document).ready(function () {
+    var path = window.location.pathname;
+    $(".simplebar-mask .sidebar-inner ul.nav a").each(function(){
+        // var path = window.location.pathname;
+        $(".simplebar-mask .sidebar-inner ul.nav a[href*='"+path+"']").addClass("active");
+        if(path==$(this).attr('href')){
+            $(this).parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
+            $(this).parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
+        }
+    });
+
+    if(path=='/products/product-view-one/') {
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/products/product/']").addClass("active");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/products/product/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/products/product/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
+    }
+      
+    if(path.indexOf('products/update-product/') != -1){
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/products/product-list/']").addClass("active");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/products/product-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/products/product-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
+    }
+
+    if((path.indexOf('/ingredient/update-ingredients/') != -1) || (path.indexOf('/create-ingredients') != -1)){
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/ingredient/ingredients-list/']").addClass("active");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/ingredient/ingredients-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/ingredient/ingredients-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
+    }
+    
+    if(path.indexOf('/category/update-categories') != -1){
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/category/categories-list/']").addClass("active");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/category/categories-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/category/categories-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
+    }
+
+    if(path.indexOf('/supplier/update-supplier/') != -1){
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/supplier/supplier-list/']").addClass("active");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/supplier/supplier-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/supplier/supplier-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
+    }
+    if(path.indexOf('/roles/create/') != -1){
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/roles/list/']").addClass("active");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/roles/list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/roles/list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
+    }
+    if(path.indexOf('/account/users-registration/') != -1){
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/account/users-list/']").addClass("active");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/account/users-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/account/users-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
+    }
+
+    function clickaction(){
+      $('.selectedcat_margin input').click(function(){
+          var checkedval = $('input[name=cat_marginselected]:checked');
+          $('#id_wayrem_margin').val(checkedval.attr('val-autoops'));
+          $('#id_margin_unit').val(checkedval.attr('val-autoopstype'));
+      });
+    }
+  });
+</script>
