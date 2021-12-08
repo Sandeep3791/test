@@ -227,10 +227,14 @@ def get_image_filename(instance, filename):
 
 
 class Images(models.Model):
+    invoice_id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+
     product = models.ForeignKey(
         Products, on_delete=models.CASCADE, default=None)
     image = models.FileField(upload_to="product/images/",
                              verbose_name='product_mage')
+    class Meta:
+        db_table = 'product_images'
 
 
 class Unit(models.Model):
@@ -240,6 +244,8 @@ class Unit(models.Model):
 
     def __str__(self):
         return self.unit_name
+    class Meta:
+        db_table = 'unit_images'
 
 
 class ProductIngredients(models.Model):
