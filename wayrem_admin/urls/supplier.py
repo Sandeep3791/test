@@ -15,5 +15,6 @@ urlpatterns = [
          views.supplier_details, name='supplierdetails'),
     path('allproduct-supplier/', views.allproductsupplier, name='allproductsupplier'),
     path('supplier-product-po/', views.supplier_products_po, name='supplier_product_po'),
+#     path('lowest-price-supplierview/<str:id>/',views.lowest_price_supplierview,name = 'lowest_price_supplierview')
 
 ]

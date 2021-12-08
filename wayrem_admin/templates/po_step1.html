@@ -80,10 +80,12 @@
                 </div>
             </div>
         </div>
-
+    </form>
     <div class="container w-75 bg-white">
 	  	<div class="table-data mt-5">
           {% if request.session.products %}
+          <form action="{% url 'wayrem_admin:create_po2' %}" method="POST" >
+            {% csrf_token %}
 		    <table class="table text-center" id="enrolled">
 		        <thead>
 		            <tr>
@@ -100,21 +102,21 @@
                     
 		            <tr>
 		                <td>{{forloop.counter}}</td>
-		                <td>{{data.1}}</td>
-		                <td>{{data.2}}</td>
-		                <td><a class="btn btn-success btn-sm" href=" {% url 'wayrem_admin:delete_inserted' data.0 %}" >Delete</a></td>
+		                <td> {{data.1}}<input type="hidden" class="form-control" required name="product{{forloop.counter}}" value="{{data.0}}" id="product"></td>
+		                <td><input type="number" class="form-control" required name="quantity{{forloop.counter}}" value="{{data.2}}" id="quantity"></td>
+		                <td><a class="btn btn-success " href=" {% url 'wayrem_admin:delete_inserted' data.0 %}" >Delete</a></td>
 		            </tr>
                     
 		        {% endfor %}
 		        </tbody>
 		    </table>
         
-            {% endif %}
 		    <div class="text-center mr-5 px-2">
             <a href="{% url 'wayrem_admin:polist' %}"
                                     class="btn  btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Cancel</a>
 			<button type="submit" name="send" href="#" class="btn btn-primary btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Send</button>
  </form>
+            {% endif %}
 		    {% comment %} <button class="btn btn-success mr-5" type="submit" >Next</button> {% endcomment %}
 		    </div>
 		</div>

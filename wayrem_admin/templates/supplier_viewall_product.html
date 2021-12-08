@@ -27,7 +27,7 @@
         <td class = "text-center">{{i.price}}</td>
         <td class = "text-center">Within {{i.deliverable_days}} days</td>
          <td class = "text-center">
-           <a href="" {% if i.price == j.lowest_price %}
+           <a type="button" class="btn btn-sm"  onclick="supplierprodFunc('{{j.supplier_id}}')" {% if i.price == j.lowest_price %}
            title="This supplier is providing this product in lowest price">
            {% else %}
           title="Lowest quoted price for this product is '{{j.lowest_price}}' click to view supplier">
@@ -44,7 +44,31 @@
   <button type="submit" class="btn btn-primary">Raise PO</button>
 </div>
 </form>
+<script>
+  function supplierprodFunc(id){
+    
+      const url="{% url 'wayrem_admin:allproductsupplier' %}";
+      $.ajax({
+          
+          url:url,
+          data: {
+                      'supplierid': id       // add the country id to the GET parameters
+                  },
+          success:function(data){
+              console.log(data)
+          $("#test"+id).html(data);
+          
+          $("#supplier"+id).modal('show');
+          },
+      });
   
+      }
+      $(document).ready(function(){
+      
+          $('#supplier').modal('hide');
+      
+      });
+  </script>
                                   
   
   

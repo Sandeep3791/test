@@ -99,6 +99,54 @@ def create_purchase_order(request):
     return render(request, "po_step1.html", {'form': form, "po": po})
 
 
+def create_po_step2(request):
+    if request.method == "POST":
+        if request.session['products'] == []:
+            messages.error(request, "Please select some Products!")
+            return redirect("wayrem_admin:create_po")
+        else:
+            print("supplier")
+            x = request.session.get('supplier_company')
+            supplier_name = inst_Supplier(
+                request.session.get('supplier_company'))
+            # x = request.POST['supplier_name']
+            # random_no = random.randint(1000, 99999)
+            po_id = uuid.uuid4()
+            # po_name = "PO"+str(random_no)
+            today = str(datetime.date.today())
+            curr_year = int(today[:4])
+            curr_month = int(today[5:7])
+            curr_date = int(today[8:10])
+            po = PurchaseOrder.objects.all()
+            aa = po.count()+1
+            q = ["{0:04}".format(aa)]
+            p = q[0]
+            po_name = "PO/"+str(curr_date) + \
+                str(curr_month)+str(curr_year)+'/'+p
+            products = [v for k, v in request.POST.items()
+                        if k.startswith('product')]
+            quantities = [v for k, v in request.POST.items()
+                          if k.startswith('quantity')]
+
+            for product, quantity in zip(products, quantities):
+                supp_po_id = uuid.uuid4()
+                print(product)
+                product_instance = inst_Product(product)
+                product_qty = quantity
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        f"INSERT INTO {supplier_name.username}_purchase_order(`id`,`po_id`,`po_name`,`product_qty`,`product_name_id`,`supplier_name_id`) VALUES('{supp_po_id}','{po_id}','{po_name}','{quantity}','{product_instance.id.hex}','{x.replace('-','')}');")
+                    product_order = PurchaseOrder(
+                        po_id=po_id, po_name=po_name, product_name=product_instance, product_qty=product_qty, supplier_name=supplier_name)
+                product_order.save()
+            messages.success(
+                request, f"Purchase Order Created Successfully!")
+            request.session['products'] = []
+            return redirect('wayrem_admin:polist')
+    else:
+        pass
+
+
 def delete_inserted_item(request, id=None):
     product = request.session.get("products")
     for index, num_list in enumerate(product):

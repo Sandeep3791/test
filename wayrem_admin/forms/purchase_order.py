@@ -9,7 +9,7 @@ class POForm(forms.ModelForm):
 
         widgets = {
             'product_name': forms.Select(attrs={'class': 'form-select'}),
-            'product_qty': forms.NumberInput(attrs={'class': "form-control form-control-sm"}),
+            'product_qty': forms.NumberInput(attrs={'class': "form-control form-control"}),
             'supplier_name': forms.Select(attrs={'class': 'form-select'})
         }
 
