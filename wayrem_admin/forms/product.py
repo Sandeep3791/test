@@ -48,6 +48,11 @@ class ProductImageForm(forms.Form):
         attrs={'class': 'form-control-select', 'multiple': True}))
 
 
+class ProductImgUpdateForm(forms.Form):
+    images = forms.FileField(widget=forms.ClearableFileInput(
+        attrs={'class': 'form-control-select', 'multiple': True}))
+
+
 class ProductIngredientForm(forms.ModelForm):
 
     class Meta:
