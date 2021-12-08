@@ -8,7 +8,7 @@ from wayrem_admin.services import send_email
 from wayrem_admin.export import generate_pdf, generate_excel
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from wayrem_admin.models import Supplier, SupplierProducts
+from wayrem_admin.models import Supplier, SupplierProducts, BestProductsSupplier
 from wayrem_admin.decorators import role_required
 from django.views import View
 from django.db import connection
@@ -132,5 +132,15 @@ def supplier_details(request, id=None):
 def allproductsupplier(request):
     supplierid = request.GET.get('supplierid')
     products = SupplierProducts.objects.filter(supplier_id_id=supplierid)
-
-    return render(request, 'supplier_viewall_product.html', {"list": products})
+    product_list = []
+    for product in products:
+       product_list.append(product.product_id)
+    best_product = []
+    for i in product_list:
+       data= BestProductsSupplier.objects.filter(product_id = i )
+       data2 = [{'lowest_price':i.lowest_price,'lowest_delivery_time':i.lowest_delivery_time} for i in data]
+       data2 = data2.pop()
+       best_product.append(data2)
+    print(best_product)
+    list = zip(products,best_product)
+    return render(request, 'supplier_viewall_product.html', {"list": list})

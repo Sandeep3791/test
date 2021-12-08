@@ -227,7 +227,7 @@ def get_image_filename(instance, filename):
 
 
 class Images(models.Model):
-    invoice_id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
 
     product = models.ForeignKey(
         Products, on_delete=models.CASCADE, default=None)
@@ -245,7 +245,7 @@ class Unit(models.Model):
     def __str__(self):
         return self.unit_name
     class Meta:
-        db_table = 'unit_images'
+        db_table = 'unit_master'
 
 
 class ProductIngredients(models.Model):
@@ -393,4 +393,7 @@ class BestProductsSupplier(models.Model):
     supplier_id = models.UUIDField()
     lowest_price = models.CharField(max_length=255)
     lowest_delivery_time = models.CharField(max_length=255)
+
+    class Meta:
+        db_table = 'best_products_supplier'
 
