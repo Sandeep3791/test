@@ -137,10 +137,10 @@ def product_view_one(request):
         print(formset.errors)
         print(form.is_valid())
         if form.is_valid() and formset.is_valid():
-            product_id = uuid.uuid4()
-            product = form.save(commit=False)
-            product.id = product_id
-            product.save()
+            # product_id = uuid.uuid4()
+            # product.save()
+            product = form.save()
+            product_id = product.id
             for form in formset.forms:
                 obj = ProductIngredients()
                 obj.product = product_id
@@ -194,12 +194,15 @@ class ProductList(View):
         product_name = request.GET.get('product_name')
         product_sku = request.GET.get('product_sku')
         supplier_name = request.GET.get('suppliers')
+        product_category = request.GET.get('product_category')
         if product_name:
             search_filter |= Q(name=product_name)
         if product_sku:
             search_filter |= Q(SKU=product_sku)
-        if product_sku:
-            search_filter |= Q(supplier__username=supplier_name)
+        if supplier_name:
+            search_filter |= Q(supplier__company_name=supplier_name)
+        if product_category:
+            search_filter |= Q(category__name=product_category)
         productslist = productslist.filter(search_filter)
         suppliers = Supplier.objects.values_list('username', flat=True)
         paginator = Paginator(productslist, 25)
@@ -212,18 +215,26 @@ class ProductList(View):
         except EmptyPage:
             # If page is out of range (e.g. 9999), deliver last page of results.
             plist = paginator.page(paginator.num_pages)
-        return render(request, self.template_name, {"productslist": plist, 'suppliers_name': suppliers})
+        # return render(request, self.template_name, {"productslist": plist, 'suppliers_name': suppliers})
+        suppliers = Supplier.objects.values_list('company_name', flat=True)
+        categories = Categories.objects.values_list('name', flat=True)
+        context = {
+            "productslist": plist,
+            "suppliers_name": suppliers,
+            "categories": categories
+        }
+        return render(request, self.template_name, context)
 
 
 @role_required('Product View')
 def product_details(request, id=None):
     prod = Products.objects.get(id=id)
     ingrd = ProductIngredients.objects.filter(product=id).all()
-    prodimage = Images.objects.filter(product_id = id).all()
+    prodimage = Images.objects.filter(product_id=id).all()
     form1 = ProductIngredientFormsetView(queryset=ingrd)
     form = ProductFormView(instance=prod)
     # prod = Products.objects.filter(id=id).first()
-    return render(request, 'View_product_copy.html', {'form': form, 'form2': form1, 'image': prod.primary_image, 'prodimg':prodimage, 'id': prod.id})
+    return render(request, 'View_product_copy.html', {'form': form, 'form2': form1, 'image': prod.primary_image, 'prodimg': prodimage, 'id': prod.id})
 
 
 @role_required('Products Edit')
@@ -238,9 +249,10 @@ def update_product(request, id=None, *args, **kwargs):
         form = ProductFormImageView(
             request.POST or None, request.FILES or None, instance=prod)
         form1 = ProductIngredientFormset1(request.POST or None)
+        form3 = ProductImgUpdateForm(request.POST, request.FILES)
         # form2 = ProductImageFormset(
         # request.POST or None, request.FILES or None)
-        if form.is_valid() and form1.is_valid():
+        if form.is_valid() and form1.is_valid() and form3.is_valid():
             ingrd.delete()
             form.save()
             for form in form1.forms:
@@ -250,11 +262,18 @@ def update_product(request, id=None, *args, **kwargs):
                 obj.quantity = form.cleaned_data.get('quantity')
                 obj.unit = form.cleaned_data.get('unit')
                 obj.save()
+            images = request.FILES.getlist('images')
+            for image in images:
+                img_obj = Images()
+                img_obj.image = image
+                img_obj.product_id = id
+                img_obj.save()
             return redirect('wayrem_admin:productlist')
     form = ProductFormImageView(instance=prod)
     form1 = ProductIngredientFormset1(queryset=ingrd)
     # form2 = ProductImageFormset(queryset=product_images)
-    return render(request, 'product_update_latest.html', {'form': form, 'formset': form1, 'image': prod.primary_image, 'id': prod.id})
+    form3 = ProductImgUpdateForm()
+    return render(request, 'product_update_latest.html', {'form': form, 'formset': form1, 'form3':form3, 'image': prod.primary_image, 'product_images': product_images, 'id': prod.id})
 
 
 class DeleteProduct(View):
@@ -283,6 +302,17 @@ def lowest_deliverytime_supplier(request):
     po = SupplierProducts.objects.filter(
         SKU=product).order_by('deliverable_days').first()
     return render(request, 'lowest_price.html', {"i": po})
+
+
+def update_product_images(request):
+    if request.method == "POST":
+        image = request.FILES.get('updateimage')
+        product_id = request.POST.get('updateimageID')
+        obj = Images.objects.get(id=product_id)
+        obj.image = image
+        obj.save()
+        return HttpResponse("Image updated Successfully!!")
+    return HttpResponse("Please provide Image!")
 
 
 # @role_required('Products View')

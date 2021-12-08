@@ -8,7 +8,7 @@ from wayrem_admin.services import send_email
 from wayrem_admin.export import generate_pdf, generate_excel
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from wayrem_admin.models import Supplier, SupplierProducts
+from wayrem_admin.models import Supplier, SupplierProducts, BestProductsSupplier
 from wayrem_admin.decorators import role_required
 from django.views import View
 from django.db import connection
@@ -144,14 +144,52 @@ def supplier_details(request, id=None):
 def allproductsupplier(request):
     supplierid = request.GET.get('supplierid')
     products = SupplierProducts.objects.filter(supplier_id_id=supplierid)
-    paginator = Paginator(products, 25)
-    page = request.GET.get('page')
-    try:
-        splist = paginator.page(page)
-    except PageNotAnInteger:
-        # If page is not an integer, deliver first page.
-        splist = paginator.page(1)
-    except EmptyPage:
-        # If page is out of range (e.g. 9999), deliver last page of results.
-        splist = paginator.page(paginator.num_pages)
-    return render(request, 'supplier_viewall_product.html', {"list": splist})
+    product_list = []
+    for product in products:
+       product_list.append(product.product_id)
+    best_product = []
+    for i in product_list:
+       data= BestProductsSupplier.objects.filter(product_id = i )
+       data2 = [{'lowest_price':i.lowest_price,'lowest_delivery_time':i.lowest_delivery_time,'supplier_id':i.supplier_id} for i in data]
+       data2 = data2.pop()
+       best_product.append(data2)
+    print(best_product)
+    list = zip(products,best_product)
+    return render(request, 'supplier_viewall_product.html', {"list": list,'supplier':supplierid})
+
+    
+import uuid
+import datetime
+from wayrem_admin.models import PurchaseOrder
+from wayrem_admin.services import inst_Product,inst_Supplier
+def supplier_products_po(request):
+    if request.method == "POST":
+        supplier = request.POST.get('supplier')
+        supplier_name = inst_Supplier(supplier)
+        products = [v for k, v in request.POST.items() if k.startswith('prod')]
+        po_id = uuid.uuid4()
+        # po_name = "PO"+str(random_no)
+        today = str(datetime.date.today())
+        curr_year = int(today[:4])
+        curr_month = int(today[5:7])
+        curr_date = int(today[8:10])
+        po = PurchaseOrder.objects.all()
+        aa = po.count()+1
+        q = ["{0:04}".format(aa)]
+        p = q[0]
+        po_name = "PO/"+str(curr_date) + \
+            str(curr_month)+str(curr_year)+'/'+p
+        for data in products:
+                    supp_po_id = uuid.uuid4()
+                    print(data)
+                    product_instance = inst_Product(data)
+                    product_qty = 1
+                    with connection.cursor() as cursor:
+                        cursor.execute(
+                            f"INSERT INTO {supplier_name.username}_purchase_order(`id`,`po_id`,`po_name`,`product_qty`,`product_name_id`,`supplier_name_id`) VALUES('{supp_po_id}','{po_id}','{po_name}','{product_qty}','{product_instance.id.hex}','{supplier.replace('-','')}');")
+                        product_order = PurchaseOrder(
+                            po_id=po_id, po_name=po_name, product_name=product_instance, product_qty=product_qty, supplier_name=supplier_name)
+                    product_order.save()
+        return redirect("wayrem_admin:editpo",id=po_id)
+
+    return redirect("wayrem_admin:create_po")

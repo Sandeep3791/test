@@ -13,8 +13,8 @@
 <script src="{% static 'assets/js/datatable.js' %}"></script>
 
 
-{% comment %} 
 
+{% comment %} 
 <script src=  
 "https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js">  
     </script>  
@@ -33,109 +33,162 @@
 
 {% block content %}
 
-<!--=====================filter_dropdown============================-->
 <div class="filter_width p-4 dropdown_content" id="myProfile">
-    <div class="row">
-
-        <div class="col-4">
-            <div class="input_border text-black m-0 text-center d-flex alifn-item-center"><label for="inputPassword4">Lorem Ipsum</label></div>
-                <div class="col-8 input_border"><input type="text" class="form-control p-2"></div>
-        </div>
-
-        <div class="col-4">
-            <div class="input_border text-black m-0 text-center d-flex alifn-item-center"><label for="inputPassword4">Lorem Ipsum</label></div>
-                <div class="col-8 input_border"><input type="text" class="form-control p-2"></div>
-        </div>
-
-        <div class="col-4">
-            <div class="input_border text-black m-0 text-center d-flex alifn-item-center"><label for="inputPassword4">Lorem Ipsum</label></div>
-                <div class="col-8 input_border"><input type="text" class="form-control p-2"></div>
-        </div>
-
-    </div>
-
-    <div class="row mt-4">
-        <div class="col-4">
-            <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
-                <label for="inputPassword4">Lorem Ipsum</label>
-            </div>
-            <div class="col-8 input_border">
-                <select class="form-select form-select-md rounded-1" aria-label=".form-select-md example">
-                <option selected="">lorem</option>
-                <option value="1">lorem1</option>
-                <option value="2">lorem2</option>
-                <option value="3">lorem3</option>
-            </select>
-            </div>
-        </div>
-
-        <div class="col-4">
-            <div class="input_border text-black m-0 text-center d-flex alifn-item-center"><label for="inputPassword4">Lorem Ipsum</label></div>
+    <form method="GET">
+        <div class="row">
+            <div class="col-4">
+                <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
+                    <label for="inputPassword4">Product Name</label>
+                </div>
                 <div class="col-8 input_border">
+                    <input type="text" id="tags" name="product_name" class="form-control p-2">
+                </div>
+                <script>
+                    $( function() {
+                      var availableTags = [
+                          {% for i in productslist %}
+                              "{{i.name}}",
+                          {% endfor %}
+                      ];
+                      $( "#tags" ).autocomplete({
+                        source: availableTags
+                      });
+                    } );
+                </script>
+            </div>
+
+            <div class="col-4">
+                <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
+                    <label for="inputPassword4">SKU</label>
+                </div>
+                <div class="col-8 input_border">
+                    <input type="text" id="search_sku" name="product_sku" class="form-control p-2">
+                </div>
+                <script>
+                    $( function() {
+                      var availableTags = [
+                          {% for i in productslist %}
+                              "{{i.SKU}}",
+                          {% endfor %}
+                      ];
+                      $( "#search_sku" ).autocomplete({
+                        source: availableTags
+                      });
+                    } );
+                </script>
+            </div>
+
+            <div class="col-4">
+                <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
+                    <label for="inputPassword4">Supplier</label>
+                </div>
+                <div class="col-8 input_border">
+                    <input type="text" id="supplier_search" name="suppliers" class="form-control p-2">
+                </div>
+                <script>
+                    $( function() {
+                      var availableTags = [
+                          {% for name in suppliers_name %}
+                              "{{name}}",
+                          {% endfor %}
+                      ];
+                      $( "#supplier_search" ).autocomplete({
+                        source: availableTags
+                      });
+                    } );
+                </script>
+            </div>
+        </div>
+        
+        <div class="row mt-4">
+            <div class="col-4">
+                <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
+                    <label for="inputPassword4">Category</label>
+                </div>
+                <div class="col-8 input_border">
+                    <select class="form-select form-select-md rounded-1" name="product_category" aria-label=".form-select-md example">
+                        <option disabled selected="None">select category</option>
+                        {% for category in categories %}
+                        <option value="{{category}}">{{category}}</option>
+                        {% endfor %}
+                </select>
+            </div>
+        </div>
+        
+        {% comment %} <div class="col-4"> {% endcomment %}
+            {% comment %} <div class="input_border text-black m-0 text-center d-flex alifn-item-center"><label for="inputPassword4">Lorem Ipsum</label>
+            </div> {% endcomment %}
+            {% comment %} <div class="col-8 input_border">
+                <select class="form-select form-select-md rounded-1" aria-label=".form-select-md example">
+                    <option selected="">lorem</option>
+                    <option value="1">lorem1</option>
+                    <option value="2">lorem2</option>
+                    <option value="3">lorem3</option>
+                </select>
+            </div> {% endcomment %}
+        {% comment %} </div> {% endcomment %}
+        
+            {% comment %} <div class="col-4"> {% endcomment %}
+                {% comment %} <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
+                    <label for="inputPassword4">Lorem Ipsum</label>
+                </div> {% endcomment %}
+                {% comment %} <div class="col-8 input_border">
                     <select class="form-select form-select-md rounded-1" aria-label=".form-select-md example">
                         <option selected="">lorem</option>
                         <option value="1">lorem1</option>
                         <option value="2">lorem2</option>
                         <option value="3">lorem3</option>
                     </select>
+                </div> {% endcomment %}
+            {% comment %} </div> {% endcomment %}
+                <div class="row mt-4 d-flex justify-content-end">
+                   {% comment %} <a  href="{% url 'wayrem_admin:productlist' %}">         {% endcomment %}
+                        <button type="cancel" onclick="cancelBtn()" class="btn  btn-danger me-2 btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Cancel</button>
+                    {% comment %} </a> {% endcomment %}
+                    <button type="submit" class="btn btn-dark border-0 col-xl-3 col-md-5 col-12">Apply</button>
                 </div>
         </div>
-
-        <div class="col-4">
-            <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
-                <label for="inputPassword4">Lorem Ipsum</label>
+        
+            {% comment %} <div class="row mt-4"> {% endcomment %}
+                {% comment %} <div class="col-4"> {% endcomment %}
+                    {% comment %} <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
+                        <label for="inputPassword4">Lorem Ipsum</label>
+                    </div> {% endcomment %}
+                    {% comment %} <div class="col-8 input_border text-black">
+                        <div class="form-check" style="line-height: 27px;">lorem ipsum
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" style="display: flex;width: 20px;height: 20px;">
+                        </div>
+                    </div> {% endcomment %}
+                {% comment %} </div> {% endcomment %}
+                
+                {% comment %} <div class="col-4"> {% endcomment %}
+                    {% comment %} <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
+                        <label for="inputPassword4">Lorem Ipsum</label>
+                    </div> {% endcomment %}
+                    {% comment %} <div class="col-8 input_border text-black">
+                        <div class="form-check" style="line-height: 27px;">lorem ipsum
+                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" style="display: flex;width: 20px;height: 20px;">
+                        </div>
+                     </div> {% endcomment %}
+                {% comment %} </div> {% endcomment %}
+                    
+                    {% comment %} <div class="col-4"> {% endcomment %}
+                        {% comment %} <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
+                            <label for="inputPassword4">Lorem Ipsum</label>
+                        </div> {% endcomment %}
+                        {% comment %} <div class="col-8 input_border text-black">
+                            <div class="form-check" style="line-height: 27px;">lorem ipsum
+                                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" style="display: flex;width: 20px;height: 20px;">
+                            </div>
+                        </div> {% endcomment %}
+                    {% comment %} </div> {% endcomment %}
+                        
+                    {% comment %} </div> {% endcomment %}
+                    
+                    
+                </form>
             </div>
-            <div class="col-8 input_border">
-                <select class="form-select form-select-md rounded-1" aria-label=".form-select-md example">
-                    <option selected="">lorem</option>
-                    <option value="1">lorem1</option>
-                    <option value="2">lorem2</option>
-                    <option value="3">lorem3</option>
-                    </select>
-            </div>
-        </div>
-    </div>
-
-    <div class="row mt-4">
-        <div class="col-4">
-            <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
-                <label for="inputPassword4">Lorem Ipsum</label>
-            </div>
-            <div class="col-8 input_border text-black">
-                <div class="form-check" style="line-height: 27px;">lorem ipsum
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" style="display: flex;width: 20px;height: 20px;"></div>
-            </div>
-        </div>
-
-        <div class="col-4">
-            <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
-                <label for="inputPassword4">Lorem Ipsum</label>
-            </div>
-            <div class="col-8 input_border text-black">
-                <div class="form-check" style="line-height: 27px;">lorem ipsum
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" style="display: flex;width: 20px;height: 20px;"></div>
-            </div>
-        </div>
-
-        <div class="col-4">
-            <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
-                <label for="inputPassword4">Lorem Ipsum</label>
-            </div>
-            <div class="col-8 input_border text-black">
-                <div class="form-check" style="line-height: 27px;">lorem ipsum
-                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" style="display: flex;width: 20px;height: 20px;"></div>
-            </div>
-        </div>
-
-    </div>
-
-    <div class="row mt-4 d-flex justify-content-end">
-            <button href="" type="" onclick="cancelBtn()" class="btn  btn-danger me-2 btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Cancel</button>
-            <button type="submit" class="btn btn-dark border-0 col-xl-3 col-md-5 col-12">Apply</button>
-    </div>
-</div>
-
-{% comment %} ================================================================================= {% endcomment %}
+{% comment %} <!-- --------------------------------------------------------------------------------- --> {% endcomment %}
 <div class="topbar_pages padding-0">
     <div class="container ">
         <h4 class="text-title">All Products</h2>
@@ -182,18 +235,21 @@
                     <input class="table_searchbar" id="table_search" type="search" placeholder="Search">
                 </label>
             </div>
-                <div class="col-xl-3 col-md-3 col-md-3 padding-right-0">
-                    <div class="">
-                        <div class="filter_btn col-xl-12 col-md-12 col-md-12"  onclick="myProfile()">
-                            Filter
-                            <img src="/static/assets/img/logo/filter1.svg" height="" width="">                             
-                        </div>
-                    </div>                                    
-                </div>
+            <div class="col-xl-3 col-md-3 col-md-3 padding-right-0">
+                <div class="">
+                    <div class="filter_btn col-xl-12 col-md-12 col-md-12"  onclick="myProfile()">
+                        Filter
+                        <img src="/static/assets/img/logo/filter1.svg" height="" width="">                             
+                    </div>
+                </div>                                    
             </div>
         </div>
     </div>
 </div>
+    
+                           
+    
+                
 
         {% if messages %}
         {% for message in messages %}
@@ -366,13 +422,12 @@
     </div>
 </main>
 
-{% comment %} 
-<script>
 
+<script>
     $(document).ready(function () {
         oTable = $('#filtertable').DataTable({
-            dom: 'rtip',            
-            'columnDefs': [{ 'orderable': false, 'targets': 10 }],
+            dom: 'rtip',
+            'columnDefs': [{ 'orderable': false, 'targets': [5, 6] }],
             "oLanguage": {
                 "oPaginate": {
                     "sNext": '<i class="fas fa-arrow-circle-right text-primary"></i>',
@@ -391,7 +446,7 @@
             oTable.search($(this).val()).draw();
         })
     });
-</script> {% endcomment %}
+</script> 
 
 <script>
 function supplierFunc(SKU){
@@ -467,7 +522,30 @@ function lowesttimeFunc(SKU){
     
     });
 </script>
+<script>
+    function myProfile() {
+        var x = document.getElementById("myProfile");
+        if (x.style.display === "none") {
+            x.style.display = "block";
+        } else {
+            x.style.display = "none";
+      
+        }
+      }
 
+      function cancelBtn() {
+        console.log("button clicked")
+        location = location.href.split('?')[0];
+        
+        
+        var x = document.getElementById("myProfile");
+        if (x.style.display === "block") {
+            x.style.display = "none";
+        } 
+        
+      }
+</script>
+{% comment %} 
 <script>
     $(document).ready(function () {
         oTable = $('#filtertable').DataTable({
@@ -491,7 +569,7 @@ function lowesttimeFunc(SKU){
             oTable.search($(this).val()).draw();
         })
     });
-</script>
+</script> {% endcomment %}
 
 <script>
     function myProfile() {

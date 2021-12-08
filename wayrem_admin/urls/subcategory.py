@@ -12,6 +12,6 @@ urlpatterns = [
     path('update-subcategories/<str:id>/',
          views.update_subcategories, name='updatesubcategory'),
     path('category-details/<str:id>/',
-         views.subcategory_details, name='categorydetails'),
+         views.subcategory_details, name='categoriesdetails'),
 
 ]

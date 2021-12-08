@@ -423,7 +423,9 @@
                                                     </div>
                                                         <div class="col-3 d-flex align-items-end">
                                                         <div class="input-group-append">
-                                                            <button class="btn btn-success add-form-row ps-3 pe-3 addmmoreaction" data-formid="0">+</button>
+                                                            <button class="btn {% if forloop.counter == 1 %} btn-success add-form-row {% else %} btn-danger remove-form-row {% endif %} ps-3 pe-3   {% if forloop.counter == 1 %} addmmoreaction {% endif %}"  data-formid="0">
+                                                                {% if forloop.counter == 1 %}+{% else %}-{% endif %}</button>
+                                                                
                                                         </div>
                                                     </div>
                                                 </div>
@@ -472,6 +474,22 @@
                                             {{form.wayrem_margin}}
                                             {{form.margin_unit}}
                                             <div class="input-group" id="margin_error_message" style="color: #d12525;"></div>
+                                            <div class="input-group">
+                                                <div class="form-check mx-2">
+                                                    
+                                                    <label class="form-check-label" for="cat_marginopen">
+                                                        Category Margin
+                                                    </label>
+                                                    <input class="form-check-input" type="radio" name="cat_margin" id="cat_marginopen">
+                                                    <div class='selectedcat_margin'></div>
+                                                </div>
+                                                <div class="form-check mx-5">
+                                                    <input class="form-check-input" type="radio" name="cat_margin" id="cat_margin1">
+                                                    <label class="form-check-label" for="cat_margin1">
+                                                        Product Margin
+                                                    </label>
+                                                </div>
+                                            </div>
                                         </div>
                                         <span class="text-error"></span>
                                     </div>
@@ -580,22 +598,60 @@
                                     </div>
                                 </div>
                                 <!-- End of Form -->              
-                                
+
+                                <!-- Form -->
+                                <div class="col-lg-12">
+                                    <div class="form-group mb-4">
+                                        <label for="name">Upload New Image <span class="text-danger">*</span><span class="text-danger"><em> {{form3.images.error | striptags}}
+                                            </em>
+                                        </span></label>
+                                        <div class="input-group">                                            
+                                            {{ form3.images}}
+
+                                            <div class="input-group" id="met aKey_error_message" style="color: #d12525;"></div>
+                                        </div>
+                                    
+                                    </div>
+                                </div>
+                                <!-- End of Form -->
                                 </div>
 
                             </div>
-
+                            <div class="row">
+                            
+                                <h6 class="mb-3">Images Gallery</h6>
+                                {% for product in product_images %}
+                                <div class="col product_gallery_images">
+                                    <form method="POST"  enctype="multipart/form-data" class="id_ajax_upload_{{product.id}} id_ajax_upload_form"> 
+                                        {% csrf_token %}
+                                        <img src="{{product.image.url}}" style="width:200px; height:150px;" class='me-5 mt-2' id="id_image_upload_{{product.id}}">
+                                        <span class="editimage"><i class="fas fa-edit text-dark"></i></span>
+                                        <span class="deleteimage"><i class="fas fa-trash-alt text-danger"></i></span>
+                                    
+                                        <input type="file" name= "updateimage" class="updateimage" style=" display: none; " product-id="{{product.id}}">
+                                        <input type="hidden" name="updateimageID" class="updateimageID" value="{{product.id}}" style=" display: none; ">
+                                    </form>
+                                </div>
+                                {% endfor %}
+                            </div>  
+                    </div>
                         
                         
-                        <div class="mt-1">
+                        <div class="mt-4">
                             <a  href="{% url 'wayrem_admin:product' %}" class="btn  btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Back</a>
-                            <button type="submit" class="btn btn-dark border-0 col-xl-3 col-md-5 col-12" >Update</button>
+                            <button id="your-id"class="btn btn-dark border-0 col-xl-3 col-md-5 col-12" >Update</button>
                         </div>
+<script>
+    var form = document.getElementById("product1");
 
+document.getElementById("your-id").addEventListener("click", function () {
+  form.submit();
+});
+</script>
 
                     </form>
-                </div>    
-            </div>
+                </div>  
+               
         </div>
     </section>
 </main>
@@ -695,6 +751,50 @@
         deleteForm('form', $(this));
         return false;
     });
+    jQuery('#id_category').change(function(){
+        var catvals = jQuery(this).val();
+        var optionhtml = '';
+        var mainvalnum = '';
+        var mainvalnumtype = '';
+        var selText = '';
+        optionhtml += '<select name="cat_marginselected" class="cat_marginselected form-select">';
+            optionhtml += '<option>select</option>';
+            $("#id_category option:selected").each(function () {
+                var $this = $(this);
+                if($this.length) {
+                    selText = $this.text();
+                    var selTextsplit = selText.split(' - ');
+                    var selTextsnumber = selTextsplit[1].split('%');
+                    
+                    if(selTextsplit[1].indexOf("%")>0){
+                        mainvalnum = selTextsnumber[0];
+                        mainvalnumtype = '%';
+                    } else {
+
+                        mainvalnum = selTextsplit[1].split('(absolute')[0];
+                        mainvalnumtype = '(Absolute ';
+                    }
+                    
+                    optionhtml += '<option class="form-check-input" id="'+$this.attr('value')+'" val-text="'+selTextsplit[0]+'" val-autoops="'+mainvalnum+'" val-autoopstype = "'+mainvalnumtype+'">'+selText+'</option>';
+                    jQuery('.selectedcat_margin').html(optionhtml);
+                    clickaction();
+                }
+            });
+            optionhtml += '</select>';
+        });
+
+        $('.editimage').click(function(){
+            $(this).next('.deleteimage').next('input').click();
+        });
+        
+        function clickaction(){
+        $('.selectedcat_margin select').change(function(){
+
+            var checkedval = $('.selectedcat_margin select option:selected');
+            $('#id_wayrem_margin').val(checkedval.attr('val-autoops'));
+            $('#id_margin_unit').val(checkedval.attr('val-autoopstype'));
+        });
+        }
     
 </script>
 
@@ -715,6 +815,69 @@
         });
 
     });
+    $(".updateimage").change(function () {
+        var productID = jQuery(this).attr('product-id');
+        jQuery('.id_ajax_upload_'+productID).submit();
+
+        var file = $('.id_ajax_upload_'+productID+' input[type=file]').get(0).files[0];
+ 
+        if(file){
+            var reader = new FileReader();
+ 
+            reader.onload = function(){
+                $("#id_image_upload_"+productID).attr("src", reader.result);
+            }
+ 
+            reader.readAsDataURL(file);
+        }
+
+        
+    });
+    $('.id_ajax_upload_form').submit(function(e){
+            e.preventDefault();
+            $form = $(this)
+            var formData = new FormData(this);
+            $.ajax({
+                url: "{% url 'wayrem_admin:update_product_images' %}",
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    $('.error').remove();
+                    console.log(response)
+                    if(response.error){
+                        $.each(response.errors, function(name, error){
+                            error = '<small class="text-muted error">' + error + '</small>'
+                            $form.find('[name=' + name + ']').after(error);
+                        })
+                    }
+                    else{
+                        
+                    }
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+        });
+    
+
+    // $(".updateimage").change(function () {
+    //     var imagevae = $(this).next('.updateimageID').val();
+    //     var fd = new FormData();
+    //     var files = $('#file')[0].files;
+
+    //     $.ajax({                       // initialize an AJAX request
+    //         url: url,                    // set the url of the request (= /persons/ajax/load-cities/ )
+    //         data: {
+    //             'updateimageID': imagevae       // add the country id to the GET parameters
+    //         },
+    //         success: function (data) {   // data is the return of the load_cities view function
+    //             $("#id_supplier_name").html(data);  // replace the contents of the city input with the data that came from the server
+                
+    //         }
+    //     });
+
+    // });
 </script>
 
 <script>

@@ -48,6 +48,11 @@ class ProductImageForm(forms.Form):
         attrs={'class': 'form-control-select', 'multiple': True}))
 
 
+class ProductImgUpdateForm(forms.Form):
+    images = forms.FileField(widget=forms.ClearableFileInput(
+        attrs={'class': 'form-control-select', 'multiple': True}),required=False)
+
+
 class ProductIngredientForm(forms.ModelForm):
 
     class Meta:
@@ -86,7 +91,7 @@ ProductIngredientFormset1 = modelformset_factory(
     extra=0,
     widgets={
         'ingredient': forms.Select(attrs={'class': 'form-select select_ingrid x', 'placeholder': 'select'}),
-        'quantity': forms.NumberInput(attrs={'class': 'form-control form-control-sm', 'placeholder': 'Quantity'}),
+        'quantity': forms.NumberInput(attrs={'class': 'form-control form-control', 'placeholder': 'Quantity'}),
         'unit': forms.Select(attrs={'class': 'form-select select_unit'}),
     },
 

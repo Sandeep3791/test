@@ -1,60 +1,50 @@
+<form action="{% url 'wayrem_admin:supplier_product_po' %}" method="post">
+  {% csrf_token %}
+  <input type="hidden" class="form-control" name="supplier" value="{{supplier}}" id="product_name">
 <table class="table">
     <thead>
       <tr>
-        <th scope="col">S. No.</th>
-        <th scope="col">Products</th>
-        <th scope="col">Price</th>
-        <th scope="col">Deliverable Time</th>
-        <th scope="col">Lowest Deliverable Time</th>
-        <th scope="col">Lowest Quoted Price</th>
+        <th> </th>
+        <th scope="col" class = "text-center">SKU</th>
+        <th scope="col" class = "text-center">Products</th>
+        <th scope="col" class = "text-center">Price</th>
+        <th scope="col" class = "text-center">Deliverable Time</th>
+        <th scope="col" class = "text-center">Lowest Quoted Price</th>
+        <th scope="col" class = "text-center">Lowest Deliverable Time</th>
+
 
         
       </tr>
     </thead>
     <tbody>
-    {% for i in list %}
+    {% for i,j in list %}
       <tr>
-        <th scope="row">{{forloop.counter}}</th>
-        <td>{{i.product_name}}</td>
-        <td>{{i.price}}</td>
-        <td>Within {{i.deliverable_days}} days</td>
-        {% comment %} <td>
-         <a class="btn btn-sm btn-dark" href="{% url 'wayrem_admin:create_po' %}?suprod={{i.supplier_id.id}}?{{i.SKU}}">Raise PO</a>
-         </td> {% endcomment %}
-      </tr>
+        <td>
+          <input class="form-check-input" type="checkbox" value="{{i.product_id}}" name="prod{{forloop.counter}}" id="product_id" checked>
+        </td>
+        <td class = "text-center">{{ i.SKU }}</td>
+        <td class = "text-center">{{i.product_name}}</td>
+        <td class = "text-center">{{i.price}}</td>
+        <td class = "text-center">Within {{i.deliverable_days}} days</td>
+         <td class = "text-center">
+           <a href="" {% if i.price == j.lowest_price %}
+           title="This supplier is providing this product in lowest price">
+           {% else %}
+          title="Lowest quoted price for this product is '{{j.lowest_price}}' click to view supplier">
+          {% endif %}
+          <b> {{j.lowest_price}}</b>
+          </a>
+          </td>
+     <td class = "text-center">Within {{j.lowest_delivery_time}} days</td>  
+      </tr> 
       {% endfor %}
     </tbody>
   </table>
-  <nav aria-label="...">
-    <ul class="pagination">
-        {% if list.has_previous %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{ list.previous_page_number }}">Previous</a>
-            </li>
-        {% endif %}
-        {% if list.number|add:'-4' > 1 %}
-            <li class="page-item"><a class="page-link" href="?page={{ list.number|add:'-5' }}">&hellip;</a></li>
-        {% endif %}
-        {% for num in list.paginator.page_range %}
-            {% if num == list.number %}
-                <li class="page-item active" aria-current="page">
-                    <a class="page-link" href="#">{{ num }}</a>
-                </li>
-            {% elif num > list.number|add:'-5' and num < list.number|add:'5' %}
-                <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>            
-            {% endif %} 
-        {% endfor %}
-        {% if list.paginator.num_pages > list.number|add:'4' %}
-            <li class="page-item"><a class="page-link" href="?page={{ list.number|add:'5' }}">&hellip;</a></li>
-        {% endif %}
-        {% if list.has_next %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{ list.next_page_number }}">Next</a>
-            </li>
-        {% endif %}
-    </ul>
-</nav>
-                                  
+  <div class="text-center">
+  <button type="submit" class="btn btn-primary">Raise PO</button>
+</div>
+</form>
+  
                                   
   
   
