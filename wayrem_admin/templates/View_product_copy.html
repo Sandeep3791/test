@@ -328,9 +328,10 @@
                                         <label for="image">Package Count <span class="text-danger">*</span><span class="text-danger"><em> {{form.package_count.error | striptags}}
                                             </em>
                                         </span></label>
-                                        <div class="input-group">
+                                        <div class="form-check form-switch">
                                             
                                             {{form.package_count}}
+                                            <label for="id_package_count">Package</label>
                                             <div class="input-group" id="pcount_error_message" style="color: #d12525;"></div>
                                         </div>
                                        

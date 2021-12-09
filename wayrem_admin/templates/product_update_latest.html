@@ -374,9 +374,10 @@
                                     <label for="image">Package Count <span class="text-danger">*</span><span class="text-danger"><em> {{form.package_count.error | striptags}}
                                         </em>
                                     </span></label>
-                                    <div class="input-group">
+                                    <div div class="form-check form-switch">
                                         
                                         {{form.package_count}}
+                                        <label for="id_package_count">Package</label>
                                         <div class="input-group" id="pcount_error_message" style="color: #d12525;"></div>
                                     </div>
                                 
@@ -515,7 +516,7 @@
                                     <!-- Form -->
                                 <div class="col-lg-12">
                                     <div class="form-group mb-4">
-                                        <label for="name">Product Meta Key <span class="text-danger">*</span><span class="text-danger"><em> {{form.meta_key.error | striptags}}
+                                        <label for="name">Product Meta Tags <span class="text-danger">*</span><span class="text-danger"><em> {{form.meta_key.error | striptags}}
                                             </em>
                                         </span></label>
                                         <div class="input-group">
@@ -588,7 +589,7 @@
                                         </span></label>
                                         <div class="input-group">
                                             
-                                            <img src="{{image.url}}" style="height:55px" class='me-5'>
+                                            <img src="{{image.url}}" style="width:150px" class='me-5'>
 
                                             {{ form.primary_image}}
 

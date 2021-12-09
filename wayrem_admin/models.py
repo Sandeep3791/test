@@ -204,7 +204,7 @@ class Products(models.Model):
         max_length=20, choices=UNIT_CHOICES, null=True, blank=False)
     price = models.DecimalField(null=True, max_digits=12, decimal_places=2)
     discount = models.CharField(max_length=50, null=True, blank=False)
-    package_count = models.IntegerField(null=True)
+    package_count = models.CharField(max_length=50,null=True,blank=True,default=1)
     wayrem_margin = models.IntegerField(null=True)
     margin_unit = models.CharField(
         max_length=20, choices=DIS_ABS_PERCENT, null=True, blank=False)
