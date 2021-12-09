@@ -18,6 +18,8 @@ import base64
 from io import BytesIO
 from django.http import HttpResponse
 from wsgiref.util import FileWrapper
+import os
+from wayrem import settings
 
 # class DownloadInvoice(View):
 #     def get(self,request):
