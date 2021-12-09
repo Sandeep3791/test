@@ -323,3 +323,12 @@ def update_product_images(request):
 #     form = ProductFormView(instance=prod)
 #     # prod = Products.objects.filter(id=id).first()
 #     return render(request, 'View_product copy.html', {'form': form, 'form2': form1, 'image': prod.primary_image, 'id': prod.id})
+
+
+def delete_product_images(request):
+    if request.method == "POST":
+        product_id = request.POST.get('deleteimage')
+        obj = Images.objects.get(id=product_id)
+        obj.delete()
+        return HttpResponse("Image Delete Successfully!!")
+    return HttpResponse("Please provide Image!")

@@ -27,7 +27,7 @@
         <td class = "text-center">{{i.price}}</td>
         <td class = "text-center">Within {{i.deliverable_days}} days</td>
          <td class = "text-center">
-           <a type="button" class="btn btn-sm"  onclick="supplierprodFunc('{{j.supplier_id}}')" {% if i.price == j.lowest_price %}
+           <a type="button" class="btn btn-sm"  onclick="supplierprodFunc('{{j.supplier_id}}' , '{{i.supplier_id.id}}')" {% if i.price == j.lowest_price %}
            title="This supplier is providing this product in lowest price">
            {% else %}
           title="Lowest quoted price for this product is '{{j.lowest_price}}' click to view supplier">
@@ -45,8 +45,8 @@
 </div>
 </form>
 <script>
-  function supplierprodFunc(id){
-    
+  function supplierprodFunc(id,oldid){
+    console.log(oldid);
       const url="{% url 'wayrem_admin:allproductsupplier' %}";
       $.ajax({
           
@@ -59,6 +59,8 @@
           $("#test"+id).html(data);
           
           $("#supplier"+id).modal('show');
+          $('#supplier'+oldid).modal('hide');
+          
           },
       });
   

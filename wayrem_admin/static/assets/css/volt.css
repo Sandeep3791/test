@@ -8987,7 +8987,7 @@ textarea.form-control-lg {
 
 @media (min-width: 576px) {
     .modal-dialog {
-        max-width: 500px;
+        max-width: 550px;
         margin: 1.75rem auto;
     }
 
@@ -31370,3 +31370,9 @@ nav.navbar.navbar-top.navbar-expand {
     .product_gallery_images span i {color: #fff !important;}
 
 .product_gallery_images .editimage {right: 20px;}
+.subheader.row {
+    margin: 0px !important;--bs-gutter-x: auto !important;
+}
+.modal {
+    z-index: 99999 !important;
+}
