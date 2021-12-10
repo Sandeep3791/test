@@ -173,20 +173,7 @@
                             </div>
                             <div class="row">
                                 
-                                <!-- Form -->
-                                <div class="col-lg-6">
-                                    <div class="form-group mb-4">
-                                        <label for="price">Product Code <span class="text-danger">*</span><span class="text-danger"> <em> {{form.product_code.errors | striptags}}
-                                        </em> </span></label>
-                                        <div class="input-group input_border">
-                                            
-                                            {{form.product_code}}
-                                            <div class="input-group" id="code_error_message" style="color: #d12525;"></div>
-                                        </div>
-                                    
-                                    </div>
-                                </div>
-                                <!-- End of Form -->
+                                
                                 <!-- Form -->
                                 <div class="col-lg-6">
                                     <div class="form-group mb-4">
@@ -374,7 +361,7 @@
                                     <label for="image">Package Count <span class="text-danger">*</span><span class="text-danger"><em> {{form.package_count.error | striptags}}
                                         </em>
                                     </span></label>
-                                    <div div class="form-check form-switch">
+                                    <div class="form-check form-switch">
                                         
                                         {{form.package_count}}
                                         <label for="id_package_count">Package</label>
@@ -516,7 +503,7 @@
                                     <!-- Form -->
                                 <div class="col-lg-12">
                                     <div class="form-group mb-4">
-                                        <label for="name">Product Meta Tags <span class="text-danger">*</span><span class="text-danger"><em> {{form.meta_key.error | striptags}}
+                                        <label for="name">Product Meta Key <span class="text-danger">*</span><span class="text-danger"><em> {{form.meta_key.error | striptags}}
                                             </em>
                                         </span></label>
                                         <div class="input-group">
@@ -582,68 +569,64 @@
                                 <div class="row">
                                 
                                     <!-- Form -->
+                                    {% if image %}
+                                    <img src="{{image.url}}" style="width:200px;height:150px;" class='me-5'>
+                                    {% endif %}
                                     <div class="col-lg-12">
                                         <div class="form-group mb-4">
-                                            <label for="name">Primary image</label>
-                                            <div class="input-group">                                            
-                                                <img src="{{image.url}}" style="width:200px; height:150px;" class='me-5'>                                           
-                                                <div class="input-group" id="metaKey_error_message" style="color: #d12525;"></div>
-                                            </div>                                    
+                                            <label for="name">Primary image <span class="text-danger">*</span><span class="text-danger"><em> {{form.meta_key.error | striptags}}
+                                            </em>
+                                        </span></label>
+                                        <div class="input-group">
+                                            
+
+                                            {{ form.primary_image}}
+
+                                            <div class="input-group" id="metaKey_error_message" style="color: #d12525;"></div>
                                         </div>
-                                    </div>
-                                    <!-- End of Form -->              
-                                    <!-- Form -->
-                                    <div class="col-lg-12">
-                                        <div class="form-group mb-4">
-                                            <label for="name">Primary image <span class="text-danger">*</span><span class="text-danger"><em> {{form3.images.error | striptags}}
-                                                </em>
-                                            </span></label>
-                                            <div class="input-group">                                            
-                                                {{ form.primary_image}}
-                                                <div class="input-group" id="met aKey_error_message" style="color: #d12525;"></div>
-                                            </div>                                    
-                                        </div>
-                                    </div>
-                                    <!-- End of Form -->
                                     
-                                    <h6 class="mb-3">Images Gallery</h6>
-                                    {% for product in product_images %}
-                                    <div class="col product_gallery_images">
-                                        {% if forloop.counter == 1 %} <form method="POST"  enctype="multipart/form-data" class="id_ajax_upload_{{product.id}} id_ajax_upload_form"> {% endif %}
-                                        <form method="POST"  enctype="multipart/form-data" class="id_ajax_upload_{{product.id}} id_ajax_upload_form"> 
-                                            {% csrf_token %}
-                                            <img src="{{product.image.url}}" style="width:200px; height:150px;" class='me-5 mt-2' id="id_image_upload_{{product.id}}">
-                                            <span class="editimage"><i class="fas fa-edit text-dark"></i></span>
-                                            <span class="deleteimage" dataid="{{product.id}}"><i class="fas fa-trash-alt text-danger" ></i></span>
-                                        
-                                            <input type="file" name= "updateimage" class="updateimage" style=" display: none; " product-id="{{product.id}}">
-                                            <input type="hidden" name="updateimageID" class="updateimageID" value="{{product.id}}" style=" display: none; ">
-                                            {% if forloop.counter == 1 %}</form>{% endif %}
                                     </div>
-                                    {% endfor %}
-                                    
-                                    <!-- Form -->
-                                    <div class="col-lg-12">
-                                        &nbsp;
-                                        <div class="form-group mb-4">
-                                            <label for="name">Upload New Image <span class="text-danger">*</span><span class="text-danger"><em> {{form3.images.error | striptags}}
-                                                </em>
-                                            </span></label>
-                                            <div class="input-group">                                            
-                                                {{ form3.images}}
-                                                <div class="input-group" id="met aKey_error_message" style="color: #d12525;"></div>
-                                            </div>                                    
-                                        </div>
-                                    </div>
-                                    <!-- End of Form -->
                                 </div>
-                            </div>
-                            <div class="row">
-                            
+                                <!-- End of Form -->              
                                 
+                            <div class="row">
+                                <h6 class="mb-3">Images Gallery</h6>
+                                {% for product in product_images %}
+                                {% if product.image.url %}
+                                <div class="col product_gallery_images">
+                                    <form method="POST"  enctype="multipart/form-data" class="id_ajax_upload_{{product.id}} id_ajax_upload_form"> 
+                                        {% csrf_token %}
+                                        <img src="{{product.image.url}}" style="width:200px; height:150px;" class='me-5 mt-2' id="id_image_upload_{{product.id}}">
+                                        <span class="editimage"><i class="fas fa-edit text-dark"></i></span>
+                                        <a type="button" onclick="imgDelete()">
+                                        <span class="deleteimage" dataid="{{product.id}}"><i class="fas fa-trash-alt text-danger"></i></span></a>
+                                    
+                                        <input type="file" name= "updateimage" class="updateimage" style=" display: none; " product-id="{{product.id}}">
+                                        <input type="hidden" name="updateimageID" class="updateimageID" value="{{product.id}}" style=" display: none; ">
+                                    </form>
+                                </div>
+                                {% endif %}
+                                {% endfor %}
                             </div>  
                     </div>
-                        
+                        <!-- Form -->
+                        <div class="col-lg-12">
+                            <div class="form-group mb-4">
+                                <label for="name">Upload New Image <span class="text-danger">*</span><span class="text-danger"><em> {{form3.images.error | striptags}}
+                                    </em>
+                                </span></label>
+                                <div class="input-group">                                            
+                                    {{ form3.images}}
+
+                                    <div class="input-group" id="met aKey_error_message" style="color: #d12525;"></div>
+                                </div>
+                            
+                            </div>
+                        </div>
+                        <!-- End of Form -->
+                    </div>
+
+                </div>
                         
                         <div class="mt-4">
                             <a  href="{% url 'wayrem_admin:product' %}" class="btn  btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Back</a>
@@ -668,6 +651,25 @@ document.getElementById("your-id").addEventListener("click", function () {
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
+<script>
+    function imgDelete(){
+        var productid =  $('.deleteimage').attr('dataid');
+        console.log("button clicked")
+        console.log(productid)
+        
+        var url = "{% url 'wayrem_admin:delete_product_images' %}"
+        $.ajax({                       // initialize an AJAX request
+            url: url,                    // set the url of the request (= /persons/ajax/load-cities/ )
+            data: {
+                'deleteimage': productid       // add the country id to the GET parameters
+            },
+            success: function (data) {   
+                console.log(data)
+                $('.deleteimage').parent('.product_gallery_images').remove();
+            }
+        });
+    }
+</script>
 
 <script type="text/javascript">
     function updateElementIndex(el, prefix, ndx) {
@@ -793,6 +795,7 @@ document.getElementById("your-id").addEventListener("click", function () {
 
         $('.editimage').click(function(){
             $(this).next('.deleteimage').next('input').click();
+            
         });
         
         function clickaction(){
@@ -851,6 +854,7 @@ document.getElementById("your-id").addEventListener("click", function () {
                 data: formData,
                 success: function (response) {
                     $('.error').remove();
+                    console.log(response)
                     if(response.error){
                         $.each(response.errors, function(name, error){
                             error = '<small class="text-muted error">' + error + '</small>'
@@ -866,37 +870,25 @@ document.getElementById("your-id").addEventListener("click", function () {
                 processData: false
             });
         });
-    $('.deleteimage').click(function(){
-        var productid = $(this).attr('dataid');
-        console.log(productid)
-        var parameter = {
-            "deleteid": productid,
-     };
-        $(this).parent('.product_gallery_images').remove();
-        $.ajax({
-                url: "{% url 'wayrem_admin:delete_product_images' %}",
-                type: 'GET',
-                data: JSON.stringify(parameter)
-                success: function (response) {
-                    $('.error').remove();
-                    if(response.error){
-                        $.each(response.errors, function(name, error){
-                            error = '<small class="text-muted error">' + error + '</small>'
-                            $form.find('[name=' + name + ']').after(error);
-                        })
-                    }
-                    else{
-                        
-                    }
-                },
-                cache: false,
-                contentType: false,
-                processData: false
-            });
+    
 
-    });
+    // $(".updateimage").change(function () {
+    //     var imagevae = $(this).next('.updateimageID').val();
+    //     var fd = new FormData();
+    //     var files = $('#file')[0].files;
 
-        
+    //     $.ajax({                       // initialize an AJAX request
+    //         url: url,                    // set the url of the request (= /persons/ajax/load-cities/ )
+    //         data: {
+    //             'updateimageID': imagevae       // add the country id to the GET parameters
+    //         },
+    //         success: function (data) {   // data is the return of the load_cities view function
+    //             $("#id_supplier_name").html(data);  // replace the contents of the city input with the data that came from the server
+                
+    //         }
+    //     });
+
+    // });
 </script>
 
 <script>

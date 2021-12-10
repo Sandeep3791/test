@@ -183,11 +183,11 @@ UNIT_CHOICES = (
 
 
 class Products(models.Model):
-    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    id = models.UUIDField(primary_key=True)
     name = models.CharField(max_length=255, null=True, blank=False)
     SKU = models.CharField(max_length=255, null=True, blank=False, unique=True)
     category = models.ManyToManyField('Categories', null=True)
-    product_code = models.CharField(max_length=255, null=True)
+    # product_code = models.CharField(max_length=255, null=True)
     meta_key = models.TextField()
     feature_product = models.BooleanField(default=True)
     publish = models.BooleanField(default=False)
@@ -198,14 +198,15 @@ class Products(models.Model):
     dis_abs_percent = models.CharField(
         max_length=20, choices=DIS_ABS_PERCENT, null=True, blank=False)
     description = models.TextField()
-    quantity = models.IntegerField(null=True, default=1)
+    quantity = models.CharField(max_length=100, null=True, default=1)
     weight = models.CharField(null=True, max_length=255)
     unit = models.CharField(
         max_length=20, choices=UNIT_CHOICES, null=True, blank=False)
-    price = models.DecimalField(null=True, max_digits=12, decimal_places=2)
+    price = models.CharField(null=True, max_length=100)
     discount = models.CharField(max_length=50, null=True, blank=False)
-    package_count = models.CharField(max_length=50,null=True,blank=True,default=1)
-    wayrem_margin = models.IntegerField(null=True)
+    package_count = models.CharField(
+        max_length=50, null=True, blank=True, default=1)
+    wayrem_margin = models.CharField(max_length=100, null=True)
     margin_unit = models.CharField(
         max_length=20, choices=DIS_ABS_PERCENT, null=True, blank=False)
     primary_image = models.ImageField(upload_to='product/images/', null=True)
@@ -257,11 +258,6 @@ class ProductIngredients(models.Model):
     quantity = models.CharField(max_length=25, default=1, blank=True)
     unit = models.ForeignKey(
         Unit, on_delete=models.CASCADE, null=True, blank=True)
-
-# class ProductMargin(models,Model):
-#     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
-#     product_id = models.UUIDField()
-#     margin =
 
 
 class PurchaseOrder(models.Model):
@@ -396,4 +392,3 @@ class BestProductsSupplier(models.Model):
 
     class Meta:
         db_table = 'best_products_supplier'
-

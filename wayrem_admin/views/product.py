@@ -109,25 +109,31 @@ def load_category_margin(request):
 
 @role_required('Products Add')
 def product_view_one(request):
-    # date_of_mfg = datetime.date(json.loads(
-    #     request.session.get('date_of_exp')), "%Y-%m-%d")
-    # date_of_exp = datetime.strptime(json.loads(
-    #     request.session.get('date_of_exp')), "%Y-%m-%d").date(),
-
     initial = {
-        'SKU': request.session.get('SKU', None),
-        'product_category': request.session.get('product_category', None),
-        'product_code': request.session.get('product_code', None),
-        'product_name': request.session.get('product_name', None),
-        'feature_product': request.session.get('feature_product', None),
-        'unit': request.session.get('unit', None),
-        'date_of_mfg': request.session.get('date_of_mfg', None),
-        'date_of_exp': request.session.get('date_of_exp', None),
-        'price': request.session.get('price', None),
-        'weight': request.session.get('weight', None),
+        'SKU': request.session.get("SKU", None),
+        'name': request.session.get("name", None),
+        'category': request.session.get("category", None),
+        'meta_key': request.session.get("meta_key", None),
+        'feature_product': request.session.get("feature_product", None),
+        'publish': request.session.get("publish", None),
+        'date_of_mfg': request.session.get("date_of_mfg", None),
+        'date_of_exp': request.session.get("date_of_exp", None),
+        'mfr_name': request.session.get("mfr_name", None),
+        'supplier': request.session.get("supplier", None),
+        'dis_abs_percent': request.session.get("dis_abs_percent", None),
+        'description': request.session.get("description", None),
+        'quantity': request.session.get("quantity", None),
+        'weight': request.session.get("weight", None),
+        'unit': request.session.get("unit", None),
+        'price': request.session.get("price", None),
+        'discount': request.session.get("discount", None),
+        'package_count': request.session.get("package_count", None),
+        'wayrem_margin': request.session.get("wayrem_margin", None),
+        'margin_unit': request.session.get("margin_unit", None),
     }
     context = {}
-    form = ProductForm(request.POST, initial=initial)
+    # form = ProductForm(request.POST, initial=initial)
+    form = ProductFormOne(request.POST, initial=initial)
     formset = ProductIngredientFormset(request.POST)
     context['form'] = form
     context['formset'] = formset
@@ -137,10 +143,36 @@ def product_view_one(request):
         print(formset.errors)
         print(form.is_valid())
         if form.is_valid() and formset.is_valid():
-            # product_id = uuid.uuid4()
-            # product.save()
-            product = form.save()
-            product_id = product.id
+            # product = form.save()
+            request.session["SKU"] = form.cleaned_data.get("SKU")
+            request.session["name"] = form.cleaned_data.get("name")
+            request.session["category"] = form.cleaned_data.get("category")
+            request.session["meta_key"] = form.cleaned_data.get("meta_key")
+            request.session["feature_product"] = form.cleaned_data.get(
+                "feature_product")
+            request.session["publish"] = form.cleaned_data.get("publish")
+            request.session["date_of_mfg"] = str(form.cleaned_data.get(
+                "date_of_mfg"))
+            request.session["date_of_exp"] = str(form.cleaned_data.get(
+                "date_of_exp"))
+            request.session["mfr_name"] = form.cleaned_data.get("mfr_name")
+            request.session["supplier"] = form.cleaned_data.get("supplier")
+            request.session["dis_abs_percent"] = form.cleaned_data.get(
+                "dis_abs_percent")
+            request.session["description"] = form.cleaned_data.get(
+                "description")
+            request.session["quantity"] = form.cleaned_data.get("quantity")
+            request.session["weight"] = form.cleaned_data.get("weight")
+            request.session["unit"] = form.cleaned_data.get("unit")
+            request.session["price"] = form.cleaned_data.get("price")
+            request.session["discount"] = form.cleaned_data.get("discount")
+            request.session["package_count"] = form.cleaned_data.get(
+                "package_count")
+            request.session["wayrem_margin"] = form.cleaned_data.get(
+                "wayrem_margin")
+            request.session["margin_unit"] = form.cleaned_data.get(
+                "margin_unit")
+            product_id = uuid.uuid4()
             for form in formset.forms:
                 obj = ProductIngredients()
                 obj.product = product_id
@@ -152,8 +184,7 @@ def product_view_one(request):
             return redirect('wayrem_admin:product_images')
             # return HttpResponse(render(request,'path_to_your_view.html'))
     else:
-        context['form'] = ProductForm(initial=initial)
-        # context['formset'] = formset_factory(ProductIngredientForm, extra=1)
+        context['form'] = ProductFormOne(initial=initial)
         context['formset'] = ProductIngredientFormset()
     return render(request, 'product1.html', context)
 
@@ -163,11 +194,35 @@ def product_images(request):
     if request.method == "POST":
         form = ProductImageForm(request.POST, request.FILES)
         if form.is_valid():
-            obj_id = request.session.get('product_pk')
-            obj = Products.objects.get(id=obj_id)
             primary_image = request.FILES.get('primary_image', None)
+            category = [inst_Category(i)
+                        for i in request.session["category"]]
+            supplier = [inst_Supplier(i)
+                        for i in request.session["supplier"]]
+            obj = Products()
+            obj.id = request.session.get('product_pk')
+            obj.SKU = request.session.get("SKU", None)
+            obj.name = request.session.get("name", None)
+            obj.meta_key = request.session.get("meta_key", None)
+            obj.feature_product = request.session.get("feature_product", None)
+            obj.publish = request.session.get("publish", None)
+            obj.date_of_mfg = request.session.get("date_of_mfg", None)
+            obj.date_of_exp = request.session.get("date_of_exp", None)
+            obj.mfr_name = request.session.get("mfr_name", None)
+            obj.dis_abs_percent = request.session.get("dis_abs_percent", None)
+            obj.description = request.session.get("description", None)
+            obj.quantity = request.session.get("quantity", None)
+            obj.weight = request.session.get("weight", None)
+            obj.unit = request.session.get("unit", None)
+            obj.price = request.session.get("price", None)
+            obj.discount = request.session.get("discount", None)
+            obj.package_count = request.session.get("package_count", None)
+            obj.wayrem_margin = request.session.get("wayrem_margin", None)
+            obj.margin_unit = request.session.get("margin_unit", None)
             obj.primary_image = primary_image
             obj.save()
+            obj.category.set(category)
+            obj.supplier.set(supplier)
             images = request.FILES.getlist('images')
             for image in images:
                 img_obj = Images()
@@ -273,7 +328,7 @@ def update_product(request, id=None, *args, **kwargs):
     form1 = ProductIngredientFormset1(queryset=ingrd)
     # form2 = ProductImageFormset(queryset=product_images)
     form3 = ProductImgUpdateForm()
-    return render(request, 'product_update_latest.html', {'form': form, 'formset': form1, 'form3':form3, 'image': prod.primary_image, 'product_images': product_images, 'id': prod.id})
+    return render(request, 'product_update_latest.html', {'form': form, 'formset': form1, 'form3': form3, 'image': prod.primary_image, 'product_images': product_images, 'id': prod.id})
 
 
 class DeleteProduct(View):
@@ -315,20 +370,8 @@ def update_product_images(request):
     return HttpResponse("Please provide Image!")
 
 
-# @role_required('Products View')
-# def product_details(request, id=None):
-#     prod = Products.objects.get(id=id)
-#     ingrd = ProductIngredients.objects.filter(product=id).all()
-#     form1 = ProductIngredientFormsetView(queryset=ingrd)
-#     form = ProductFormView(instance=prod)
-#     # prod = Products.objects.filter(id=id).first()
-#     return render(request, 'View_product copy.html', {'form': form, 'form2': form1, 'image': prod.primary_image, 'id': prod.id})
-
-
 def delete_product_images(request):
-    if request.method == "POST":
-        product_id = request.POST.get('deleteimage')
-        obj = Images.objects.get(id=product_id)
-        obj.delete()
-        return HttpResponse("Image Delete Successfully!!")
-    return HttpResponse("Please provide Image!")
+    product_id = request.GET.get('deleteimage')
+    obj = Images.objects.get(id=product_id)
+    obj.delete()
+    return HttpResponse("Image Delete Successfully!!")

@@ -1,7 +1,7 @@
 from django.forms import (
     formset_factory, modelformset_factory, BaseModelFormSet)
 from django import forms
-from wayrem_admin.models import ProductIngredients, Supplier, Categories, Images, Ingredients, Products
+from wayrem_admin.models import ProductIngredients, Supplier, Categories, Images, Ingredients, Products, UNIT_CHOICES, DIS_ABS_PERCENT
 from datetime import datetime
 
 
@@ -13,13 +13,13 @@ class ProductForm(forms.ModelForm):
 
     class Meta:
         model = Products
-        fields = ("name", "SKU", "category", "product_code", "meta_key", "feature_product", "publish", "date_of_mfg", "date_of_exp", "mfr_name", "supplier",
+        fields = ("name", "SKU", "category", "meta_key", "feature_product", "publish", "date_of_mfg", "date_of_exp", "mfr_name", "supplier",
                   "dis_abs_percent", "description", "quantity", "weight", "unit", "price", "discount", "package_count", "wayrem_margin", "margin_unit")
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'SKU': forms.TextInput(attrs={'class': 'form-control'}),
-            'product_code': forms.TextInput(attrs={'class': 'form-control'}),
+            # 'product_code': forms.TextInput(attrs={'class': 'form-control'}),
             'meta_key': forms.Textarea(attrs={'class': "form-control", 'rows': '3'}),
             'feature_product': forms.CheckboxInput(attrs={'class': "form-check-input"}),
             'publish': forms.CheckboxInput(attrs={'class': "form-check-input"}),
@@ -50,7 +50,7 @@ class ProductImageForm(forms.Form):
 
 class ProductImgUpdateForm(forms.Form):
     images = forms.FileField(widget=forms.ClearableFileInput(
-        attrs={'class': 'form-control-select', 'multiple': True}),required=False)
+        attrs={'class': 'form-control-select', 'multiple': True}), required=False)
 
 
 class ProductIngredientForm(forms.ModelForm):
@@ -119,13 +119,13 @@ class ProductFormView(forms.ModelForm):
 
     class Meta:
         model = Products
-        fields = ("name", "SKU", "category", "product_code", "meta_key", "feature_product", "publish", "date_of_mfg", "date_of_exp", "mfr_name", "supplier",
+        fields = ("name", "SKU", "category", "meta_key", "feature_product", "publish", "date_of_mfg", "date_of_exp", "mfr_name", "supplier",
                   "dis_abs_percent", "description", "quantity", "weight", "unit", "price", "discount", "package_count", "wayrem_margin", "margin_unit", "primary_image")
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'SKU': forms.TextInput(attrs={'class': 'form-control'}),
-            'product_code': forms.TextInput(attrs={'class': 'form-control'}),
+            # 'product_code': forms.TextInput(attrs={'class': 'form-control'}),
             'meta_key': forms.Textarea(attrs={'class': "form-control", 'rows': '3'}),
             'feature_product': forms.CheckboxInput(attrs={'class': "form-check-input"}),
             'publish': forms.CheckboxInput(attrs={'class': "form-check-input"}),
@@ -152,13 +152,13 @@ class ProductFormImageView(forms.ModelForm):
 
     class Meta:
         model = Products
-        fields = ("name", "SKU", "category", "product_code", "meta_key", "feature_product", "publish", "date_of_mfg", "date_of_exp", "mfr_name", "supplier",
+        fields = ("name", "SKU", "category", "meta_key", "feature_product", "publish", "date_of_mfg", "date_of_exp", "mfr_name", "supplier",
                   "dis_abs_percent", "description", "quantity", "weight", "unit", "price", "discount", "package_count", "wayrem_margin", "margin_unit", "primary_image")
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'SKU': forms.TextInput(attrs={'class': 'form-control'}),
-            'product_code': forms.TextInput(attrs={'class': 'form-control'}),
+            # 'product_code': forms.TextInput(attrs={'class': 'form-control'}),
             'meta_key': forms.Textarea(attrs={'class': "form-control", 'rows': '3'}),
             'feature_product': forms.CheckboxInput(attrs={'class': "form-check-input"}),
             'publish': forms.CheckboxInput(attrs={'class': "form-check-input"}),
@@ -190,3 +190,71 @@ ProductImageFormset = modelformset_factory(
     },
 
 )
+
+
+# Product Create Form
+def get_category():
+    obj = Categories.objects.all()
+    choice = [(r.id, r.name + " - " + str(r.margin)+r.unit) for r in obj]
+    return choice
+
+
+choices_category = get_category
+
+
+def get_supplier():
+    obj = Supplier.objects.all()
+    choice = [(r.id, r.company_name) for r in obj]
+    return choice
+
+
+choices_role = get_supplier
+
+
+class ProductFormOne(forms.Form):
+    SKU = forms.CharField(widget=forms.TextInput(
+        attrs={'class': "form-control"}))
+    name = forms.CharField(
+        widget=forms.TextInput(attrs={'class': "form-control"}))
+    feature_product = forms.BooleanField(
+        widget=forms.CheckboxInput(attrs={'class': "form-check-input"}), required=False)
+    publish = forms.BooleanField(
+        widget=forms.CheckboxInput(attrs={'class': "form-check-input"}), required=False)
+    date_of_mfg = forms.DateField(
+        widget=DateInput(attrs={'class': 'form-control', 'type': 'date'}))
+    date_of_exp = forms.DateField(
+        widget=DateInput(attrs={'class': 'form-control'}))
+    mfr_name = forms.CharField(
+        widget=forms.TextInput(attrs={'class': "form-control"}))
+    category = forms.MultipleChoiceField(choices=choices_category, widget=forms.SelectMultiple(
+        attrs={'class': 'form-control'}), required=False)
+    supplier = forms.MultipleChoiceField(
+        choices=choices_role, widget=forms.SelectMultiple(attrs={'class': 'form-control'}), required=False)
+    weight = forms.CharField(
+        widget=forms.NumberInput(attrs={'class': "form-control"}))
+    unit = forms.ChoiceField(choices=UNIT_CHOICES, widget=forms.Select(
+        attrs={'class': 'form-select'}))
+    price = forms.CharField(
+        widget=forms.NumberInput(attrs={'class': "form-control"}))
+    discount = forms.CharField(
+        widget=forms.NumberInput(attrs={'class': "form-control"}))
+    dis_abs_percent = forms.ChoiceField(
+        choices=DIS_ABS_PERCENT, widget=forms.Select(attrs={'class': 'form-select'}))
+    wayrem_margin = forms.IntegerField(
+        widget=forms.NumberInput(attrs={'class': "form-control"}))
+    margin_unit = forms.ChoiceField(
+        choices=DIS_ABS_PERCENT, widget=forms.Select(attrs={'class': 'form-select'}))
+    package_count = forms.CharField(
+        widget=forms.CheckboxInput(attrs={'class': "form-check-input"}), required=False)
+    meta_key = forms.CharField(
+        widget=forms.Textarea(attrs={'class': "form-control", 'rows': '3'}))
+    description = forms.CharField(
+        widget=forms.Textarea(attrs={'class': "form-control", 'rows': '3'}), required=False)
+    quantity = forms.IntegerField(
+        widget=forms.NumberInput(attrs={'class': "form-control"}))
+
+    def clean_SKU(self):
+        SKU = self.cleaned_data.get("SKU")
+        if Products.objects.filter(SKU=SKU).exists():
+            raise forms.ValidationError("SKU already Exists!")
+        return SKU
