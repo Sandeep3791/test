@@ -3,7 +3,6 @@ from wayrem_admin import views
 
 urlpatterns = [
     path('excel_subcategory/', views.subcategories_excel, name='excelsubcategory'),
-    path('pdf_subcategory/', views.pdf_subcategory, name='subcategorypdf'),
     path('createsubcategory/', views.create_subcategory, name='createsubcategory'),
     path('subcategories-list/', views.SubCategoriesList.as_view(),
          name='subcategorieslist'),

@@ -64,7 +64,7 @@ class User(AbstractUser):
     contact = models.CharField(
         max_length=12, null=True, unique=True, blank=False)
     role = models.ForeignKey(
-        Roles, on_delete=models.DO_NOTHING, null=True, blank=True)
+        Roles, on_delete=models.CASCADE, null=True, blank=True)
     dob = models.DateField(null=True, blank=True)
     GENDER_CHOICES = (
         ('M', 'Male'),

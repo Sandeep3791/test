@@ -5,7 +5,7 @@ import string
 import secrets
 from wayrem_admin.decorators import role_required
 from wayrem_admin.services import send_email
-from wayrem_admin.export import generate_pdf, generate_excel
+from wayrem_admin.export import generate_excel
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from wayrem_admin.models import User, Supplier
@@ -16,13 +16,6 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def user_excel(request):
     return generate_excel("users", "users")
-
-
-def user_pdf(request):
-    query = 'SELECT username, first_name, last_name, is_active, date_joined, email, contact,  dob, gender, address, city, zip_code FROM users'
-    template = "pdf_user.html"
-    file = "users.pdf"
-    return generate_pdf(query_string=query, template_name=template, file_name=file)
 
 
 @role_required('User Add')

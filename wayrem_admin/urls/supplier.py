@@ -3,7 +3,6 @@ from wayrem_admin import views
 
 urlpatterns = [
     path('excel_supplier/', views.supplier_excel, name='excelsupplier'),
-    path('pdf_supplier/', views.supplier_pdf, name='supplierpdf'),
     path('supplier-registration/', views.supplier_register, name='suppregister'),
     path('supplier-list/', views.SupplierList.as_view(), name='supplierlist'),
     path('delete-supplier/', views.DeleteSupplier.as_view(), name='deletesupplier'),

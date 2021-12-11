@@ -5,18 +5,12 @@ from wayrem_admin.forms import SubCategoryCreateForm
 from django.views import View
 from django.utils.decorators import method_decorator
 from wayrem_admin.models import SubCategories
-from wayrem_admin.export import generate_pdf, generate_excel
+from wayrem_admin.export import generate_excel
 
 
 def subcategories_excel(request):
     return generate_excel("subcategories_master", "subcategories")
 
-
-def pdf_subcategory(request):
-    query = 'SELECT id, name, tag, margin, category, created_at, updated_at FROM subcategories_master'
-    template = "pdf_category.html"
-    file = "subcategories.pdf"
-    return generate_pdf(query_string=query, template_name=template, file_name=file)
 
 
 @login_required(login_url='wayrem_admin:root')

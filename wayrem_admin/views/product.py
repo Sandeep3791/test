@@ -9,7 +9,7 @@ from wayrem_admin.models import Products
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from wayrem_admin.services import *
-from wayrem_admin.export import generate_excel, generate_pdf
+from wayrem_admin.export import generate_excel
 from wayrem_admin.forms import *
 from wayrem_admin.decorators import role_required
 import biip
@@ -20,13 +20,6 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def product_excel(request):
     return generate_excel("products_master", "products")
-
-
-def pdf_product(request):
-    query = 'SELECT  SKU, product_code, product_meta_key, feature_product, product_deliverable, date_of_mfg, date_of_exp, mfr_name, dis_abs_percent, image1, image2, image3, image4, image5, product_name, description, ingredients1_id, ingredients2_id, ingredients3_id, ingredients4_id, calories1, calories2, calories3, calories4, nutrition, product_qty, product_weight, unit, price, discount, package_count, wayrem_margin, wayrem_abs_percent FROM products_master'
-    template = "pdf_product.html"
-    file = "products.pdf"
-    return generate_pdf(query_string=query, template_name=template, file_name=file)
 
 
 @role_required('Products Add')

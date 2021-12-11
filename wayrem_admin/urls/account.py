@@ -2,7 +2,6 @@ from django.urls import path
 from wayrem_admin import views
 
 urlpatterns = [
-    path('pdf_user/', views.user_pdf, name='userpdf'),
     path('excel_user/', views.user_excel, name='exceluser'),
     path('users-registration/', views.user_signup, name='sub-admin-register'),
     path('users-list/', views.UsersList.as_view(), name='userlist'),

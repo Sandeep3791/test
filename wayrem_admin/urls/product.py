@@ -3,7 +3,6 @@ from wayrem_admin import views
 
 urlpatterns = [
     path('excel_product/', views.product_excel, name='excelproduct'),
-    path('pdf_product/', views.pdf_product, name='productpdf'),
     path('inputBar/', views.inputBar, name='inputBar'),
     path('update_prodimg/', views.update_product_images,
          name='update_product_images'),

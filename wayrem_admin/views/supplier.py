@@ -9,7 +9,7 @@ from wayrem_admin.forms import SupplierForm, SupplierUpdateForm
 import string
 import secrets
 from wayrem_admin.services import send_email
-from wayrem_admin.export import generate_pdf, generate_excel
+from wayrem_admin.export import generate_excel
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from wayrem_admin.models import Supplier, SupplierProducts, BestProductsSupplier
@@ -29,13 +29,6 @@ from wayrem_admin.views.product import product
 
 def supplier_excel(request):
     return generate_excel("supplier_master", "suppliers")
-
-
-def supplier_pdf(request):
-    query = 'SELECT username, email, contact, address, delivery_incharge, company_name, is_active FROM supplier_master'
-    template = "pdf_supplier.html"
-    file = "supplier.pdf"
-    return generate_pdf(query_string=query, template_name=template, file_name=file)
 
 
 @login_required(login_url='wayrem_admin:root')

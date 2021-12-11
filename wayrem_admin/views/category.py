@@ -7,7 +7,7 @@ from django.views import View
 from django.utils.decorators import method_decorator
 from wayrem_admin.forms.categories import CategoryForm, CategoryUpdateForm
 from wayrem_admin.models import Categories, SubCategories
-from wayrem_admin.export import generate_pdf, generate_excel
+from wayrem_admin.export import generate_excel
 from wayrem_admin.services import inst_Category
 from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -15,13 +15,6 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def categories_excel(request):
     return generate_excel("categories_master", "categories")
-
-
-def pdf_category(request):
-    query = 'SELECT id, name, category_image, tag,margin, created_at, updated_at FROM categories_master'
-    template = "pdf_category.html"
-    file = "categories.pdf"
-    return generate_pdf(query_string=query, template_name=template, file_name=file)
 
 
 @login_required(login_url='wayrem_admin:root')

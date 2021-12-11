@@ -61,7 +61,7 @@ endcomment %}
     Export
   </button>
   <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-    <li><a class="dropdown-item" href="{% url 'wayrem_admin:supplierpdf' %}">Export to Pdf</a></li>
+    {% comment %} <li><a class="dropdown-item" href="{% url 'wayrem_admin:supplierpdf' %}">Export to Pdf</a></li> {% endcomment %}
     <li><a class="dropdown-item" href="{% url 'wayrem_admin:excelsupplier' %}">Export to Excel</a></li>
   </ul>
 </div>
