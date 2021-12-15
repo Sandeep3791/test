@@ -21,14 +21,20 @@ class SubAdminForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ("username", "email", "contact", "role")
+        fields = ("username", "email", "contact", "role", "po_notify")
 
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
             'contact': forms.NumberInput(attrs={'class': 'form-control', 'minlength': 10}),
-            'role': forms.Select(attrs={'class': 'form-select'})
+            'role': forms.Select(attrs={'class': 'form-select'}),
+            'po_notify': forms.CheckboxInput(attrs={'class': 'form-check-input'})
             # 'role': forms.TextInput(attrs={'class': 'form-control'}),
+        }
+        error_messages = {
+            'username': {
+                'unique': "This username is already taken.",
+            },
         }
 
 
@@ -47,7 +53,8 @@ class SubAdminUpdateForm(forms.ModelForm):
 
 
 class ProfileUpdateForm(forms.ModelForm):
-    dob = forms.DateField(widget=DateInput(attrs={'class': 'form-select'}))
+    # dob = forms.DateField(widget=DateInput(
+    #     attrs={'class': 'form-control datepicker-input'}))
 
     class Meta:
         model = User
@@ -58,7 +65,7 @@ class ProfileUpdateForm(forms.ModelForm):
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
             'last_name': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
-            # 'dob': forms.DateInput(attrs={'class': 'form-control','class':DateInput()}),
+            'dob': forms.DateInput(attrs={'class': 'form-control datepicker-input', 'placeholder': "dd/mm/yyyy", 'type': 'date'}),
             'gender': forms.Select(attrs={'class': 'form-select'}),
             # 'gender' : forms.ChoiceField(widget=forms.Select(attrs={'class': 'form-select'})),
             'address': forms.TextInput(attrs={'class': 'form-control'}),

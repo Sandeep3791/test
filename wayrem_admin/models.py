@@ -60,6 +60,7 @@ class Roles(models.Model):
 
 class User(AbstractUser):
     id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    po_notify = models.BooleanField(default=False, null=True, blank=True)
     email = models.EmailField(_('email address'), unique=True)
     contact = models.CharField(
         max_length=12, null=True, unique=True, blank=False)
@@ -135,6 +136,20 @@ class SubCategories(models.Model):
 class Supplier(models.Model):
     id = models.UUIDField(default=uuid.uuid1, primary_key=True)
     username = models.CharField(max_length=255, unique=True, null=True)
+    first_name = models.CharField(max_length=255, null=True)
+    last_name = models.CharField(max_length=255, null=True)
+    company_phone_no = models.CharField(
+        max_length=12, null=True, unique=True, blank=False)
+    company_email = models.EmailField(blank=False, unique=True, null=True)
+    registration_no = models.CharField(
+        max_length=12, null=True, unique=True, blank=False)
+    from_time = models.TimeField(blank=True, null=True)
+    to_time = models.TimeField(blank=True, null=True)
+    # from_time = models.DateTimeField(auto_now=True)
+    # to_time = models.DateTimeField(auto_now=True)
+    contact_person_name = models.CharField(max_length=255, null=True)
+    contact_phone_no = models.CharField(
+        max_length=12, null=True, unique=True, blank=False)
     email = models.EmailField(blank=False, unique=True, null=True)
     password = models.CharField(max_length=200)
     contact = models.BigIntegerField(null=True)
@@ -265,7 +280,7 @@ class PurchaseOrder(models.Model):
     po_id = models.UUIDField(default=uuid.uuid4)
     po_name = models.CharField(max_length=250, null=True)
     product_name = models.ForeignKey(
-        Products, on_delete=models.CASCADE, null=True)
+        Products, on_delete=models.SET_NULL, null=True)
     product_qty = models.IntegerField(null=False, default=1)
     supplier_name = models.ForeignKey(
         Supplier, on_delete=models.CASCADE, null=False)
@@ -392,3 +407,15 @@ class BestProductsSupplier(models.Model):
 
     class Meta:
         db_table = 'best_products_supplier'
+
+
+class Notification(models.Model):
+    message = models.TextField()
+    status = models.BooleanField(default=False)
+    supplier = models.ForeignKey(
+        Supplier, on_delete=models.CASCADE, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'notifications'

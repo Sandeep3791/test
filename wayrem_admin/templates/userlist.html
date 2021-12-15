@@ -88,7 +88,6 @@
             <table class="table  text-center" id="filtertable">
                 <thead class="table-dark ">
                     <tr>
-                        <th scope="col">S. No.</th>
                         <th scope="col">Username</th>
                         <th scope="col">Email</th>
                         <th scope="col">Contact</th>
@@ -103,7 +102,6 @@
                     {% if user.is_superuser %}
                     {% else %}
                     <tr>
-                        <th scope="row">{{forloop.counter}}</th>
                         <td>{{user.username}}</td>
                         <td>{{user.email}}</td>
                         <td>{{user.contact}}</td>
@@ -204,7 +202,7 @@
     $(document).ready(function () {
         oTable = $('#filtertable').DataTable({
             dom: 'rtip',
-            'columnDefs': [{ 'orderable': false, 'targets': [5, 6] }],
+            'columnDefs': [{ 'orderable': false, 'targets': [4, 5] }],
             "oLanguage": {
                 "oPaginate": {
                     "sNext": '<i class="fas fa-arrow-circle-right text-primary"></i>',

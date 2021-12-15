@@ -38,7 +38,7 @@
                               
                           {% endif %}
                             <!-- <h1 class="h3 mb-4">Create Roles</h1> -->
-                                <form method="post" enctype="multipart/form-data" class="role-permission" novalidate>
+                                <form method="post" enctype="multipart/form-data" class="role-permission" validate>
                                   {% csrf_token %}
                                   <div class="row">
                                     {% for field in form %}

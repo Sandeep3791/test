@@ -126,6 +126,23 @@
                                     </div>
                                 </div>
                                 <!-- End of Form -->
+                                <!-- Form -->
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        
+                                        <div class="input-group">
+                                                    <label for="id_po_notify">Purchase Order Notifications </label>
+                                            {{form.po_notify}}
+                                            <div class="input-group" id="email_error_message" style="color: #d12525;"></div>
+
+                                        </div>
+                                        {% comment %} <div class="input-group">
+                                            <span class="text-danger"> {{form.email.errors | striptags}} </span>
+                                        </div> {% endcomment %}
+                                        <span class="text-error"></span>
+                                    </div>
+                                </div>
+                                <!-- End of Form -->
 
                                 {% comment %} <span class="text-danger">*</span> {% endcomment %}
                                 <!-- Form -->
