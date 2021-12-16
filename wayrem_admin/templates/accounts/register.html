@@ -11,7 +11,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.css" integrity="sha512-p209YNS54RKxuGVBVhL+pZPTioVDcYPZPYYlKWS9qVvQwrlzxBxkR8/48SCP58ieEuBosYiPUS970ixAfI/w/A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
-
 <div class="topbar_pages padding-0">
     <div class="container ">
         <h4 class="text-title">Users</h2>
@@ -136,6 +135,23 @@
                                         </div>
                                         {% comment %} <div class="input-group">
                                             <span class="text-danger"> {{form.role.errors | striptags}} </span>
+                                        </div> {% endcomment %}
+                                        <span class="text-error"></span>
+                                    </div>
+                                </div>
+                                <!-- End of Form -->
+                                <!-- Form -->
+                                <div class="col-lg-6">
+                                    <div class="form-group">
+                                        
+                                        <div class="input-group">
+                                                    <label for="id_po_notify">Purchase Order Notifications </label>
+                                            {{form.po_notify}}
+                                            <div class="input-group" id="email_error_message" style="color: #d12525;"></div>
+
+                                        </div>
+                                        {% comment %} <div class="input-group">
+                                            <span class="text-danger"> {{form.email.errors | striptags}} </span>
                                         </div> {% endcomment %}
                                         <span class="text-error"></span>
                                     </div>

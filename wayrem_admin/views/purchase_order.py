@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views import View
-from wayrem_admin.models import PurchaseOrder, Products, Supplier
+from wayrem_admin.models import Notification, PurchaseOrder, Products, Supplier
 from wayrem_admin.forms import POForm, POEditForm
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -139,8 +139,12 @@ def create_po_step2(request):
                     product_order = PurchaseOrder(
                         po_id=po_id, po_name=po_name, product_name=product_instance, product_qty=product_qty, supplier_name=supplier_name)
                 product_order.save()
+            msg = "Purchase order created for you!"
+            notify = Notification(
+                message=msg, user=request.user, supplier=supplier_name)
+            notify.save()
             messages.success(
-                request, f"Purchase Order Created Successfully!")
+                request, f"Purchase order created successfully!")
             request.session['products'] = []
             return redirect('wayrem_admin:polist')
     else:
@@ -176,7 +180,7 @@ class POList(View):
         # polist = PurchaseOrder.objects.values_list('po_id').distinct()
         # polist = PurchaseOrder.objects.distinct('po_id')
         request.session['products'] = []
-        return render(request, self.template_name, {"userlist": mylist, "polist":polist})
+        return render(request, self.template_name, {"userlist": mylist, "polist": polist})
 
 
 class DeletePO(View):
@@ -225,6 +229,12 @@ def editpo(request, id=None):
     else:
         form = POEditForm()
     return render(request, 'edit_po.html', {"po": po, "form": form})
+
+
+def delete_in_edit(request, id):
+    po = PurchaseOrder.objects.filter(id=id).first()
+    po.delete()
+    return redirect("wayrem_admin:polist")
 
 
 @role_required('Purchase Order Edit')

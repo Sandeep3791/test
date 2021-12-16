@@ -191,8 +191,9 @@ ProductImageFormset = modelformset_factory(
 
 )
 
-
 # Product Create Form
+
+
 def get_category():
     obj = Categories.objects.all()
     choice = [(r.id, r.name + " - " + str(r.margin)+r.unit) for r in obj]
@@ -221,9 +222,9 @@ class ProductFormOne(forms.Form):
     publish = forms.BooleanField(
         widget=forms.CheckboxInput(attrs={'class': "form-check-input"}), required=False)
     date_of_mfg = forms.DateField(
-        widget=DateInput(attrs={'class': 'form-control', 'type': 'date'}))
+        widget=forms.DateInput(attrs={'class': 'form-control datepicker-input', 'placeholder': "dd/mm/yyyy", 'type': 'date'}))
     date_of_exp = forms.DateField(
-        widget=DateInput(attrs={'class': 'form-control'}))
+        widget=forms.DateInput(attrs={'class': 'form-control datepicker-input', 'placeholder': "dd/mm/yyyy", 'type': 'date'}))
     mfr_name = forms.CharField(
         widget=forms.TextInput(attrs={'class': "form-control"}))
     category = forms.MultipleChoiceField(choices=choices_category, widget=forms.SelectMultiple(
@@ -231,17 +232,17 @@ class ProductFormOne(forms.Form):
     supplier = forms.MultipleChoiceField(
         choices=choices_role, widget=forms.SelectMultiple(attrs={'class': 'form-control'}), required=False)
     weight = forms.CharField(
-        widget=forms.NumberInput(attrs={'class': "form-control"}))
+        widget=forms.NumberInput(attrs={'class': "form-control", 'min': 0}))
     unit = forms.ChoiceField(choices=UNIT_CHOICES, widget=forms.Select(
         attrs={'class': 'form-select'}))
     price = forms.CharField(
-        widget=forms.NumberInput(attrs={'class': "form-control"}))
+        widget=forms.NumberInput(attrs={'class': "form-control", 'min': 1}))
     discount = forms.CharField(
-        widget=forms.NumberInput(attrs={'class': "form-control"}))
+        widget=forms.NumberInput(attrs={'class': "form-control", 'min': 0}))
     dis_abs_percent = forms.ChoiceField(
         choices=DIS_ABS_PERCENT, widget=forms.Select(attrs={'class': 'form-select'}))
     wayrem_margin = forms.IntegerField(
-        widget=forms.NumberInput(attrs={'class': "form-control"}))
+        widget=forms.NumberInput(attrs={'class': "form-control", 'min': 0}))
     margin_unit = forms.ChoiceField(
         choices=DIS_ABS_PERCENT, widget=forms.Select(attrs={'class': 'form-select'}))
     package_count = forms.CharField(
@@ -252,6 +253,21 @@ class ProductFormOne(forms.Form):
         widget=forms.Textarea(attrs={'class': "form-control", 'rows': '3'}), required=False)
     quantity = forms.IntegerField(
         widget=forms.NumberInput(attrs={'class': "form-control"}))
+
+    def clean_date_of_exp(self):
+        cleaned_data = super(ProductFormOne, self).clean()
+        try:
+            dom = cleaned_data.get("date_of_mfg")
+            doe = cleaned_data.get("date_of_exp")
+
+            if dom >= doe:
+                raise forms.ValidationError(
+                    f"Date of expiry must be greater than {dom}"
+                )
+            else:
+                return doe
+        except:
+            pass
 
     def clean_SKU(self):
         SKU = self.cleaned_data.get("SKU")

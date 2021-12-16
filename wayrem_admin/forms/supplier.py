@@ -21,6 +21,11 @@ class SupplierForm(forms.ModelForm):
             'category_name': forms.SelectMultiple(attrs={'class': 'form-control'}),
             'company_name': forms.TextInput(attrs={'class': 'form-control'})
         }
+        error_messages = {
+            'username': {
+                'unique': "This username is already taken.",
+            },
+        }
 
     def clean(self):
         cleaned_data = super(SupplierForm, self).clean()

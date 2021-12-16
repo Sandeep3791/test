@@ -11,6 +11,7 @@ urlpatterns = [
     path('delete-po/', views.DeletePO.as_view(), name='deletepo'),
     path('view-po/<str:id>', views.viewpo, name='viewpo'),
     path('edit-po/<str:id>', views.editpo, name='editpo'),
+    path('delete-in-edit/<str:id>', views.delete_in_edit, name='delete_in_edit'),
     path('edit-po-status/<str:id>', views.statuspo, name='po_status'),
 
 ]
