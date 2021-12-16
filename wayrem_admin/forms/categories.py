@@ -24,7 +24,7 @@ UNIT = (
 
 def get_category():
     obj = Categories.objects.filter(is_parent=False)
-    choice = [(None, "Select Parent Category")]
+    choice = [(None, "Select Parent Category"), (None, "None")]
     ch = [(r.name, r.name) for r in obj]
     choice.extend(ch)
     print(choice)

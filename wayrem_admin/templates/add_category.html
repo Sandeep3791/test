@@ -45,7 +45,7 @@
                     </div>
                     <div class="col-md-6 mb-3">
                         <div>
-                            <label for="category_image">Category </label>
+                            <label for="category_image">Parent Category </label>
                             <!-- <input class="form-control" id="last_name" type="text" placeholder="Also your last name" required> -->
                             {{form.parent_category}}
                             {{form.parent_category.errors}}
@@ -71,13 +71,13 @@
                     </div>
                     <!-- End of Form -->
                     <div class="col-md-5 mb-3">
-                        <label for="description">Image <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.image.errors | striptags}}</em></span></label>
+                        <label for="description">Image <span class="text-danger"></span>  <span class="text-danger"><em>{{form.image.errors | striptags}}</em></span></label>
                           {{form.image}}
                           <div class="input-group" id="description_error_message" style="color: #d12525;"></div>
                     </div>    
                </div>
                <div class="col-md-12 mb-3">
-                        <label for="description">Tag <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.tag.errors | striptags}}</em></span></label>
+                        <label for="description">Tag <span class="text-danger"></span>  <span class="text-danger"><em>{{form.tag.errors | striptags}}</em></span></label>
                           {{form.tag}}
                           <div class="input-group" id="description_error_message" style="color: #d12525;"></div>
                     </div>    

@@ -19,14 +19,14 @@ class RootUrlView(RedirectView):
 @ login_required(login_url='wayrem_admin:root')
 def dashboard(request):
     notifications = Notification.objects.filter(
-        status=True).order_by('created_at')
-    notifications = list(notifications.values())
-    for dicts in notifications:
-        for keys in dicts:
-            if keys == 'supplier_id':
-                dicts[keys] = str(inst_Supplier(dicts[keys]))
-            dicts[keys] = str(dicts[keys])
-    request.session['notifications'] = notifications
+        status=True).order_by('created_at').reverse()
+    # notifications = list(notifications.values())
+    # for dicts in notifications:
+    #     for keys in dicts:
+    #         if keys == 'supplier_id':
+    #             dicts[keys] = str(inst_Supplier(dicts[keys]))
+    #         dicts[keys] = str(dicts[keys])
+    # request.session['notifications'] = notifications
     # request.session['notifications'] = list(
     #     notifications.values_list('id', 'message', 'status'))
     subadmins = User.objects.exclude(is_superuser=True)
@@ -35,7 +35,8 @@ def dashboard(request):
     context = {
         'subadmins': len(subadmins),
         'suppliers': len(suppliers),
-        'products': len(products)
+        'products': len(products),
+        'notifications': notifications
     }
     return render(request, 'dashboard.html', context)
 
@@ -43,4 +44,4 @@ def dashboard(request):
 def notification_delete(request, id):
     notify = Notification.objects.filter(id=id).first()
     notify.delete()
-    return redirect('wayrem_admin:dashboard')
+    return redirect('wayrem_admin:polist')

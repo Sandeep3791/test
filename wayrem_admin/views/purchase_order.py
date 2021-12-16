@@ -1,11 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views import View
-from wayrem_admin.models import Notification, PurchaseOrder, Products, Supplier
+from wayrem_admin.models import Notification, PurchaseOrder, Products, Settings, Supplier
 from wayrem_admin.forms import POForm, POEditForm
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from wayrem_admin.services import inst_Product, inst_Supplier, delSession
+from wayrem_admin.services import inst_Product, inst_Supplier, delSession, send_email
 from wayrem_admin.export import generate_excel
 from wayrem_admin.decorators import role_required
 import datetime
@@ -139,10 +139,20 @@ def create_po_step2(request):
                     product_order = PurchaseOrder(
                         po_id=po_id, po_name=po_name, product_name=product_instance, product_qty=product_qty, supplier_name=supplier_name)
                 product_order.save()
-            msg = "Purchase order created for you!"
+            # sending notification
+            setting = Settings.objects.filter(
+                key="notification_supplier").first()
+            message = setting.value
+            msg = message.replace(
+                "{supplier_name}", supplier_name.company_name).replace(
+                "{purchase_order}", po_name)
             notify = Notification(
-                message=msg, user=request.user, supplier=supplier_name)
+                message=msg, supplier=supplier_name)
             notify.save()
+            # sending mail to supplier
+            to = supplier_name.email
+            subject = f"{po_name} raised by Wayrem!"
+            send_email(to, subject, msg)
             messages.success(
                 request, f"Purchase order created successfully!")
             request.session['products'] = []

@@ -288,11 +288,11 @@ class PurchaseOrder(models.Model):
         ('accept', 'Accept'),
         ('deny', 'Deny'),
         ('cancel', 'Cancel'),
-        ('in progress', 'In Progress'),
+        ('waiting for approval', 'Waiting for approval'),
         ('delivered', 'Delivered'),
     )
     status = models.CharField(
-        max_length=35, choices=po_status, default='in progress', null=True, blank=True)
+        max_length=35, choices=po_status, default='waiting for approval', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
