@@ -46,7 +46,11 @@
         <div class="col-xl-4 col-lg-4   other_info view_border">
             <div class="">
                 <div class="row p-2">
+                    {% if catedata.image %}
                     <img src="{{catedata.image.url}}" alt="">
+                    {% else %}
+                    <img src="" alt="No image">
+                    {% endif %}
                 </div>
             </div>
         </div>
@@ -150,7 +154,7 @@
 <script>
 $(document).ready( function () {
     $('#filtertable').DataTable({
-        dom: 'fBrtip',
+        dom: 'fBrt',
         buttons: [
             {
                 extend: 'collection',

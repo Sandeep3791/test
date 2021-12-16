@@ -193,6 +193,7 @@ endcomment %}
         </table>
 
         <nav aria-label="...">
+            Showing {{ supplierlist.start_index }} to {{ supplierlist.end_index }} out  of {{ supplierlist.paginator.count }} entries
             <ul class="pagination">
                 {% if supplierlist.has_previous %}
                     <li class="page-item">
@@ -255,7 +256,7 @@ endcomment %}
 
     $(document).ready(function () {
         oTable = $('#filtertable').DataTable({
-            dom: 'rtip',
+            dom: 'rt',
             'columnDefs': [{ 'orderable': false, 'targets': [2, 3] }],
             buttons: [
                 {

@@ -390,6 +390,7 @@
             </tbody>
             </table>
             <nav aria-label="...">
+                Showing {{ productslist.start_index }} to {{ productslist.end_index }} out  of {{ productslist.paginator.count }} entries
                 <ul class="pagination">
                     {% if productslist.has_previous %}
                         <li class="page-item">
@@ -426,7 +427,7 @@
 <script>
     $(document).ready(function () {
         oTable = $('#filtertable').DataTable({
-            dom: 'rtip',
+            dom: 'rt',
             'columnDefs': [{ 'orderable': false, 'targets': [5, 6] }],
             "oLanguage": {
                 "oPaginate": {
@@ -549,7 +550,7 @@ function lowesttimeFunc(SKU){
 <script>
     $(document).ready(function () {
         oTable = $('#filtertable').DataTable({
-            dom: 'rtip',
+            dom: 'rt',
             'columnDefs': [{ 'orderable': false, 'targets': [5, 6] }],
             "oLanguage": {
                 "oPaginate": {

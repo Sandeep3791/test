@@ -151,6 +151,7 @@
 
 
             <nav aria-label="...">
+                Showing {{ list.start_index }} to {{ list.end_index }} out  of {{ list.paginator.count }} entries
             <ul class="pagination">
             {% if list.has_previous %}
                 <li class="page-item">
@@ -192,8 +193,8 @@
 <script> 
     $(document).ready(function () {
         oTable = $('#filtertable').DataTable({
-            dom: 'rtip',
-            'columnDefs': [{ 'orderable': false, 'targets': [2, 3] }],
+            dom: 'rt',
+            'columnDefs': [{ 'orderable': false, 'targets': [2] }],
             "oLanguage": {
                 "oPaginate": {
                     "sNext": '<i class="fas fa-arrow-circle-right text-primary"></i>',
