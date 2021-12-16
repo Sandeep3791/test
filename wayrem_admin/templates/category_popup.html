@@ -21,12 +21,25 @@
 {% block content %}
 
 
-
+<div class="topbar_pages padding-0">
+        <div class="container ">
+            <h4 class="text-title">View Category</h2>
+            <div class="breadcrumb-section">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb padding-left-0">
+                        <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="#"><span class="sidebar-icon"><span class="fas fa-grip-horizontal"></span></span> Categories</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">View Category</li>
+                    </ol>
+                </nav>
+            </div>
+        </div> 
+    </div>
 <div class="container">
     <div class="subheader row">
-        <div class="col-xl-4 col-12 d-flex align-items-center mb-4 mt-4"><span class="page_title">User Details</span>
+        <!-- <div class="col-xl-4 col-12 d-flex align-items-center mb-4 mt-4"><span class="page_title">User Details</span>
 
-        </div>
+        </div> -->
 
     </div>
     <div class="row rounded card_shadow bg-white">

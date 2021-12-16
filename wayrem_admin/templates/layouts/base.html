@@ -152,6 +152,11 @@
       $(".simplebar-mask .sidebar-inner ul.nav a[href*='/category/categories-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
       $(".simplebar-mask .sidebar-inner ul.nav a[href*='/category/categories-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
     }
+    if(path.indexOf('/category/category-details/') != -1){
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/category/categories-list/']").addClass("active");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/category/categories-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/category/categories-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
+    }
 
     if(path.indexOf('/supplier/update-supplier/') != -1){
       $(".simplebar-mask .sidebar-inner ul.nav a[href*='/supplier/supplier-list/']").addClass("active");
@@ -168,6 +173,17 @@
       $(".simplebar-mask .sidebar-inner ul.nav a[href*='/account/users-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
       $(".simplebar-mask .sidebar-inner ul.nav a[href*='/account/users-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
     }
+    if(path.indexOf('/account/user-details/') != -1){
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/account/users-list/']").addClass("active");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/account/users-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/account/users-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
+    }
+    if(path.indexOf('/purchase_order/view-po/') != -1){
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/purchase_order/po-list/']").addClass("active");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/purchase_order/po-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/purchase_order/po-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
+    }
+    
 
     function clickaction(){
       $('.selectedcat_margin input').click(function(){

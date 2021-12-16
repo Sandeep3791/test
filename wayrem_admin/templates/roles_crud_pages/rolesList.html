@@ -49,7 +49,7 @@ endcomment %}
 <main class="content_admin_dashbboard">
     <div class="container ">
 <div class="subheader row">
-    <div class="col-xl-6 col-lg-6 col-12">
+    <div class="col-xl-8 col-lg-8 col-12">
         <div class="col-xl-4 col-lg-5 col-md-5">
             <a class="btn w-100 anchor_btn ps-0 pe-0" href="{% url 'wayrem_admin:roles_create' %}">
                 <button class="btn col-sm-12 col-md-12 col-12 create_new">Create New Role</button>
@@ -62,11 +62,9 @@ endcomment %}
         </div> {% endcomment %}
     </div>
     
-
-    <div class="col-xl-6 col-lg-6 col-12">
+    <div class="col-xl-4 col-lg-4 col-12 my-2">
         <div class="row d-flex align-items-center">
-           
-            <div class="col-xl-8 col-lg-3 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 " style="height:40px;">
+            <div class="col-xl-12 col-lg-3 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 " style="height:40px;">
                 <!-- <input type="search" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Search"> -->
                 <label class="subadmin_search d-flex align-items-center">
                     <input class="table_searchbar" id="table_search" type="search" placeholder="Search">
@@ -74,15 +72,6 @@ endcomment %}
                 </label>
 
             </div>
-            <div class="col-xl-4 col-md-4">
-                <select class="form-select form-select-md filter_select" aria-label=".form-select-md example" disabled>
-                    <option selected="">All</option>
-                    <option value="1">...</option>
-                    <option value="2">...</option>
-                    <option value="3">...</option>
-                </select>
-            </div>
-            
         </div>
 
     </div>
@@ -238,6 +227,10 @@ endcomment %}
         });
         $('#table_search').keyup(function () {
             oTable.search($(this).val()).draw();
+        })
+        $("#table_search").on(
+          "change keyup paste input", function() {
+           oTable.search($(this).val()).draw();
         })
     });
 </script>

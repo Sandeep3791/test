@@ -31376,3 +31376,17 @@ nav.navbar.navbar-top.navbar-expand {
 .modal {
     z-index: 99999 !important;
 }
+select#id_status {
+    -webkit-appearance: auto !important;
+    -moz-appearance: auto !important;
+    appearance: auto !important;
+}
+.input-group.error_field_msg {
+    position: unset;
+    float: right !important;
+    width: 100%;
+    text-align: right;
+    font-size: 14px;
+    margin-top: 4px;
+    margin-right: 2px;
+}

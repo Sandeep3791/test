@@ -239,6 +239,10 @@ endcomment %}
         $('#table_search').keyup(function () {
             oTable.search($(this).val()).draw();
         })
+        $("#table_search").on(
+          "change keyup paste input", function() {
+           oTable.search($(this).val()).draw();
+        })
     });
 </script>
 
