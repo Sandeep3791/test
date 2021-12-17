@@ -1,7 +1,7 @@
 {% extends "layouts/base.html" %}
 {% load static %}
 
-{% block title %} Update Product {% endblock %}
+{% block title %} Product Details {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
@@ -158,7 +158,7 @@
                                 <div class="row">
                                     
                                     <!-- Form -->
-                                    <div class="col-lg-6">
+                                    {% comment %} <div class="col-lg-6">
                                         <div class="form-group mb-4">
                                             <label for="price">Product Code <span class="text-danger">*</span><span class="text-danger"> <em> {{form.product_code.errors | striptags}}
                                             </em> </span></label>
@@ -169,7 +169,7 @@
                                             </div>
                                            
                                         </div>
-                                    </div>
+                                    </div> {% endcomment %}
                                     <!-- End of Form -->
                                      <!-- Form -->
                                      <div class="col-lg-6">

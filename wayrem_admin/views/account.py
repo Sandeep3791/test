@@ -57,7 +57,7 @@ class UsersList(View):
     @method_decorator(role_required('User View'))
     def get(self, request, format=None):
         userlist = User.objects.all()
-        paginator = Paginator(userlist, 25)
+        paginator = Paginator(userlist, 3)
         page = request.GET.get('page')
         try:
             ulist = paginator.page(page)

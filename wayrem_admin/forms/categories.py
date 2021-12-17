@@ -17,7 +17,7 @@ class CategoryCreateForm(forms.ModelForm):
 
 
 UNIT = (
-    ('(absolute ', 'abs'),
+    ('absolute ', 'abs'),
     ('%', '%'),
 )
 

@@ -36,7 +36,7 @@ roles_options = (
 status = (("Active", "Active"), ("Inactive", "Inactive"))
 
 UNIT = (
-    ('absolute ', 'abs'),
+    ('absolute', 'abs'),
     ('%', '%'),
 )
 
@@ -108,7 +108,7 @@ class Categories(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.name + " - " + str(self.margin)+self.unit
+        return self.name + " - " + str(self.margin)+ " " + self.unit
 
     class Meta:
         db_table = 'categories_master'
@@ -186,7 +186,7 @@ class Ingredients(models.Model):
 
 
 DIS_ABS_PERCENT = (
-    ('Absolute ', 'Abs'),
+    ('Absolute', 'Abs'),
     ('%', '%'),
 )
 UNIT_CHOICES = (
