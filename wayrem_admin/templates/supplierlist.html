@@ -97,7 +97,7 @@ endcomment %}
         {% for message in messages %}
         <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
             <strong> {{ message }}!</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <button type="button" class="btn-close bg-danger" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         {% endfor %}
         {% endif %}
@@ -194,6 +194,7 @@ endcomment %}
         </table>
 
         <nav aria-label="...">
+            Showing {{ supplierlist.start_index }} to {{ supplierlist.end_index }} out  of {{ supplierlist.paginator.count }} entries
             <ul class="pagination justify-content-end">
                 {% if supplierlist.has_previous %}
                     <li class="page-item">
@@ -256,7 +257,7 @@ endcomment %}
 
     $(document).ready(function () {
         oTable = $('#filtertable').DataTable({
-            dom: 'rtip',
+            dom: 'rt',
             'columnDefs': [{ 'orderable': false, 'targets': [2, 3] }],
             buttons: [
                 {

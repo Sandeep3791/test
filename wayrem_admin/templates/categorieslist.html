@@ -166,6 +166,7 @@ endcomment %}
     </tbody>
 </table>
 <nav aria-label="...">
+    Showing {{ categorieslist.start_index }} to {{ categorieslist.end_index }} out  of {{ categorieslist.paginator.count }} entries
     <ul class="pagination justify-content-end">
         {% if categorieslist.has_previous %}
             <li class="page-item">
@@ -206,7 +207,7 @@ endcomment %}
 
     $(document).ready(function () {
         oTable = $('#filtertable').DataTable({
-            dom: 'rtip',
+            dom: 'rt',
             'columnDefs': [{ 'orderable': false, 'targets': 2 },
              { 'orderable': false, 'targets': 3 },
              { 'orderable': false, 'targets': 4 }],

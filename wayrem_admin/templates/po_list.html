@@ -120,14 +120,15 @@ endcomment %}
             <td>{{item1.po_name}}</td>
             <td>{{item2}}</td>
             <td>
-            <form action="{% url 'wayrem_admin:po_status' item1.po_id %}"  method="post">
+                {{item1.status|title}}
+            {% comment %} <form action="{% url 'wayrem_admin:po_status' item1.po_id %}"  method="post">
             {% csrf_token %}
                 <select class="form-select form-select-sm" name="status" onchange='this.form.submit()' aria-label=".form-select-sm example">
                     <option selected>{{item1.status|title}}</option>
                     <option value="cancel">Cancel</option>
                     <option value="delivered">Delivered</option>
                 </select>
-            </form>
+            </form> {% endcomment %}
             </td>
             <td>
                 <a type="button" data-toggle="tooltip" data-placement="bottom" title="View" href="{% url 'wayrem_admin:viewpo' item1.po_id %}" class="btn btn-sm"><i
@@ -213,7 +214,7 @@ endcomment %}
 
     $(document).ready(function () {
         oTable = $('#filtertable').DataTable({
-            dom: 'rtip',
+            dom: 'rt',
             'columnDefs': [{ 'orderable': false, 'targets': [2, 3] }],
             "oLanguage": {
                 "oPaginate": {
