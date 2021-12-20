@@ -18,8 +18,6 @@ class RootUrlView(RedirectView):
 
 @ login_required(login_url='wayrem_admin:root')
 def dashboard(request):
-    notifications = Notification.objects.filter(
-        status=True).order_by('created_at').reverse()
     # notifications = list(notifications.values())
     # for dicts in notifications:
     #     for keys in dicts:
@@ -36,7 +34,6 @@ def dashboard(request):
         'subadmins': len(subadmins),
         'suppliers': len(suppliers),
         'products': len(products),
-        'notifications': notifications
     }
     return render(request, 'dashboard.html', context)
 

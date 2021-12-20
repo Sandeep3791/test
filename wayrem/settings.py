@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'wayrem_admin',
 ]
 
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -50,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'wayrem_admin.middlewares.notification_middleware.NotificationMiddleWare',
 ]
 
 ROOT_URLCONF = 'wayrem.urls'
@@ -78,34 +80,34 @@ WSGI_APPLICATION = 'wayrem.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'test',
-        'USER': 'root',
-        'PASSWORD': 'r2wXJfUs78NczMFWRXcV',
-        'HOST': '15.184.218.191',
-        'PORT': '3306',
-        'OPTIONS': {
-            "init_command": "SET foreign_key_checks = 0;",
-        },
-    }
-}
-
-
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'wayrem',
+#         'NAME': 'test',
 #         'USER': 'root',
-#         'PASSWORD': 'root1234',
-#         'HOST': 'localhost',
+#         'PASSWORD': 'r2wXJfUs78NczMFWRXcV',
+#         'HOST': '15.184.218.191',
 #         'PORT': '3306',
 #         'OPTIONS': {
 #             "init_command": "SET foreign_key_checks = 0;",
 #         },
 #     }
 # }
+
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'wayrem',
+        'USER': 'root',
+        'PASSWORD': 'root1234',
+        'HOST': 'localhost',
+        'PORT': '3306',
+        'OPTIONS': {
+            "init_command": "SET foreign_key_checks = 0;",
+        },
+    }
+}
 
 
 # DATABASES = {
