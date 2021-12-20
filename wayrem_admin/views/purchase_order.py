@@ -135,7 +135,7 @@ def create_po_step2(request):
                 product_qty = quantity
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        f"INSERT INTO {supplier_name.username}_purchase_order(`id`,`po_id`,`po_name`,`product_qty`,`product_name_id`,`supplier_name_id`) VALUES('{supp_po_id}','{po_id}','{po_name}','{quantity}','{product_instance.id.hex}','{x.replace('-','')}');")
+                        f"INSERT INTO {supplier_name.username}_purchase_order(`id`,`po_id`,`po_name`,`product_qty`,`product_name_id`,`supplier_name_id`) VALUES('{supp_po_id}','{po_id}','{po_name}','{quantity}','{product_instance.id}','{x.replace('-','')}');")
                     product_order = PurchaseOrder(
                         po_id=po_id, po_name=po_name, product_name=product_instance, product_qty=product_qty, supplier_name=supplier_name)
                 product_order.save()

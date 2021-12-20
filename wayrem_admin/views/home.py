@@ -27,13 +27,13 @@ def dashboard(request):
     # request.session['notifications'] = notifications
     # request.session['notifications'] = list(
     #     notifications.values_list('id', 'message', 'status'))
-    subadmins = User.objects.exclude(is_superuser=True)
-    suppliers = Supplier.objects.all()
-    products = Products.objects.all()
+    subadmins = User.objects.exclude(is_superuser=True).count()
+    suppliers = Supplier.objects.count()
+    products = Products.objects.count()
     context = {
-        'subadmins': len(subadmins),
-        'suppliers': len(suppliers),
-        'products': len(products),
+        'subadmins': subadmins,
+        'suppliers': suppliers,
+        'products': products,
     }
     return render(request, 'dashboard.html', context)
 

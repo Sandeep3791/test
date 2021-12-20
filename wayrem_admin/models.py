@@ -42,7 +42,7 @@ UNIT = (
 
 
 class Roles(models.Model):
-    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    id = models.AutoField(primary_key=True, unique=True)
     role = models.CharField(max_length=50, unique=True)
     permission = MultiSelectField(
         choices=roles_options, max_length=800, default="Stats")
@@ -59,7 +59,7 @@ class Roles(models.Model):
 
 
 class User(AbstractUser):
-    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    id = models.AutoField(primary_key=True, unique=True)
     po_notify = models.BooleanField(default=False, null=True, blank=True)
     email = models.EmailField(_('email address'), unique=True)
     contact = models.CharField(
@@ -94,7 +94,7 @@ class Otp(models.Model):
 
 
 class Categories(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    id = models.AutoField(primary_key=True, unique=True)
     name = models.CharField(max_length=35, unique=True)
     image = models.ImageField(
         upload_to='assets/category/', blank=False, null=True)
@@ -108,14 +108,14 @@ class Categories(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.name + " - " + str(self.margin)+ " " + self.unit
+        return self.name + " - " + str(self.margin) + " " + self.unit
 
     class Meta:
         db_table = 'categories_master'
 
 
 class SubCategories(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    id = models.AutoField(primary_key=True, unique=True)
     name = models.CharField(max_length=35, unique=True)
     tag = models.TextField(null=True, blank=True)
     margin = models.IntegerField()
@@ -134,7 +134,7 @@ class SubCategories(models.Model):
 
 
 class Supplier(models.Model):
-    id = models.UUIDField(default=uuid.uuid1, primary_key=True)
+    id = models.AutoField(primary_key=True, unique=True)
     username = models.CharField(max_length=255, unique=True, null=True)
     first_name = models.CharField(max_length=255, null=True)
     last_name = models.CharField(max_length=255, null=True)
@@ -170,7 +170,7 @@ class Supplier(models.Model):
 
 
 class Ingredients(models.Model):
-    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    id = models.AutoField(primary_key=True, unique=True)
     ingredients_name = models.CharField(
         max_length=100, unique=True, null=True, blank=False)
     ingredients_status = models.CharField(
@@ -198,7 +198,7 @@ UNIT_CHOICES = (
 
 
 class Products(models.Model):
-    id = models.UUIDField(primary_key=True)
+    id = models.IntegerField(primary_key=True, unique=True)
     name = models.CharField(max_length=255, null=True, blank=False)
     SKU = models.CharField(max_length=255, null=True, blank=False, unique=True)
     category = models.ManyToManyField('Categories', null=True)
@@ -243,7 +243,7 @@ def get_image_filename(instance, filename):
 
 
 class Images(models.Model):
-    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    id = models.AutoField(primary_key=True, unique=True)
     product = models.ForeignKey(
         Products, on_delete=models.CASCADE, default=None)
     image = models.FileField(upload_to="product/images/",
@@ -254,7 +254,7 @@ class Images(models.Model):
 
 
 class Unit(models.Model):
-    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    id = models.AutoField(primary_key=True, unique=True)
     unit_name = models.CharField(max_length=15, null=False, unique=True)
     is_active = models.BooleanField(default=True)
 
@@ -266,8 +266,8 @@ class Unit(models.Model):
 
 
 class ProductIngredients(models.Model):
-    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
-    product = models.UUIDField()
+    id = models.AutoField(primary_key=True, unique=True)
+    product = models.IntegerField()
     ingredient = models.ForeignKey(
         Ingredients, on_delete=models.CASCADE, null=True, blank=True)
     quantity = models.CharField(max_length=25, default=1, blank=True)
@@ -276,7 +276,7 @@ class ProductIngredients(models.Model):
 
 
 class PurchaseOrder(models.Model):
-    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    id = models.AutoField(primary_key=True, unique=True)
     po_id = models.UUIDField(default=uuid.uuid4)
     po_name = models.CharField(max_length=250, null=True)
     product_name = models.ForeignKey(
@@ -312,10 +312,10 @@ class OtpDetails(models.Model):
 
 
 class SupplierProducts(models.Model):
-    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    id = models.AutoField(primary_key=True, unique=True)
     supplier_id = models.ForeignKey(
         Supplier, on_delete=models.CASCADE, null=True)
-    product_id = models.UUIDField()
+    product_id = models.IntegerField()
     SKU = models.CharField(max_length=250, null=True, blank=True)
     product_name = models.CharField(max_length=500, null=True, blank=True)
     quantity = models.IntegerField(null=True, default=1)
@@ -338,7 +338,7 @@ class SupplierProducts(models.Model):
 
 
 class Customer(models.Model):
-    id = models.CharField(max_length=255, default=uuid.uuid4, primary_key=True)
+    id = models.AutoField(primary_key=True, unique=True)
     first_name = models.CharField(max_length=255, null=True)
     last_name = models.CharField(max_length=255, null=True)
     email = models.EmailField(blank=False, unique=True, null=True)
@@ -360,7 +360,7 @@ class Customer(models.Model):
 
 
 class Invoice(models.Model):
-    invoice_id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    invoice_id = models.AutoField(primary_key=True, unique=True)
     invoice_no = models.CharField(max_length=250, null=True)
     po_name = models.CharField(max_length=250, null=True)
     file = models.FileField(upload_to='images/', null=True)
@@ -400,8 +400,8 @@ class Settings(models.Model):
 
 
 class BestProductsSupplier(models.Model):
-    product_id = models.UUIDField()
-    supplier_id = models.UUIDField()
+    product_id = models.IntegerField()
+    supplier_id = models.IntegerField()
     lowest_price = models.CharField(max_length=255)
     lowest_delivery_time = models.CharField(max_length=255)
 

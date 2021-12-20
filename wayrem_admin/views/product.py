@@ -165,7 +165,14 @@ def product_view_one(request):
                 "wayrem_margin")
             request.session["margin_unit"] = form.cleaned_data.get(
                 "margin_unit")
-            product_id = uuid.uuid4()
+            try:
+                product_id = Products.objects.last().id
+            except:
+                product_id = 0
+            product_id = product_id + 1
+            exist = ProductIngredients.objects.filter(product=product_id).all()
+            if exist:
+                exist.delete()
             for form in formset.forms:
                 obj = ProductIngredients()
                 obj.product = product_id
@@ -173,7 +180,7 @@ def product_view_one(request):
                 obj.quantity = form.cleaned_data.get('quantity')
                 obj.unit = form.cleaned_data.get('unit')
                 obj.save()
-            request.session['product_pk'] = str(product_id)
+            request.session['product_pk'] = product_id
             return redirect('wayrem_admin:product_images')
             # return HttpResponse(render(request,'path_to_your_view.html'))
     else:
