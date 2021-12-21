@@ -60,7 +60,7 @@ def details_gs1(request):
             result.gs1_message.element_strings[1].date)
         request.session['weight'] = str(
             result.gs1_message.element_strings[4].decimal)
-        request.session['unit'] = "KILO-GRAM"
+        request.session['weight_unit'] = "kg"
     except:
         pass
     data = [request.session.get('SKU'), request.session.get(
@@ -117,7 +117,8 @@ def product_view_one(request):
         'description': request.session.get("description", None),
         'quantity': request.session.get("quantity", None),
         'weight': request.session.get("weight", None),
-        'unit': request.session.get("unit", None),
+        'weight_unit': request.session.get("weight_unit", None),
+        'quantity_unit': request.session.get("quantity_unit", None),
         'price': request.session.get("price", None),
         'discount': request.session.get("discount", None),
         'package_count': request.session.get("package_count", None),
@@ -155,8 +156,11 @@ def product_view_one(request):
             request.session["description"] = form.cleaned_data.get(
                 "description")
             request.session["quantity"] = form.cleaned_data.get("quantity")
+            request.session["quantity_unit"] = form.cleaned_data.get(
+                "quantity_unit")
             request.session["weight"] = form.cleaned_data.get("weight")
-            request.session["unit"] = form.cleaned_data.get("unit")
+            request.session["weight_unit"] = form.cleaned_data.get(
+                "weight_unit")
             request.session["price"] = form.cleaned_data.get("price")
             request.session["discount"] = form.cleaned_data.get("discount")
             request.session["package_count"] = form.cleaned_data.get(
@@ -165,7 +169,14 @@ def product_view_one(request):
                 "wayrem_margin")
             request.session["margin_unit"] = form.cleaned_data.get(
                 "margin_unit")
-            product_id = uuid.uuid4()
+            try:
+                product_id = Products.objects.last().id
+            except:
+                product_id = 0
+            product_id = product_id + 1
+            exist = ProductIngredients.objects.filter(product=product_id).all()
+            if exist:
+                exist.delete()
             for form in formset.forms:
                 obj = ProductIngredients()
                 obj.product = product_id
@@ -173,7 +184,7 @@ def product_view_one(request):
                 obj.quantity = form.cleaned_data.get('quantity')
                 obj.unit = form.cleaned_data.get('unit')
                 obj.save()
-            request.session['product_pk'] = str(product_id)
+            request.session['product_pk'] = product_id
             return redirect('wayrem_admin:product_images')
             # return HttpResponse(render(request,'path_to_your_view.html'))
     else:
@@ -205,8 +216,11 @@ def product_images(request):
             obj.dis_abs_percent = request.session.get("dis_abs_percent", None)
             obj.description = request.session.get("description", None)
             obj.quantity = request.session.get("quantity", None)
+            obj.quantity_unit = inst_Unit(
+                request.session.get("quantity_unit", None))
             obj.weight = request.session.get("weight", None)
-            obj.unit = request.session.get("unit", None)
+            obj.weight_unit = inst_Unit(
+                request.session.get("weight_unit", None))
             obj.price = request.session.get("price", None)
             obj.discount = request.session.get("discount", None)
             obj.package_count = request.session.get("package_count", None)

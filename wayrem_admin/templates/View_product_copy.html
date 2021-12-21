@@ -1,7 +1,7 @@
 {% extends "layouts/base.html" %}
 {% load static %}
 
-{% block title %} Update Product {% endblock %}
+{% block title %} Product Details {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
@@ -61,7 +61,20 @@
     </div>
   </div>
     <!--==============================-->
-
+    <div class="topbar_pages padding-0">
+            <div class="container ">
+                <h4 class="text-title">View Product</h2>
+                <div class="breadcrumb-section">
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb padding-left-0">
+                            <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="#"><span class="sidebar-icon"><i class="fas fa-gift"></i></span> <span class="sidebar-text">Product Management &nbsp; </span></a></li>
+                            <li class="breadcrumb-item active" aria-current="page">View</li>
+                        </ol>
+                    </nav>
+                </div>
+            </div> 
+        </div>
 <main class="align-items-center admin_signup_lg">
     <section class="d-flex   align-items-center my-5 mt-lg-6 mb-lg-5">
         <div class="container ">
@@ -145,7 +158,7 @@
                                 <div class="row">
                                     
                                     <!-- Form -->
-                                    <div class="col-lg-6">
+                                    {% comment %} <div class="col-lg-6">
                                         <div class="form-group mb-4">
                                             <label for="price">Product Code <span class="text-danger">*</span><span class="text-danger"> <em> {{form.product_code.errors | striptags}}
                                             </em> </span></label>
@@ -156,7 +169,7 @@
                                             </div>
                                            
                                         </div>
-                                    </div>
+                                    </div> {% endcomment %}
                                     <!-- End of Form -->
                                      <!-- Form -->
                                      <div class="col-lg-6">
@@ -183,7 +196,7 @@
                                             </span></label>
                                             <div class="input-group first">   
                                                 {{form.weight}} 
-                                                {{form.unit}} 
+                                                {{form.weight_unit}} 
                                                <div class="input-group" id="weight_error_message" style="color: #d12525;"></div>
                                             </div>
                                             
@@ -312,6 +325,7 @@
                                         </span></label>
                                         <div class="input-group">   
                                             {{form.quantity}}
+                                            {{form.quantity_unit}}
                                             <div class="input-group" id="quantity_error_message" style="color: #d12525;"></div>
                                         </div>
                                         <div class="input-group">
@@ -464,7 +478,7 @@
                                         <!-- Form -->
                                      <div class="col-lg-12">
                                         <div class="form-group mb-4">
-                                            <label for="name">Product Meta Key <span class="text-danger">*</span><span class="text-danger"><em> {{form.meta_key.error | striptags}}
+                                            <label for="name">Product Meta Tag <span class="text-danger">*</span><span class="text-danger"><em> {{form.meta_key.error | striptags}}
                                                 </em>
                                             </span></label>
                                             <div class="input-group">

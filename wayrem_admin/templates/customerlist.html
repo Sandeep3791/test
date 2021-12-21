@@ -50,7 +50,7 @@ endcomment %}
 <div class="subheader row">
   
     <div class="row add_btn col-xl-4 col-lg-4 col-md-5 d-flex align-items-center">
-        <div class="col">
+        <div class="col ps-0">
     <div class="dropdown">
   <button class="button button1 mt-2 export_file dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
     Export
@@ -64,10 +64,10 @@ endcomment %}
         </div>
     </div>
 
-    <div class="col-xl-8 col-lg-8 col-12 mt-2">
+    <div class="col-xl-8 col-lg-8 col-12 mt-2 my-3">
         <div class="row d-flex align-items-center ">
             {% comment %} <div class="col-xl-4 col-lg-3 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 " style="height:40px;"> {% endcomment %}
-            <div class="col-xl-4 col-lg-3 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 ml-0 " style="height:40px; margin-left: auto;">
+            <div class="col-xl-6 col-lg-6 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 ml-0 pe-0" style="height:40px; margin-left: auto;">
                 <!-- <input type="search" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Search"> -->
                 <label class="subadmin_search d-flex align-items-center">
                     <input class="table_searchbar" id="table_search" type="search" placeholder="Search">
@@ -181,7 +181,8 @@ endcomment %}
     </tbody>
 </table>
 <nav aria-label="...">
-    <ul class="pagination">
+    Showing {{ userlist.start_index }} to {{ userlist.end_index }} out  of {{ userlist.paginator.count }} entries
+    <ul class="pagination justify-content-end">
         {% if userlist.has_previous %}
             <li class="page-item">
                 <a class="page-link" href="?page={{ userlist.previous_page_number }}">Previous</a>
@@ -220,7 +221,7 @@ endcomment %}
 
     $(document).ready(function () {
         oTable = $('#filtertable').DataTable({
-            dom: 'rtip',
+            dom: 'rt',
             'columnDefs': [{ 'orderable': false, 'targets': 3 }],
             "oLanguage": {
                 "oPaginate": {
@@ -238,6 +239,10 @@ endcomment %}
         });
         $('#table_search').keyup(function () {
             oTable.search($(this).val()).draw();
+        })
+        $("#table_search").on(
+          "change keyup paste input", function() {
+           oTable.search($(this).val()).draw();
         })
     });
 </script>

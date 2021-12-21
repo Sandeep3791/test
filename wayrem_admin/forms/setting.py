@@ -11,5 +11,5 @@ class SettingsForm(forms.ModelForm):
         widgets = {
             'key': forms.TextInput(attrs={'class': 'form-control'}),
             'display_name': forms.TextInput(attrs={'class': 'form--control-select'}),
-            'type': forms.Select(attrs={'class': 'form-select'}),
+            'type': forms.Select(attrs={'class': 'form-control form-select'}),
         }

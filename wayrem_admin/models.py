@@ -38,13 +38,13 @@ roles_options = (
 status = (("Active", "Active"), ("Inactive", "Inactive"))
 
 UNIT = (
-    ('absolute ', 'abs'),
+    ('absolute', 'abs'),
     ('%', '%'),
 )
 
 
 class Roles(models.Model):
-    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    id = models.AutoField(primary_key=True, unique=True)
     role = models.CharField(max_length=50, unique=True)
     permission = MultiSelectField(
         choices=roles_options, max_length=800, default="Stats")
@@ -61,7 +61,8 @@ class Roles(models.Model):
 
 
 class User(AbstractUser):
-    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    id = models.AutoField(primary_key=True, unique=True)
+    po_notify = models.BooleanField(default=False, null=True, blank=True)
     email = models.EmailField(_('email address'), unique=True)
     contact = models.CharField(
         max_length=12, null=True, unique=True, blank=False)
@@ -96,7 +97,7 @@ class Otp(models.Model):
 
 
 class Categories(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    id = models.AutoField(primary_key=True, unique=True)
     name = models.CharField(max_length=35, unique=True)
     image = models.ImageField(
         upload_to='assets/category/', blank=False, null=True)
@@ -110,14 +111,14 @@ class Categories(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.name + " - " + str(self.margin)+self.unit
+        return self.name + " - " + str(self.margin) + " " + self.unit
 
     class Meta:
         db_table = 'categories_master'
 
 
 class SubCategories(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    id = models.AutoField(primary_key=True, unique=True)
     name = models.CharField(max_length=35, unique=True)
     tag = models.TextField(null=True, blank=True)
     margin = models.IntegerField()
@@ -136,13 +137,27 @@ class SubCategories(models.Model):
 
 
 class Supplier(models.Model):
-    id = models.UUIDField(default=uuid.uuid1, primary_key=True)
+    id = models.AutoField(primary_key=True, unique=True)
     username = models.CharField(max_length=255, unique=True, null=True)
+    first_name = models.CharField(max_length=255, null=True)
+    last_name = models.CharField(max_length=255, null=True)
+    company_phone_no = models.CharField(
+        max_length=12, null=True, unique=True, blank=False)
+    company_email = models.EmailField(blank=False, unique=True, null=True)
+    registration_no = models.CharField(
+        max_length=12, null=True, unique=True, blank=False)
+    from_time = models.TimeField(blank=True, null=True)
+    to_time = models.TimeField(blank=True, null=True)
+    # from_time = models.DateTimeField(auto_now=True)
+    # to_time = models.DateTimeField(auto_now=True)
+    contact_person_name = models.CharField(max_length=255, null=True)
+    contact_phone_no = models.CharField(
+        max_length=12, null=True, unique=True, blank=False)
     email = models.EmailField(blank=False, unique=True, null=True)
     password = models.CharField(max_length=200)
     contact = models.BigIntegerField(null=True)
     logo = models.ImageField(upload_to='images/', null=True)
-    address = models.CharField(max_length=500, blank=True, null=True)
+    address = models.TextField(null=True, blank=True)
     delivery_incharge = models.CharField(max_length=500, blank=True, null=True)
     company_name = models.CharField(max_length=100, blank=False, null=True)
     is_active = models.BooleanField(default=True)
@@ -158,7 +173,7 @@ class Supplier(models.Model):
 
 
 class Ingredients(models.Model):
-    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    id = models.AutoField(primary_key=True, unique=True)
     ingredients_name = models.CharField(
         max_length=100, unique=True, null=True, blank=False)
     ingredients_status = models.CharField(
@@ -174,7 +189,7 @@ class Ingredients(models.Model):
 
 
 DIS_ABS_PERCENT = (
-    ('Absolute ', 'Abs'),
+    ('Absolute', 'Abs'),
     ('%', '%'),
 )
 UNIT_CHOICES = (
@@ -185,8 +200,20 @@ UNIT_CHOICES = (
 )
 
 
+class Unit(models.Model):
+    id = models.AutoField(primary_key=True, unique=True)
+    unit_name = models.CharField(max_length=15, null=False, unique=True)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.unit_name
+
+    class Meta:
+        db_table = 'unit_master'
+
+
 class Products(models.Model):
-    id = models.UUIDField(primary_key=True)
+    id = models.IntegerField(primary_key=True, unique=True)
     name = models.CharField(max_length=255, null=True, blank=False)
     SKU = models.CharField(max_length=255, null=True, blank=False, unique=True)
     category = models.ManyToManyField('Categories', null=True)
@@ -202,9 +229,11 @@ class Products(models.Model):
         max_length=20, choices=DIS_ABS_PERCENT, null=True, blank=False)
     description = models.TextField()
     quantity = models.CharField(max_length=100, null=True, default=1)
+    quantity_unit = models.ForeignKey(
+        Unit, on_delete=models.CASCADE, null=True, blank=True, related_name='%(class)s_quantity_unit')
     weight = models.CharField(null=True, max_length=255)
-    unit = models.CharField(
-        max_length=20, choices=UNIT_CHOICES, null=True, blank=False)
+    weight_unit = models.ForeignKey(
+        Unit, on_delete=models.CASCADE, null=True, blank=True, related_name='%(class)s_weight_unit')
     price = models.CharField(null=True, max_length=100)
     discount = models.CharField(max_length=50, null=True, blank=False)
     package_count = models.CharField(
@@ -231,7 +260,7 @@ def get_image_filename(instance, filename):
 
 
 class Images(models.Model):
-    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    id = models.AutoField(primary_key=True, unique=True)
     product = models.ForeignKey(
         Products, on_delete=models.CASCADE, default=None)
     image = models.FileField(upload_to="product/images/",
@@ -241,21 +270,9 @@ class Images(models.Model):
         db_table = 'product_images'
 
 
-class Unit(models.Model):
-    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
-    unit_name = models.CharField(max_length=15, null=False, unique=True)
-    is_active = models.BooleanField(default=True)
-
-    def __str__(self):
-        return self.unit_name
-
-    class Meta:
-        db_table = 'unit_master'
-
-
 class ProductIngredients(models.Model):
-    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
-    product = models.UUIDField()
+    id = models.AutoField(primary_key=True, unique=True)
+    product = models.IntegerField()
     ingredient = models.ForeignKey(
         Ingredients, on_delete=models.CASCADE, null=True, blank=True)
     quantity = models.CharField(max_length=25, default=1, blank=True)
@@ -264,11 +281,11 @@ class ProductIngredients(models.Model):
 
 
 class PurchaseOrder(models.Model):
-    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    id = models.AutoField(primary_key=True, unique=True)
     po_id = models.UUIDField(default=uuid.uuid4)
     po_name = models.CharField(max_length=250, null=True)
     product_name = models.ForeignKey(
-        Products, on_delete=models.CASCADE, null=True)
+        Products, on_delete=models.SET_NULL, null=True)
     product_qty = models.IntegerField(null=False, default=1)
     supplier_name = models.ForeignKey(
         Supplier, on_delete=models.CASCADE, null=False)
@@ -276,11 +293,11 @@ class PurchaseOrder(models.Model):
         ('accept', 'Accept'),
         ('deny', 'Deny'),
         ('cancel', 'Cancel'),
-        ('in progress', 'In Progress'),
+        ('waiting for approval', 'Waiting for approval'),
         ('delivered', 'Delivered'),
     )
     status = models.CharField(
-        max_length=35, choices=po_status, default='in progress', null=True, blank=True)
+        max_length=35, choices=po_status, default='waiting for approval', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -300,10 +317,10 @@ class OtpDetails(models.Model):
 
 
 class SupplierProducts(models.Model):
-    id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    id = models.AutoField(primary_key=True, unique=True)
     supplier_id = models.ForeignKey(
         Supplier, on_delete=models.CASCADE, null=True)
-    product_id = models.UUIDField()
+    product_id = models.IntegerField()
     SKU = models.CharField(max_length=250, null=True, blank=True)
     product_name = models.CharField(max_length=500, null=True, blank=True)
     quantity = models.IntegerField(null=True, default=1)
@@ -326,7 +343,7 @@ class SupplierProducts(models.Model):
 
 
 class Customer(models.Model):
-    id = models.CharField(max_length=255, default=uuid.uuid4, primary_key=True)
+    id = models.AutoField(primary_key=True, unique=True)
     first_name = models.CharField(max_length=255, null=True)
     last_name = models.CharField(max_length=255, null=True)
     email = models.EmailField(blank=False, unique=True, null=True)
@@ -348,7 +365,7 @@ class Customer(models.Model):
 
 
 class Invoice(models.Model):
-    invoice_id = models.UUIDField(default=uuid.uuid4, primary_key=True)
+    invoice_id = models.AutoField(primary_key=True, unique=True)
     invoice_no = models.CharField(max_length=250, null=True)
     po_name = models.CharField(max_length=250, null=True)
     file = models.FileField(upload_to='images/', null=True)
@@ -388,8 +405,8 @@ class Settings(models.Model):
 
 
 class BestProductsSupplier(models.Model):
-    product_id = models.UUIDField()
-    supplier_id = models.UUIDField()
+    product_id = models.IntegerField()
+    supplier_id = models.IntegerField()
     lowest_price = models.CharField(max_length=255)
     lowest_delivery_time = models.CharField(max_length=255)
 
@@ -409,3 +426,14 @@ class EmailTemplateModel(models.Model):
 
     class Meta:
         db_table = 'email_template'
+
+class Notification(models.Model):
+    message = models.TextField()
+    status = models.BooleanField(default=False)
+    supplier = models.ForeignKey(
+        Supplier, on_delete=models.CASCADE, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'notifications'

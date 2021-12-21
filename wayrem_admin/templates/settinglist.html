@@ -32,7 +32,7 @@
 <main class="content_admin_dashbboard">
     <div class="container ">
         <div class="subheader row ">
-            <div class="col-xl-2 col-lg-2 col-md-2 padding-left-0" >
+            <div class="col-xl-2 col-lg-2 col-md-2 padding-left-0 my-2" >
                 <button class="btn col-sm-12 col-md-12 col-12 create_new" data-bs-toggle="modal" data-bs-target="#exampleModal">Create Settings</button>
                 <!-- Modal -->
                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -58,13 +58,13 @@
                             </div>
                             <div class="col-md-6 mt-2">
                                 <label for="floatingTextarea">Type  <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.type.errors | striptags}}</em></span></label>
-                                <div class="form-floating ">
+                                <div>
                                     {{form.type}}
                                 </div>
                             </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn bg-danger text-white btn-secondary" data-bs-dismiss="modal">Close</button>
                                 <button type="submit" class="btn btn-primary">Save</button>
                             </div>
                         </form>
@@ -76,9 +76,9 @@
             <div class="col">
             </div>
         </div>
-        <div class="col-xl-7 col-lg-7 col-12  padding-right-0">
+        <div class="col-xl-7 col-lg-7 col-12  padding-right-0 my-2">
             <div class="row d-flex align-items-center ">
-                <div class="col-xl-4 col-lg-3 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 ml-0 padding-right-0" style="height:40px; margin-left: auto;">
+                <div class="col-xl-7 col-lg-7 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 ml-0 padding-right-0" style="height:40px; margin-left: auto;">
                     <label class="subadmin_search d-flex align-items-center">
                         <input class="table_searchbar" id="table_search" type="search" placeholder="Search">
                     </label>
@@ -131,7 +131,7 @@
         </tbody>
     </table>
     <nav aria-label="...">
-        <ul class="pagination">
+        <ul class="pagination justify-content-end">
             {% if userlist.has_previous %}
                 <li class="page-item">
                     <a class="page-link" href="?page={{ userlist.previous_page_number }}">Previous</a>
@@ -164,7 +164,8 @@
 
     $(document).ready(function () {
         oTable = $('#filtertable').DataTable({
-            dom: 'rtip',
+            dom: 'rt',
+            'columnDefs': [{ 'orderable': false, 'targets': [2, 3] }],
             "oLanguage": {
                 "oPaginate": {
                     "sNext": '<i class="fas fa-arrow-circle-right text-primary"></i>',

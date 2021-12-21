@@ -28,7 +28,8 @@ def send_email(to, subject, body):
 def delSession(request):
     try:
         for key in list(request.session.keys()):
-            if not key.startswith("_"):  # skip keys set by the django system
+            # skip keys set by the django system
+            if not key.startswith("_") and not key.startswith("notification"):
                 del request.session[key]
     except:
         pass
@@ -72,3 +73,7 @@ def inst_Ingridient(value):
 
 def inst_Product(value):
     return Products.objects.get(id=value)
+
+
+def inst_Unit(value):
+    return Unit.objects.get(id=value)

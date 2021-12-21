@@ -18,7 +18,7 @@
             $('#id_category').select2({
             placeholder: 'Select Category',
             })
-            $('#id_unit, #id_dis_abs_percent').select2({
+            $('#id_weight_unit,#id_quantity_unit,#id_margin_unit, #id_dis_abs_percent').select2({
             placeholder: 'Select Unit',
             })
             
@@ -91,7 +91,7 @@
                 <ol class="breadcrumb padding-left-0">
                     <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
                     <li class="breadcrumb-item"><a href="#"><span class="sidebar-icon"><i class="fas fa-gift"></i></span> <span class="sidebar-text">Product Management &nbsp; </span></a></li>
-                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:product' %}"><span class="sidebar-icon"><i class="fas fa-gift"></i></span> <span class="sidebar-text">Create Product   &nbsp; </span></a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:product' %}"><span class="sidebar-icon"><i class=""></i></span> <span class="sidebar-text">Create Product   &nbsp; </span></a></li>
                     <li class="breadcrumb-item active" aria-current="page">Step 1</li>
                 </ol>
             </nav>
@@ -139,7 +139,7 @@
                                             </em></span></label>
                                             <div class="input-group input_border">   
                                                 {{form.SKU}}
-                                                <div class="input-group" id="sku_error_message" style="color: #d12525;"></div>
+                                                <div class="input-group error_field_msg" id="sku_error_message" style="color: #d12525;"></div>
                                             </div>
                                             
                                         </div>
@@ -154,7 +154,7 @@
                                             <div class="input-group">
                                                 
                                                 {{form.name}}
-                                                <div class="input-group" id="name_error_message" style="color: #d12525;"></div>
+                                                <div class="input-group error_field_msg"  id="name_error_message" style="color: #d12525;"></div>
                                             </div>
                                             
                                         </div>
@@ -175,6 +175,7 @@
                                             <div class="input-group">
                                                 
                                                 {{form.category}}
+                                                
                                             </div>
                                             
                                         </div>
@@ -189,8 +190,8 @@
                                             </span></label>
                                             <div class="input-group first">   
                                                 {{form.weight}} 
-                                                {{form.unit}} 
-                                               <div class="input-group" id="weight_error_message" style="color: #d12525;"></div>
+                                                {{form.weight_unit}} 
+                                               <div class="input-group error_field_msg" id="weight_error_message" style="color: #d12525;"></div>
                                             </div>
                                             
                                             <span class="text-error"></span>
@@ -206,7 +207,7 @@
                                             </span></label>
                                             <div class="input-group">   
                                                 {{form.price}}
-                                                <div class="input-group" id="price_error_message" style="color: #d12525;"></div>
+                                                <div class="input-group error_field_msg"  id="price_error_message" style="color: #d12525;"></div>
                                             </div>
                                            
                                             <span class="text-error"></span>
@@ -229,7 +230,7 @@
                                             <div class="input-group">
                                                 
                                                 {{form.date_of_mfg}}
-                                                <div class="input-group" id="dom_error_message" style="color: #d12525;"></div>
+                                                <div class="input-group error_field_msg" id="dom_error_message" style="color: #d12525;"></div>
                                             </div>
                                             
                                         </div>
@@ -246,7 +247,7 @@
                                             <div class="input-group date_input_box">
                                                
                                                 {{form.date_of_exp}}
-                                                <div class="input-group" id="doe_error_message" style="color: #d12525;"></div>
+                                                <div class="input-group error_field_msg" id="doe_error_message" style="color: #d12525;"></div>
                                             </div>
                                             
                                         </div>
@@ -262,7 +263,7 @@
                                             <div class="input-group date_input_box">
                                                
                                                 {{form.mfr_name}}
-                                                <div class="input-group" id="mfr_error_message" style="color: #d12525;"></div>
+                                                <div class="input-group error_field_msg" id="mfr_error_message" style="color: #d12525;"></div>
                                             </div>
                                            
                                         </div>
@@ -308,7 +309,7 @@
                                             <div class="input-group first">   
                                                 {{form.discount}}
                                                 {{form.dis_abs_percent}}
-                                                <div class="input-group" id="discount_error_message" style="color: #d12525;"></div>
+                                                <div class="input-group error_field_msg" id= "discount_error_message" style="color: #d12525;"></div>
                                             </div>
                                             <!-- <div class="input-group">
                                                 <span class="text-danger"><em> 
@@ -332,11 +333,13 @@
                                  <div class="col-lg-6">
                                     <div class="form-group mb-4">
                                         <label for="name">Product Quantity <span class="text-danger">*</span><span class="text-danger"><em> {{form.quantity.errors | striptags}}
+                                            {{form.quantity_unit.errors | striptags}}
                                         </em>
                                         </span></label>
                                         <div class="input-group">   
                                             {{form.quantity}}
-                                            <div class="input-group" id="quantity_error_message" style="color: #d12525;"></div>
+                                            {{form.quantity_unit}}
+                                            <div class="input-group error_field_msg" id= "quantity_error_message" style="color: #d12525;"></div>
                                         </div>
                                         <div class="input-group">
                                             <span class="text-danger"><em> 
@@ -355,7 +358,7 @@
                                         <div class="form-check form-switch">
                                             {{form.package_count}}
                                             <label for="id_package_count">Package</label>
-                                            <div class="input-group" id="pcount_error_message" style="color: #d12525;"></div>
+                                            <div class="input-group error_field_msg" id="pcount_error_message" style="color: #d12525;"></div>
                                         </div>
                                        
                                     </div>
@@ -405,7 +408,7 @@
                                                         </div>
                                                             <div class="col-3 d-flex align-items-end">
                                                             <div class="input-group-append">
-                                                                <button class="btn btn-success btn-sm add-form-row ps-3 pe-3 addmmoreaction" data-formid="0">+</button>
+                                                                <button class="btn btn-success  add-form-row ps-3 pe-3 addmmoreaction" data-formid="0">+</button>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -453,7 +456,7 @@
                                             <div class="input-group">
                                                 {{form.wayrem_margin}}
                                                 {{form.margin_unit}}
-                                                <div class="input-group" id="margin_error_message" style="color: #d12525;"></div>
+                                                <div class="input-group error_field_msg" id="margin_error_message" style="color: #d12525;"></div>
                                             </div>
                                             <span class="text-error"></span>
                                         </div>
@@ -504,12 +507,12 @@
                                         <!-- Form -->
                                      <div class="col-lg-12">
                                         <div class="form-group mb-4">
-                                            <label for="name">Product Meta Key <span class="text-danger">*</span><span class="text-danger"><em> {{form.meta_key.error | striptags}}
+                                            <label for="name">Product Meta Tag <span class="text-danger">*</span><span class="text-danger"><em> {{form.meta_key.error | striptags}}
                                                 </em>
                                             </span></label>
                                             <div class="input-group">
                                                 {{form.meta_key}}
-                                                <div class="input-group" id="metaKey_error_message" style="color: #d12525;"></div>
+                                                <div class="input-group error_field_msg" id ="metaKey_error_message" style="color: #d12525;"></div>
                                             </div>
                                            
                                         </div>
@@ -765,18 +768,49 @@
 
     });
 </script>
-
+{% comment %} 
 <script>
     $(function() {
+   $('button[type="submit"]').click(function(){
+    check_sku();
+    check_productName();
+    check_id_weight();
+    check_productCode();
+    check_mfr();
+    check_dom();
+    check_doe();
+    
+    check_validation_text("id_price","price_error_message");
+    check_validation_text("id_date_of_mfg","dom_error_message");
+    check_validation_text("id_date_of_exp","doe_error_message");
+    check_validation_text("id_discount","discount_error_message");
+    check_validation_text("id_quantity","quantity_error_message");
+    check_validation_text("id_wayrem_margin","margin_error_message");
+    check_validation_text("id_meta_key","metaKey_error_message");
+   });
    
+   $(".form-control").focusout(function(){
+    check_validation_text("id_price","price_error_message");
+    check_validation_text("id_date_of_mfg","dom_error_message");
+    check_validation_text("id_date_of_exp","doe_error_message");
+    check_validation_text("id_discount","discount_error_message");
+    check_validation_text("id_quantity","quantity_error_message");
+    check_validation_text("id_wayrem_margin","margin_error_message");
+    check_validation_text("id_meta_key","metaKey_error_message");
+   });
    var error_data = false;
    
    $("#id_SKU").focusout(function(){
       check_sku();
    });
-   $("#id_product_name").focusout(function() {
+   $("#id_name").focusout(function() {
       check_productName();
    });
+   $("#id_weight").focusout(function() {
+      check_id_weight();
+   });
+   
+
    $("#id_product_code").focusout(function() {
       check_productCode();
    });
@@ -806,17 +840,40 @@
    }
    
    function check_productName() {
-      var p_name = $("#id_product_name").val()
+      var p_name = $("#id_name").val()
       if ( p_name !== '') {
          $("#name_error_message").hide();
-         $("#id_product_name").css("border-bottom","2px solid #34F458");
+         $("#id_name").css("border-bottom","2px solid #34F458");
       } else {
          $("#name_error_message").html("Please Enter Valid Product Name ");
          $("#name_error_message").show();
          error_data = true;
       }
    }
-   
+
+   function check_id_weight() {
+      var id_weight = $("#id_weight").val()
+      if ( id_weight !== '') {
+         $("#weight_error_message").hide();
+         $("#id_weight").css("border-bottom","2px solid #34F458");
+      } else {
+         $("#weight_error_message").html("Please Enter Valid Weight ");
+         $("#weight_error_message").show();
+         error_data = true;
+      }
+   }
+   function check_validation_text(id,erridid) {
+      var id_weight = $("#"+id).val()
+      if ( id_weight !== '') {
+         $("#"+erridid).hide();
+         $("#"+id).css("border-bottom","2px solid #34F458");
+      } else {
+         $("#"+erridid).html("Please Enter Valid Product Name ");
+         $("#"+erridid).show();
+         error_data = true;
+      }
+   }
+
    function check_productCode() {
       var p_code = $("#id_product_code").val()
       if ( p_code !== '') {
@@ -863,11 +920,9 @@
          $("#doe_error_message").show();
          error_data = true;
       }
-   }
-   
-   
+   }  
    
    });
    
-   </script>
+   </script> {% endcomment %}
 {% endblock javascripts %}

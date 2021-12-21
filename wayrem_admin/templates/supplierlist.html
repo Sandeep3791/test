@@ -47,192 +47,183 @@ endcomment %}
 </div>
 <main class="content_admin_dashbboard">
     <div class="container ">
-<div class="subheader row">
-    <div class="col-xl-3 col-lg-3 col-md-3">
-        <a class="btn w-100 anchor_btn ps-0 pe-0"
-            href="{% url 'wayrem_admin:suppregister' %}">
-            <button class="btn col-sm-12 col-md-12 col-12 create_new">Create New Supplier</button>
-        </a>
-    </div>
-    <div class="row add_btn col-xl-2 col-lg-2 col-md-2 d-flex align-items-center">
-        <div class="col">
-        <div class="dropdown">
-  <button class="button button1 mt-2 export_file dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-    Export
-  </button>
-  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-    {% comment %} <li><a class="dropdown-item" href="{% url 'wayrem_admin:supplierpdf' %}">Export to Pdf</a></li> {% endcomment %}
-    <li><a class="dropdown-item" href="{% url 'wayrem_admin:excelsupplier' %}">Export to Excel</a></li>
-  </ul>
-</div>
-            {% comment %} <a href="{% url 'wayrem_admin:supplierpdf' %}" class="button button1 mt-2 export_file">Export to pdf</a> {% endcomment %}
-        </div>
-    </div>
-
-    <div class="col-xl-7 col-lg-7 col-12 mt-2">
-        <div class="row d-flex align-items-center">
-            <div class="col-xl-8 col-lg-8 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 " style="height:40px;">
-                <!-- <input type="search" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Search"> -->
-                <label class="subadmin_search d-flex align-items-center">
-                    <input class="table_searchbar" id="table_search" type="search" placeholder="Search">
-                    <!-- <img src="images/Search.svg" alt=""> -->
-                </label>
-
-            </div>
-            <div class="col-xl-4 col-md-4">
-                <select class="form-select form-select-md filter_select" aria-label=".form-select-md example" disabled>
-                    <option selected="">All</option>
-                    <option value="1">...</option>
-                    <option value="2">...</option>
-                    <option value="3">...</option>
-                </select>
-            </div>
-           
-        </div>
-
-    </div>
-
-</div>
-
-
-
-
-{% if messages %}
-{% for message in messages %}
-<div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
-    <strong> {{ message }}!</strong>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-{% endfor %}
-{% endif %}
-<table class="table  text-center" id="filtertable">
-    <thead class="table-dark">
-        <tr>
-            {% comment %} <th scope="col">S. No.</th> {% endcomment %}
-            <th scope="col">Username</th>
-            <th scope="col">Email</th>
-
-            <th scope="col">Status</th>
-            <th scope="col">Products</th>
-            <th scope="col">Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for suppl in supplierlist %}
-        {% if .is_superuser %}
-        {% else %}
-        <tr>
-            {% comment %} <th scope="row">{{forloop.counter}}</th> {% endcomment %}
-            <td>{{suppl.username}}</td>
-            <td>{{suppl.email}}</td>
-
-            <td> {% if suppl.is_active %} <a href="{% url 'wayrem_admin:activeblocksupplier' suppl.id %}"
-                    class="btn-sm text-success"><i class="fas fa-toggle-on"> Active</i></a> {% else %} <a
-                    href="{% url 'wayrem_admin:activeblocksupplier' suppl.id %}" class="btn-sm text-danger"><i
-                        class="fas fa-toggle-off"> Blocked</i> </a>
-                {% endif %} </td>
-            <td>
-                <a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'wayrem_admin:updatesupplier' suppl.id %}">
-                    <i class="fas fa-edit text-dark"></i>
-                    <a type="button" class="btn btn-sm" data-bs-toggle="modal"
-                        data-bs-target="#deleteModal{{suppl.id}}">
-                        <i class="fas fa-trash-alt text-danger"></i>
+        <div class="subheader row">
+            <div class="col-xl-3 col-lg-3 col-md-3">
+                <div class="col-xl-11 col-lg-11 col-md-5">
+                    <a class="btn w-100 anchor_btn ps-0 pe-0" href="/supplier/supplier-registration/">
+                    <button class="btn col-sm-12 col-md-12 col-12 create_new">Create New Supplier</button>
                     </a>
-                    <a type="button" class="btn btn-sm " data-bs-toggle="modal"
-                        href="{% url 'wayrem_admin:supplierdetails' suppl.id %}">
-                        <i class="fas fa-eye text-success"></i>
-                    </a>
-            </td>
-
-            <td>
-                {% comment %} <a class="btn btn-sm" href="{% url 'wayrem_admin:viewprodsupplier' %}?product={{prod.SKU}}"> {% endcomment %}
-                <a type="button" class="btn btn-sm" onclick="supplierprodFunc('{{suppl.id}}')">
-                View Products
-                </a></td>
-                <!-- Modal View Supplier -->
-                
-                <div class="modal fade" "text-center" id="supplier{{suppl.id}}" tabindex="-1" aria-labelledby="exampleModalLabel1"
-                aria-hidden="true">
-                <div class="modal-dialog modal-xl modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="">{{suppl.username |title}} Products</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div id="test{{suppl.id}}"></div>                            
-                        </div>                    
-                    </div>
-                </div> 
-            </div>
-            <td>
-
-
-            <!-- Modal -->
-            <div class="modal fade" id="deleteModal{{suppl.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Delete {{suppl.username | title}}</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            Are you sure want to delete {{suppl.username | title}} ?
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
-                            <form method="POST" action="{% url 'wayrem_admin:deletesupplier' %}">
-                                {% csrf_token %}
-                                <input type="hidden" value="{{suppl.id}}" name="supplier_id">
-                                <button type="submit" class="btn btn-danger">Delete</button>
-                            </form>
-                        </div>
-                    </div>
                 </div>
             </div>
-        </tr>
-        {% endif %}
-        {% endfor %}
+            <div class="row add_btn col-xl-5 col-lg-5 col-md-2 d-flex align-items-center">
+                <div class="col">
+                    <div class="dropdown">
+                        <button class="button button1 export_file dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                            Export
+                        </button>
+                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                            
+                            <li><a class="dropdown-item" href="/supplier/excel_supplier/">Export to Excel</a></li>
+                        </ul>
+                    </div>
+                    
+                </div>
+            </div>
+            <div class="col-xl-4 col-lg-4 col-12 my-2 ms-4" style="">
+                <div class="row d-flex align-items-center justify-content-end">
+                    <div class="col-xl-12 col-lg-12 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 " style="height:40px;">
+                        <!-- <input type="search" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Search"> -->
+                        <label class="subadmin_search d-flex align-items-center">
+                            <input class="table_searchbar" id="table_search" type="search" placeholder="Search">
+                            <!-- <img src="images/Search.svg" alt=""> -->
+                        </label>
 
-    </tbody>
-</table>
+                    </div>
+                    <!-- <div class="col-xl-4 col-md-4">
+                        <select class="form-select form-select-md filter_select" aria-label=".form-select-md example" disabled>
+                            <option selected="">All</option>
+                            <option value="1">...</option>
+                            <option value="2">...</option>
+                            <option value="3">...</option>
+                        </select>
+                    </div> -->
+                
+                </div>
 
-<nav aria-label="...">
-    <ul class="pagination">
-        {% if supplierlist.has_previous %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{ supplierlist.previous_page_number }}">Previous</a>
-            </li>
-        {% endif %}
-        {% if supplierlist.number|add:'-4' > 1 %}
-            <li class="page-item"><a class="page-link" href="?page={{ supplierlist.number|add:'-5' }}">&hellip;</a></li>
-        {% endif %}
-        {% for num in supplierlist.paginator.page_range %}
-            {% if num == supplierlist.number %}
-                <li class="page-item active" aria-current="page">
-                    <a class="page-link" href="#">{{ num }}</a>
-                </li>
-            {% elif num > supplierlist.number|add:'-5' and num < supplierlist.number|add:'5' %}
-                <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>            
-            {% endif %} 
+            </div>
+        </div>
+
+        {% if messages %}
+        {% for message in messages %}
+        <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
+            <strong> {{ message }}!</strong>
+            <button type="button" class="btn-close bg-danger" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
         {% endfor %}
-        {% if supplierlist.paginator.num_pages > supplierlist.number|add:'4' %}
-            <li class="page-item"><a class="page-link" href="?page={{ supplierlist.number|add:'5' }}">&hellip;</a></li>
         {% endif %}
-        {% if supplierlist.has_next %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{ supplierlist.next_page_number }}">Next</a>
-            </li>
-        {% endif %}
-    </ul>
-</nav>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
+        <table class="table  text-center" id="filtertable">
+            <thead class="table-dark">
+                <tr>
+                    {% comment %} <th scope="col">S. No.</th> {% endcomment %}
+                    <th scope="col">Username</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Products</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for suppl in supplierlist %}
+                {% if .is_superuser %}
+                {% else %}
+                <tr>
+                    {% comment %} <th scope="row">{{forloop.counter}}</th> {% endcomment %}
+                    <td>{{suppl.username}}</td>
+                    <td>{{suppl.email}}</td>
+
+                    <td> 
+                        {% if suppl.is_active %} <a href="{% url 'wayrem_admin:activeblocksupplier' suppl.id %}"
+                            class="btn-sm text-success"><i class="fas fa-toggle-on"> Active</i></a> {% else %} <a
+                            href="{% url 'wayrem_admin:activeblocksupplier' suppl.id %}" class="btn-sm text-danger"><i
+                                class="fas fa-toggle-off"> Blocked</i> </a>
+                        {% endif %} 
+                    </td>
+                    <td>
+                        <a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'wayrem_admin:updatesupplier' suppl.id %}">
+                            <i class="fas fa-edit text-dark"></i>
+                            <a type="button" class="btn btn-sm" data-bs-toggle="modal"
+                                data-bs-target="#deleteModal{{suppl.id}}">
+                                <i class="fas fa-trash-alt text-danger"></i>
+                            </a>
+                            <a type="button" class="btn btn-sm " data-bs-toggle="modal"
+                                href="{% url 'wayrem_admin:supplierdetails' suppl.id %}">
+                                <i class="fas fa-eye text-success"></i>
+                            </a>
+                    </td>
+
+                    <td>
+                        {% comment %} <a class="btn btn-sm" href="{% url 'wayrem_admin:viewprodsupplier' %}?product={{prod.SKU}}"> {% endcomment %}
+                        <a type="button" class="btn btn-sm" onclick="supplierprodFunc('{{suppl.id}}')">
+                        View Products
+                        </a>
+                    
+                        <!-- Modal View Supplier -->
+                        
+                        <div class="modal fade" "text-center" id="supplier{{suppl.id}}" tabindex="-1" aria-labelledby="exampleModalLabel1" aria-hidden="true">
+                            <div class="modal-dialog modal-xl modal-dialog-centered">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="">{{suppl.username |title}} Products</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div id="test{{suppl.id}}"></div>                            
+                                    </div>                    
+                                </div>
+                            </div> 
+                        </div>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="deleteModal{{suppl.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"  aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Delete {{suppl.username | title}}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure want to delete {{suppl.username | title}} ?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+                                        <form method="POST" action="{% url 'wayrem_admin:deletesupplier' %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" value="{{suppl.id}}" name="supplier_id">
+                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endif %}
+                {% endfor %}
+
+            </tbody>
+        </table>
+
+        <nav aria-label="...">
+            Showing {{ supplierlist.start_index }} to {{ supplierlist.end_index }} out  of {{ supplierlist.paginator.count }} entries
+            <ul class="pagination justify-content-end">
+                {% if supplierlist.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ supplierlist.previous_page_number }}">Previous</a>
+                    </li>
+                {% endif %}
+                {% if supplierlist.number|add:'-4' > 1 %}
+                    <li class="page-item"><a class="page-link" href="?page={{ supplierlist.number|add:'-5' }}">&hellip;</a></li>
+                {% endif %}
+                {% for num in supplierlist.paginator.page_range %}
+                    {% if num == supplierlist.number %}
+                        <li class="page-item active" aria-current="page">
+                            <a class="page-link" href="#">{{ num }}</a>
+                        </li>
+                    {% elif num > supplierlist.number|add:'-5' and num < supplierlist.number|add:'5' %}
+                        <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>            
+                    {% endif %} 
+                {% endfor %}
+                {% if supplierlist.paginator.num_pages > supplierlist.number|add:'4' %}
+                    <li class="page-item"><a class="page-link" href="?page={{ supplierlist.number|add:'5' }}">&hellip;</a></li>
+                {% endif %}
+                {% if supplierlist.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ supplierlist.next_page_number }}">Next</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
 </main>
 
 <script>
@@ -259,15 +250,14 @@ endcomment %}
             $('#supplier').modal('hide');
         
         });
-    </script>
-
+</script>
 
 
 <script>
 
     $(document).ready(function () {
         oTable = $('#filtertable').DataTable({
-            dom: 'rtip',
+            dom: 'rt',
             'columnDefs': [{ 'orderable': false, 'targets': [2, 3] }],
             buttons: [
                 {
@@ -316,6 +306,10 @@ endcomment %}
         });
         $('#table_search').keyup(function () {
             oTable.search($(this).val()).draw();
+        })
+        $("#table_search").on(
+          "change keyup paste input", function() {
+           oTable.search($(this).val()).draw();
         })
     });
 </script>

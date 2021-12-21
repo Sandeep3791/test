@@ -7796,7 +7796,7 @@ textarea.form-control-lg {
     padding: 1rem 1rem;
     margin-bottom: 1rem;
     border: 0.0625rem solid transparent;
-    border-radius: 1rem;
+    /* border-radius: 1rem; */
 }
 
 .alert-heading {
@@ -7860,8 +7860,8 @@ textarea.form-control-lg {
 }
 
 .alert-success {
-    color: #036447;
-    background-color: #cdede4;
+    color: #ffffff;
+    background-color: #05a677;
     border-color: #b4e4d6;
 }
 
@@ -31243,7 +31243,7 @@ form.role-permission .row div.col-md-12.mt-2:nth-child(3) {
     min-width: 810px;
     box-shadow: 0px 8px 16px 0px rgb(0 0 0 / 20%);
     padding: 12px 16px;
-    z-index: 1;
+    z-index: 9999 !important;
     top: 184px;
     left: 453px;
     border-radius: 10px;
@@ -31375,4 +31375,18 @@ nav.navbar.navbar-top.navbar-expand {
 }
 .modal {
     z-index: 99999 !important;
+}
+select#id_status {
+    -webkit-appearance: auto !important;
+    -moz-appearance: auto !important;
+    appearance: auto !important;
+}
+.input-group.error_field_msg {
+    position: unset;
+    float: right !important;
+    width: 100%;
+    text-align: right;
+    font-size: 14px;
+    margin-top: 4px;
+    margin-right: 2px;
 }
