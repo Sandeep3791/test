@@ -31,6 +31,8 @@ roles_options = (
                                                                        'Finance Delete'), ('Finance View', 'Finance View'),
     ('Reports Add', 'Reports Add'), ('Reports Edit', 'Reports Edit'), ('Reports Delete',
                                                                        'Reports Delete'), ('Reports View', 'Reports View'),
+    ('Email Template Add', 'Email Template Add'), ('Email Template Edit', 'Email Template Edit'), ('Email Template Delete',
+                                                                       'Email Template Delete'), ('Email Template View', 'Email Template View'),
 )
 
 status = (("Active", "Active"), ("Inactive", "Inactive"))
@@ -79,6 +81,7 @@ class User(AbstractUser):
     REQUIRED_FIELDS = []
 
     class Meta:
+       
         db_table = 'users_master'
 
 
@@ -392,3 +395,17 @@ class BestProductsSupplier(models.Model):
 
     class Meta:
         db_table = 'best_products_supplier'
+
+class EmailTemplateModel(models.Model):
+    name = models.CharField(max_length=255)
+    key = models.CharField(max_length=255)
+    from_email = models.CharField(max_length=255)
+    to_email = models.CharField(max_length=255,)
+    subject = models.CharField(max_length=255,)
+    message_format = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(blank=True, null=True)
+    updated_at = models.DateTimeField(blank=True, null=True)
+    status =  models.IntegerField(null=False, default=1)
+
+    class Meta:
+        db_table = 'email_template'

@@ -632,10 +632,62 @@
                                                           </div>
                                                         </div>
                                                       </div>
-                      
+
+                                                      <div class="col-md-12">
+                                                        <div class="role-block ml-3">
+                                                          <div class="row">
+                                                            <div class="col-md-2">
+                                                                <h5>Email Template </h5>
+                                                              </div>
+                                                              
+                                                              <div class="col-md-2">
+                                                                <div class="form-group">
+   
+                                                                  <input type="checkbox" id="emailtemplatecheck" name="permission" value="Email Template Add" id="flexCheckReportAdd"  {% if 'Email Template Add' in form.permission.value %}{% if 'Email Template Edit' in form.permission.value %}{% if 'Email Template Delete' in form.permission.value %}{% if 'Email Template View' in form.permission.value %}checked{% endif %}{% endif %}{% endif %}{% endif %} >
+
+                                                                  <label class="bmd-label-floating" >
+                                                                    All
+                                                                  </label>
+                                                                </div>
+                                                              </div>
+                                                              
+                                                            <div class="col-md-2">
+                                                              <div class="form-group">
+                                                                <input class="Emailtemplates" type="checkbox" name="permission" value="Email Template Add" class="reportsone" id="flexCheckRolesAdd" {% if 'Email Template Add' in form.permission.value %}checked{% endif %}>
+                                                                <a>
+                                                                  <i class="mx-1 fas fa-plus-circle" style="color: rgb(44, 178, 255); font-size:16px;"></i>
+                                                                </a>
+                                                              </div>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                              <div class="form-group">
+                                                                <input class="Emailtemplates" type="checkbox" name="permission" value="Email Template Edit" id="flexCheckRolesEdit" {% if 'Email Template Edit' in form.permission.value %}checked{% endif %}>
+                                                                <a>
+                                                                  <i class="mx-1 fas fa-pen" style="color:#192d4d; font-size:15px;"></i>
+                                                                </a>
+                                                              </div>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                              <div class="form-group">
+                                                                <input class="Emailtemplates" type="checkbox" name="permission" value="Email Template Delete" id="flexCheckRolesDelete" {% if 'Email Template Delete' in form.permission.value %}checked{% endif %}>
+                                                                <a>
+                                                                  <i class="mx-1 fas fa-trash text-danger" style="font-size:15px;"></i>
+                                                                </a>
+                                                              </div>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                              <div class="form-group">
+                                                                <input class="Emailtemplates" type="checkbox" name="permission" value="Email Template View" id="flexCheckRolesView" {% if 'Email Template View' in form.permission.value %}checked{% endif %}>
+                                                               <a>
+                                                                  <i class="mx-1 fas fa-eye text-success" style="font-size:15px;"></i>
+                                                                </a>
+                                                              </div>
+                                                            </div>
+                                                            
+                                                          </div>
+                                                        </div>
+                                                      </div>
                                                      
-                      
-                                                  </div>
                                               {% else %}
                                                   <label>{{ field.label_tag }} <span class="text-danger">*</span> {% if field.errors %} <span class="text-danger"><em>{{ field.errors|striptags }}</em></span> {% endif %}</label>
                                                   {{ field }} 
@@ -896,6 +948,7 @@
      }
    });
  
+
   // Changing state of CheckAll User 
   $(".Reports").click(function(){
  
@@ -905,6 +958,29 @@
       $("#reportscheck").prop("checked", false);
     }
   });
+
+$(".Emailtemplates").click(function(){
+ 
+    if($(".Emailtemplates").length == $(".Emailtemplates:checked").length) {
+      $("#emailtemplatecheck").prop("checked", true);
+    } else {
+      $("#emailtemplatecheck").prop("checked", false);
+    }
+  });
+
+$("#emailtemplatecheck").change(function(){
+     var checked = $(this).is(':checked');
+     if(checked){
+       $(".Emailtemplates").each(function(){
+         $(this).prop("checked",true);
+       });
+     }else{
+       $(".Emailtemplates").each(function(){
+         $(this).prop("checked",false);
+       });
+     }
+   });
+
 });
 </script>
 

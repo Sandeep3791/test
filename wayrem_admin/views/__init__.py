@@ -11,3 +11,5 @@ from wayrem_admin.views.roles import *
 from wayrem_admin.views.supplier import *
 from wayrem_admin.views.setting import *
 from wayrem_admin.views.customer import *
+from wayrem_admin.views.emailtemplates import *
+from wayrem_admin.views.orders import *

@@ -39,7 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'ckeditor',
     'wayrem_admin',
+   
 ]
 
 MIDDLEWARE = [
@@ -83,7 +85,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'wayrem_v1',
         'USER': 'root',
-        'PASSWORD': 'root',
+        'PASSWORD': '',
         'HOST': 'localhost',
         'PORT': '3306',
     }
@@ -172,3 +174,50 @@ MESSAGE_TAGS = {messages_s.ERROR: 'danger'}
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/media/'
+
+####################################
+    ##  CKEDITOR CONFIGURATION ##
+####################################
+
+CKEDITOR_JQUERY_URL = 'https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js'
+CKEDITOR_UPLOAD_PATH = 'uploads/help/'
+CKEDITOR_IMAGE_BACKEND = "pillow"
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'Custom',
+        'toolbar_Custom':  [
+            ['Bold', 'Italic', 'Underline', 'Strike', 'Subscript', 'Superscript'],
+			['TextColor', 'BGColor'],
+			['Styles', 'Format', 'Font', 'FontSize'],
+			 ['Link', 'Unlink'],['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['NumberedList', 'BulletedList','Image', 'HorizontalRule', '-', 'RemoveFormat'],['Outdent', 'Indent', 'Blockquote', 'CreateDiv','Table','SpecialChar', 'PageBreak'],
+			['Preview','Maximize','Source']
+	    ],
+        'toolbarLocation': 'bottom',
+        'height':200,
+        'width':'100%',
+		'removePlugins' : 'elementspath',
+		'extraPlugins' : 'image2,uploadimage'
+    },
+    'reply_ckeditor':{
+        'toolbar': 'Custom',
+          'toolbar_Custom':  [
+            ['Bold', 'Italic', 'Underline'],
+
+			['TextColor', 'BGColor'],
+			['Font', 'FontSize'],
+			 ['Link', 'Unlink'],['JustifyLeft', 'JustifyCenter', 'JustifyRight', 'JustifyBlock'],
+            ['NumberedList', 'BulletedList','Image', '-', 'Blockquote','Table','SpecialChar'],
+			 ['Maximize']
+
+
+        ],
+        'toolbarLocation': 'bottom',
+        'height':230,
+		'width':'auto',
+        'width':'100%',
+		'removePlugins' : 'elementspath',
+		'extraPlugins' : 'image2,uploadimage'
+    },
+}

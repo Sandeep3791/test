@@ -1,0 +1,127 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% block title %} Orders {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+
+
+{% endblock head %}
+
+{% block content %}
+
+<div class="topbar_pages padding-0">
+    <div class="container ">
+        <h4 class="text-title">Orders</h2>
+        <div class="breadcrumb-section">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb padding-left-0">
+                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"> Orders</li>
+                </ol>
+            </nav>
+        </div>
+    </div> 
+</div>
+<main class="content_admin_dashbboard">
+    {% if messages %}
+    {% for message in messages %}
+    <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
+        <strong> {{ message }}!</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    <table class="table  text-center" id="orders">
+        <thead class="table-dark ">
+            <tr>
+                <th scope="col">Order Ref</th>
+                <th scope="col">Date</th>
+                <th scope="col">Customer</th>
+                <th scope="col">Mobile</th>
+                <th scope="col">Status</th>
+                <th scope="col">Items</th>
+                <th scope="col">Total</th>
+                <th scope="col">Action</th>
+               
+            </tr>
+        </thead>
+        <tbody class="bg-white">
+        {% for order in orders %}
+           <tr>
+                <td>{{order.id}}</td>
+                <td>{{order.order_date}}</td>
+                <td>{{order.customer.first_name}}</td>
+                <td>{{order.customer.contact}}</td>
+                <td>{{order.status.name}}</td>
+                <td>Items</td>
+                <td>{{order.total}}</td>
+                <td>
+                                <div class="btn-group">
+                                    <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        <span class="icon icon-sm">
+                                            <span class="fas fa-ellipsis-h icon-dark"></span>
+                                        </span>
+                                        <span class="sr-only">Toggle Dropdown</span>
+                                    </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="#"><span class="fas fa-eye mr-2"></span>Invoice</a>
+                                        <a class="dropdown-item" href="#"><span class="fas fa-edit mr-2"></span>Change Status</a>
+                                    </div>
+                                </div>
+                            </td>
+                
+           </tr>
+           <tr></tr>
+           {% endfor %}
+        </tbody>
+    </table>
+    
+   {% if is_paginated %}
+   <nav  aria-label="Page navigation example">
+        <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li><a href="?page={{ page_obj.previous_page_number }}"><i class="fa fa-chevron-left" aria-hidden="true"></i></a></li>
+            {% else %}
+                <li class="disabled"><span><i class="fa fa-chevron-left" aria-hidden="true"></i></span></li>
+            {% endif %}
+
+            {% if page_obj.number|add:'-4' > 1 %}
+                <li><a href="?page={{ page_obj.number|add:'-5' }}">&hellip;</a></li>
+            {% endif %}
+
+            {% for i in page_obj.paginator.page_range %}
+                {% if page_obj.number == i %}
+                    <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+                {% elif i > page_obj.number|add:'-5' and i < page_obj.number|add:'5' %}
+                    <li><a href="?page={{ i }}">{{ i }}</a></li>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.paginator.num_pages > page_obj.number|add:'4' %}
+                <li><a href="?page={{ page_obj.number|add:'5' }}">&hellip;</a></li>
+            {% endif %}
+
+            {% if page_obj.has_next %}
+                <li><a href="?page={{ page_obj.next_page_number }}"><i class="fa fa-chevron-right" aria-hidden="true"></i></a></li>
+            {% else %}
+                <li class="disabled"><span><i class="fa fa-chevron-right" aria-hidden="true"></i></span></li>
+            {% endif %}
+
+            </ul>
+  </nav>
+{% endif %}
+
+</main>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <script src="https://appsrv1-147a1.kxcdn.com/volt-dashboard/vendor/popper.js/dist/umd/popper.min.js"></script>
+  <script src="https://appsrv1-147a1.kxcdn.com/volt-dashboard/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+{% endblock javascripts %}
