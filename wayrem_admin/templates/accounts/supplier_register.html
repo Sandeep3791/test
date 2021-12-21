@@ -205,6 +205,23 @@
                                         <span class="text-error"></span>
                                     </div>
                                 </div>
+                                <!-- Form -->
+                                <div class="col-lg-6">
+                                    <div class="form-group mb-4">
+                                        <label for="password">Address <span class="text-danger">*</span> <span
+                                                class="text-danger"><em> {{form.address.errors | striptags}}
+                                                </em></span></label>
+                                        <div class="input-group" id="id_category">
+                                            {% comment %} <span class="input-group-text" id="cpassword"><span
+                                                    class="fas fa-lock"></span></span> {% endcomment %}
+                                            {{form.address}}
+                                            <div class="input-group" id="category_error_message"
+                                                style="color: #d12525;"></div>
+                                        </div>
+                                        <span class="text-error"></span>
+                                    </div>
+                                </div>
+                                <!-- End of Form -->
                             </div>
 
                             {% comment %} <div class="d-grid">
@@ -276,7 +293,7 @@
                 $("#name_error_message").hide();
                 $("#id_username").css("border-bottom", "2px solid #34F458");
             } else {
-                $("#name_error_message").html("Please Enter User Name ");
+                $("#name_error_message").html("Please Enter Username ");
                 $("#name_error_message").show();
                 error_data = true;
             }

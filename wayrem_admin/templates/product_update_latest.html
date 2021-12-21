@@ -194,12 +194,12 @@
                                 <!-- Form -->
                                 <div class="col-lg-6">
                                     <div class="form-group mb-4 col-gap">
-                                        <label for="name">Weight <span class="text-danger">*</span><span class="text-danger"><em> {{form.weight.error | striptags}} {{form.unit.error | striptags}} 
+                                        <label for="name">Weight <span class="text-danger">*</span><span class="text-danger"><em> {{form.weight.error | striptags}} {{form.weight_unit.error | striptags}} 
                                             </em>
                                         </span></label>
                                         <div class="input-group first">   
                                             {{form.weight}} 
-                                            {{form.unit}} 
+                                            {{form.weight_unit}} 
                                         <div class="input-group" id="weight_error_message" style="color: #d12525;"></div>
                                         </div>
                                         
@@ -340,11 +340,12 @@
 
                             <div class="col-lg-6">
                                 <div class="form-group mb-4">
-                                    <label for="name">Product Quantity <span class="text-danger">*</span><span class="text-danger"><em> {{form.quantity.errors | striptags}}
+                                    <label for="name">Product Quantity <span class="text-danger">*</span><span class="text-danger"><em> {{form.quantity.errors | striptags}} {{form.quantity_unit.errors | striptags}}
                                     </em>
                                     </span></label>
                                     <div class="input-group">   
                                         {{form.quantity}}
+                                        {{form.quantity_unit}}
                                         <div class="input-group" id="quantity_error_message" style="color: #d12525;"></div>
                                     </div>
                                     <div class="input-group">

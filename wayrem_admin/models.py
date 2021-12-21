@@ -154,7 +154,7 @@ class Supplier(models.Model):
     password = models.CharField(max_length=200)
     contact = models.BigIntegerField(null=True)
     logo = models.ImageField(upload_to='images/', null=True)
-    address = models.CharField(max_length=500, blank=True, null=True)
+    address = models.TextField(null=True, blank=True)
     delivery_incharge = models.CharField(max_length=500, blank=True, null=True)
     company_name = models.CharField(max_length=100, blank=False, null=True)
     is_active = models.BooleanField(default=True)
@@ -197,6 +197,18 @@ UNIT_CHOICES = (
 )
 
 
+class Unit(models.Model):
+    id = models.AutoField(primary_key=True, unique=True)
+    unit_name = models.CharField(max_length=15, null=False, unique=True)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.unit_name
+
+    class Meta:
+        db_table = 'unit_master'
+
+
 class Products(models.Model):
     id = models.IntegerField(primary_key=True, unique=True)
     name = models.CharField(max_length=255, null=True, blank=False)
@@ -214,9 +226,11 @@ class Products(models.Model):
         max_length=20, choices=DIS_ABS_PERCENT, null=True, blank=False)
     description = models.TextField()
     quantity = models.CharField(max_length=100, null=True, default=1)
+    quantity_unit = models.ForeignKey(
+        Unit, on_delete=models.CASCADE, null=True, blank=True, related_name='%(class)s_quantity_unit')
     weight = models.CharField(null=True, max_length=255)
-    unit = models.CharField(
-        max_length=20, choices=UNIT_CHOICES, null=True, blank=False)
+    weight_unit = models.ForeignKey(
+        Unit, on_delete=models.CASCADE, null=True, blank=True, related_name='%(class)s_weight_unit')
     price = models.CharField(null=True, max_length=100)
     discount = models.CharField(max_length=50, null=True, blank=False)
     package_count = models.CharField(
@@ -251,18 +265,6 @@ class Images(models.Model):
 
     class Meta:
         db_table = 'product_images'
-
-
-class Unit(models.Model):
-    id = models.AutoField(primary_key=True, unique=True)
-    unit_name = models.CharField(max_length=15, null=False, unique=True)
-    is_active = models.BooleanField(default=True)
-
-    def __str__(self):
-        return self.unit_name
-
-    class Meta:
-        db_table = 'unit_master'
 
 
 class ProductIngredients(models.Model):

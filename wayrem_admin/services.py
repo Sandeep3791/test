@@ -73,3 +73,7 @@ def inst_Ingridient(value):
 
 def inst_Product(value):
     return Products.objects.get(id=value)
+
+
+def inst_Unit(value):
+    return Unit.objects.get(id=value)

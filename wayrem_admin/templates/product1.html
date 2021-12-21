@@ -18,7 +18,7 @@
             $('#id_category').select2({
             placeholder: 'Select Category',
             })
-            $('#id_unit, #id_dis_abs_percent').select2({
+            $('#id_weight_unit,#id_quantity_unit,#id_margin_unit, #id_dis_abs_percent').select2({
             placeholder: 'Select Unit',
             })
             
@@ -190,7 +190,7 @@
                                             </span></label>
                                             <div class="input-group first">   
                                                 {{form.weight}} 
-                                                {{form.unit}} 
+                                                {{form.weight_unit}} 
                                                <div class="input-group error_field_msg" id="weight_error_message" style="color: #d12525;"></div>
                                             </div>
                                             
@@ -333,10 +333,12 @@
                                  <div class="col-lg-6">
                                     <div class="form-group mb-4">
                                         <label for="name">Product Quantity <span class="text-danger">*</span><span class="text-danger"><em> {{form.quantity.errors | striptags}}
+                                            {{form.quantity_unit.errors | striptags}}
                                         </em>
                                         </span></label>
                                         <div class="input-group">   
                                             {{form.quantity}}
+                                            {{form.quantity_unit}}
                                             <div class="input-group error_field_msg" id= "quantity_error_message" style="color: #d12525;"></div>
                                         </div>
                                         <div class="input-group">
