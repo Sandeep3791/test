@@ -1,16 +1,11 @@
-
 {% extends "layouts/base.html" %}
-
-
 {% block title %} Add Email Template {% endblock %} 
-
-<!-- Specific Page CSS goes HERE  -->
-{% block stylesheets %}{% endblock stylesheets %}
-
 {% block content %}
 {{form.media}}
-<div class="topbar_pages padding-0">
-    <div class="container ">
+<div class="dashboard_content_inner">
+    
+    <div class="topbar_pages">
+    <div class="container">
         <h4 class="text-title">Add Email Template</h2>
         <div class="breadcrumb-section">
             <nav aria-label="breadcrumb">
@@ -21,102 +16,116 @@
                 </ol>
             </nav>
         </div>
-    </div> 
-</div>
-<div class="row d-flex justify-content-center">
-   
-    <div class="col-12 col-xl-12">
-        <div class="card card-body card_shadow mb-4">
-            
-            <form action="{% url 'wayrem_admin:addemailtemplates' %}" method="POST" enctype="multipart/form-data" validate>
-              {% csrf_token %}
-                <div class="row">
-                  <div class="col-md-12 mb-2">
-                        <div>
-                            <label for="name">Name  <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.name.errors | striptags}}</em></span></label>
-                            {{form.name}}
-                            <div class="input-group" id="name_error_message" style="color: #d12525;"></div>
-                        </div>
-                    </div>
+    </div>
+    </div>
 
+    <div class="py-4 justify-content-center form-bg-image">
+            <div class="col-12 d-flex align-items-center justify-content-center">
+                <div class="mb-4 mb-lg-0 bg-white shadow-sm rounded p-4 p-lg-4 w-100">
+                    <form action="{% url 'wayrem_admin:addemailtemplates' %}" method="POST" enctype="multipart/form-data" validate>
+                {% csrf_token %}
+                    <div class="row">
                     <div class="col-md-12 mb-2">
-                        <div>
-                            <label for="key">Key  <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.key.errors | striptags}}</em></span></label>
-                            {{form.key}}
-                            <div class="input-group" id="from_email_error_message" style="color: #d12525;"></div>
+                            <div>
+                                <label for="name">Name  <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.name.errors | striptags}}</em></span></label>
+                                {{form.name}}
+                                <div class="input-group" id="name_error_message" style="color: #d12525;"></div>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="col-md-12 mb-2">
-                        <div>
-                            <label for="from_email">From Email <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.from_email.errors | striptags}}</em></span></label>
-                            {{form.from_email}}
-                            <div class="input-group" id="from_email_error_message" style="color: #d12525;"></div>
+                        <div class="col-md-12 mb-2">
+                            <div>
+                                <label for="key">Key  <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.key.errors | striptags}}</em></span></label>
+                                {{form.key}}
+                                <div class="input-group" id="key_error_message" style="color: #d12525;"></div>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="col-md-12 mb-2">
-                        <div>
-                            <label for="to_email">To Email <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.to_email.errors | striptags}}</em></span></label>
-                            {{form.to_email}}
-                            <div class="input-group" id="to_email_error_message" style="color: #d12525;"></div>
+                        <div class="col-md-12 mb-2">
+                            <div>
+                                <label for="from_email">From Email <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.from_email.errors | striptags}}</em></span></label>
+                                {{form.from_email}}
+                                <div class="input-group" id="from_email_error_message" style="color: #d12525;"></div>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="col-md-12 mb-2">
-                        <div>
-                            <label for="subject">Subject <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.subject.errors | striptags}}</em></span></label>
-                            {{form.subject}}
-                            <div class="input-group" id="subject_error_message" style="color: #d12525;"></div>
+                        <div class="col-md-12 mb-2">
+                            <div>
+                                <label for="to_email">To Email <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.to_email.errors | striptags}}</em></span></label>
+                                {{form.to_email}}
+                                <div class="input-group" id="to_email_error_message" style="color: #d12525;"></div>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="col-md-12 mb-2">
-                        <div>
-                            <label for="message_format">Message Format <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.message_format.errors | striptags}}</em></span></label>
-                            {{form.message_format}}
-                            <div class="input-group" id="message_format_error_message" style="color: #d12525;"></div>
+                        <div class="col-md-12 mb-2">
+                            <div>
+                                <label for="subject">Subject <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.subject.errors | striptags}}</em></span></label>
+                                {{form.subject}}
+                                <div class="input-group" id="subject_error_message" style="color: #d12525;"></div>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="col-md-12 mb-2">
-                        <div>
-                            <label for="status">Status <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.status.errors | striptags}}</em></span></label>
-                            {{form.status}}
-                            <div class="input-group" id="status_error_message" style="color: #d12525;"></div>
+                        <div class="col-md-12 mb-2">
+                            <div>
+                                <label for="message_format">Message Format <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.message_format.errors | striptags}}</em></span></label>
+                                {{form.message_format}}
+                                <div class="input-group" id="message_format_error_message" style="color: #d12525;"></div>
+                            </div>
                         </div>
-                    </div>
 
+                        <div class="col-md-12 mb-2">
+                            <div>
+                                <label for="status">Status <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.status.errors | striptags}}</em></span></label>
+                                {{form.status}}
+                                <div class="input-group" id="status_error_message" style="color: #d12525;"></div>
+                            </div>
+                        </div>
+
+
+                        
+                        <div class="mt-3">
+                        <a href="{% url 'wayrem_admin:emailtemplates' %}"
+                                        class="btn  btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Cancel</a>
+                        <button type="submit" class="btn  btn-dark btn-block col-xl-3 col-md-5 col-12">Save</button>
+                    </div>
+                    </div>
 
                     
-                    <div class="mt-3">
-                    <a href="{% url 'wayrem_admin:emailtemplates' %}"
-                                    class="btn  btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Cancel</a>
-                    <button type="submit" class="btn  btn-dark btn-block col-xl-3 col-md-5 col-12">Save</button>
-                </div>
-                </div>
-
+                            
                 
-                        
-               
-            </form>
-        </div>
+                </form>
+                </div>    
+            </div>
     </div>
 </div>
 {% endblock content %}
-
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
 <script>
-    $(function () {
+     $(function () {
             var error_n = false;
             var error_d = false;
+    
             $("#id_name").focusout(function () {
                 check_name();
             });
-            $("#id_description").focusout(function () {
-                check_description();
+            $("#id_key").focusout(function () {
+                id_key();
             });
+
+             $("#id_from_email").focusout(function () {
+                id_from_email();
+            });
+
+             $("#id_to_email").focusout(function () {
+                id_to_email();
+            });
+            
+            $("#id_subject").focusout(function () {
+                id_subject();
+            });
+
+
             function check_name() {
                 var name = $("#id_name").val();
                 if (name !== '') {
@@ -128,6 +137,73 @@
                     error_n = true;
                 }
             }
+    
+            function id_key() {
+                var description = $("#id_key").val();
+                if (description !== '') {
+                    $("#key_error_message").hide();
+                    // $("#id_description").css("border-bottom", "2px solid #34F458");
+                } else {
+                    $("#key_error_message").html("Please Enter Key");
+                    $("#key_error_message").show();
+                    error_d = true;
+                }
+            }
+            
+            function IsEmail(email) {
+                var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+                if(!regex.test(email)) {
+                    return false;
+                }else{
+                    return true;
+                }
+            }
+            
+            function id_from_email() {
+                var description = $("#id_from_email").val();
+                if (description !== '') {
+                    if( !IsEmail(description)) { 
+                        $("#from_email_error_message").html("Please Enter correct Email.");
+                        $("#from_email_error_message").show();
+                        error_d = true;
+                     }else{
+                         $("#from_email_error_message").hide();
+                     }
+                    // $("#id_description").css("border-bottom", "2px solid #34F458");
+                } else {
+                    $("#from_email_error_message").html("Please Enter From email");
+                    $("#from_email_error_message").show();
+                    error_d = true;
+                }
+            }
+
+            function id_to_email() {
+                var description = $("#id_to_email").val();
+                if (description !== '') {
+                    $("#to_email_error_message").hide();
+                    // $("#id_description").css("border-bottom", "2px solid #34F458");
+                } else {
+                    $("#to_email_error_message").html("Please Enter TO email");
+                    $("#to_email_error_message").show();
+                    error_d = true;
+                }
+            }
+
+            function id_subject(){
+                var description = $("#id_subject").val();
+                if (description !== '') {
+                    $("#subject_error_message").hide();
+                    // $("#id_description").css("border-bottom", "2px solid #34F458");
+                } else {
+                    $("#subject_error_message").html("Please Enter Subject");
+                    $("#subject_error_message").show();
+                    error_d = true;
+                }
+            }
+
+
+    
         });
+    
     </script>
 {% endblock javascripts %}

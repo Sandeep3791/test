@@ -3,7 +3,7 @@ from wayrem_admin import views
 
 urlpatterns = [
     path('', views.OrdersList.as_view(), name='orderlist'),
- 
-   
-
+    path('updateorderstatus/<int:id>', views.OrderStatusUpdated.as_view(), name='updateorderstatus'),
+    path('invoice-order/<int:id>', views.OrderInvoiceView.as_view(), name='invoiceorder'),
+    path('<int:id>', views.OrderUpdateView.as_view(), name='orderupdate'),
 ]
