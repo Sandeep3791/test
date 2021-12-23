@@ -1,5 +1,5 @@
 {% extends "layouts/base.html" %}
-{% load static %}
+{% load static  %}
 {% block title %} Orders {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
@@ -10,7 +10,6 @@
 
 
 {% endblock head %}
-
 {% block content %}
 
 <div class="topbar_pages padding-0">
@@ -27,6 +26,7 @@
     </div> 
 </div>
 <main class="content_admin_dashbboard">
+    <div class="alert-container"></div>
     {% if messages %}
     {% for message in messages %}
     <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
@@ -35,93 +35,73 @@
     </div>
     {% endfor %}
     {% endif %}
-    <table class="table  text-center" id="orders">
-        <thead class="table-dark ">
-            <tr>
-                <th scope="col">Order Ref</th>
-                <th scope="col">Date</th>
-                <th scope="col">Customer</th>
-                <th scope="col">Mobile</th>
-                <th scope="col">Status</th>
-                <th scope="col">Items</th>
-                <th scope="col">Total</th>
-                <th scope="col">Action</th>
-               
-            </tr>
-        </thead>
-        <tbody class="bg-white">
-        {% for order in orders %}
-           <tr>
-                <td>{{order.id}}</td>
-                <td>{{order.order_date}}</td>
-                <td>{{order.customer.first_name}}</td>
-                <td>{{order.customer.contact}}</td>
-                <td>{{order.status.name}}</td>
-                <td>Items</td>
-                <td>{{order.total}}</td>
-                <td>
-                                <div class="btn-group">
-                                    <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <span class="icon icon-sm">
-                                            <span class="fas fa-ellipsis-h icon-dark"></span>
-                                        </span>
-                                        <span class="sr-only">Toggle Dropdown</span>
-                                    </button>
-                                    <div class="dropdown-menu">
-                                        <a class="dropdown-item" href="#"><span class="fas fa-eye mr-2"></span>Invoice</a>
-                                        <a class="dropdown-item" href="#"><span class="fas fa-edit mr-2"></span>Change Status</a>
-                                    </div>
-                                </div>
-                            </td>
-                
-           </tr>
-           <tr></tr>
-           {% endfor %}
-        </tbody>
-    </table>
-    
-   {% if is_paginated %}
-   <nav  aria-label="Page navigation example">
-        <ul class="pagination">
-            {% if page_obj.has_previous %}
-                <li><a href="?page={{ page_obj.previous_page_number }}"><i class="fa fa-chevron-left" aria-hidden="true"></i></a></li>
-            {% else %}
-                <li class="disabled"><span><i class="fa fa-chevron-left" aria-hidden="true"></i></span></li>
-            {% endif %}
+    <div class="card card-body border-light shadow-sm table-wrapper table-responsive pt-0">
+        {% include "orders/grid_orders.html" %} 
+        {% include "orders/pagination.html" %}    
+   </div>
 
-            {% if page_obj.number|add:'-4' > 1 %}
-                <li><a href="?page={{ page_obj.number|add:'-5' }}">&hellip;</a></li>
-            {% endif %}
-
-            {% for i in page_obj.paginator.page_range %}
-                {% if page_obj.number == i %}
-                    <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
-                {% elif i > page_obj.number|add:'-5' and i < page_obj.number|add:'5' %}
-                    <li><a href="?page={{ i }}">{{ i }}</a></li>
-                {% endif %}
-            {% endfor %}
-
-            {% if page_obj.paginator.num_pages > page_obj.number|add:'4' %}
-                <li><a href="?page={{ page_obj.number|add:'5' }}">&hellip;</a></li>
-            {% endif %}
-
-            {% if page_obj.has_next %}
-                <li><a href="?page={{ page_obj.next_page_number }}"><i class="fa fa-chevron-right" aria-hidden="true"></i></a></li>
-            {% else %}
-                <li class="disabled"><span><i class="fa fa-chevron-right" aria-hidden="true"></i></span></li>
-            {% endif %}
-
-            </ul>
-  </nav>
-{% endif %}
+<div class="modal fade" id="orderpopup" tabindex="-1" role="dialog" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+			     <h5 class="modal-title" id="exampleModalLabel">Update User Shift</h5>
+			</div>
+			<div class="modal-body"></div>
+		</div>     
+	</div>
+</div>
 
 </main>
+
+
 
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
+  
+  <script> 
+    $(document).ready(function(){
+        $('.orderstatus').click(function(){
+            order_status_id=$(this).data("id");
+            var url="/orders/updateorderstatus/"+order_status_id;
+            $.ajax({
+                url: url,
+                type: 'GET',
+                cache: false,
+                success: function(data) {
+                    $('#orderpopup').modal('show');
+                    $("#orderpopup").html(data);
+                }
+            })
+            
+        })
 
-  <script src="https://appsrv1-147a1.kxcdn.com/volt-dashboard/vendor/popper.js/dist/umd/popper.min.js"></script>
-  <script src="https://appsrv1-147a1.kxcdn.com/volt-dashboard/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+    })   
+
+$("#orderpopup").on("click",".order_submit_success",function(e){
+         url = $("#orderpopup #oderform").attr("action")
+		 type_form=$("#orderpopup #oderform").attr("method")
+	   	 data_ser=$("#orderpopup #oderform").serialize()
+         order_status_id=$(this).data("id");
+         $.ajax({
+	            type: type_form,
+	            url: url,
+	            data: data_ser,
+	            cache: false,
+	            success: function (data) {
+                     $('#orderpopup').modal('hide');
+                     $(".status_"+order_status_id).html(data);
+                     var alert_message='<div class="alert-container alert alert-success alert-dismissible fade show" role="alert" ><strong> Order status Updated!!</strong><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
+                     $(".alert-container").html(alert_message);   
+                     
+                }
+         })
+
+    })
+</script>
+
+<script src="https://appsrv1-147a1.kxcdn.com/volt-dashboard/vendor/popper.js/dist/umd/popper.min.js"></script>
+<script src="https://appsrv1-147a1.kxcdn.com/volt-dashboard/vendor/bootstrap/dist/js/bootstrap.min.js"></script>
+
 {% endblock javascripts %}

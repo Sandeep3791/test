@@ -2,7 +2,6 @@ from django.db import models
 from .models import *
 import random
 
-
 def create_new_ref_number():
     not_unique = True
     while not_unique:
@@ -49,6 +48,9 @@ class OrderStatus(models.Model):
     id = models.SmallAutoField(primary_key=True)
     name = models.CharField(max_length=255, db_collation='utf8mb4_unicode_ci')
 
+    def __str__(self):
+        return self.name
+        
     class Meta:
         app_label = "wayrem_admin"
         db_table = 'order_status'
@@ -63,6 +65,9 @@ class OrderDetails(models.Model):
     item_margin = models.FloatField()
     discount = models.FloatField()
     quantity = models.SmallIntegerField()
+
+    def __str__(self):
+        return self.sku
 
     class Meta:
         app_label = "wayrem_admin"

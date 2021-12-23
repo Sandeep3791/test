@@ -8,4 +8,5 @@ from wayrem_admin.forms.categories import *
 from wayrem_admin.forms.subcategory import *
 from wayrem_admin.forms.setting import *
 from wayrem_admin.forms.emailtemplates import *
+from wayrem_admin.forms.order import *
 from django import forms
