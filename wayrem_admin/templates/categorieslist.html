@@ -24,16 +24,8 @@ endcomment %}
 {% endblock head %}
 
 {% block content %}
-<!-- <div class="text-left">
-    <a class="nav-link" href="{% url 'wayrem_admin:sub-admin-register' %}">
-        <button class="btn btn-secondary" style="background-color: #f2e600; position: relative;left: 850px;">Create New User</button>
-        </a>
-</div> -->
-
-<!-- <div class="col-xl-4 col-lg-4 col-md-6 d-flex align-items-center"><span class="page_title mb-md-2" style="font-size: 28px; font-weight:600;">User</span>
-</div> -->
-<div class="topbar_pages padding-0">
-    <div class="container ">
+<div class="dashboard_content_inner">
+    <div class="topbar_pages">
         <h4 class="text-title">Categories</h2>
         <div class="breadcrumb-section">
             <nav aria-label="breadcrumb">
@@ -43,168 +35,149 @@ endcomment %}
                     <li class="breadcrumb-item active" aria-current="page">Manage Category</li>
                 </ol>
             </nav>
-        </div>
-    </div> 
-</div>
-<main class="content_admin_dashbboard">
-    <div class="container ">
-<div class="subheader row">
-    <div class="row add_btn col-xl-4 col-lg-3 col-md-5 d-flex align-items-center">
-        <div class="col">
-            {% comment %} <a href="{% url 'wayrem_admin:categorypdf' %}" class="button button1 mt-2 export_file">Export to pdf</a> {% endcomment %}
-        </div>
+        </div> 
     </div>
-
-    <div class="col-xl-8 col-lg-8 col-12 ms-4 mb-3 my-2">
-        <div class="row d-flex align-items-center ">
-            {% comment %} <div class="col-xl-4 col-lg-3 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 " style="height:40px;"> {% endcomment %}
-            <div class="col-xl-6 col-lg-3 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 ml-0" style="height:40px; margin-left: auto;">
-                <!-- <input type="search" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Search"> -->
-                <label class="subadmin_search d-flex align-items-center">
-                    <input class="table_searchbar" id="table_search" type="search" placeholder="Search">
-                    <!-- <img src="images/Search.svg" alt=""> -->
-                </label>
-
-            </div>
-            {% comment %} <div class="col-xl-4 col-lg-3 col-md-5"><a class="btn w-100 anchor_btn ps-0 pe-0"
-                href="{% url 'wayrem_admin:categorieslist' %}">
-                <button class="btn col-sm-12 col-md-11 col-8 create_new">Category List</button>
-            </a></div>
-            <div class="col-xl-4 col-lg-3 col-md-5"><a class="btn w-100 anchor_btn ps-0 pe-0"
-                href="{% url 'wayrem_admin:subcategorieslist' %}">
-                <button class="btn col-sm-12 col-md-11 col-8 create_new">Sub-Category List</button>
-            </a></div> {% endcomment %}
-            {% comment %} <div class="col-xl-3 col-lg-3 col-md-5"><a class="btn w-100 anchor_btn ps-0 pe-0"
+    {% if messages %}
+    <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="fas fa-comment-dots" {% endif %}> {{ message }}</li>
+                {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+    <div class="table-settings mb-4">
+        <div class="subheader row align-items-center justify-content-between">
+            <div class="col-xl-2 col-lg-2 col-md-5">
+                <a class="btn anchor_btn ps-0 pe-0"
                     href="{% url 'wayrem_admin:addcategory' %}">
-                    <button class="btn col-sm-12 col-md-12 col-12 create_new">Create Category</button>
-                </a></div> {% endcomment %}
-        </div>
-
-    </div>
-
-</div>
-
-
-
-
-{% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-    <li{% if message.tags %} class="fas fa-comment-dots" {% endif %}> {{ message }}</li>
-        {% endfor %}
-</ul>
-{% endif %}
-<table class="table  text-center" id="filtertable">
-    <thead class="table-dark">
-        <tr>
-            {% comment %} <th scope="col">S. No.</th> {% endcomment %}
-            <th scope="col">Category Name</th>
-            <th scope="col">Parent Category</th>
-            <th scope="col">Category Image</th>
-            <th scope="col">Description</th>
-            <th scope="col">Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for cate in categorieslist %}
-
-        <tr>
-            {% comment %} <th scope="row">{{forloop.counter}}</th> {% endcomment %}
-            <td>{{cate.name}}</td>
-            <td>
-                {% if cate.parent == None %}
-                ----
-                {% else %}
-                {{cate.parent}}
-                {% endif %}
-            </td>
-            <td>
-
-                {% if cate.image %}
-                <img src="{{cate.image.url}}" style="height:45px">
-                {% else %}
-                No Image
-                {% endif %}
-            </td>
-            <td>{{cate.tag}}</td>
-            <td><a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'wayrem_admin:updatecategory' cate.id %}">
-                    <i class="fas fa-edit text-dark"></i>
-                </a> <a type="button" class="btn btn-sm" data-bs-toggle="modal"
-                    data-bs-target="#deleteModal{{cate.id}}">
-                    <i class="fas fa-trash-alt text-danger"></i>
+                    <button class="btn btn-success create_new">Create Category</button>
                 </a>
-                <a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'wayrem_admin:categorydetails' cate.id %}">
-                    <i class="mx-1 fas fa-eye text-success" style="font-size:15px;"></i>
-                </a>
-            </td>
-            <!-- Modal -->
-            <div class="modal fade" id="deleteModal{{cate.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Delete {{cate.name | title}}</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            Are you sure want to delete {{cate.name | title}} ?
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
-                            <form method="POST" action="{% url 'wayrem_admin:deletecategories' %}">
-                                {% csrf_token %}
-                                <input type="hidden" value="{{cate.id}}" name="category_id">
-                                <button type="submit" class="btn btn-danger">Delete</button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
             </div>
-        </tr>
-        {% endfor %}
+            <div class="col-xl-2 col-lg-2 col-md-5">
+               
+            </div>  
+            
+            <div class="col-xl-8 col-lg-8 col-md-5" >
+                <div class="input-group subadmin_search">
+                    <span class="input-group-text" id="basic-addon2"><span class="fas fa-search"></span></span>
+                    <input type="text" class="form-control table_searchbar" id="table_search" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2">
+                </div>
+            </div> 
+        </div>
+    </div>
+    <div class="card card-body border-light shadow-sm table-wrapper table-responsive pt-0">
+        <table class="table table-hover text-center" id="filtertable">
+            <thead class="">
+                <tr>
+                    {% comment %} <th scope="col">S. No.</th> {% endcomment %}
+                    <th scope="col">Category Name</th>
+                    <th scope="col">Parent Category</th>
+                    <th scope="col">Category Image</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cate in categorieslist %}
+                <tr>
+                    {% comment %} <th scope="row">{{forloop.counter}}</th> {% endcomment %}
+                    <td>{{cate.name}}</td>
+                    <td>
+                        {% if cate.parent == None %}
+                        ----
+                        {% else %}
+                        {{cate.parent}}
+                        {% endif %}
+                    </td>
+                    <td>
+        
+                        {% if cate.image %}
+                        <img src="{{cate.image.url}}" style="height:45px">
+                        {% else %}
+                        No Image
+                        {% endif %}
+                    </td>
+                    <td>{{cate.tag}}</td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="icon icon-sm">
+                                    <span class="fas fa-ellipsis-h icon-dark"></span>
+                                </span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="{% url 'wayrem_admin:categorydetails' cate.id %}"><span class="fas fa-eye mr-2"></span>View Details</a>
+                                <a class="dropdown-item" href="{% url 'wayrem_admin:updatecategory' cate.id %}"><span class="fas fa-edit mr-2"></span>Edit</a>
+                                <a class="dropdown-item text-danger"  data-bs-toggle="modal" data-bs-target="#deleteModal{{cate.id}}" href="#"> <span class="fas fa-trash-alt mr-2"></span>Remove</a>
+                            </div>
+                        </div>
+                       
+                        <!-- Modal -->
+                        <div class="modal fade" id="deleteModal{{cate.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Delete {{cate.name | title}}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure want to delete {{cate.name | title}} ?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+                                        <form method="POST" action="{% url 'wayrem_admin:deletecategories' %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" value="{{cate.id}}" name="category_id">
+                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="card-footer px-3 border-0 d-flex align-items-center justify-content-between">
+            <div class="font-weight-bold small"> Showing <b>{{ categorieslist.start_index }}</b> to <b>{{ categorieslist.end_index }}</b> out  of <b>{{ categorieslist.paginator.count }}</b> entries</div>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-end">
+                    {% if categorieslist.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ categorieslist.previous_page_number }}">Previous</a>
+                        </li>
+                    {% endif %}
+                    {% if categorieslist.number|add:'-4' > 1 %}
+                        <li class="page-item"><a class="page-link" href="?page={{ categorieslist.number|add:'-5' }}">&hellip;</a></li>
+                    {% endif %}
+                    {% for num in categorieslist.paginator.page_range %}
+                        {% if num == categorieslist.number %}
+                            <li class="page-item active" aria-current="page">
+                                <a class="page-link" href="#">{{ num }}</a>
+                            </li>
+                        {% elif num > categorieslist.number|add:'-5' and num < categorieslist.number|add:'5' %}
+                            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>            
+                        {% endif %} 
+                    {% endfor %}
+                    {% if categorieslist.paginator.num_pages > categorieslist.number|add:'4' %}
+                        <li class="page-item"><a class="page-link" href="?page={{ categorieslist.number|add:'5' }}">&hellip;</a></li>
+                    {% endif %}
+                    {% if categorieslist.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ categorieslist.next_page_number }}">Next</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
 
-    </tbody>
-</table>
-<nav aria-label="...">
-    Showing {{ categorieslist.start_index }} to {{ categorieslist.end_index }} out  of {{ categorieslist.paginator.count }} entries
-    <ul class="pagination justify-content-end">
-        {% if categorieslist.has_previous %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{ categorieslist.previous_page_number }}">Previous</a>
-            </li>
-        {% endif %}
-        {% if categorieslist.number|add:'-4' > 1 %}
-            <li class="page-item"><a class="page-link" href="?page={{ categorieslist.number|add:'-5' }}">&hellip;</a></li>
-        {% endif %}
-        {% for num in categorieslist.paginator.page_range %}
-            {% if num == categorieslist.number %}
-                <li class="page-item active" aria-current="page">
-                    <a class="page-link" href="#">{{ num }}</a>
-                </li>
-            {% elif num > categorieslist.number|add:'-5' and num < categorieslist.number|add:'5' %}
-                <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>            
-            {% endif %} 
-        {% endfor %}
-        {% if categorieslist.paginator.num_pages > categorieslist.number|add:'4' %}
-            <li class="page-item"><a class="page-link" href="?page={{ categorieslist.number|add:'5' }}">&hellip;</a></li>
-        {% endif %}
-        {% if categorieslist.has_next %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{ categorieslist.next_page_number }}">Next</a>
-            </li>
-        {% endif %}
-    </ul>
-</nav>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</main>
 
 <script>
-
     $(document).ready(function () {
         oTable = $('#filtertable').DataTable({
             dom: 'rt',

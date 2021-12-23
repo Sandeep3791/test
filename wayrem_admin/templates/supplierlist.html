@@ -24,16 +24,8 @@ endcomment %}
 {% endblock head %}
 
 {% block content %}
-<!-- <div class="text-left">
-    <a class="nav-link" href="{% url 'wayrem_admin:sub-admin-register' %}">
-        <button class="btn btn-secondary" style="background-color: #f2e600; position: relative;left: 850px;">Create New User</button>
-        </a>
-</div> -->
-
-<!-- <div class="col-xl-4 col-lg-4 col-md-6 d-flex align-items-center"><span class="page_title mb-md-2" style="font-size: 28px; font-weight:600;">User</span>
-</div> -->
-<div class="topbar_pages padding-0">
-    <div class="container ">
+<div class="dashboard_content_inner">
+    <div class="topbar_pages">
         <h4 class="text-title">Suppliers</h2>
         <div class="breadcrumb-section">
             <nav aria-label="breadcrumb">
@@ -43,66 +35,42 @@ endcomment %}
                 </ol>
             </nav>
         </div>
-    </div> 
-</div>
-<main class="content_admin_dashbboard">
-    <div class="container ">
-        <div class="subheader row">
+    </div>
+    {% if messages %}
+    {% for message in messages %}
+    <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
+        <strong> {{ message }}!</strong>
+        <button type="button" class="btn-close bg-danger" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    <div class="table-settings mb-4">
+        <div class="subheader row align-items-center justify-content-between">
             <div class="col-xl-3 col-lg-3 col-md-3">
                 <div class="col-xl-11 col-lg-11 col-md-5">
-                    <a class="btn w-100 anchor_btn ps-0 pe-0" href="/supplier/supplier-registration/">
-                    <button class="btn col-sm-12 col-md-12 col-12 create_new">Create New Supplier</button>
+                    <a class="btn anchor_btn ps-0 pe-0" href="/supplier/supplier-registration/">
+                    <button class="btn btn-success create_new">Create New Supplier</button>
                     </a>
                 </div>
             </div>
-            <div class="row add_btn col-xl-5 col-lg-5 col-md-2 d-flex align-items-center">
-                <div class="col">
-                    <div class="dropdown">
-                        <button class="button button1 export_file dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                            Export
-                        </button>
-                        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                            
-                            <li><a class="dropdown-item" href="/supplier/excel_supplier/">Export to Excel</a></li>
-                        </ul>
-                    </div>
-                    
-                </div>
+            <div class="row add_btn col-xl-6 col-lg-6 col-md-6 d-flex align-items-center">
             </div>
-            <div class="col-xl-4 col-lg-4 col-12 my-2 ms-4" style="">
+            <div class="col-xl-3 col-lg-3 col-12 my-2 ms-4" style="">
                 <div class="row d-flex align-items-center justify-content-end">
                     <div class="col-xl-12 col-lg-12 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 " style="height:40px;">
-                        <!-- <input type="search" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Search"> -->
-                        <label class="subadmin_search d-flex align-items-center">
-                            <input class="table_searchbar" id="table_search" type="search" placeholder="Search">
-                            <!-- <img src="images/Search.svg" alt=""> -->
-                        </label>
-
+                        <div class="input-group subadmin_search">
+                            <span class="input-group-text" id="basic-addon2"><span class="fas fa-search"></span></span>
+                            <input type="text" class="form-control table_searchbar" id="table_search" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2">
+                        </div>
                     </div>
-                    <!-- <div class="col-xl-4 col-md-4">
-                        <select class="form-select form-select-md filter_select" aria-label=".form-select-md example" disabled>
-                            <option selected="">All</option>
-                            <option value="1">...</option>
-                            <option value="2">...</option>
-                            <option value="3">...</option>
-                        </select>
-                    </div> -->
-                
-                </div>
 
+                </div>
             </div>
         </div>
-
-        {% if messages %}
-        {% for message in messages %}
-        <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
-            <strong> {{ message }}!</strong>
-            <button type="button" class="btn-close bg-danger" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-        {% endfor %}
-        {% endif %}
-        <table class="table  text-center" id="filtertable">
-            <thead class="table-dark">
+    </div>        
+    <div class="card card-body border-light shadow-sm table-wrapper table-responsive pt-0">
+        <table class="table table-hover text-center" id="filtertable">
+            <thead class="">
                 <tr>
                     {% comment %} <th scope="col">S. No.</th> {% endcomment %}
                     <th scope="col">Username</th>
@@ -128,19 +96,6 @@ endcomment %}
                                 class="fas fa-toggle-off"> Blocked</i> </a>
                         {% endif %} 
                     </td>
-                    <td>
-                        <a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'wayrem_admin:updatesupplier' suppl.id %}">
-                            <i class="fas fa-edit text-dark"></i>
-                            <a type="button" class="btn btn-sm" data-bs-toggle="modal"
-                                data-bs-target="#deleteModal{{suppl.id}}">
-                                <i class="fas fa-trash-alt text-danger"></i>
-                            </a>
-                            <a type="button" class="btn btn-sm " data-bs-toggle="modal"
-                                href="{% url 'wayrem_admin:supplierdetails' suppl.id %}">
-                                <i class="fas fa-eye text-success"></i>
-                            </a>
-                    </td>
-
                     <td>
                         {% comment %} <a class="btn btn-sm" href="{% url 'wayrem_admin:viewprodsupplier' %}?product={{prod.SKU}}"> {% endcomment %}
                         <a type="button" class="btn btn-sm" onclick="supplierprodFunc('{{suppl.id}}')">
@@ -186,45 +141,64 @@ endcomment %}
                             </div>
                         </div>
                     </td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="icon icon-sm">
+                                    <span class="fas fa-ellipsis-h icon-dark"></span>
+                                </span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="{% url 'wayrem_admin:supplierdetails' suppl.id %}"><span class="fas fa-eye mr-2"></span>View Details</a>
+                                <a class="dropdown-item" href="{% url 'wayrem_admin:updatesupplier' suppl.id %}"><span class="fas fa-edit mr-2"></span>Edit</a>
+                                <a class="dropdown-item text-danger"  data-bs-toggle="modal" data-bs-target="#deleteModal{{suppl.id}}" href="#"> <span class="fas fa-trash-alt mr-2"></span>Remove</a>
+                            </div>
+                        </div>
+                    </td>
+
+                    
                 </tr>
                 {% endif %}
                 {% endfor %}
 
             </tbody>
         </table>
-
-        <nav aria-label="...">
-            Showing {{ supplierlist.start_index }} to {{ supplierlist.end_index }} out  of {{ supplierlist.paginator.count }} entries
-            <ul class="pagination justify-content-end">
-                {% if supplierlist.has_previous %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ supplierlist.previous_page_number }}">Previous</a>
-                    </li>
-                {% endif %}
-                {% if supplierlist.number|add:'-4' > 1 %}
-                    <li class="page-item"><a class="page-link" href="?page={{ supplierlist.number|add:'-5' }}">&hellip;</a></li>
-                {% endif %}
-                {% for num in supplierlist.paginator.page_range %}
-                    {% if num == supplierlist.number %}
-                        <li class="page-item active" aria-current="page">
-                            <a class="page-link" href="#">{{ num }}</a>
+        <div class="card-footer px-3 border-0 d-flex align-items-center justify-content-between">
+            <div class="font-weight-bold small">Showing <b>{{ supplierlist.start_index }}</b> to <b>{{ supplierlist.end_index }}</b> out  of <b>{{ supplierlist.paginator.count }}</b> entries</div>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-end">
+                    {% if supplierlist.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ supplierlist.previous_page_number }}">Previous</a>
                         </li>
-                    {% elif num > supplierlist.number|add:'-5' and num < supplierlist.number|add:'5' %}
-                        <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>            
-                    {% endif %} 
-                {% endfor %}
-                {% if supplierlist.paginator.num_pages > supplierlist.number|add:'4' %}
-                    <li class="page-item"><a class="page-link" href="?page={{ supplierlist.number|add:'5' }}">&hellip;</a></li>
-                {% endif %}
-                {% if supplierlist.has_next %}
-                    <li class="page-item">
-                        <a class="page-link" href="?page={{ supplierlist.next_page_number }}">Next</a>
-                    </li>
-                {% endif %}
-            </ul>
-        </nav>
+                    {% endif %}
+                    {% if supplierlist.number|add:'-4' > 1 %}
+                        <li class="page-item"><a class="page-link" href="?page={{ supplierlist.number|add:'-5' }}">&hellip;</a></li>
+                    {% endif %}
+                    {% for num in supplierlist.paginator.page_range %}
+                        {% if num == supplierlist.number %}
+                            <li class="page-item active" aria-current="page">
+                                <a class="page-link" href="#">{{ num }}</a>
+                            </li>
+                        {% elif num > supplierlist.number|add:'-5' and num < supplierlist.number|add:'5' %}
+                            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>            
+                        {% endif %} 
+                    {% endfor %}
+                    {% if supplierlist.paginator.num_pages > supplierlist.number|add:'4' %}
+                        <li class="page-item"><a class="page-link" href="?page={{ supplierlist.number|add:'5' }}">&hellip;</a></li>
+                    {% endif %}
+                    {% if supplierlist.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ supplierlist.next_page_number }}">Next</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        
     </div>
-</main>
+</div>
 
 <script>
     function supplierprodFunc(id){

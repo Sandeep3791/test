@@ -24,19 +24,8 @@ endcomment %}
 {% endblock head %}
 
 {% block content %}
-<!-- <div class="text-left">
-    <a class="nav-link" href="{% url 'wayrem_admin:sub-admin-register' %}">
-        <button class="btn btn-secondary" style="background-color: #f2e600; position: relative;left: 850px;">Create New User</button>
-        </a>
-</div> -->
-
-<!-- <div class="col-xl-4 col-lg-4 col-md-6 d-flex align-items-center"><span class="page_title mb-md-2" style="font-size: 28px; font-weight:600;">User</span>
-</div> -->
-{% comment %} <div class="header row pe-4 ps-4 mt-3">
-    <h4 class="text-center"><b><em>Invoice List</em></b></h4> 
-</div> {% endcomment %}
-<div class="topbar_pages padding-0">
-    <div class="container ">
+<div class="dashboard_content_inner">
+    <div class="topbar_pages">
         <h4 class="text-title">Supplier Invoice List</h2>
         <div class="breadcrumb-section">
             <nav aria-label="breadcrumb">
@@ -47,126 +36,136 @@ endcomment %}
                 </ol>
             </nav>
         </div>
-    </div> 
-</div>
-<div class="subheader row pe-4 ps-4 mt-3">
-    {% comment %} <h1 class="text-center">Invoices</h1> {% endcomment %}
-
-    <div class="row add_btn col-xl-4 col-lg-4 col-md-5 d-flex align-items-center">
-    {% comment %} <h5 class="text-center offset-10">Invoice List</h5>  {% endcomment %}
-        <div class="col">
-    <div class="dropdown">
-  <button class="button button1 mt-2 export_file dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-    Export
-  </button>
-  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-</div>
-            {% comment %} <a href="{% url 'wayrem_admin:userpdf' %}" class="button button1 mt-2 export_file">Export to pdf</a> {% endcomment %}
-        </div>
     </div>
-
-    <div class="col-xl-8 col-lg-8 col-12 my-2 ms-3">
-        <div class="row d-flex align-items-center justify-content-end mb-2">
-              <div class="col-xl-6 col-lg-6 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 ml-0" style="height:40px; margin-left: auto;">
-                <!-- <input type="search" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Search"> -->
-                <label class="subadmin_search d-flex align-items-center">
-                    <input class="table_searchbar" id="table_search" type="search" placeholder="Search">
-                    <!-- <img src="images/Search.svg" alt=""> -->
-                </label>
-
+    {% if messages %}
+    {% for message in messages %}
+    <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
+        <strong> {{ message }}!</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    
+   
+    <div class="table-settings mb-4">
+        <div class="subheader row align-items-center justify-content-between">
+            <div class="row add_btn col-xl-4 col-lg-4 col-md-5 d-flex align-items-center">
+               
             </div>
-            {% comment %} <div class="col-xl-4 col-md-4">
-                <select class="form-select form-select-md filter_select" aria-label=".form-select-md example" disabled>
-                    <option selected="">All</option>
-                    <option value="1">...</option>
-                    <option value="2">...</option>
-                    <option value="3">...</option>
-                </select>
-            </div> {% endcomment %}
-            {% comment %} <div class="col-xl-4 col-lg-5 col-md-5"><a class="btn w-100 anchor_btn ps-0 pe-0"
-                    href="{% url 'wayrem_admin:sub-admin-register' %}">
-                    <button class="btn col-sm-12 col-md-12 col-12 create_new">Create New User</button>
-                </a></div> {% endcomment %}
-        </div>
-
-    </div>
-
-</div>
-
-
-
-
-{% if messages %}
-{% for message in messages %}
-<div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
-    <strong> {{ message }}!</strong>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-{% endfor %}
-{% endif %}
-<table class="table  text-center" id="filtertable">
-    <thead class="table-dark ">
-        <tr>
-            {% comment %} <th scope="col">S. No.</th> {% endcomment %}
-            {% comment %} <th scope="col">Invoice NO.</th> {% endcomment %}
-            <th scope="col">Purchase Order</th>
-            <th scope="col">Supplier Name</th>
-            <th scope="col">Invoice</th>
-            {% comment %} <th scope="col">Access</th> {% endcomment %}
-        </tr>
-    </thead>
-    <tbody class="bg-white">
-        {% for user in userlist %}
-        {% if user.is_superuser %}
-        {% else %}
-        <tr>
-            {% comment %} <th scope="row">{{forloop.counter}}</th>
-            <td>{{user.invoice_no}}</td> {% endcomment %}
-            <td>{{user.po_name}}</td>
-            <td>{{user.supplier_name}}</td>
-            <td><a type="button" class="btn btn-sm " target="_blank" href="{% url 'wayrem_admin:downloadinvoice' %}?invoice_no={{user.invoice_no}}"><i class="fas fa-file-invoice"></i></a></td>
-            {% comment %} <td>
-                
-            </td> {% endcomment %}
-
-            <!-- Modal -->
-            <div class="modal fade" id="deleteModal{{user.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Delete {{user.username | title}}</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="col-xl-8 col-lg-8 col-12 my-2 ms-3">
+                <div class="row d-flex align-items-center justify-content-end mb-2">
+                      <div class="col-xl-6 col-lg-6 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 ml-0" style="height:40px; margin-left: auto;">
+                        <div class="input-group subadmin_search">
+                            <span class="input-group-text" id="basic-addon2"><span class="fas fa-search"></span></span>
+                            <input type="text" class="form-control table_searchbar" id="table_search" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2">
                         </div>
-                        <div class="modal-body">
-                            Are you sure want to delete {{user.username | title}} ??
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
-                            <form method="POST" action="{% url 'wayrem_admin:deleteuser' %}">
-                                {% csrf_token %}
-                                <input type="hidden" value="{{user.id}}" name="userid">
-                                <button type="submit" class="btn btn-danger">Delete</button>
-                            </form>
-                        </div>
+        
                     </div>
+                    {% comment %} 
+                    <div class="col-xl-4 col-md-4">
+                        
+                    </div> 
+                    {% endcomment %}
+                    {% comment %} <div class="col-xl-4 col-lg-5 col-md-5"><a class="btn w-100 anchor_btn ps-0 pe-0"
+                            href="{% url 'wayrem_admin:sub-admin-register' %}">
+                            <button class="btn col-sm-12 col-md-12 col-12 create_new">Create New User</button>
+                        </a></div> {% endcomment %}
                 </div>
+        
             </div>
-        </tr>
-        {% endif %}
-        {% endfor %}
-
-    </tbody>
-</table>
+        </div>
+    </div>
+    <div class="card card-body border-light shadow-sm table-wrapper table-responsive pt-0">
+        <table class="table table-hover text-center" id="filtertable">
+            <thead class="">
+                <tr>
+                    {% comment %} <th scope="col">S. No.</th> {% endcomment %}
+                    {% comment %} <th scope="col">Invoice NO.</th> {% endcomment %}
+                    <th scope="col">Purchase Order</th>
+                    <th scope="col">Supplier Name</th>
+                    <th scope="col">Invoice</th>
+                    {% comment %} <th scope="col">Access</th> {% endcomment %}
+                </tr>
+            </thead>
+            <tbody class="bg-white">
+                {% for user in userlist %}
+                {% if user.is_superuser %}
+                {% else %}
+                <tr>
+                    {% comment %} <th scope="row">{{forloop.counter}}</th>
+                    <td>{{user.invoice_no}}</td> {% endcomment %}
+                    <td>{{user.po_name}}</td>
+                    <td>{{user.supplier_name}}</td>
+                    <td><a type="button" class="btn btn-sm " target="_blank" href="{% url 'wayrem_admin:downloadinvoice' %}?invoice_no={{user.invoice_no}}"><i class="fas fa-file-invoice"></i></a></td>
+                    {% comment %} 
+                    <td>
+                        <!-- Modal -->
+                        <div class="modal fade" id="deleteModal{{user.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"  aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Delete {{user.username | title}}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure want to delete {{user.username | title}} ??
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+                                        <form method="POST" action="{% url 'wayrem_admin:deleteuser' %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" value="{{user.id}}" name="userid">
+                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td> {% endcomment %}
+        
+                    
+                </tr>
+                {% endif %}
+                {% endfor %}
+        
+            </tbody>
+        </table>
+        <div class="card-footer px-3 border-0 d-flex align-items-center justify-content-between">
+            <div class="font-weight-bold small">Showing <b>{{ userlist.start_index }}</b> to <b>{{ userlist.end_index }}</b> out  of <b>{{ userlist.paginator.count }}</b> entries</div>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-end">
+                    {% if userlist.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ userlist.previous_page_number }}">Previous</a>
+                        </li>
+                    {% endif %}
+                    {% if userlist.number|add:'-4' > 1 %}
+                        <li class="page-item"><a class="page-link" href="?page={{ userlist.number|add:'-5' }}">&hellip;</a></li>
+                    {% endif %}
+                    {% for num in userlist.paginator.page_range %}
+                        {% if num == userlist.number %}
+                            <li class="page-item active" aria-current="page">
+                                <a class="page-link" href="#">{{ num }}</a>
+                            </li>
+                        {% elif num > userlist.number|add:'-5' and num < userlist.number|add:'5' %}
+                            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>            
+                        {% endif %} 
+                    {% endfor %}
+                    {% if userlist.paginator.num_pages > userlist.number|add:'4' %}
+                        <li class="page-item"><a class="page-link" href="?page={{ userlist.number|add:'5' }}">&hellip;</a></li>
+                    {% endif %}
+                    {% if userlist.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ userlist.next_page_number }}">Next</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
 </div>
-</div>
-</div>
-</div>
-</div>
-
 
 <script>
-
     $(document).ready(function () {
         oTable = $('#filtertable').DataTable({
             dom: 'rt',

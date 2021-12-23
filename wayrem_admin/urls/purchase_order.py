@@ -3,6 +3,8 @@ from wayrem_admin import views
 
 urlpatterns = [
     path('excel_po/', views.po_excel, name='excelpo'),
+    path('pdf_po/', views.po_pdf, name='pdf_po'),
+    path('confirm_delivery/', views.confirm_delivery, name='confirm_delivery'),
     path('purchase_order/', views.create_purchase_order, name='create_po'),
     path('purchase_order2/', views.create_po_step2, name='create_po2'),
     path('delete_inserted/<str:id>',

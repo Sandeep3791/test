@@ -172,7 +172,7 @@
                                    <!-- Form -->
                                     <div class="col-lg-12">
                                         <div class="form-group mb-4">
-                                            <label for="name">Product Meta Tag <span class="text-danger">*</span><span class="text-danger"><em> {{form.product_meta_key.errors | striptags}}
+                                            <label for="name">Product Meta Key <span class="text-danger">*</span><span class="text-danger"><em> {{form.product_meta_key.errors | striptags}}
                                                 </em>
                                             </span></label>
                                             <div class="input-group">
@@ -304,7 +304,7 @@
          $("#metaKey_error_message").hide();
          $("#id_price").css("border-bottom","2px solid #34F458");
       } else {
-         $("#metaKey_error_message").html("Please Enter Product Meta Tag");
+         $("#metaKey_error_message").html("Please Enter Product Meta key");
          $("#metaKey_error_message").show();
          error_data = true;
       }

@@ -7,8 +7,9 @@
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
-<div class="topbar_pages padding-0">
-    <div class="container ">
+
+<div class="dashboard_content_inner">
+    <div class="topbar_pages">
         <h4 class="text-title">Edit Users</h2>
         <div class="breadcrumb-section">
             <nav aria-label="breadcrumb">
@@ -19,145 +20,141 @@
                     <li class="breadcrumb-item active" aria-current="page">Edit Users</li>
                 </ol>
             </nav>
-        </div>
-    </div> 
-</div>
-<main class="align-items-center admin_signup_lg">
-    <section class="d-flex   align-items-center my-5 mt-lg-6 mb-lg-5">
-    <div class="container ">
-<div class="row justify-content-center form-bg-image">
-                <div class="col-12 d-flex align-items-center justify-content-center">
-                    <div
-                        class="mb-4 mb-lg-0 bg-white  rounded p-4 p-lg-4 w-100" style="box-shadow: 0px 14px 20px 0px #00000014;">
-                        <div class="mb-4 mt-md-0">
-            <h2 class="h5 mb-4">Update User</h2>
-            <form method="post" action="{% url 'wayrem_admin:updateuser' id %}" novalidate>
-
-                         {% csrf_token %}
-                            {{form.non_field_errors}}
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <div class="form-group mb-4">
-                                        <label for="email">Username <span class="text-danger">*</span> </label>
-                                        <div class="input-group">
-                                            <span class="input-group-text" id="username"><span
-                                                    class="fas fa-user-shield"></span></span>
-                                            {{form.username}}
-                                        </div>
-                                        <div class="input-group">
-                                            <span class="text-danger"> {{form.username.errors | striptags}} </span>
-                                        </div>
-                                        <span class="text-error"></span>
-                                    </div>
-                                </div>
-
-
-                                <!-- Form -->
-                                <div class="col-lg-6">
-                                    <div class="form-group mb-4">
-                                        <label for="email">Your Email <span class="text-danger">*</span> </label>
-                                        <div class="input-group">
-                                            <span class="input-group-text" id="email"><span
-                                                    class="fas fa-envelope"></span></span>
-                                            {{form.email}}
-
-                                        </div>
-                                        <div class="input-group">
-                                            <span class="text-danger"> {{form.email.errors | striptags}} </span>
-                                        </div>
-                                        <span class="text-error"></span>
-                                    </div>
-                                </div>
-                                <!-- End of Form -->
-
-                                <!-- Form -->
-                                <div class="col-lg-6">
-                                    <div class="form-group mb-4">
-                                        <label for="contact">Contact <span class="text-danger">*</span> </label>
-                                        <div class="input-group">
-                                            <span class="input-group-text" id="contact"><span
-                                                    class="fas fa-phone-alt"></span></span>
-                                            {{form.contact}}
-                                        </div>
-                                        <div class="input-group">
-                                            <span class="text-danger"> {{form.contact.errors | striptags}} </span>
-                                        </div>
-                                        <span class="text-error"></span>
-                                    </div>
-                                </div>
-                                <!-- End of Form -->
-                                <div class="col-lg-6">
-                                    <div class="form-group mb-4">
-                                        <label for="contact">Role </label>
-                                        <div class="input-group">
-                                            <span class="input-group-text" id="Role"><span
-                                                    class="fas fa-user-tag"></span></span>
-                                            {{form.role}}
-                                        </div>
-                                        <div class="input-group">
-                                            <span class="text-danger"> {{form.role.errors | striptags}} </span>
-                                        </div>
-                                        <span class="text-error"></span>
-                                    </div>
-                                </div>
-                                <!-- End of Form -->
-
-
-                                <!-- Form -->
-                                {% comment %} <div class="col-lg-6">
-                                    <div class="form-group mb-4">
-                                        <label for="password">Your Password <span class="text-danger">*</span> </label>
-                                        <div class="input-group">
-                                            <span class="input-group-text" id="password"><span
-                                                    class="fas fa-unlock-alt"></span></span>
-
-                                            {{form.password1}}
-                                            <span class="input-group-text" id="cpassword"><i class="far fa-eye"
-                                                    id="togglePassword"></i></span>
-                                        </div>
-                                        <div class="input-group">
-                                            <span class="text-danger"> {{form.password1.errors | striptags}} </span>
-
-                                        </div>
-                                        <span class="text-error"></span>
-                                    </div>
-                                </div> {% endcomment %}
-                                <!-- End of Form -->
-
-                                <!-- Form -->
-                                {% comment %} <div class="col-lg-6">
-                                    <div class="form-group mb-4">
-                                        <label for="password">Confirm Password <span class="text-danger">*</span> </label>
-                                        <div class="input-group">
-                                            <span class="input-group-text" id="cpassword"><span
-                                                    class="fas fa-unlock-alt"></span></span>
-                                            {{form.password2}}
-                                            <span class="input-group-text" id="cpassword"><i class="far fa-eye"
-                                                    id="toggleCPassword"></i></span>
-
-                                        </div>
-                                        <div class="input-group">
-                                            <span class="text-danger"> {{form.password2.errors | striptags}} </span>
-                                        </div>
-                                        <span class="text-error"></span>
-                                    </div>
-                                </div> {% endcomment %}
-                                <!-- End of Form -->
-                            </div>
-                            <div class="mt-4">
-                                <a href="{% url 'wayrem_admin:userlist' %}"
-                                    class="btn  btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Cancel</a>
-                                <button type="submit" class="btn btn-dark border-0 col-xl-3 col-md-5 col-12" >Update</button>
-                            </div>
-
-                        </form>
-        </div>
+        </div> 
     </div>
+    <div class="row justify-content-center form-bg-image">
+        <div class="col-12 d-flex align-items-center justify-content-center">
+            <div
+                class="mb-4 mb-lg-0 bg-white shadow-sm rounded p-4 p-lg-4 w-100">
+                <div class="mb-4 mt-md-0">
+    <h2 class="h5 mb-4">Update User</h2>
+    <form method="post" action="{% url 'wayrem_admin:updateuser' id %}" novalidate>
+
+                 {% csrf_token %}
+                    {{form.non_field_errors}}
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                                <label for="email">Username <span class="text-danger">*</span> </label>
+                                <div class="input-group">
+                                    <span class="input-group-text" id="username"><span
+                                            class="fas fa-user-shield"></span></span>
+                                    {{form.username}}
+                                </div>
+                                <div class="input-group">
+                                    <span class="text-danger"> {{form.username.errors | striptags}} </span>
+                                </div>
+                                <span class="text-error"></span>
+                            </div>
+                        </div>
+
+
+                        <!-- Form -->
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                                <label for="email">Your Email <span class="text-danger">*</span> </label>
+                                <div class="input-group">
+                                    <span class="input-group-text" id="email"><span
+                                            class="fas fa-envelope"></span></span>
+                                    {{form.email}}
+
+                                </div>
+                                <div class="input-group">
+                                    <span class="text-danger"> {{form.email.errors | striptags}} </span>
+                                </div>
+                                <span class="text-error"></span>
+                            </div>
+                        </div>
+                        <!-- End of Form -->
+
+                        <!-- Form -->
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                                <label for="contact">Contact <span class="text-danger">*</span> </label>
+                                <div class="input-group">
+                                    <span class="input-group-text" id="contact"><span
+                                            class="fas fa-phone-alt"></span></span>
+                                    {{form.contact}}
+                                </div>
+                                <div class="input-group">
+                                    <span class="text-danger"> {{form.contact.errors | striptags}} </span>
+                                </div>
+                                <span class="text-error"></span>
+                            </div>
+                        </div>
+                        <!-- End of Form -->
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                                <label for="contact">Role </label>
+                                <div class="input-group">
+                                    <span class="input-group-text" id="Role"><span
+                                            class="fas fa-user-tag"></span></span>
+                                    {{form.role}}
+                                </div>
+                                <div class="input-group">
+                                    <span class="text-danger"> {{form.role.errors | striptags}} </span>
+                                </div>
+                                <span class="text-error"></span>
+                            </div>
+                        </div>
+                        <!-- End of Form -->
+
+
+                        <!-- Form -->
+                        {% comment %} <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                                <label for="password">Your Password <span class="text-danger">*</span> </label>
+                                <div class="input-group">
+                                    <span class="input-group-text" id="password"><span
+                                            class="fas fa-unlock-alt"></span></span>
+
+                                    {{form.password1}}
+                                    <span class="input-group-text" id="cpassword"><i class="far fa-eye"
+                                            id="togglePassword"></i></span>
+                                </div>
+                                <div class="input-group">
+                                    <span class="text-danger"> {{form.password1.errors | striptags}} </span>
+
+                                </div>
+                                <span class="text-error"></span>
+                            </div>
+                        </div> {% endcomment %}
+                        <!-- End of Form -->
+
+                        <!-- Form -->
+                        {% comment %} <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                                <label for="password">Confirm Password <span class="text-danger">*</span> </label>
+                                <div class="input-group">
+                                    <span class="input-group-text" id="cpassword"><span
+                                            class="fas fa-unlock-alt"></span></span>
+                                    {{form.password2}}
+                                    <span class="input-group-text" id="cpassword"><i class="far fa-eye"
+                                            id="toggleCPassword"></i></span>
+
+                                </div>
+                                <div class="input-group">
+                                    <span class="text-danger"> {{form.password2.errors | striptags}} </span>
+                                </div>
+                                <span class="text-error"></span>
+                            </div>
+                        </div> {% endcomment %}
+                        <!-- End of Form -->
+                    </div>
+                    <div class="mt-4">
+                        <a href="{% url 'wayrem_admin:userlist' %}"
+                            class="btn  btn-danger btn-block col-xl-1 col-md-1 col-12 mt-sm-3 mt-md-0 mt-3">Cancel</a>
+                        <button type="submit" class="btn btn-dark border-0 col-xl-1 col-md-1 col-12" >Update</button>
+                    </div>
+
+                </form>
 </div>
 </div>
 </div>
-    </section>
-</main>
+</div>
+</div>
+
+
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->

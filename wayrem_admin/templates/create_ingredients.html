@@ -7,67 +7,68 @@
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
-<div class="topbar_pages padding-0">
-        <div class="container ">
-            <h4 class="text-title">All Ingredients</h2>
-            <div class="breadcrumb-section">
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb padding-left-0">
-                        <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="#"><span class="sidebar-icon"><i class="fas fa-gift"></i></span> <span class="sidebar-text">Product Management &nbsp; </span></a></li>
-                        <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:ingredientslist' %}"><span class="sidebar-icon"><i class="fas fa-gift"></i></span> <span class="sidebar-text">Ingredients Management &nbsp; </span></a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Create Ingredients</li>
-                    </ol>
-                </nav>
+<div class="dashboard_content_inner">
+    <div class="topbar_pages">
+        <h4 class="text-title">Create Ingredients</h2>
+        <div class="breadcrumb-section">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb padding-left-0">
+                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="#"><span class="sidebar-icon"><i class="fas fa-gift"></i></span> <span class="sidebar-text">Product Management &nbsp; </span></a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:ingredientslist' %}"><span class="sidebar-icon"><i class="fas fa-gift"></i></span> <span class="sidebar-text">Ingredients&nbsp; </span></a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Create Ingredients</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <div class="row mt-5 d-flex justify-content-center">
+   
+        <div class="col-12 col-xl-12">
+            <div class="card card-body shadow-sm mb-4">
+                <h2 class="h5 mb-4  ">Add Ingredients</h2>
+                <form action="{% url 'wayrem_admin:createingredients' %}" method="POST" enctype="multipart/form-data" >
+                  {% csrf_token %}
+    
+                    <div class="row">
+                        <!-- Form -->
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                                <label for="name">Ingredients Name <span class="text-danger">*</span> <span class="text-danger"><em> {{form.ingredients_name.errors | striptags}}
+                                </em></span></label>
+                                <div class="input-group">   
+                                    {{form.ingredients_name}}
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <!-- End of Form -->
+    
+                        <!-- Form -->
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                                <label for="image"> Ingredients Status <span class="text-danger">*</span> <span class="text-danger"> <em> {{form.ingredients_status.errors | striptags}}
+                                </em> </span></label>
+                                <div class="input-group">                                
+                                    {{form.ingredients_status}}                          
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <!-- End of Form -->
+                    </div>          
+                   
+                    <div class="mt-3">
+                        <a href="{% url 'wayrem_admin:ingredientslist' %}"
+                                        class="btn  btn-danger btn-block">Cancel</a>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
-<div class="row mt-5 d-flex justify-content-center">
-   
-    <div class="col-12 col-xl-8">
-        <div class="card card-body card_shadow mb-4">
-            <h2 class="h3 ">Add Ingredients</h2>
-            <hr class="mb-4 ">
-            <form action="{% url 'wayrem_admin:createingredients' %}" method="POST" enctype="multipart/form-data" >
-              {% csrf_token %}
-
-                <div class="row">
-                    <!-- Form -->
-                    <div class="col-lg-6">
-                        <div class="form-group mb-4">
-                            <label for="name">Ingredients Name <span class="text-danger">*</span> <span class="text-danger"><em> {{form.ingredients_name.errors | striptags}}
-                            </em></span></label>
-                            <div class="input-group">   
-                                {{form.ingredients_name}}
-                            </div>
-                            
-                        </div>
-                    </div>
-                    <!-- End of Form -->
-
-                    <!-- Form -->
-                    <div class="col-lg-6">
-                        <div class="form-group mb-4">
-                            <label for="image"> Ingredients Status <span class="text-danger">*</span> <span class="text-danger"> <em> {{form.ingredients_status.errors | striptags}}
-                            </em> </span></label>
-                            <div class="input-group">                                
-                                {{form.ingredients_status}}                          
-                            </div>
-                            
-                        </div>
-                    </div>
-                    <!-- End of Form -->
-                </div>          
-               
-                <div class="mt-3">
-                    <a href="{% url 'wayrem_admin:ingredientslist' %}"
-                                    class="btn  btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Cancel</a>
-                    <button type="submit" class="btn  btn-dark btn-block col-xl-3 col-md-5 col-12">Save</button>
-                </div>
-            </form>
-        </div>
-    </div>
 </div>
+
+
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->

@@ -32,184 +32,155 @@ endcomment %}
 
 <!-- <div class="col-xl-4 col-lg-4 col-md-6 d-flex align-items-center"><span class="page_title mb-md-2" style="font-size: 28px; font-weight:600;">User</span>
 </div> -->
-<div class="topbar_pages padding-0">
-    <div class="container ">
-        <h4 class="text-title">Purchase Orders</h2>
-        <div class="breadcrumb-section">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb padding-left-0">
-                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Purchase Orders</li>
-                </ol>
+<div class="dashboard_content_inner">
+    <div class="topbar_pages">
+            <h4 class="text-title">Purchase Orders</h2>
+            <div class="breadcrumb-section">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb padding-left-0">
+                        <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Purchase Orders</li>
+                    </ol>
+                </nav>
+            </div>
+    </div>    
+    {% if messages %}
+    {% for message in messages %}
+    <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
+        <strong> {{ message }}!</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    <div class="table-settings mb-4">
+        <div class="subheader row align-items-center justify-content-between">
+            <div class="col-xl-2 col-lg-2 col-md-2"><a class="btn anchor_btn ps-0 pe-0"
+                href="{% url 'wayrem_admin:create_po' %}">
+                <button class="btn btn-success create_new">Create New PO</button>
+            </a></div>
+            {% comment %} <div class="row add_btn col-xl-3 col-lg-3 col-md-3 d-flex align-items-center">
+                <div class="col">
+                    <a href="{% url 'wayrem_admin:userpdf' %}" class="button button1 mt-2 export_file">Export to pdf</a>
+                </div>
+            </div> {% endcomment %}
+            <div class="col-xl-10 col-lg-10 col-12 pe-1">
+                <div class="d-flex align-items-center justify-content-end"> 
+                    <div class="col-xl-5 col-lg-5 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 " style="height:40px;">
+                        <div class="input-group subadmin_search">
+                            <span class="input-group-text" id="basic-addon2"><span class="fas fa-search"></span></span>
+                            <input type="text" class="form-control table_searchbar" id="table_search" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2">
+                        </div>
+                    </div>       
+                                      
+                </div>       
+            </div>       
+        </div>
+    </div>
+    <div class="card card-body border-light shadow-sm table-wrapper table-responsive pt-0">
+        <table class="table table-hover text-center" id="filtertable">
+            <thead class=" ">
+                <tr>
+                    {% comment %} <th scope="col">S. No.</th> {% endcomment %}
+                    <th scope="col">Purchase Order</th>
+                    <th scope="col">Supplier</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Action</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white">
+                {% for item1,item2 in userlist %}
+                <tr>
+                    {% comment %} <th scope="row">{{forloop.counter}}</th> {% endcomment %}
+                    <td>{{item1.po_name}}</td>
+                    <td>{{item2}}</td>
+                    <td>
+                        {{item1.status|title}}
+                    {% comment %} <form action="{% url 'wayrem_admin:po_status' item1.po_id %}"  method="post">
+                    {% csrf_token %}
+                        <select class="form-select form-select-sm" name="status" onchange='this.form.submit()' aria-label=".form-select-sm example">
+                            <option selected>{{item1.status|title}}</option>
+                            <option value="cancel">Cancel</option>
+                            <option value="delivered">Delivered</option>
+                        </select>
+                    </form> {% endcomment %}
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="icon icon-sm">
+                                    <span class="fas fa-ellipsis-h icon-dark"></span>
+                                </span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="{% url 'wayrem_admin:viewpo' item1.po_id %}"><span class="fas fa-eye mr-2"></span>View Details</a>
+                                <a class="dropdown-item" href="{% url 'wayrem_admin:editpo' item1.po_id %}"><span class="fas fa-edit mr-2"></span>Edit</a>
+                                <a class="dropdown-item text-danger"  data-bs-toggle="modal" data-bs-target="#deleteModal{{item1.po_id}}" href="#"> <span class="fas fa-trash-alt mr-2"></span>Remove</a>
+                            </div>
+                        </div>
+                        <!-- Modal -->
+                        <div class="modal fade" id="deleteModal{{item1.po_id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Delete {{item2}}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure want to delete ?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+                                        <form method="POST" action="{% url 'wayrem_admin:deletepo' %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" value="{{item1.po_id}}" name="po_id">
+                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                        </form>
+            
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>   
+                    
+                </tr>       
+                {% endfor %}        
+            </tbody>
+        </table>
+        <div class="card-footer px-3 border-0 d-flex align-items-center justify-content-between">
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-end">
+                    {% if polist.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ polist.previous_page_number }}">Previous</a>
+                        </li>
+                    {% endif %}
+                    {% if polist.number|add:'-4' > 1 %}
+                        <li class="page-item"><a class="page-link" href="?page={{ polist.number|add:'-5' }}">&hellip;</a></li>
+                    {% endif %}
+                    {% for num in polist.paginator.page_range %}
+                        {% if num == polist.number %}
+                            <li class="page-item active" aria-current="page">
+                                <a class="page-link" href="#">{{ num }}</a>
+                            </li>
+                        {% elif num > polist.number|add:'-5' and num < polist.number|add:'5' %}
+                            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>            
+                        {% endif %} 
+                    {% endfor %}
+                    {% if polist.paginator.num_pages > polist.number|add:'4' %}
+                        <li class="page-item"><a class="page-link" href="?page={{ polist.number|add:'5' }}">&hellip;</a></li>
+                    {% endif %}
+                    {% if polist.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ polist.next_page_number }}">Next</a>
+                        </li>
+                    {% endif %}
+                </ul>
             </nav>
         </div>
-    </div> 
-</div>
-<main class="content_admin_dashbboard">
-    <div class="container ">
-<div class="subheader row">
-    <div class="col-xl-2 col-lg-2 col-md-2"><a class="btn w-100 anchor_btn ps-0 pe-0"
-        href="{% url 'wayrem_admin:create_po' %}">
-        <button class="btn col-sm-12 col-md-12 col-12 create_new">Create New PO</button>
-    </a></div>
-    {% comment %} <div class="row add_btn col-xl-3 col-lg-3 col-md-3 d-flex align-items-center">
-        <div class="col">
-            <a href="{% url 'wayrem_admin:userpdf' %}" class="button button1 mt-2 export_file">Export to pdf</a>
-        </div>
-    </div> {% endcomment %}
-
-    <div class="col-xl-10 col-lg-10 col-12 mt-2 pe-1">
-        <div class="row d-flex align-items-center justify-content-end">
-
-
-            <div class="col-xl-5 col-lg-5 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 " style="height:40px;">
-                <!-- <input type="search" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Search"> -->
-                <label class="subadmin_search d-flex align-items-center">
-                    <input class="table_searchbar" id="table_search" type="search" placeholder="Search">
-                    <!-- <img src="images/Search.svg" alt=""> -->
-                </label>
-
-            </div>
-
-            <!-- <div class="col-xl-4 col-md-4">
-                <select class="form-select form-select-md filter_select" aria-label=".form-select-md example" disabled>
-                    <option selected="">All</option>
-                    <option value="1">...</option>
-                    <option value="2">...</option>
-                    <option value="3">...</option>
-                </select>
-            </div> -->
-
-
-
-
-
-
-           
-        </div>
-
     </div>
-
 </div>
 
-
-
-
-{% if messages %}
-{% for message in messages %}
-<div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
-    <strong> {{ message }}!</strong>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-{% endfor %}
-{% endif %}
-<table class="table  text-center" id="filtertable">
-    <thead class="table-dark ">
-        <tr>
-            {% comment %} <th scope="col">S. No.</th> {% endcomment %}
-            <th scope="col">Purchase Order</th>
-            <th scope="col">Supplier</th>
-            <th scope="col">Status</th>
-            <th scope="col">Action</th>
-        </tr>
-    </thead>
-    <tbody class="bg-white">
-        {% for item1,item2 in userlist %}
-        <tr>
-            {% comment %} <th scope="row">{{forloop.counter}}</th> {% endcomment %}
-            <td>{{item1.po_name}}</td>
-            <td>{{item2}}</td>
-            <td>
-                {{item1.status|title}}
-            {% comment %} <form action="{% url 'wayrem_admin:po_status' item1.po_id %}"  method="post">
-            {% csrf_token %}
-                <select class="form-select form-select-sm" name="status" onchange='this.form.submit()' aria-label=".form-select-sm example">
-                    <option selected>{{item1.status|title}}</option>
-                    <option value="cancel">Cancel</option>
-                    <option value="delivered">Delivered</option>
-                </select>
-            </form> {% endcomment %}
-            </td>
-            <td>
-                <a type="button" data-toggle="tooltip" data-placement="bottom" title="View" href="{% url 'wayrem_admin:viewpo' item1.po_id %}" class="btn btn-sm"><i
-                        class="fas fa-eye text-success"></i>
-                </a>
-                <a type="button" data-toggle="tooltip" data-placement="bottom" title="Edit" href="{% url 'wayrem_admin:editpo' item1.po_id %}" class="btn btn-sm"><i
-                        class="fas fa-edit text-primary"></i>
-                </a>
-                
-                <a type="button" data-toggle="tooltip" data-placement="bottom" title="Delete" class="btn btn-sm" data-bs-toggle="modal"
-                    data-bs-target="#deleteModal{{item1.po_id}}"><i class="fas fa-trash-alt text-danger"></i>
-                </a>
-            </td>
-            
-
-            <!-- Modal -->
-            <div class="modal fade" id="deleteModal{{item1.po_id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Delete {{item2}}</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            Are you sure want to delete ?
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
-                            <form method="POST" action="{% url 'wayrem_admin:deletepo' %}">
-                                {% csrf_token %}
-                                <input type="hidden" value="{{item1.po_id}}" name="po_id">
-                                <button type="submit" class="btn btn-danger">Delete</button>
-                            </form>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </tr>
-
-        {% endfor %}
-
-    </tbody>
-</table>
-<nav aria-label="...">
-    <ul class="pagination justify-content-end">
-        {% if polist.has_previous %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{ polist.previous_page_number }}">Previous</a>
-            </li>
-        {% endif %}
-        {% if polist.number|add:'-4' > 1 %}
-            <li class="page-item"><a class="page-link" href="?page={{ polist.number|add:'-5' }}">&hellip;</a></li>
-        {% endif %}
-        {% for num in polist.paginator.page_range %}
-            {% if num == polist.number %}
-                <li class="page-item active" aria-current="page">
-                    <a class="page-link" href="#">{{ num }}</a>
-                </li>
-            {% elif num > polist.number|add:'-5' and num < polist.number|add:'5' %}
-                <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>            
-            {% endif %} 
-        {% endfor %}
-        {% if polist.paginator.num_pages > polist.number|add:'4' %}
-            <li class="page-item"><a class="page-link" href="?page={{ polist.number|add:'5' }}">&hellip;</a></li>
-        {% endif %}
-        {% if polist.has_next %}
-            <li class="page-item">
-                <a class="page-link" href="?page={{ polist.next_page_number }}">Next</a>
-            </li>
-        {% endif %}
-    </ul>
-</nav>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</main>
 <script>
 
     $(document).ready(function () {

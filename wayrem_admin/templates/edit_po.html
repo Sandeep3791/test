@@ -9,8 +9,8 @@
 {% endblock stylesheets %}
 
 {% block content %}
-<div class="topbar_pages padding-0">
-    <div class="container ">
+<div class="dashboard_content_inner">
+    <div class="topbar_pages">
         <h4 class="text-title">Edit Purchase Order</h2>
         <div class="breadcrumb-section">
             <nav aria-label="breadcrumb">
@@ -21,69 +21,52 @@
                 </ol>
             </nav>
         </div>
-    </div> 
-</div>
-<main class="  align-items-center admin_login_lg">
-    <!-- Section -->
-    <section class="d-flex align-items-center">
-        <div class="container">
-            <div class="row justify-content-center form-bg-image">
-                <div class="col-12 d-flex align-items-center justify-content-center">
-                    <div class="bg-white shadow-soft border rounded border-light p-4 p-lg-5 w-100 ">
-                        <div class="text-center text-md-center mb-4 mt-md-0">
-                            <h1 class="mb-0 h3">
-                                {% comment %} <img src="{% static '/assets/img/logo/Wayrem_logo..svg'%}"
-                                    style="width:80%" alt=""> {% endcomment %}
-                            </h1>
-                            <br />
-                            <p>
-                                {% if messages %}
-                                {% for message in messages %}
-                            <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show"
-                                {% endif %} role="alert">
-                                <strong> {{ message }}</strong>
-                                <button type="button" class="btn-close" data-bs-dismiss="alert"
-                                    aria-label="Close"></button>
-                            </div>
-                            {% endfor %}
-                            {% endif %}
-                            </p>
-                            <form method="POST" action="{% url 'wayrem_admin:editpo' po.0.po_id %}" novalidate>
+    </div>
+    {% if messages %}
+    {% for message in messages %}
+    <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show"
+        {% endif %} role="alert">
+        <strong> {{ message }}</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert"
+            aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    <div class="row justify-content-center form-bg-image">
+            <div class="card border-light shadow-sm components-section">
+                <div class="card-body">
+                    <h2 class="h5 mb-4"> Update Purchase Order </h2>
+                    <!-- <h1 class="mb-0 h3">
+                            {% comment %} <img src="{% static '/assets/img/logo/Wayrem_logo..svg'%}"
+                                style="width:80%" alt=""> {% endcomment %}
+                        </h1> -->
+                        <form method="POST" action="{% url 'wayrem_admin:editpo' po.0.po_id %}" novalidate>
                             <div class="row">
-                                <div class="col">
-                                    <h5>Purchase Order :</h5>
-                                    <p><input class="form-control form-control-sm" type="text" name="poname" value="{{po.0.po_name}}" placeholder="Default input" readonly></p>
+                                <div class="col-md-3">
+                                    <label>Purchase Order :</label>
+                                    <p><input class="form-control" type="text" name="poname" value="{{po.0.po_name}}" placeholder="Default input" readonly></p>
                                 </div>
-                                <div class="col">
-                                    <h5>Supplier :</h5>
-                                    <p><input class="form-control form-control-sm" type="text" name="suppliername" value="{{po.0.supplier_name}}"  readonly></p>
+                                <div class="col-md-3">
+                                    <label>Supplier :</label>
+                                    <p><input class="form-control" type="text" name="suppliername" value="{{po.0.supplier_name}}"  readonly></p>
                                 </div>
-                            </div>
-
-                            <div class="container p-3 mt-4 w-75">
-            <div class="row">
-                <div class="col-md-4 offset-1">
-                    <label for="product">Product Name</label>
-                    {{form.product_name}}
-                </div>
-
-                <div class="col-md-2 ">
-                    <label for="quantity">Quantity</label>
-                {{form.product_qty}}
-                </div>
-                <div class="col-md-3 mt-4 text-right offset-3">
-                    <button class="btn btn-success mt-2" name="addMore" type="submit" >Add</button>
-                </div>
-                    
-            </div>
-        </div>
-        
-                            <div class="container mt-4">
-                            {% csrf_token %}
+                                <div class="col-md-2">
+                                    <label for="product">Product Name</label>
+                                    {{form.product_name}}
+                                </div>
+                                <div class="col-md-2 ">
+                                    <label for="quantity">Quantity</label>
+                                    {{form.product_qty}}
+                                </div>
+                                <div class="col-md-2">
+                                    <button class="btn btn-primary mt-4 " name="addMore" type="submit" >Add</button>
+                                </div>
+                            </div>    
+                            <div class="mt-4">
+                                {% csrf_token %}
                                 <table class="table">
                                     <thead>
                                         <tr>
-                                            <th scope="col">S. No.</th>
                                             <th scope="col">Product</th>
                                             <th scope="col">Quantity</th>
                                             <th scope="col">Action</th>
@@ -92,30 +75,25 @@
                                     <tbody>
                                     {% for i in po %}
                                         <tr>
-                                            <th scope="row">{{forloop.counter}}</th>
-                                            <td><input class="form-control form-control-sm" type="text" name="prodname{{forloop.counter}}" value="{{i.product_name}}" placeholder="Default input" disabled></td>
-                                            <td><input class="form-control form-control-sm" type="text" name="prodqty{{forloop.counter}}" value="{{i.product_qty}}" placeholder="Default input"></td>
-                                            <td><a class="btn btn-danger btn-sm" href="{% url 'wayrem_admin:delete_in_edit' i.id %}" role="button">Delete</a></td>
+                                            
+                                            <td><input class="form-control" type="text" name="prodname{{forloop.counter}}" value="{{i.product_name}}" placeholder="Default input" disabled></td>
+                                            <td><input class="form-control" type="text" name="prodqty{{forloop.counter}}" value="{{i.product_qty}}" placeholder="Default input"></td>
+                                            <td><a class="btn btn-danger" href="{% url 'wayrem_admin:delete_in_edit' i.id %}" role="button">Delete</a></td>
                                         </tr>
                                         {% endfor %}
                                     </tbody>
                                 </table>
                                 <div class="mt-4">
-                                <a href="{% url 'wayrem_admin:polist' %}"
-                                    class="btn  btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Cancel</a>
-                                
-                                <button type="submit" class="btn btn-dark border-0 col-xl-3 col-md-5 col-12" >Update</button>
-                            </div>
-                                    </form>
-                               
-                            </div>
-                        </div>
-                    </div>
+                                    <a href="{% url 'wayrem_admin:polist' %}" class="btn  btn-danger">Cancel</a>
+                                    <button type="submit" class="btn btn-primary" >Update</button>
+                                </div>
+                            </div>    
+                        </form>    
                 </div>
             </div>
-        </div>
-    </section>
-</main>
+    </div>
+</div>
+
 
 {% endblock content %}
 
