@@ -1,7 +1,7 @@
 from django.forms import (
     formset_factory, modelformset_factory, BaseModelFormSet)
 from django import forms
-from wayrem_admin.models import ProductIngredients, Supplier, Categories, Images, Ingredients, Products, UNIT_CHOICES, DIS_ABS_PERCENT, Unit
+from wayrem_admin.models import ProductIngredients, Supplier, Categories, Images, Ingredients, Products, DIS_ABS_PERCENT, Unit
 from datetime import datetime
 
 
@@ -44,14 +44,14 @@ class ProductForm(forms.ModelForm):
 
 class ProductImageForm(forms.Form):
     primary_image = forms.ImageField(
-        widget=forms.FileInput(attrs={'class': 'form-control-select'}))
+        widget=forms.FileInput(attrs={'class': 'form-file-input'}))
     images = forms.FileField(widget=forms.ClearableFileInput(
-        attrs={'class': 'form-control-select', 'multiple': True}))
+        attrs={'class': 'form-file-input', 'multiple': True}))
 
 
 class ProductImgUpdateForm(forms.Form):
     images = forms.FileField(widget=forms.ClearableFileInput(
-        attrs={'class': 'form-control-select', 'multiple': True}), required=False)
+        attrs={'class': 'form-file-input', 'multiple': True}), required=False)
 
 
 class ProductIngredientForm(forms.ModelForm):
@@ -178,7 +178,7 @@ class ProductFormImageView(forms.ModelForm):
             'package_count': forms.CheckboxInput(attrs={'class': "form-check-input"}),
             'wayrem_margin': forms.NumberInput(attrs={'class': "form-control"}),
             'margin_unit': forms.Select(attrs={'class': 'form-select'}),
-            'primary_image': forms.FileInput(attrs={'class': "form-control-file"}),
+            'primary_image': forms.FileInput(attrs={'class': "form-file-input"}),
             'category': forms.SelectMultiple(attrs={'class': 'form-control'}),
             'supplier': forms.SelectMultiple(attrs={'class': 'form-control'}),
         }
@@ -189,7 +189,7 @@ ProductImageFormset = modelformset_factory(
     fields=("image",),
     extra=0,
     widgets={
-        'image':  forms.FileInput(attrs={'class': 'form-control-select'}),
+        'image':  forms.FileInput(attrs={'class': 'form-file-input'}),
     },
 
 )
@@ -199,7 +199,7 @@ ProductImageFormset = modelformset_factory(
 
 def get_category():
     obj = Categories.objects.all()
-    choice = [(r.id, r.name + " - " + str(r.margin)+r.unit) for r in obj]
+    choice = [(r.id, r.name + " - " + str(r.margin) + " "+r.unit) for r in obj]
     return choice
 
 
@@ -270,18 +270,16 @@ class ProductFormOne(forms.Form):
 
     def clean_date_of_exp(self):
         cleaned_data = super(ProductFormOne, self).clean()
-        try:
-            dom = cleaned_data.get("date_of_mfg")
-            doe = cleaned_data.get("date_of_exp")
 
-            if dom >= doe:
-                raise forms.ValidationError(
-                    f"Date of expiry must be greater than {dom}"
-                )
-            else:
-                return doe
-        except:
-            pass
+        dom = cleaned_data.get("date_of_mfg")
+        doe = cleaned_data.get("date_of_exp")
+
+        if dom >= doe:
+            raise forms.ValidationError(
+                f"Date of expiry must be greater than {dom}"
+            )
+        else:
+            return doe
 
     def clean_SKU(self):
         SKU = self.cleaned_data.get("SKU")

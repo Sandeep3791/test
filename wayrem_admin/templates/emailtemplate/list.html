@@ -17,9 +17,8 @@ div.dataTables_wrapper div.dataTables_info{display: none;}
 {% endblock head %}
 
 {% block content %}
-
-<div class="topbar_pages padding-0">
-    <div class="container ">
+<div class="dashboard_content_inner">
+    <div class="topbar_pages">
         <h4 class="text-title">Email Templates</h2>
         <div class="breadcrumb-section">
             <nav aria-label="breadcrumb">
@@ -29,28 +28,7 @@ div.dataTables_wrapper div.dataTables_info{display: none;}
                 </ol>
             </nav>
         </div>
-    </div> 
-</div>
-<main class="content_admin_dashbboard">
-    <div class="container ">
-        <div class="subheader row ">
-            <div class="col-xl-3 col-lg-3 col-md-3 padding-left-0" >
-                <a href="{% url 'wayrem_admin:addemailtemplates' %}" class="btn btn-primary col-sm-12 col-md-12 col-12 create_new">Create Email Template</a>
-            </div>
-
-            <div class="col-xl-9 col-lg-9 col-12  padding-right-0">
-                <div class="row d-flex align-items-center ">
-                    <div class="col-xl-4 col-lg-3 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 ml-0 padding-right-0" style="height:40px; margin-left: auto;">
-                        <label class="subadmin_search d-flex align-items-right">
-                            <input class="table_searchbar" id="table_search" type="search" placeholder="Search">
-                        </label>
-                    </div>           
-                </div>
-            </div>
-            
-        </div> 
     </div>
-    
     {% if messages %}
     {% for message in messages %}
     <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
@@ -59,11 +37,30 @@ div.dataTables_wrapper div.dataTables_info{display: none;}
     </div>
     {% endfor %}
     {% endif %}
-   <div class="card card-body border-light shadow-sm table-wrapper table-responsive pt-0">
-        {% include "emailtemplate/grid_emailtemplate.html" %}
-        {% include "emailtemplate/pagination.html" %} 
+     
+    <div class="table-settings mb-4">
+        <div class="subheader row mt-3 align-items-center">
+            <div class="col-xl-3 col-lg-3 col-md-3 padding-left-0" >
+                <a href="{% url 'wayrem_admin:addemailtemplates' %}" class="btn btn-primary col-sm-12 col-md-12 col-12 create_new">Create Email Template</a>
+            </div>
+    
+            <div class="col-xl-9 col-lg-9 col-12  padding-right-0">
+                <div class="row d-flex align-items-center ">
+                    <div class="col-xl-4 col-lg-3 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 ml-0 padding-right-0" style="height:40px; margin-left: auto;">
+                            <div class="input-group subadmin_search">
+                                    <span class="input-group-text" id="basic-addon2"><span class="fas fa-search"></span></span>
+                                    <input type="text" class="form-control table_searchbar" id="table_search" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2">
+                                </div>
+                    </div>           
+                </div>
+            </div>
+        </div>
+    </div>        
+    <div class="card card-body border-light shadow-sm table-wrapper table-responsive pt-0">
+               {% include "emailtemplate/grid_emailtemplate.html" %} 
+                {% include "emailtemplate/pagination.html" %}    
     </div>
-</main>
+</div>
 <script>
 
     $(document).ready(function () {

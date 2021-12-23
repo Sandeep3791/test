@@ -1,6 +1,6 @@
    
-   <nav class="navbar navbar-top navbar-expand ps-0 pe-2 pb-3 pt-3 bg-white" style="box-shadow: 0px 14px 20px 0px #00000014;">
-        <div class="container-fluid px-0">
+   <nav class="navbar navbar-top navbar-expand ps-0 pe-2 pb-3 pt-3 bg-white" id="topbar_content">
+        <div class="container-fluid dashboard_content_inner">
           <div class="d-flex justify-content-between w-100" id="navbarSupportedContent">
 
 
@@ -32,6 +32,7 @@
                 <div class="dropdown-menu dashboard-dropdown dropdown-menu-lg dropdown-menu-center mt-2 py-0">
                   <div class="list-group list-group-flush">
                     <a href="#" class="text-center text-primary fw-bold border-bottom border-light py-3">Notifications</a>
+                    <div class="Notifications_list">
                     {% for notification in request.notifications %}
                     <a href="{% url 'wayrem_admin:notification-delete' notification.id %}" class="list-group-item list-group-item-action border-bottom border-light">
                       <div class="row align-items-center">
@@ -53,8 +54,8 @@
                       </div>
                     </a>
                     {% endfor %}
-                    
-                    <a href="#" class="dropdown-item text-center text-primary fw-bold rounded-bottom py-3">View all</a>
+                    </div>
+                    <!-- <a href="#" class="dropdown-item text-center text-primary fw-bold rounded-bottom py-3">View all</a> -->
                   </div>
                 </div>
               </li>

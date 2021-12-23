@@ -21,16 +21,20 @@
 
 {% block content %}
 
-
-
-<div class="container">
-    <div class="subheader row">
-        <div class="col-xl-4 col-12 d-flex align-items-center mb-4 mt-4"><span class="page_title">Supplier Details</span>
-
+<div class="dashboard_content_inner">
+    <div class="topbar_pages">
+        <h4 class="text-title">View Suppliers</h2>
+        <div class="breadcrumb-section">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb padding-left-0">
+                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:supplierlist' %}"><span class="sidebar-icon"><span class="fas fa-users-cog"></span></span> Suppliers</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Supplier Details</li>
+                </ol>
+            </nav>
         </div>
-
     </div>
-    <div class="row rounded card_shadow bg-white">
+    <div class="row rounded shadow-sm bg-white mt-5">
         <div class="col-xl-4 col-lg-4   other_info view_border">
             <div class="">
                 <div class="row">
@@ -77,14 +81,18 @@
                 </div>
                 <div class="col-xl-6 text_value">
                     <label for="">Status </label>
-                    <span class="">{{suppldata.is_active}}</span>
+                    {% if suppldata.is_active == 1 %}
+                        <span class="">Active</span>
+                    {% else %}
+                        <span class="">Deactive</span>
+                    {% endif %}
                 </div>
 
             </div>
         </div>
     </div>
-
 </div>
+
 
 <style>
 

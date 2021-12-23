@@ -21,7 +21,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import connection
 import uuid
 import datetime
-from wayrem_admin.models import PurchaseOrder
+from wayrem_admin.models import PurchaseOrder, EmailTemplateModel
 from wayrem_admin.services import inst_Product, inst_Supplier
 
 from wayrem_admin.views.product import product
@@ -58,8 +58,16 @@ def supplier_register(request):
                     cursor.execute(
                         f'CREATE TABLE If NOT Exists {username}_purchase_order(`id` varchar(250) NOT NULL,`po_id` varchar(250) NOT NULL,`po_name` varchar(250) DEFAULT NULL,`product_qty` int NOT NULL,`status` varchar(250) DEFAULT NULL,`created_at`  DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,`product_name_id` int(250) DEFAULT NULL,`supplier_name_id` int(250) NOT NULL,PRIMARY KEY (`id`),FOREIGN KEY (`product_name_id`) REFERENCES `products_master` (`id`), FOREIGN KEY (`supplier_name_id`) REFERENCES `supplier_master` (`id`));')
                 to = email
-                subject = 'Welcome to Wayrem Supplier'
-                body = f'Your credential for <strong> Wayrem Supplier</strong> are:\n <br> Username: <em>{username}</em>\n  <br> Password: <em>{password}</em>\n <br> Email: <em>{email}</em>\n'
+                obj = EmailTemplateModel.objects.filter(
+                    key='supplier_register').first()
+                # subject = 'Welcome to Wayrem'
+                values = {
+                    'username': username,
+                    'password': password,
+                    'email': email,
+                }
+                subject = obj.subject
+                body = obj.message_format.format(**values)
                 # Role: {role}
                 send_email(to, subject, body)
                 messages.success(request, 'Supplier Created Successfully!!')

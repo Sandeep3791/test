@@ -51,23 +51,22 @@
              });
        });
       </script>
-
-<div class="topbar_pages padding-0">
-    <div class="container ">
-        <h4 class="text-title">Update Product</h2>
+<div class="dashboard_content_inner">
+    <div class="topbar_pages">
+        <h4 class="text-title">Update Product </h2>
         <div class="breadcrumb-section">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb padding-left-0">
                     <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
                     <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:productlist' %}"><span class="sidebar-icon"><i class="fas fa-gift"></i></span> <span class="sidebar-text">Product Management &nbsp; </span></a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:productlist' %}"><span class="sidebar-icon"><i class="fas fa-gift"></i></span> <span class="sidebar-text">Manage Product &nbsp; </span></a></li>
                     <li class="breadcrumb-item active" aria-current="page">Update Product</li>
                 </ol>
             </nav>
         </div>
-    </div> 
 </div>
-    <!---=========page popup==========-->
-<div class="modal" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+ <!---=========page popup==========-->
+ <div class="modal" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
@@ -103,550 +102,550 @@
     </div>
   </div>
     <!--==============================-->
-
-<main class="align-items-center admin_signup_lg">
-    <section class="d-flex align-items-center my-1 mb-lg-5">
-        <div class="container ">
-            <div class="row justify-content-center form-bg-image">
-                <div class="col-12 d-flex align-items-center justify-content-center">
-                    
-                    {% if messages %}
-                    <div class="mb-4 mb-lg-0 bg-white  rounded p-4 p-lg-4 w-100" style="box-shadow: 0px 14px 20px 0px #00000014;"></div>
-                    {% for message in messages %}
-                        <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
-                            <strong> {{ message }}</strong>
-                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                        </div>
-                    
-                    {% endfor %}
-                    </div>
-                    {% endif %}
-
-                    
-                    {% if form.non_field_errors %}
-                    {% for error in form.non_field_errors %}
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{error}}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    </div>
-                    {% endfor %}
-                    {% endif %}
-                    <form method="post" action="{% url 'wayrem_admin:updateproduct' id %}"  id="product1" data-supplier-url = "{% url 'wayrem_admin:ajax_load_supplier' %}" enctype="multipart/form-data" validate>
-                            {% csrf_token %}
-                            {{ form.non_field_errors }}
-                        <div class="row bg-white" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
-
-                            <h4 class="mb-4 mt-4">
-                                Product Information
-                            </h4>
-
-                            <div class="row">
-                                <!-- Form -->
-                                <div class="col-lg-6">
-                                    <div class="form-group mb-4">
-                                        <label for="name">SKU <span class="text-danger">*</span> <span class="text-danger"><em> {{form.SKU.errors | striptags}}
-                                        </em></span></label>
-                                        <div class="input-group input_border">   
-                                            {{form.SKU}}
-                                            <div class="input-group" id="sku_error_message" style="color: #d12525;"></div>
-                                        </div>
-                                        
-                                    </div>
-                                </div>
-                                <!-- End of Form -->
-
-                                <!-- Form -->
-                                <div class="col-lg-6">
-                                    <div class="form-group mb-4">
-                                        <label for="image">Product Name <span class="text-danger">*</span> <span class="text-danger"> <em> {{form.name.errors | striptags}}
-                                        </em> </span></label>
-                                        <div class="input-group">
-                                            
-                                            {{form.name}}
-                                            <div class="input-group" id="name_error_message" style="color: #d12525;"></div>
-                                        </div>
-                                        
-                                    </div>
-                                </div>
-                                <!-- End of Form -->
-                            </div>
-                            <div class="row">
-                                
-                                
-                                <!-- Form -->
-                                <div class="col-lg-6">
-                                    <div class="form-group mb-4">
-                                    
-                                        <label for="description">Product Category  <span class="text-danger">
-                                            <em> {{form.category.errors | striptags}}
-                                            </em>
-                                        </span></label>
-                                        <div class="input-group">
-                                            
-                                            {{form.category}}
-                                        </div>
-                                        
-                                    </div>
-                                </div>
-                                <!-- End of Form -->
-
-                                <!-- Form -->
-                                <div class="col-lg-6">
-                                    <div class="form-group mb-4 col-gap">
-                                        <label for="name">Weight <span class="text-danger">*</span><span class="text-danger"><em> {{form.weight.error | striptags}} {{form.weight_unit.error | striptags}} 
-                                            </em>
-                                        </span></label>
-                                        <div class="input-group first">   
-                                            {{form.weight}} 
-                                            {{form.weight_unit}} 
-                                        <div class="input-group" id="weight_error_message" style="color: #d12525;"></div>
-                                        </div>
-                                        
-                                        <span class="text-error"></span>
-                                    </div>
-                                </div>
-                                <!-- End of Form -->
-                                
-                                <!-- Form -->
-                                <div class="col-lg-6">
-                                    <div class="form-group mb-4">
-                                        <label for="name">Price <span class="text-danger">*</span><span class="text-danger"><em> {{form.price.error | striptags}} 
-                                            </em>
-                                        </span></label>
-                                        <div class="input-group">   
-                                            {{form.price}}
-                                            <div class="input-group" id="price_error_message" style="color: #d12525;"></div>
-                                        </div>
-                                    
-                                        <span class="text-error"></span>
-                                    </div>
-                                </div>
-                                <!-- End of Form -->
-                                
-                            </div>
-
-                            
-                            
-                            <div class="row">
-                                <!-- Form -->
-                                <div class="col-lg-6">
-                                    <div class="form-group mb-4">
-                                        <label for="description">Date of Manufacture  <span class="text-danger">*</span> <span class="text-danger">
-                                            <em> {{form.date_of_mfg.errors | striptags}}
-                                            </em>
-                                        </span></label>
-                                        <div class="input-group">
-                                            
-                                            {{form.date_of_mfg}}
-                                            <div class="input-group" id="dom_error_message" style="color: #d12525;"></div>
-                                        </div>
-                                        
-                                    </div>
-                                </div>
-                                <!-- End of Form -->
-
-
-                                <!-- Form -->
-                                <div class="col-lg-6">
-                                    <div class="form-group mb-4">
-                                        <label for="provider">Date of Expiry  <span class="text-danger">*</span>  <span class="text-danger"> <em> {{form.date_of_exp.errors | striptags}}
-                                        </em>
-                                    </span></label>
-                                        <div class="input-group date_input_box">
-                                        
-                                            {{form.date_of_exp}}
-                                            <div class="input-group" id="doe_error_message" style="color: #d12525;"></div>
-                                        </div>
-                                        
-                                    </div>
-                                </div>
-                                <!-- End of Form -->
-
-                                <!-- Form -->
-                                <div class="col-lg-6">
-                                    <div class="form-group mb-4">
-                                        <label for="provider">Manufacturer Name <span class="text-danger">*</span>  <span class="text-danger"> <em> {{form.mfr_name.errors | striptags}}
-                                        </em>
-                                    </span></label>
-                                        <div class="input-group date_input_box">
-                                        
-                                            {{form.mfr_name}}
-                                            <div class="input-group" id="mfr_error_message" style="color: #d12525;"></div>
-                                        </div>
-                                    
-                                    </div>
-                                </div>
-                                <!-- End of Form -->
-
-                                <!-- Form -->
-                                <div class="col-lg-6">
-                                    <div class="form-group mb-4">
-
-                                    <label for="description">Supplier Company <span class="text-danger"><em> {{form.supplier.errors | striptags}}
-                                            </em>
-                                        </span></label>
-                                        <div class="input-group">
-                                        {% comment %}  {% endcomment %}
-                                    {{form.supplier}}
-                                    {% comment %} </script> {% endcomment %}
-                                        </div>
-
-                                        
-                                    </div>
-                                </div>
-                                <!-- End of Form -->
-
-                                <!-- Form -->
-                                <div class="col-lg-12">
-                                    <div class="form-group mb-4">
-                                        <label for="name">Description <span class="text-danger"><em>{{form.description.error | striptags}} 
-                                            </em>
-                                        </span></label>
-                                        <div class="input-group">   
-                                        {{form.description}}
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- End of Form -->
-
-                                <div class="col-lg-6">
-                                    <div class="form-group mb-4">
-                                        <label for="name">Discount <span class="text-danger">*</span><span class="text-danger"><em> {{form.discount.error | striptags}} 
-                                            </em>
-                                        </span></label>
-                                        <div class="input-group first">   
-                                            {{form.discount}}
-                                            {{form.dis_abs_percent}}
-                                            <div class="input-group" id="discount_error_message" style="color: #d12525;"></div>
-                                        </div>
-                                        <!-- <div class="input-group">
-                                            <span class="text-danger"><em> 
-                                                </em></span>
-                                        </div> -->
-                                        <span class="text-error"></span>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>    
+    <div class="row justify-content-center form-bg-image">
+        <div class="col-12 d-flex align-items-center justify-content-center">
+            
+            {% if messages %}
+            <div class="mb-4 mb-lg-0 bg-white  rounded p-4 p-lg-4 w-100" style="box-shadow: 0px 14px 20px 0px #00000014;"></div>
+            {% for message in messages %}
+                <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
+                    <strong> {{ message }}</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            
+            {% endfor %}
+            </div>
+            {% endif %}
 
             
-                        <div class="row mt-4 bg-white" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
+            {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{error}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </div>
+            {% endfor %}
+            {% endif %}
+            <form method="post" action="{% url 'wayrem_admin:updateproduct' id %}"  id="product1" data-supplier-url = "{% url 'wayrem_admin:ajax_load_supplier' %}" enctype="multipart/form-data" validate>
+                    {% csrf_token %}
+                    {{ form.non_field_errors }}
+                <div class="row bg-white" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
 
-                            <h4 class="mb-4 mt-4">
-                                Stock Management
-                            </h4>
+                    <h2 class="h5 mb-4 mt-4">
+                        Product Information
+                    </h2>
 
-                            <div class="col-lg-6">
-                                <div class="form-group mb-4">
-                                    <label for="name">Product Quantity <span class="text-danger">*</span><span class="text-danger"><em> {{form.quantity.errors | striptags}} {{form.quantity_unit.errors | striptags}}
-                                    </em>
-                                    </span></label>
-                                    <div class="input-group">   
-                                        {{form.quantity}}
-                                        {{form.quantity_unit}}
-                                        <div class="input-group" id="quantity_error_message" style="color: #d12525;"></div>
-                                    </div>
-                                    <div class="input-group">
-                                        <span class="text-danger"><em> 
-                                            </em></span>
-                                    </div>
-                                    <span class="text-error"></span>
-                                </div>
-                            </div>
-
-                            <!-- Form -->
-                            <div class="col-lg-6">
-                                <div class="form-group mb-4">
-                                    <label for="image">Package Count <span class="text-danger">*</span><span class="text-danger"><em> {{form.package_count.error | striptags}}
-                                        </em>
-                                    </span></label>
-                                    <div class="form-check form-switch">
-                                        
-                                        {{form.package_count}}
-                                        <label for="id_package_count">Package</label>
-                                        <div class="input-group" id="pcount_error_message" style="color: #d12525;"></div>
-                                    </div>
-                                
-                                </div>
-                            </div>
-                            <!-- End of Form -->
-
-                            </div>
-
-                        <div class="row mt-4 bg-white" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
-
-                            <h4 class="mb-4 mt-4">
-                                Ingredients
-                            </h4>
-
-                            <div class="row ingredients_form">
-                                <!-- Form -->
-                                <div class="col-lg-12">
-                                    <div class="form-group mb-4">
-                                        <div class="input-group">   
-                                            {{ formset.management_form }}
-                                            
-                                            {% for form in formset %}
-                                            {{ form.id }}
-                                            <div class="row col-12 form-row spacer my-2">
-                                                {% comment %} <div class="col-2">
-                                                    <label>Ingredients</label>
-                                                </div> {% endcomment %}
-                                                <div class="row">
-                                                {% comment %} <div class="col-12 my-2"> {% endcomment %}
-                                                    <div class="col-3">
-                                                        <label>Ingredients </label>
-                                                        {{form.ingredient}}
-                                                        
-                                                    </div>
-                                                    <div class="col-3">
-                                                        <label>Quantity </label>
-                                                        {{form.quantity}}
-                                                    </div>
-
-                                                        <div class="col-3">
-                                                        <label>Unit </label>
-                                                        {{form.unit}}
-                                                    </div>
-                                                        <div class="col-3 d-flex align-items-end">
-                                                        <div class="input-group-append">
-                                                            <button class="btn {% if forloop.counter == 1 %} btn-success add-form-row {% else %} btn-danger remove-form-row {% endif %} ps-3 pe-3   {% if forloop.counter == 1 %} addmmoreaction {% endif %}"  data-formid="0">
-                                                                {% if forloop.counter == 1 %}+{% else %}-{% endif %}</button>
-                                                                
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            {% comment %} </div> {% endcomment %}
-                                            </div>
-                                            {% endfor %}
-
-                                            
-                                        </div>
-                                    
-
-                                    </div>
-                                </div>
-                                <!-- End of Form -->
-
-                                
-
-                            
-
-                                
-                                
-                            </div>
-
-                            </div>
-                            <!--=====================------=====================-->
-
-
-                            <!--==================row====================-->
-                        <div class="row mt-4 bg-white" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
-
-                            <h4 class="mb-4 mt-4">
-                                Product Margin
-                            </h4>
-
-                            <div class="row">
-                                
-                                <!-- Form -->
-                               
-                                <!-- End of Form -->
-                            <!-- Form -->
-                                <div class="col-lg-12">
-                                    <div class="form-group mb-4">
-                                        <label for="name">Wayrem Margin <span class="text-danger">*</span> <span class="text-danger"> <em> {{form.wayrem_margin.error | striptags}} 
-                                        </em> </span> </label>
-                                        <div class="input-group">
-                                            {{form.wayrem_margin}}
-                                            {{form.margin_unit}}
-                                            <div class="input-group" id="margin_error_message" style="color: #d12525;"></div>
-                                            <div class="input-group">
-                                                <div class="form-check mx-2">
-                                                    
-                                                    <label class="form-check-label" for="cat_marginopen">
-                                                        Category Margin
-                                                    </label>
-                                                    <input class="form-check-input" type="radio" name="cat_margin" id="cat_marginopen">
-                                                    <div class='selectedcat_margin'></div>
-                                                </div>
-                                                <div class="form-check mx-5">
-                                                    <input class="form-check-input" type="radio" name="cat_margin" id="cat_margin1">
-                                                    <label class="form-check-label" for="cat_margin1">
-                                                        Product Margin
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <span class="text-error"></span>
-                                    </div>
-                                </div>
-                                <!-- End of Form -->
-
-                                
-                            </div>
-
-                        </div>
-                            <!--==================row end===================-->
-
-
-                            <!--==========row====================-->
-                            <div class="row mt-4 bg-white" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
-
-                                <h4 class=" mb-4 mt-4">
-                                    Meta Information
-                                </h4>
-
-                                <div class="row">
-                                
-                                    <!-- Form -->
-                                <div class="col-lg-12">
-                                    <div class="form-group mb-4">
-                                        <label for="name">Product Meta Tag <span class="text-danger">*</span><span class="text-danger"><em> {{form.meta_key.error | striptags}}
-                                            </em>
-                                        </span></label>
-                                        <div class="input-group">
-                                            {{form.meta_key}}
-                                            <div class="input-group" id="metaKey_error_message" style="color: #d12525;"></div>
-                                        </div>
-                                    
-                                    </div>
-                                </div>
-                                <!-- End of Form -->              
-                                
-                                </div>
-
-                            </div>
-                            <!--============row end===============-->
-
-
-
-                            <!--===================row===================-->
-                            <div class="row mt-4 mb-4 bg-white" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
-
-                            <h4 class="mb-4 mt-4">
-                                Status
-                            </h4>
-
-                            <div class="row">
-                                <!-- Form -->
-                                <div class="col-lg-6">
-                                    <div class="form-group mb-4">
-                                        <div class="form-check">
-                                            <label class="form-check-label" for="quantity">  Featured Product  <span class="text-danger"> <em> {{form.feature_product.errors | striptags}}
-                                            </em>
-                                        </span></label>
-                                            {{form.feature_product}}
-                                        </div>
-                                    
-                                    </div>
-                                </div>
-                                <!-- End of Form -->
-                                <!-- Form -->
-                                <div class="col-lg-6">
-                                    <div class="form-group mb-4">
-                                        <div class="form-check">
-                                            <label class="form-check-label" for="weight">Publish <span class="text-danger"> <em> {{form.publish.errors | striptags}}
-                                            </em>
-                                        </span></label>
-                                            {{form.publish}}
-                                        </div>
-                                        
-                                    </div>
-                                </div>
-                                <!-- End of Form -->
-                            </div>
-
-                            </div>
-                            <!--================row end==================-->
-                            <div class="row mt-4 bg-white" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
-
-                                <h4 class=" mb-4 mt-4">
-                                    Product Images
-                                </h4>
-
-                                <div class="row">
-                                
-                                    <!-- Form -->
-                                    {% if image %}
-                                    <img src="{{image.url}}" style="width:200px;height:150px;" class='me-5'>
-                                    {% endif %}
-                                    <div class="col-lg-12">
-                                        <div class="form-group mb-4">
-                                            <label for="name">Primary image <span class="text-danger">*</span><span class="text-danger"><em> {{form.meta_key.error | striptags}}
-                                            </em>
-                                        </span></label>
-                                        <div class="input-group">
-                                            
-
-                                            {{ form.primary_image}}
-
-                                            <div class="input-group" id="metaKey_error_message" style="color: #d12525;"></div>
-                                        </div>
-                                    
-                                    </div>
-                                </div>
-                                <!-- End of Form -->              
-                                
-                            <div class="row">
-                                <h6 class="mb-3">Images Gallery</h6>
-                                {% for product in product_images %}
-                                {% if product.image.url %}
-                                <div class="col product_gallery_images">
-                                    <form method="POST"  enctype="multipart/form-data" class="id_ajax_upload_{{product.id}} id_ajax_upload_form"> 
-                                        {% csrf_token %}
-                                        <img src="{{product.image.url}}" style="width:200px; height:150px;" class='me-5 mt-2' id="id_image_upload_{{product.id}}">
-                                        <span class="editimage"><i class="fas fa-edit text-dark"></i></span>
-                                        <a type="button" onclick="imgDelete()">
-                                        <span class="deleteimage" dataid="{{product.id}}"><i class="fas fa-trash-alt text-danger"></i></span></a>
-                                    
-                                        <input type="file" name= "updateimage" class="updateimage" style=" display: none; " product-id="{{product.id}}">
-                                        <input type="hidden" name="updateimageID" class="updateimageID" value="{{product.id}}" style=" display: none; ">
-                                    </form>
-                                </div>
-                                {% endif %}
-                                {% endfor %}
-                            </div>  
-                    </div>
+                    <div class="row">
                         <!-- Form -->
-                        <div class="col-lg-12">
+                        <div class="col-lg-6">
                             <div class="form-group mb-4">
-                                <label for="name">Upload New Image <span class="text-danger">*</span><span class="text-danger"><em> {{form3.images.error | striptags}}
+                                <label for="name">SKU <span class="text-danger">*</span> <span class="text-danger"><em> {{form.SKU.errors | striptags}}
+                                </em></span></label>
+                                <div class="input-group input_border">   
+                                    {{form.SKU}}
+                                    <div class="input-group" id="sku_error_message" style="color: #d12525;"></div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <!-- End of Form -->
+
+                        <!-- Form -->
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                                <label for="image">Product Name <span class="text-danger">*</span> <span class="text-danger"> <em> {{form.name.errors | striptags}}
+                                </em> </span></label>
+                                <div class="input-group">
+                                    
+                                    {{form.name}}
+                                    <div class="input-group" id="name_error_message" style="color: #d12525;"></div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <!-- End of Form -->
+                    </div>
+                    <div class="row">
+                        
+                        
+                        <!-- Form -->
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                            
+                                <label for="description">Product Category  <span class="text-danger">
+                                    <em> {{form.category.errors | striptags}}
                                     </em>
                                 </span></label>
-                                <div class="input-group">                                            
-                                    {{ form3.images}}
+                                <div class="input-group">
+                                    
+                                    {{form.category}}
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <!-- End of Form -->
 
-                                    <div class="input-group" id="met aKey_error_message" style="color: #d12525;"></div>
+                        <!-- Form -->
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4 col-gap">
+                                <label for="name">Weight <span class="text-danger">*</span><span class="text-danger"><em> {{form.weight.error | striptags}} {{form.unit.error | striptags}} 
+                                    </em>
+                                </span></label>
+                                <div class="input-group first">   
+                                    <div class="w-75">{{form.weight}} </div>
+                                    <div class="w-25 px-2">{{form.weight_unit}} </div>
+                                <div class="input-group" id="weight_error_message" style="color: #d12525;"></div>
+                                </div>
+                                
+                                <span class="text-error"></span>
+                            </div>
+                        </div>
+                        <!-- End of Form -->
+                        
+                        <!-- Form -->
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                                <label for="name">Price <span class="text-danger">*</span><span class="text-danger"><em> {{form.price.error | striptags}} 
+                                    </em>
+                                </span></label>
+                                <div class="input-group">   
+                                    {{form.price}}<span class="input-group-text" id="basic-addon1">SAR</span>
+                                    <div class="input-group" id="price_error_message" style="color: #d12525;"></div>
+                                </div>
+                            
+                                <span class="text-error"></span>
+                            </div>
+                        </div>
+                        <!-- End of Form -->
+                        
+                    </div>
+
+                    
+                    
+                    <div class="row">
+                        <!-- Form -->
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                                <label for="description">Date of Manufacture  <span class="text-danger">*</span> <span class="text-danger">
+                                    <em> {{form.date_of_mfg.errors | striptags}}
+                                    </em>
+                                </span></label>
+                                <div class="input-group">
+                                    
+                                    {{form.date_of_mfg}}
+                                    <div class="input-group" id="dom_error_message" style="color: #d12525;"></div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <!-- End of Form -->
+
+
+                        <!-- Form -->
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                                <label for="provider">Date of Expiry  <span class="text-danger">*</span>  <span class="text-danger"> <em> {{form.date_of_exp.errors | striptags}}
+                                </em>
+                            </span></label>
+                                <div class="input-group date_input_box">
+                                
+                                    {{form.date_of_exp}}
+                                    <div class="input-group" id="doe_error_message" style="color: #d12525;"></div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <!-- End of Form -->
+
+                        <!-- Form -->
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                                <label for="provider">Manufacturer Name <span class="text-danger">*</span>  <span class="text-danger"> <em> {{form.mfr_name.errors | striptags}}
+                                </em>
+                            </span></label>
+                                <div class="input-group date_input_box">
+                                
+                                    {{form.mfr_name}}
+                                    <div class="input-group" id="mfr_error_message" style="color: #d12525;"></div>
                                 </div>
                             
                             </div>
                         </div>
                         <!-- End of Form -->
+
+                        <!-- Form -->
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+
+                            <label for="description">Supplier Company <span class="text-danger"><em> {{form.supplier.errors | striptags}}
+                                    </em>
+                                </span></label>
+                                <div class="input-group">
+                                {% comment %}  {% endcomment %}
+                            {{form.supplier}}
+                            {% comment %} </script> {% endcomment %}
+                                </div>
+
+                                
+                            </div>
+                        </div>
+                        <!-- End of Form -->
+
+                        <!-- Form -->
+                        <div class="col-lg-12">
+                            <div class="form-group mb-4">
+                                <label for="name">Description <span class="text-danger"><em>{{form.description.error | striptags}} 
+                                    </em>
+                                </span></label>
+                                <div class="input-group">   
+                                {{form.description}}
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End of Form -->
+
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                                <label for="name">Discount <span class="text-danger">*</span><span class="text-danger"><em> {{form.discount.error | striptags}} 
+                                    </em>
+                                </span></label>
+                                <div class="input-group first">  
+                                    <div class="w-75 px-2">
+                                        {{form.discount}}
+                                    </div> 
+                                    <div class="w-25 px-2">
+                                        {{form.dis_abs_percent}}
+                                    </div> 
+                                    
+                                    <div class="input-group" id="discount_error_message" style="color: #d12525;"></div>
+                                </div>
+                                <!-- <div class="input-group">
+                                    <span class="text-danger"><em> 
+                                        </em></span>
+                                </div> -->
+                                <span class="text-error"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>    
+
+    
+                <div class="row mt-4 bg-white" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
+
+                    <h4 class="mb-4 mt-4">
+                        Stock Management
+                    </h4>
+
+                    <div class="col-lg-6">
+                        <div class="form-group mb-4">
+                            <label for="name">Product Quantity <span class="text-danger">*</span><span class="text-danger"><em> {{form.quantity.errors | striptags}}
+                            </em>
+                            </span></label>
+                            <div class="input-group">   
+                                <div class="w-75 px-2">
+                                {{form.quantity}}
+                            </div>
+                                <div class="w-25 px-2">{{form.quantity_unit}} </div>
+                                <div class="input-group" id="quantity_error_message" style="color: #d12525;"></div>
+                            </div>
+                            <div class="input-group">
+                                <span class="text-danger"><em> 
+                                    </em></span>
+                            </div>
+                            <span class="text-error"></span>
+                        </div>
+                    </div>
+
+                    <!-- Form -->
+                    <div class="col-lg-6">
+                        <div class="form-group mb-4">
+                            <label for="image">Package Count <span class="text-danger">*</span><span class="text-danger"><em> {{form.package_count.error | striptags}}
+                                </em>
+                            </span></label>
+                            <div class="form-check form-switch">
+                                
+                                {{form.package_count}}
+                                <label for="id_package_count">Package</label>
+                                <div class="input-group" id="pcount_error_message" style="color: #d12525;"></div>
+                            </div>
+                        
+                        </div>
+                    </div>
+                    <!-- End of Form -->
+
+                    </div>
+
+                <div class="row mt-4 bg-white" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
+
+                    <h4 class="mb-4 mt-4">
+                        Ingredients
+                    </h4>
+
+                    <div class="row ingredients_form">
+                        <!-- Form -->
+                        <div class="col-lg-12">
+                            <div class="form-group mb-4">
+                                <div class="input-group">   
+                                    {{ formset.management_form }}
+                                    
+                                    {% for form in formset %}
+                                    {{ form.id }}
+                                    <div class="row col-12 form-row spacer my-2">
+                                        {% comment %} <div class="col-2">
+                                            <label>Ingredients</label>
+                                        </div> {% endcomment %}
+                                        <div class="row">
+                                        {% comment %} <div class="col-12 my-2"> {% endcomment %}
+                                            <div class="col-3">
+                                                <label>Ingredients </label>
+                                                {{form.ingredient}}
+                                                
+                                            </div>
+                                            <div class="col-3">
+                                                <label>Quantity </label>
+                                                {{form.quantity}}
+                                            </div>
+
+                                                <div class="col-3">
+                                                <label>Unit </label>
+                                                {{form.unit}}
+                                            </div>
+                                                <div class="col-3 d-flex align-items-end">
+                                                <div class="input-group-append">
+                                                    <button class="btn {% if forloop.counter == 1 %} btn-success add-form-row {% else %} btn-danger remove-form-row {% endif %} ps-3 pe-3   {% if forloop.counter == 1 %} addmmoreaction {% endif %}"  data-formid="0">
+                                                        {% if forloop.counter == 1 %}+{% else %}-{% endif %}</button>
+                                                        
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% comment %} </div> {% endcomment %}
+                                    </div>
+                                    {% endfor %}
+
+                                    
+                                </div>
+                            
+
+                            </div>
+                        </div>
+                        <!-- End of Form -->
+
+                        
+
+                    
+
+                        
+                        
+                    </div>
+
+                    </div>
+                    <!--=====================------=====================-->
+
+
+                    <!--==================row====================-->
+                <div class="row mt-4 bg-white" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
+
+                    <h4 class="mb-4 mt-4">
+                        Product Margin
+                    </h4>
+
+                    <div class="row">
+                        
+                        <!-- Form -->
+                       
+                        <!-- End of Form -->
+                    <!-- Form -->
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                                <label for="name">Wayrem Margin <span class="text-danger">*</span> <span class="text-danger"> <em> {{form.wayrem_margin.error | striptags}} 
+                                </em> </span> </label>
+                                <div class="input-group">
+                                    <div class="w-75 px-2">
+                                    {{form.wayrem_margin}}
+                                    </div>
+                                    <div class="w-25 px-2">
+                                        {{form.margin_unit}}
+                                    </div>
+                                    <div class="input-group" id="margin_error_message" style="color: #d12525;"></div>
+                                    <div class="input-group mt-2">
+                                        <div class="form-check mx-2">
+                                            
+                                            <label class="form-check-label" for="cat_marginopen">
+                                                Category Margin
+                                            </label>
+                                            <input class="form-check-input" type="radio" name="cat_margin" id="cat_marginopen">
+                                            <div class='selectedcat_margin'></div>
+                                        </div>
+                                        <div class="form-check mx-5">
+                                            <input class="form-check-input" type="radio" name="cat_margin" id="cat_margin1">
+                                            <label class="form-check-label" for="cat_margin1">
+                                                Product Margin
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <span class="text-error"></span>
+                            </div>
+                        </div>
+                        <!-- End of Form -->
+
+                        
                     </div>
 
                 </div>
+                    <!--==================row end===================-->
+
+
+                    <!--==========row====================-->
+                    <div class="row mt-4 bg-white" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
+
+                        <h4 class=" mb-4 mt-4">
+                            Meta Information
+                        </h4>
+
+                        <div class="row">
                         
-                        <div class="mt-4">
-                            <a  href="{% url 'wayrem_admin:product' %}" class="btn  btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Back</a>
-                            <button id="your-id"class="btn btn-dark border-0 col-xl-3 col-md-5 col-12" >Update</button>
+                            <!-- Form -->
+                        <div class="col-lg-12">
+                            <div class="form-group mb-4">
+                                <label for="name">Product Meta Key <span class="text-danger">*</span><span class="text-danger"><em> {{form.meta_key.error | striptags}}
+                                    </em>
+                                </span></label>
+                                <div class="input-group">
+                                    {{form.meta_key}}
+                                    <div class="input-group" id="metaKey_error_message" style="color: #d12525;"></div>
+                                </div>
+                            
+                            </div>
                         </div>
-<script>
-    var form = document.getElementById("product1");
+                        <!-- End of Form -->              
+                        
+                        </div>
 
-document.getElementById("your-id").addEventListener("click", function () {
-  form.submit();
-});
-</script>
+                    </div>
+                    <!--============row end===============-->
 
-                    </form>
-                </div>  
-               
+
+
+                    <!--===================row===================-->
+                    <div class="row mt-4 mb-4 bg-white" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
+
+                    <h4 class="mb-4 mt-4">
+                        Status
+                    </h4>
+
+                    <div class="row">
+                        <!-- Form -->
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                                <div class="form-check">
+                                    <label class="form-check-label" for="quantity">  Featured Product  <span class="text-danger"> <em> {{form.feature_product.errors | striptags}}
+                                    </em>
+                                </span></label>
+                                    {{form.feature_product}}
+                                </div>
+                            
+                            </div>
+                        </div>
+                        <!-- End of Form -->
+                        <!-- Form -->
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                                <div class="form-check">
+                                    <label class="form-check-label" for="weight">Publish <span class="text-danger"> <em> {{form.publish.errors | striptags}}
+                                    </em>
+                                </span></label>
+                                    {{form.publish}}
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <!-- End of Form -->
+                    </div>
+
+                    </div>
+                    <!--================row end==================-->
+                    <div class="row mt-4 bg-white" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
+
+                        <h4 class=" mb-4 mt-4">
+                            Product Images
+                        </h4>
+
+                        <div class="row">
+                        
+                            <!-- Form -->
+                            {% if image %}
+                            <img src="{{image.url}}" style="width:200px;height:150px;" class='me-5'>
+                            {% endif %}
+                            <div class="col-lg-12">
+                                <div class="form-group col-lg-6 mb-4 form-file">
+                                    <label for="description">Primary image  <span class="text-danger">*</span> </label>
+                                    {{ form.primary_image}}
+                                    <label class="form-file-label ps-2 pe-2" for="customFile">
+                                        <span class="form-file-text">Choose file...</span>
+                                        <span class="form-file-button">Browse</span>
+                                    </label>
+                                    <span class="text-danger"><em> {{form.meta_key.error | striptags}} </em></span>
+                                    <div class="input-group" id="metaKey_error_message" style="color: #d12525;"></div>
+                            </div>
+                        </div>
+                        <!-- End of Form -->              
+                        
+                    <div class="row">
+                        <h6 class="mb-3">Images Gallery</h6>
+                        {% for product in product_images %}
+                        {% if product.image.url %}
+                        <div class="col product_gallery_images">
+                            <!-- <form method="POST"  enctype="multipart/form-data" class="id_ajax_upload_{{product.id}} id_ajax_upload_form">  -->
+                                {% csrf_token %}
+                                <img src="{{product.image.url}}" style="width:200px; height:150px;" class='me-5 mt-2' id="id_image_upload_{{product.id}}">
+                                <!-- <span class="editimage"><i class="fas fa-edit text-dark"></i></span> -->
+                                <!-- <a type="button" onclick="imgDelete()"> -->
+                                <span class="deleteimage" dataid="{{product.id}}"><i class="fas fa-trash-alt text-danger"></i></span></a>
+                            
+                                <input type="file" name= "updateimage" class="updateimage" style=" display: none; " product-id="{{product.id}}">
+                                <input type="hidden" name="updateimageID" class="updateimageID" value="{{product.id}}" style=" display: none; ">
+                            <!-- </form> -->
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>  
+            </div>
+                <!-- Form -->
+                <div class="col-lg-12">
+                    <div class="col-lg-6 form-group mb-4 form-file multiple">
+                        <label for="description">Upload New Image <span class="text-danger"></span> </label>
+                        {{ form3.images}}
+                        <label class="form-file-label ps-2 pe-2" for="customFile">
+                            <span class="form-file-text">Choose file...</span>
+                            <span class="form-file-button">Browse</span>
+                        </label>
+                        <span class="text-danger"><em>{{form3.images.error | striptags}}</em></span>
+                        <div class="input-group" id="met aKey_error_message" style="color: #d12525;"></div>
+                    </div>
+                </div>
+                <!-- End of Form -->
+            </div>
+
         </div>
-    </section>
-</main>
+        <div class="mt-4">
+            <a  href="{% url 'wayrem_admin:product' %}" class="btn  btn-danger btn-block col-xl-1 col-md-1 col-12 mt-sm-3 mt-md-0 mt-3">Back</a>
+            <button id="your-id"class="btn btn-dark border-0 col-xl-1 col-md-1 col-12" >Update</button>
+        </div>
+        <script>
+            var form = document.getElementById("product1");
+        
+        document.getElementById("your-id").addEventListener("click", function () {
+          form.submit();
+        });
+        </script>
+        
+                            </form>
+                        </div>  
+</div>
+
 
 {% endblock content %}
 
@@ -670,6 +669,21 @@ document.getElementById("your-id").addEventListener("click", function () {
             }
         });
     }
+    $('.deleteimage').click(function(){
+        var productid =  $(this).attr('dataid');
+        var url = "{% url 'wayrem_admin:delete_product_images' %}"
+        $(this).parent('.product_gallery_images').remove();
+        $.ajax({                       // initialize an AJAX request
+            url: url,                    // set the url of the request (= /persons/ajax/load-cities/ )
+            data: {
+                'deleteimage': productid       // add the country id to the GET parameters
+            },
+            success: function (data) {   
+                console.log(data)
+                
+            }
+        });
+    }); 
 </script>
 
 <script type="text/javascript">

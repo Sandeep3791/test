@@ -7,96 +7,91 @@
 {% block stylesheets %}{% endblock stylesheets %}
 
 {% block content %}
-
-<div class="topbar_pages padding-0">
-    <div class="container ">
+    <div class="dashboard_content_inner">
+    <div class="topbar_pages">
         <h4 class="text-title">Add Product </h2>
         <div class="breadcrumb-section">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb padding-left-0">
                     <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
                     <li class="breadcrumb-item"><a href="#"><span class="sidebar-icon"><i class="fas fa-gift"></i></span> <span class="sidebar-text">Product Management &nbsp; </span></a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:productlist' %}"><span class="sidebar-icon"><i class="fas fa-gift"></i></span> <span class="sidebar-text">Manage Product &nbsp; </span></a></li>
                     <li class="breadcrumb-item active" aria-current="page">Create Product </li>
                 </ol>
             </nav>
-        </div>
-    </div> 
-</div>
-<main  class="  align-items-center admin_login_lg">
-    <!-- Section -->
-    <section class="d-flex align-items-center my-5 mt-lg-6 mb-lg-5">
-        <div class="container">
-            <div class="row justify-content-center form-bg-image">
-                <div class="col-12 d-flex align-items-center justify-content-center">
-                    <div class="bg-white shadow-soft border rounded border-light p-4 p-lg-5 w-100 fmxw-500">
-                        <div class="text-center text-md-center mb-4 mt-md-0">
-                            <h1 class="mb-0 h3">
-                                {% comment %} <img src="{% static '/assets/img/logo/Wayrem_logo..svg'%}" style="width:80%" alt=""> {% endcomment %}
-                            </h1>
-                            <br />
-                            <p>
-                               {% if messages %}
-{% for message in messages %}
-<div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
-  <strong> {{ message }}</strong> 
-  <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-{% endfor %}        
-{% endif %}
-
-
-                            </p>
-                        </div>
-
-
-
-                            <!-- Form -->
-                            <div class="form-group mb-4">
-                                <label for="code">Barcode Number</label>
-                                <div class="input-group">
-                                    <span class="input-group-text" id="basic-addon1"><span
-                                            class="fas fa-barcode"></span></span>
-                                    <input type="text" placeholder="Barcode Number" class="form-control" id="code" required
-                                        name="code" aria-describedby="emailHelp">
-                                </div>
-                            </div>
-                            <!-- End of Form -->
-                           
-                            <div class="d-grid">
-                                <button  onclick="lowestFunc()" id="subHere" class="btn btn-dark">Submit</button>
-                            </div>
-                <!-- Modal Lowest Price -->
-                <div class="modal fade" id="barData" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                <div class="modal-dialog  modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="">Barcode Data</h5>
-                            {% comment %} <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> {% endcomment %}
-                        </div>
-                        <div class="modal-body">
-                            <div id="details"></div>
-                        </div>
-                        <div class="modal-footer">
-                            <a type="button" href="{% url 'wayrem_admin:inputBar' %}" class="btn btn-danger" >Cancel</a>
-                            <a type="button" href="{% url 'wayrem_admin:productviewone' %}" class="btn btn-primary">Fill Data</a>
-                          </div>
+        </div> 
+    </div>
+    <div class="row justify-content-center form-bg-image">
+        <div class="col-12 d-flex align-items-center justify-content-center">
+            <div class="bg-white  rounded p-4 p-lg-4 w-50 shadow-sm">
+                <div class="text-center text-md-center mb-4 mt-md-0">
+                    <h1 class="mb-0 h3">
+                        {% comment %} <img src="{% static '/assets/img/logo/Wayrem_logo..svg'%}" style="width:80%" alt=""> {% endcomment %}
+                    </h1>
+                    <br />
+                    <p>
+                       {% if messages %}
+                    {% for message in messages %}
+                    <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
+                    <strong> {{ message }}</strong> 
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-                </div> 
-            </div>
-
-                        <div class="d-flex justify-content-center align-items-center mt-4">
-                            <span class="font-weight-normal">
-                                 <a href="#" target="_blank"></a>
-                                <a target="_blank" href="#"></a>
-                            </span>
-                        </div>
-
-                    </div>
+                    {% endfor %}        
+                    {% endif %}
+    
+    
+                    </p>
                 </div>
+    
+    
+    
+                    <!-- Form -->
+                    <div class="form-group mb-4">
+                        <label for="code">Barcode Number</label>
+                        <div class="input-group">
+                            <span class="input-group-text" id="basic-addon1"><span
+                                    class="fas fa-barcode"></span></span>
+                            <input type="text" placeholder="Barcode Number" class="form-control" id="code" required
+                                name="code" aria-describedby="emailHelp">
+                        </div>
+                    </div>
+                    <!-- End of Form -->
+                   
+                    <div class="d-grid col-xl-1 col-md-1 col-12">
+                        <button  onclick="lowestFunc()" id="subHere" class="btn btn-dark">Submit</button>
+                    </div>
+        <!-- Modal Lowest Price -->
+        <div class="modal fade" id="barData" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog  modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="">Barcode Data</h5>
+                    {% comment %} <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> {% endcomment %}
+                </div>
+                <div class="modal-body">
+                    <div id="details"></div>
+                </div>
+                <div class="modal-footer">
+                    <a type="button" href="{% url 'wayrem_admin:inputBar' %}" class="btn btn-danger" >Cancel</a>
+                    <a type="button" href="{% url 'wayrem_admin:productviewone' %}" class="btn btn-primary">Fill Data</a>
+                  </div>
+            </div>
+        </div> 
+    </div>
+    
+                <div class="d-flex justify-content-center align-items-center mt-4">
+                    <span class="font-weight-normal">
+                         <a href="#" target="_blank"></a>
+                        <a target="_blank" href="#"></a>
+                    </span>
+                </div>
+    
             </div>
         </div>
-    </section>
-</main>
+    </div>
+    
+</div>
+
 
 
 <script>

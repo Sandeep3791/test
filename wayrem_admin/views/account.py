@@ -8,7 +8,7 @@ from wayrem_admin.services import send_email
 from wayrem_admin.export import generate_excel
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from wayrem_admin.models import User, Supplier
+from wayrem_admin.models import User, EmailTemplateModel
 from django.views import View
 from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -34,8 +34,17 @@ def user_signup(request):
                 print(password)
                 form.save()
                 to = email
-                subject = 'Welcome to Wayrem'
-                body = f'Your credential for <strong> Wayrem </strong> are:\n <br> Username: <em>{username}</em>\n  <br> Password: <em>{password}</em>\n <br> Email: <em>{email}</em>\n'
+                obj = EmailTemplateModel.objects.filter(
+                    key='user_register').first()
+                # subject = 'Welcome to Wayrem'
+                values = {
+                    'username': username,
+                    'password': password,
+                    'email': email,
+                }
+                subject = obj.subject
+                body = obj.message_format.format(**values)
+                # body = f'Your credential for <strong> Wayrem </strong> are:\n <br> Username: <em>{username}</em>\n  <br> Password: <em>{password}</em>\n <br> Email: <em>{email}</em>\n'
                 send_email(to, subject, body)
                 # Role: {role}
                 messages.success(request, 'User Created Successfully!!')

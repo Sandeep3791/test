@@ -44,7 +44,7 @@ class CategoryForm(forms.Form):
     tag = forms.CharField(
         widget=forms.Textarea(attrs={'class': "form-control", 'rows': '3'}), required=False)
     image = forms.ImageField(widget=forms.FileInput(
-        attrs={'class': "form-control-file"}), required=False)
+        attrs={'class': "form-file-input"}), required=False)
 
     parent_category = forms.ChoiceField(
         choices=choices_role, widget=forms.Select(attrs={'class': 'form-select'}), required=False)
@@ -83,6 +83,6 @@ class CategoryUpdateForm(forms.ModelForm):
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'margin': forms.TextInput(attrs={'class': 'form-control'}),
-            'image': forms.FileInput(attrs={'class': 'form--control-select'}),
+            'image': forms.FileInput(attrs={'class': 'form-file-input'}),
             'tag': forms.Textarea(attrs={'class': 'form-control', 'rows': '3'})
         }

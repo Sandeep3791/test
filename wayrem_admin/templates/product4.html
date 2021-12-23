@@ -25,8 +25,8 @@
             });
      });
     </script> {% endcomment %}
-<div class="topbar_pages padding-0">
-        <div class="container ">
+    <div class="dashboard_content_inner">
+        <div class="topbar_pages">
             <h4 class="text-title">Add Product | Step - 2</h2>
             <div class="breadcrumb-section">
                 <nav aria-label="breadcrumb">
@@ -38,15 +38,12 @@
                     </ol>
                 </nav>
             </div>
-        </div> 
-    </div>
-<main class="align-items-center admin_signup_lg">
-    <section class="d-flex   align-items-center my-5 mt-lg-6 mb-lg-5">
-        <div class="container ">
+        </div>
+
+        <div class="py-4 justify-content-center form-bg-image">
             <div class="row justify-content-center form-bg-image">
                 <div class="col-12 d-flex align-items-center justify-content-center">
-                    <div
-                        class="mb-4 mb-lg-0 bg-white  rounded p-4 p-lg-4 w-100" style="box-shadow: 0px 14px 20px 0px #00000014;">
+                    <div class="mb-4 mb-lg-0 bg-white shadow-sm rounded p-4 p-lg-4 w-100">
                         <div class="mb-4 mt-md-0">
                             <h1 class="mb-0 h3">
                                 <!-- <img src="{% static '/assets/img/logo/Wayrem_logo..svg'%}" alt=""> -->
@@ -69,47 +66,47 @@
 
                             </p>
                         </div>
+                        {% if form.non_field_errors %}
+                        {% for error in form.non_field_errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{error}}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
 
- {% if form.non_field_errors %}
-  {% for error in form.non_field_errors %}
-  <div class="alert alert-danger alert-dismissible fade show" role="alert">
-  {{error}}
-  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-  <span aria-hidden="true">&times;</span>
-</div>
-  {% endfor %}
-{% endif %}
-
-
-                         <form method="post" action="{% url 'wayrem_admin:product_images' %}" enctype="multipart/form-data" validate>
+                        <form method="post" action="{% url 'wayrem_admin:product_images' %}" enctype="multipart/form-data" validate>
                                 {% csrf_token %}
                                 {{ form.non_field_errors }}
                                 <div class="row">
                             
                                     <!-- Form -->
                                     <div class="col-lg-6">
-                                        <div class="form-group mb-4">
-                                            <label for="name">Product Primary Image<span class="text-danger">*</span> <span class="text-danger"> <em> {{form.primary_image.errors | striptags}}
-                                            </em> </span></label>
-                                            <div class="input-group">
-                                                 {{form.primary_image}}    
-                                                 <span class="input-group submit" id="error" style="color: #d12525;"></span>                                                         
-                                            </div>
-                                            <span class="text-error"></span>
+                                        <div class="form-group mb-4 form-file">
+                                            <label for="description">Product Primary Image<span class="text-danger"></span> </label>
+                                            {{form.primary_image}}
+                                            <label class="form-file-label" for="id_primary_image">
+                                                    <span class="form-file-text">Choose file...</span>
+                                                    <span class="form-file-button">Browse</span>
+                                            </label>
+                                            <span class="text-danger"> <em> {{form.primary_image.errors | striptags}} </em> </span>
+                                            <span class="input-group submit" id="error" style="color: #d12525;"></span>
                                         </div>
                                     </div>
                                     <!-- End of Form -->
 
                                      <!-- Form -->
                                     <div class="col-lg-6">
-                                        <div class="form-group mb-4">
-                                            <label for="name">Product Images <span class="text-danger">*</span> <span class="text-danger"> <em> {{form.images.errors | striptags}}
-                                            </em> </span></label>
-                                            <div class="input-group">
-                                                {{form.images}}      
-                                                <span class="input-group submit" id="error1" style="color: #d12525;"></span>      
-                                            </div>                                    
-                                            <span class="text-error"></span>
+                                        <div class="form-group mb-4 form-file multiple">
+                                            <label for="description">Product Image <span class="text-danger"></span> 
+                                            </label>
+                                            {{form.images}} 
+                                            <label class="form-file-label" for="customFile">
+                                                    <span class="form-file-text">Choose file...</span>
+                                                    <span class="form-file-button">Browse</span>
+                                            </label>
+                                            <span class="input-group submit" id="error1" style="color: #d12525;"></span>  
                                         </div>
                                     </div>
                                     <!-- End of Form -->
@@ -119,17 +116,16 @@
                                    <span>* The Image Dimensions Should be (Width x Height).</span>
                                     &nbsp;
                                 <div class="mt-1">
-                                <a  href="{% url 'wayrem_admin:productviewone' %}" class="btn  btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Previous</a>
-                                <button type="submit" class="btn btn-dark border-0 col-xl-3 col-md-5 col-12" >Save</button>
+                                <a  href="{% url 'wayrem_admin:productviewone' %}" class="btn  btn-danger btn-block col-xl-1 col-lg-1 col-md-3 col-12 mt-sm-3 mt-md-0 mt-3">Previous</a>
+                                <button type="submit" class="btn btn-dark border-0 col-xl-1 col-lg-1 col-md-3 col-12" >Save</button>
                                 </div>
 
-                            </form>
+                        </form>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
-</main>
+    </div>
 
 {% endblock content %}
 

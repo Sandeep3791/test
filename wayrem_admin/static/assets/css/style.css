@@ -1,5 +1,5 @@
 body{
-    font-family: 'Raleway', sans-serif;
+   
     background: #f9f9f9;
     overflow-x: hidden;
 }
@@ -311,22 +311,6 @@ input#id_wayrem_margin {
     width: 67%;
 }
 
-
-.export_file{
-    border: none;
-    border-radius: 8px;
-    background:#0aaaca;
-    color: #ffffff;
-    padding: 9px 16px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-weight: 500;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-}
-
 .create_new{
 color:white; 
 
@@ -361,18 +345,13 @@ border: #e2e2e2 solid 1px;
 border-radius:8px;
 padding: 5px 20px;
 outline: none;
+border-left: 0;
 }
 
 .nav .nav-link:hover {
 background: #6f8fc2;
 }
 
-
-.dataTables_wrapper.dt-bootstrap5.no-footer {
-    overflow-x: auto!important;
-    padding-left: 20px;
-    padding-right: 20px;
-}
 select#id_ingredients1 {
     width: 48%;
     border-bottom-left-radius: 8px;
@@ -389,17 +368,8 @@ input#id_wayrem_margin {
 
 .container {
     border-radius: 5px;
-    background-color: #f2f2f2;
+    /* background-color: #f2f2f2; */
     
-}
-input[type=text],
-select,
-textarea {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    resize: vertical;
 }
 input#quantity{
     width: 100%;

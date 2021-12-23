@@ -11,6 +11,13 @@ from wayrem_admin.decorators import role_required
 import datetime
 import uuid
 from django.db import connection
+from django.http import HttpResponse
+
+
+# pdf export
+from django.template.loader import render_to_string
+from weasyprint import HTML
+import tempfile
 
 
 def po_excel(request):
@@ -143,9 +150,7 @@ def create_po_step2(request):
             setting = Settings.objects.filter(
                 key="notification_supplier").first()
             message = setting.value
-            msg = message.replace(
-                "{supplier_name}", supplier_name.company_name).replace(
-                "{purchase_order}", po_name)
+            msg = message.format(number=po_name)
             notify = Notification(
                 message=msg, supplier=supplier_name)
             notify.save()
@@ -255,3 +260,31 @@ def statuspo(request, id=None):
         po.update(status=status)
         return redirect('wayrem_admin:polist')
     return redirect('wayrem_admin:polist')
+
+
+def po_pdf(request):
+    
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = 'inline; attachment; filename=po' + \
+        str(datetime.datetime.now())+'.pdf'
+    response['Content-Transfer-Encoding'] = 'binary'
+    context = {
+        'data': 'data'
+    }
+    html_string = render_to_string('pdf_category.html', context)
+    html = HTML(string=html_string)
+
+    result = html.write_pdf()
+
+    with tempfile.NamedTemporaryFile(delete=True) as output:
+        output.write(result)
+        output.flush()
+        output = open(output.name, 'rb')
+        response.write(output.read())
+
+    
+    return response
+
+
+def confirm_delivery(request):
+    pass

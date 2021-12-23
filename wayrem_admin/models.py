@@ -32,7 +32,7 @@ roles_options = (
     ('Reports Add', 'Reports Add'), ('Reports Edit', 'Reports Edit'), ('Reports Delete',
                                                                        'Reports Delete'), ('Reports View', 'Reports View'),
     ('Email Template Add', 'Email Template Add'), ('Email Template Edit', 'Email Template Edit'), ('Email Template Delete',
-                                                                       'Email Template Delete'), ('Email Template View', 'Email Template View'),
+                                                                                                   'Email Template Delete'), ('Email Template View', 'Email Template View'),
 )
 
 status = (("Active", "Active"), ("Inactive", "Inactive"))
@@ -82,7 +82,7 @@ class User(AbstractUser):
     REQUIRED_FIELDS = []
 
     class Meta:
-       
+
         db_table = 'users_master'
 
 
@@ -191,12 +191,6 @@ class Ingredients(models.Model):
 DIS_ABS_PERCENT = (
     ('Absolute', 'Abs'),
     ('%', '%'),
-)
-UNIT_CHOICES = (
-    ('GRAM', 'gm'),
-    ('KILO-GRAM', 'kg'),
-    ('MILLI-LITRE', 'ml'),
-    ('LITRE', 'ltr'),
 )
 
 
@@ -413,6 +407,7 @@ class BestProductsSupplier(models.Model):
     class Meta:
         db_table = 'best_products_supplier'
 
+
 class EmailTemplateModel(models.Model):
     name = models.CharField(max_length=255)
     key = models.CharField(max_length=255)
@@ -422,10 +417,11 @@ class EmailTemplateModel(models.Model):
     message_format = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(blank=True, null=True)
     updated_at = models.DateTimeField(blank=True, null=True)
-    status =  models.IntegerField(null=False, default=1)
+    status = models.IntegerField(null=False, default=1)
 
     class Meta:
         db_table = 'email_template'
+
 
 class Notification(models.Model):
     message = models.TextField()
@@ -437,3 +433,11 @@ class Notification(models.Model):
 
     class Meta:
         db_table = 'notifications'
+
+
+class PO_log(models.Model):
+    id = models.AutoField(primary_key=True, unique=True)
+    po = models.ForeignKey(
+        PurchaseOrder, on_delete=models.CASCADE, null=True, blank=True)
+    status = models.CharField(max_length=255, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)

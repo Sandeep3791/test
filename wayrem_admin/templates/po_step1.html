@@ -8,14 +8,7 @@
 {% endblock stylesheets %}
 
 {% block content %}
-{% if messages %}
-{% for message in messages %}
-<div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
-    <strong> {{ message }}!</strong>
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-</div>
-{% endfor %}
-{% endif %}
+
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
@@ -33,8 +26,8 @@
             });
      });
     </script>
-<div class="topbar_pages padding-0">
-    <div class="container ">
+ <div class="dashboard_content_inner">
+    <div class="topbar_pages">
         <h4 class="text-title">Create Purchase Order</h2>
         <div class="breadcrumb-section">
             <nav aria-label="breadcrumb">
@@ -45,86 +38,88 @@
                 </ol>
             </nav>
         </div>
-    </div> 
-</div>
-<div class="shadow p-3 bg-white rounded" style="height: auto;">
-    <h1 class="mb-1 h3 text-center">
-        Create Purchase Order
-   </h1>
-<form action="{% url 'wayrem_admin:create_po' %}" method="POST" >
-{% csrf_token %}
-
-<div class="container p-3 mt-4 w-75">
-  <label for="supplier">Supplier Company</label>
-                    {{form.supplier_name}}
-      
-  </div>
-
-
-        <div class="container p-3 mt-4 w-75">
-            <div class="row">
-                <div class="col-md-4">
-                    <label for="product">Product Name</label>
-                    {{form.product_name}}
-                </div>
-
-                <div class="col-md-2">
-                    <label for="quantity">Quantity</label>
-                {{form.product_qty}}
-                </div>
-
-               
-
-                <div class="col-md-3 mt-4 text-right offset-3">
-                    <button class="btn btn-success mt-2" name="addMore" type="submit" >Add</button>
+    </div>
+    <div class="py-4 justify-content-center form-bg-image">
+            {% if messages %}
+            {% for message in messages %}
+            <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
+                <strong> {{ message }}!</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+            {% endif %}
+        <div class="card border-light shadow-sm components-section">
+            <div class="card-body">
+                <h2 class="h5 mb-4"> Create Purchase Order </h2>
+                <form action="{% url 'wayrem_admin:create_po' %}" method="POST" >
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-5">
+                            <label for="supplier">Supplier Company</label>
+                            {{form.supplier_name}}
+                        </div>
+                        <div class="row col-md-7">
+                            <div class="col-md-6">
+                                <label for="product">Product Name</label>
+                                {{form.product_name}}
+                            </div>
+            
+                            <div class="col-md-6">
+                                <label for="quantity">Quantity</label>
+                            {{form.product_qty}}
+                            </div>
+                            
+                        </div>
+                    </div>
+                    <div class="mt-2">
+                        <button class="btn btn-primary" name="addMore" type="submit" >Add</button>
+                    </div>
+                </form>
+                <div class="table-data">
+                    {% if request.session.products %}
+                    <form action="{% url 'wayrem_admin:create_po2' %}" method="POST" >
+                    {% csrf_token %}
+                    <table class="table text-center" id="enrolled">
+                        <thead>
+                            <tr>
+                                <th scope="col">S. No.</th>
+                                <th scope="col">Product</th>
+                                <th scope="col">Quantity</th>
+                                <th scope="col">Actions</th>
+                                {% comment %} <th scope="col">Price</th> {% endcomment %}
+                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for data in po%}
+                            
+                            <tr>
+                                <td>{{forloop.counter}}</td>
+                                <td> {{data.1}}<input type="hidden" class="form-control" required name="product{{forloop.counter}}" value="{{data.0}}" id="product"></td>
+                                <td><input type="number" class="form-control" required name="quantity{{forloop.counter}}" value="{{data.2}}" id="quantity"></td>
+                                <td><a class="btn btn-success " href=" {% url 'wayrem_admin:delete_inserted' data.0 %}" >Delete</a></td>
+                            </tr>
+                            
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                
+                    <div class="mr-5 py-3">
+                    <a href="{% url 'wayrem_admin:polist' %}"
+                                            class="btn  btn-danger btn-block">Cancel</a>
+                    <button type="submit" name="send" href="#" class="btn btn-primary btn-block">Send</button>
+                    </form>
+                    {% endif %}
+                    {% comment %} <button class="btn btn-success mr-5" type="submit" >Next</button> {% endcomment %}
                 </div>
             </div>
         </div>
-    </form>
-    <div class="container w-75 bg-white">
-	  	<div class="table-data mt-5">
-          {% if request.session.products %}
-          <form action="{% url 'wayrem_admin:create_po2' %}" method="POST" >
-            {% csrf_token %}
-		    <table class="table text-center" id="enrolled">
-		        <thead>
-		            <tr>
-		                <th scope="col">S. No.</th>
-		                <th scope="col">Product</th>
-		                <th scope="col">Quantity</th>
-		                <th scope="col">Actions</th>
-		                {% comment %} <th scope="col">Price</th> {% endcomment %}
-		                
-		            </tr>
-		        </thead>
-		        <tbody>
-                {% for data in po%}
-                    
-		            <tr>
-		                <td>{{forloop.counter}}</td>
-		                <td> {{data.1}}<input type="hidden" class="form-control" required name="product{{forloop.counter}}" value="{{data.0}}" id="product"></td>
-		                <td><input type="number" class="form-control" required name="quantity{{forloop.counter}}" value="{{data.2}}" id="quantity"></td>
-		                <td><a class="btn btn-success " href=" {% url 'wayrem_admin:delete_inserted' data.0 %}" >Delete</a></td>
-		            </tr>
-                    
-		        {% endfor %}
-		        </tbody>
-		    </table>
         
-		    <div class="text-center mr-5 px-2">
-            <a href="{% url 'wayrem_admin:polist' %}"
-                                    class="btn  btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Cancel</a>
-			<button type="submit" name="send" href="#" class="btn btn-primary btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Send</button>
- </form>
-            {% endif %}
-		    {% comment %} <button class="btn btn-success mr-5" type="submit" >Next</button> {% endcomment %}
-		    </div>
-		</div>
-		<!-- <div>
-		    <button class="btn btn-success float-right" type="submit">Next</button>
-		</div> -->
-	</div>
-</div>
+            
+    </div>
+</div>    
+
+
 
 {% endblock content %}
 

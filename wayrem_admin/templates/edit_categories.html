@@ -30,14 +30,16 @@
                             <div class="input-group" id="name_error_message" style="color: #d12525;"></div>
                         </div>
                     </div>
-                    <div class="col-md-6 mb-3">
-                        <div>
-                            <label for="category_image">Category Image</label>
-                            <!-- <input class="form-control" id="last_name" type="text" placeholder="Also your last name" required> -->
-                            {{form.category_image}}
-                            {{form.category_image.errors}}
-                            <span class="input-group submit" id="error" style="color: #d12525;"></span>
-                        </div>
+                    <div class="col-md-6 mb-3 form-file">
+                            <label for="description">Image <span class="text-danger"></span> </label>
+                              {{form.category_image}}
+                              <label class="form-file-label ps-2 pe-2" for="customFile">
+                                <span class="form-file-text">Choose file...</span>
+                                <span class="form-file-button">Browse</span>
+                            </label>
+                            <span class="text-danger"><em>{{form.category_image.errors | striptags}}</em></span>
+                            <div class="input-group" id="description_error_message" style="color: #d12525;"></div>
+                        
                     </div>
                 </div>
                 <div class="row align-items-center">
