@@ -16,7 +16,7 @@ from wayrem_admin.forms import EmailtemplatesForm, EmailtemplatesViewForm
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
 from wayrem_admin.decorators import role_required
-
+from wayrem_admin.utils.constants import * 
 
 class EmailtemplatesList(View):
     template_name = "emailtemplate/list.html"
@@ -26,7 +26,7 @@ class EmailtemplatesList(View):
     @method_decorator(role_required('Email Template View'))
     def get(self, request, format=None):
         userlist = EmailTemplateModel.objects.all()
-        paginator = Paginator(userlist, 5)
+        paginator = Paginator(userlist, RECORDS_PER_PAGE)
         page = request.GET.get('page')
         try:
             slist = paginator.page(page)

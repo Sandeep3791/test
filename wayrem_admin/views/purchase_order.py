@@ -17,9 +17,9 @@ from django.http import HttpResponse
 
 
 # pdf export
-from django.template.loader import render_to_string
-from weasyprint import HTML
-import tempfile
+#from django.template.loader import render_to_string
+#from weasyprint import HTML
+#import tempfile
 
 
 def po_excel(request):
@@ -277,7 +277,7 @@ def statuspo(request, id=None):
 
 def po_pdf(request):
     response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'inline; attachment; filename=po' + \
+    '''    response['Content-Disposition'] = 'inline; attachment; filename=po' + \
         str(datetime.datetime.now())+'.pdf'
     response['Content-Transfer-Encoding'] = 'binary'
     context = {
@@ -292,7 +292,7 @@ def po_pdf(request):
         output.write(result)
         output.flush()
         output = open(output.name, 'rb')
-        response.write(output.read())
+        response.write(output.read())'''
     return response
 
 

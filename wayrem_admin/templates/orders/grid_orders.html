@@ -15,6 +15,7 @@
             </tr>
         </thead>
         <tbody class="bg-white">
+        {% if orders %}
         {% for order in orders %}
            <tr>
                 <td>{{order.id}}</td>
@@ -42,6 +43,10 @@
            </tr>
            <tr></tr>
            {% endfor %}
+           {% else %}
+                <tr class="odd"><td valign="top" colspan="8" class="dataTables_empty">No data available in table</td></tr>
+
+           {% endif %}
         </tbody>
     </table>
     
