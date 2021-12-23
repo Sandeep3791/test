@@ -6,7 +6,7 @@ from wayrem_admin.models_orders import Orders,OrderStatus
 from django.forms import ModelForm
 
 class OrderStatusUpdatedForm(ModelForm):
-    status=forms.ChoiceField(required=True)
+    status=forms.ChoiceField(required=True,widget=forms.Select(attrs={'class':'form-select'}))
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)  
         order_choices=[(get_users_options.pk,get_users_options.name) for get_users_options in OrderStatus.objects.filter()]
