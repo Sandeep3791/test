@@ -273,6 +273,9 @@ class ProductIngredients(models.Model):
     unit = models.ForeignKey(
         Unit, on_delete=models.CASCADE, null=True, blank=True)
 
+    class Meta:
+        db_table = 'product_ingredients'
+
 
 class PurchaseOrder(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
@@ -300,7 +303,6 @@ class PurchaseOrder(models.Model):
 
 
 class OtpDetails(models.Model):
-    id = models.CharField(primary_key=True, editable=False, max_length=255)
     email = models.EmailField()
     otp = models.CharField(max_length=10)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -340,13 +342,23 @@ class Customer(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
     first_name = models.CharField(max_length=255, null=True)
     last_name = models.CharField(max_length=255, null=True)
+    business_type = models.CharField(max_length=255, null=True)
+    business_name = models.CharField(max_length=255, null=True)
     email = models.EmailField(blank=False, unique=True, null=True)
     password = models.CharField(max_length=255, null=True)
     contact = models.CharField(max_length=12, null=True, unique=True)
     city = models.CharField(max_length=500, null=True)
     country = models.CharField(max_length=500, null=True)
-    address = models.CharField(max_length=500, null=True)
+    address = models.TextField(null=True)
+    profile_pic = models.CharField(max_length=500, null=True)
+    about = models.TextField(null=True)
     status = models.BooleanField(default=True)
+    registration_number = models.BigIntegerField(null=True)
+    tax_number = models.BigIntegerField(null=True)
+    registration_docs_path = models.CharField(max_length=255, null=True)
+    tax_docs_path = models.CharField(max_length=255, null=True)
+    billing_name = models.CharField(max_length=255, null=True)
+    billing_address = models.TextField(null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -441,3 +453,6 @@ class PO_log(models.Model):
         PurchaseOrder, on_delete=models.CASCADE, null=True, blank=True)
     status = models.CharField(max_length=255, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'po_logs'

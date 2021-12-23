@@ -103,7 +103,8 @@ endcomment %}
                     {% comment %} <th scope="col">S. No.</th> {% endcomment %}
                     <th scope="col">Username</th>
                     <th scope="col">Email</th>
-                    <th scope="col">Contact</th>
+                    <th scope="col">Contact</th>\
+                    <th scope="col">Status</th>
                     <th scope="col">Action</th>
                 </tr>
             </thead>
@@ -125,10 +126,12 @@ endcomment %}
                                 class="fas fa-toggle-off"> Blocked</i></a>
         
                         {% endif %}
+                             </td>
         {% comment %} href="{% url 'wayrem_admin:customerdetails' user.id %}" {% endcomment %}
                         <!-- <a type="button" class="btn btn-sm " data-bs-toggle="modal" data-bs-target="#customerModal{{user.id}}" >
                                 <i class="mx-1 fas fa-eye text-success" style="font-size:15px;"></i>
                             </a> -->
+                            <td>
                             <div class="btn-group">
                                 <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                     <span class="icon icon-sm">
@@ -138,7 +141,7 @@ endcomment %}
                                 </button>
                                 <div class="dropdown-menu">
                                     <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#customerModal{{user.id}}"><span class="fas fa-eye mr-2"></span>View Details</a>
-                                    <a class="dropdown-item" href="{% url 'wayrem_admin:updatesupplier' suppl.id %}"><span class="fas fa-edit mr-2"></span>Edit</a>
+                                    <a class="dropdown-item" href=""><span class="fas fa-edit mr-2"></span>Edit</a>
                                     <a class="dropdown-item text-danger"  data-bs-toggle="modal" data-bs-target="#deleteModal{{suppl.id}}" href="#"> <span class="fas fa-trash-alt mr-2"></span>Remove</a>
                                 </div>
                             </div>
@@ -188,11 +191,11 @@ endcomment %}
             <div class="font-weight-bold small">Showing <b>{{ userlist.start_index }}</b> to <b>{{ userlist.end_index }}</b> out  of <b>{{ userlist.paginator.count }}</b> entries</div>
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-end">
-                    {% if userlist.has_previous %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ userlist.previous_page_number }}">Previous</a>
+                    
+                        <li class="page-item {% if not userlist.has_previous %}disabled{% endif %}">
+                            <a class="page-link" {% if userlist.has_previous %} href="?page={{ userlist.previous_page_number }}"  {% endif %}>Previous</a>
                         </li>
-                    {% endif %}
+                   
                     {% if userlist.number|add:'-4' > 1 %}
                         <li class="page-item"><a class="page-link" href="?page={{ userlist.number|add:'-5' }}">&hellip;</a></li>
                     {% endif %}
@@ -208,11 +211,11 @@ endcomment %}
                     {% if userlist.paginator.num_pages > userlist.number|add:'4' %}
                         <li class="page-item"><a class="page-link" href="?page={{ userlist.number|add:'5' }}">&hellip;</a></li>
                     {% endif %}
-                    {% if userlist.has_next %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ userlist.next_page_number }}">Next</a>
+                    
+                        <li class="page-item {% if not userlist.has_next %}disabled{% endif %}">
+                            <a class="page-link" {% if userlist.has_next %} href="?page={{ userlist.next_page_number }}" {% endif %}>Next</a>
                         </li>
-                    {% endif %}
+                    
                 </ul>
             </nav>
         </div>

@@ -397,11 +397,11 @@
             <div class="font-weight-bold small">Showing <b>{{ productslist.start_index }}</b> to <b>{{ productslist.end_index }}</b> out  of <b>{{ productslist.paginator.count }}</b> entries</div>
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-end">
-                    {% if productslist.has_previous %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ productslist.previous_page_number }}">Previous</a>
+                    
+                        <li class="page-item  {% if not productslist.has_previous %}disabled{% endif %}">
+                            <a class="page-link" {% if productslist.has_previous %} href="?page={{ productslist.previous_page_number }}" {% endif %}>Previous</a>
                         </li>
-                    {% endif %}
+                    
                     {% if productslist.number|add:'-4' > 1 %}
                         <li class="page-item"><a class="page-link" href="?page={{ productslist.number|add:'-5' }}">&hellip;</a></li>
                     {% endif %}
@@ -417,11 +417,11 @@
                     {% if productslist.paginator.num_pages > productslist.number|add:'4' %}
                         <li class="page-item"><a class="page-link" href="?page={{ productslist.number|add:'5' }}">&hellip;</a></li>
                     {% endif %}
-                    {% if productslist.has_next %}
-                        <li class="page-item">
-                            <a class="page-link" href="?page={{ productslist.next_page_number }}">Next</a>
+                    
+                        <li class="page-item  {% if not productslist.has_next %}disabled{% endif %}">
+                            <a class="page-link" {% if productslist.has_next %} href="?page={{ productslist.next_page_number }}" {% endif %}>Next</a>
                         </li>
-                    {% endif %}
+                    
                 </ul>
             </nav>
         </div>
