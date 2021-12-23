@@ -273,6 +273,9 @@ class ProductIngredients(models.Model):
     unit = models.ForeignKey(
         Unit, on_delete=models.CASCADE, null=True, blank=True)
 
+    class Meta:
+        db_table = 'product_ingredients'
+
 
 class PurchaseOrder(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
@@ -441,3 +444,6 @@ class PO_log(models.Model):
         PurchaseOrder, on_delete=models.CASCADE, null=True, blank=True)
     status = models.CharField(max_length=255, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'po_logs'
