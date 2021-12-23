@@ -1,3 +1,5 @@
+from django.core.paginator import Paginator
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views import View
@@ -184,18 +186,29 @@ class POList(View):
     @method_decorator(role_required('Purchase Order View'))
     def get(self, request, format=None):
         delSession(request)
-        polist = PurchaseOrder.objects.values(
-            'po_id', 'po_name', 'supplier_name', 'status').distinct()
-        pol = []
-        for i in polist:
-            obj = Supplier.objects.filter(
-                id=i['supplier_name']).first()
-            pol.append(obj.username)
-        mylist = zip(polist, pol)
+        # polist = PurchaseOrder.objects.values(
+        #     'po_id', 'po_name', 'supplier_name', 'status').distinct()
+        po = PurchaseOrder.objects.all().order_by('po_name').distinct()
+        paginator = Paginator(po, 3)
+        page = request.GET.get('page')
+        try:
+            ulist = paginator.page(page)
+        except PageNotAnInteger:
+            # If page is not an integer, deliver first page.
+            ulist = paginator.page(1)
+        except EmptyPage:
+            # If page is out of range (e.g. 9999), deliver last page of results.
+            ulist = paginator.page(paginator.num_pages)
+        # pol = []
+        # for i in polist:
+        #     obj = Supplier.objects.filter(
+        #         id=i['supplier_name']).first()
+        #     pol.append(obj.username)
+        # mylist = zip(polist, pol)
         # polist = PurchaseOrder.objects.values_list('po_id').distinct()
         # polist = PurchaseOrder.objects.distinct('po_id')
         request.session['products'] = []
-        return render(request, self.template_name, {"userlist": mylist, "polist": polist})
+        return render(request, self.template_name, {"list": ulist})
 
 
 class DeletePO(View):
@@ -263,7 +276,7 @@ def statuspo(request, id=None):
 
 
 def po_pdf(request):
-    
+
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'inline; attachment; filename=po' + \
         str(datetime.datetime.now())+'.pdf'
@@ -282,7 +295,6 @@ def po_pdf(request):
         output = open(output.name, 'rb')
         response.write(output.read())
 
-    
     return response
 
 
