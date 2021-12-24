@@ -276,7 +276,6 @@ def statuspo(request, id=None):
 
 
 def po_pdf(request):
-
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'inline; attachment; filename=po' + \
         str(datetime.datetime.now())+'.pdf'
@@ -294,7 +293,6 @@ def po_pdf(request):
         output.flush()
         output = open(output.name, 'rb')
         response.write(output.read())
-
     return response
 
 
