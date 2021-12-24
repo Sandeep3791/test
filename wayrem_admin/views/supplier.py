@@ -87,7 +87,7 @@ class SupplierList(View):
     @method_decorator(role_required('Supplier View'))
     def get(self, request, format=None):
         supplierlist = Supplier.objects.all()
-        paginator = Paginator(supplierlist, 25)
+        paginator = Paginator(supplierlist, 5)
         page = request.GET.get('page')
         try:
             slist = paginator.page(page)

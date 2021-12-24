@@ -3,7 +3,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views import View
-from wayrem_admin.models import Notification, PurchaseOrder, Products, Settings, Supplier
+from wayrem_admin.models import EmailTemplateModel, Notification, PurchaseOrder, Products, Settings, Supplier
 from wayrem_admin.forms import POForm, POEditForm
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -157,9 +157,12 @@ def create_po_step2(request):
                 message=msg, supplier=supplier_name)
             notify.save()
             # sending mail to supplier
+            email_setting = EmailTemplateModel.objects.filter(
+                key="po_create").first()
+            body = email_setting.message_format.format(number=po_name)
             to = supplier_name.email
-            subject = f"{po_name} raised by Wayrem!"
-            send_email(to, subject, msg)
+            subject = email_setting.subject.format(number=po_name)
+            send_email(to, subject, body)
             messages.success(
                 request, f"Purchase order created successfully!")
             request.session['products'] = []
@@ -189,7 +192,7 @@ class POList(View):
         # polist = PurchaseOrder.objects.values(
         #     'po_id', 'po_name', 'supplier_name', 'status').distinct()
         po = PurchaseOrder.objects.all().order_by('po_name').distinct()
-        paginator = Paginator(po, 3)
+        paginator = Paginator(po, 5)
         page = request.GET.get('page')
         try:
             ulist = paginator.page(page)
