@@ -41,7 +41,7 @@ class CategoriesList(View):
     @method_decorator(role_required('Categories View'))
     def get(self, request, format=None):
         categorieslist = Categories.objects.all()
-        paginator = Paginator(categorieslist, 25)
+        paginator = Paginator(categorieslist, 5)
         page = request.GET.get('page')
         try:
             clist = paginator.page(page)

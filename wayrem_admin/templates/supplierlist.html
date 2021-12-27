@@ -98,7 +98,7 @@ endcomment %}
                     </td>
                     <td>
                         {% comment %} <a class="btn btn-sm" href="{% url 'wayrem_admin:viewprodsupplier' %}?product={{prod.SKU}}"> {% endcomment %}
-                        <a type="button" class="btn btn-sm" onclick="supplierprodFunc('{{suppl.id}}')">
+                        <a onclick="supplierprodFunc('{{suppl.id}}')">
                         View Products
                         </a>
                     
@@ -169,8 +169,8 @@ endcomment %}
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-end">
                     
-                        <li class="page-item">
-                            <a class="page-link {% if not supplierlist.has_previous %}disabled{% endif %}" {% if supplierlist.has_previous %} href="?page={{ supplierlist.previous_page_number }}" {% endif %}>Previous</a>
+                        <li class="page-item {% if not supplierlist.has_previous %}disabled{% endif %}">
+                            <a class="page-link " {% if supplierlist.has_previous %} href="?page={{ supplierlist.previous_page_number }}" {% endif %}>Previous</a>
                         </li>
                    
                     {% if supplierlist.number|add:'-4' > 1 %}

@@ -49,7 +49,7 @@ def create_ingredients(request):
 
 def ingredientsList(request):
     ingredients_list = Ingredients.objects.all()
-    paginator = Paginator(ingredients_list, 25)
+    paginator = Paginator(ingredients_list, 5)
     page = request.GET.get('page')
     try:
         ingredientslist = paginator.page(page)

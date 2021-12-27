@@ -752,23 +752,23 @@
             check_dom();
             check_doe();
             
-            check_validation_text("id_price","price_error_message");
-            check_validation_text("id_date_of_mfg","dom_error_message");
-            check_validation_text("id_date_of_exp","doe_error_message");
-            check_validation_text("id_discount","discount_error_message");
-            check_validation_text("id_quantity","quantity_error_message");
-            check_validation_text("id_wayrem_margin","margin_error_message");
-            check_validation_text("id_meta_key","metaKey_error_message");
+            check_validation_text("id_price","price_error_message","Price");
+            check_validation_text("id_date_of_mfg","dom_error_message","Date of Manufacture");
+            check_validation_text("id_date_of_exp","doe_error_message","Date of Expiry");
+            check_validation_text("id_discount","discount_error_message","Discount");
+            check_validation_text("id_quantity","quantity_error_message","Quantity");
+            check_validation_text("id_wayrem_margin","margin_error_message","Margin");
+            check_validation_text("id_meta_key","metaKey_error_message","Meta Key");
         });
         
         $(".form-control").focusout(function(){
-            check_validation_text("id_price","price_error_message");
-            check_validation_text("id_date_of_mfg","dom_error_message");
-            check_validation_text("id_date_of_exp","doe_error_message");
-            check_validation_text("id_discount","discount_error_message");
-            check_validation_text("id_quantity","quantity_error_message");
-            check_validation_text("id_wayrem_margin","margin_error_message");
-            check_validation_text("id_meta_key","metaKey_error_message");
+            check_validation_text("id_price","price_error_message","Price");
+            check_validation_text("id_date_of_mfg","dom_error_message","Date of Manufacture");
+            check_validation_text("id_date_of_exp","doe_error_message","Date of Expiry");
+            check_validation_text("id_discount","discount_error_message","Discount");
+            check_validation_text("id_quantity","quantity_error_message","Quantity");
+            check_validation_text("id_wayrem_margin","margin_error_message","Margin");
+            check_validation_text("id_meta_key","metaKey_error_message","Meta Key");
         });
         
    
@@ -831,13 +831,13 @@
          error_data = true;
       }
    }
-   function check_validation_text(id,erridid) {
+   function check_validation_text(id,erridid, fname) {
       var id_weight = $("#"+id).val()
       if ( id_weight !== '') {
          $("#"+erridid).hide();
          $("#"+id).css("border-bottom","2px solid #34F458");
       } else {
-         $("#"+erridid).html("Please Enter Valid Product Name ");
+         $("#"+erridid).html("Please Enter Valid "+fname);
          $("#"+erridid).show();
          error_data = true;
       }

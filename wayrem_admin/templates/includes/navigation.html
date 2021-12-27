@@ -21,7 +21,7 @@
             </div>
             <!-- Navbar links -->
             <ul class="navbar-nav align-items-center me-3">
-              {% if request.notifications %}
+              
               <li class="nav-item dropdown">
                 <a class="nav-link text-dark me-lg-3 icon-notifications dropdown-toggle" data-unread-notifications="true" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <span class="icon icon-sm">
@@ -32,7 +32,12 @@
                 <div class="dropdown-menu dashboard-dropdown dropdown-menu-lg dropdown-menu-center mt-2 py-0">
                   <div class="list-group list-group-flush">
                     <a href="#" class="text-center text-primary fw-bold border-bottom border-light py-3">Notifications</a>
-                    <div class="Notifications_list">
+                    {% if not request.notifications %}
+                    <div class= "">
+                      <p class="text-center my-2">No Notifications</p>
+                    </div>
+                     {% endif %}
+                    <div class= "{% if request.notifications %}Notifications_list {% endif %}">
                     {% for notification in request.notifications %}
                     <a href="{% url 'wayrem_admin:notification-delete' notification.id %}" class="list-group-item list-group-item-action border-bottom border-light">
                       <div class="row align-items-center">
@@ -59,7 +64,7 @@
                   </div>
                 </div>
               </li>
-              {% endif %}
+              
               
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle pt-1 px-0" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">

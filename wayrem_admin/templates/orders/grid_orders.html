@@ -18,7 +18,7 @@
         {% if orders %}
         {% for order in orders %}
            <tr>
-                <td>#{{order.ref_number}}</td>
+                <td>{{order.ref_number}}</td>
                 <td>{{order.order_date|date:"M d, Y"}}</td>
                 <td>{{order.customer.first_name}}</td>
                 <td>{{order.customer.contact|default_if_none:""}}</td>

@@ -22,7 +22,7 @@ class CustomersList(View):
     @method_decorator(role_required('Customer Profile View'))
     def get(self, request, format=None):
         userlist = Customer.objects.all()
-        paginator = Paginator(userlist, 25)
+        paginator = Paginator(userlist, 5)
         page = request.GET.get('page')
         try:
             clist = paginator.page(page)

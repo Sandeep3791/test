@@ -30176,7 +30176,7 @@ label {
     padding-top: 0.75rem;
     padding-bottom: 0.75rem;
     font-size: 0.75rem;
-    text-transform: uppercase;
+    text-transform: capitalize;
     font-weight: bolder;
     border-top: 0;
 }

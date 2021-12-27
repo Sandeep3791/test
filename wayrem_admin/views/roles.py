@@ -11,7 +11,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 def rolesList(request):
     context = {}
     roles = Roles.objects.all().order_by('-pk')
-    paginator = Paginator(roles, 2)
+    paginator = Paginator(roles, 5)
     page = request.GET.get('page')
     try:
         rolelist = paginator.page(page)

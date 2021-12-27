@@ -286,7 +286,7 @@
                         </td> {% endcomment %}
                         <td>
                         {% comment %} <a class="btn btn-sm" href="{% url 'wayrem_admin:viewprodsupplier' %}?product={{prod.SKU}}"> {% endcomment %}
-                        <a type="button" class="btn btn-sm" onclick="supplierFunc('{{prod.SKU}}')">
+                        <a onclick="supplierFunc('{{prod.SKU}}')">
                         View Supplier
                         </a></td>
                         <!-- Modal View Supplier -->
@@ -307,7 +307,7 @@
                     </div>
                     <td>
                     {% comment %} <a class="btn btn-sm" href="{% url 'wayrem_admin:lowest_price' %}?product={{prod.SKU}}"> {% endcomment %}
-                    <a type="button" class="btn btn-sm" onclick="lowestFunc('{{prod.SKU}}')">View</a></td>
+                    <a onclick="lowestFunc('{{prod.SKU}}')">View</a></td>
                         <!-- Modal Lowest Price -->
                         <div class="modal fade" id="lowest{{prod.SKU}}" tabindex="-1" aria-labelledby="exampleModalLabel1"
                         aria-hidden="true">
@@ -325,7 +325,7 @@
                         </div> 
                     </div>
                     <td>
-                    <a type="button" class="btn btn-sm" onclick="lowesttimeFunc('{{prod.SKU}}')">
+                    <a onclick="lowesttimeFunc('{{prod.SKU}}')">
                     View
                     </a></td>
 
@@ -346,7 +346,7 @@
                         </div> 
                     </div>
                     <td>
-                        <a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'wayrem_admin:create_po' %}?product={{prod.id}}">Raise PO
+                        <a  data-bs-toggle="modal" href="{% url 'wayrem_admin:create_po' %}?product={{prod.id}}">Raise PO
                         </a>
                     </td>
                     <td>

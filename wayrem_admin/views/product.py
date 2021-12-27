@@ -267,7 +267,7 @@ class ProductList(View):
             search_filter |= Q(category__name=product_category)
         productslist = productslist.filter(search_filter)
         suppliers = Supplier.objects.values_list('username', flat=True)
-        paginator = Paginator(productslist, 25)
+        paginator = Paginator(productslist, 5)
         page = request.GET.get('page')
         try:
             plist = paginator.page(page)

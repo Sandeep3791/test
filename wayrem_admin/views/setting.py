@@ -17,7 +17,6 @@ def settings_excel(request):
     return generate_excel("settings", "settings")
 
 
-
 class SettingList(View):
     template_name = "settinglist.html"
     form = SettingsForm()
@@ -25,7 +24,7 @@ class SettingList(View):
     @method_decorator(login_required(login_url='wayrem_admin:root'))
     def get(self, request, format=None):
         userlist = Settings.objects.all()
-        paginator = Paginator(userlist, 25)
+        paginator = Paginator(userlist, 5)
         page = request.GET.get('page')
         try:
             slist = paginator.page(page)
