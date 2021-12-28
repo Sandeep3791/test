@@ -11,12 +11,17 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from wayrem_admin.export import generate_excel
 from wayrem_admin.models_orders import Orders,OrderDetails,OrderStatus
 from django.views.generic.edit import CreateView,UpdateView
-from django.views.generic import ListView
+from django.views.generic import ListView,DetailView
 from wayrem_admin.forms import OrderStatusUpdatedForm
 from django.http import HttpResponse,HttpResponseRedirect
 from django.urls import reverse_lazy
 from wayrem_admin.decorators import role_required
 from wayrem_admin.utils.constants import * 
+import datetime
+# pdf export
+from django.template.loader import render_to_string
+from weasyprint import HTML
+import tempfile
 
 class OrdersList(ListView):
     model=Orders
@@ -44,10 +49,7 @@ class OrderStatusUpdated(UpdateView):
         status_id=int(self.request.POST.get('status'))
         obj.status = OrderStatus.objects.get(id=status_id)
         obj.save()
-        return HttpResponse("kp")
-
-    def form_invalid(self, form):        
-        return HttpResponse("kp")
+        return HttpResponse(True)
 
     def post(self,request, *args, **kwargs):
         get_id = self.get_object().id
@@ -59,10 +61,26 @@ class OrderStatusUpdated(UpdateView):
 
 class OrderInvoiceView(View):
     model = Orders
-    template_name = "orders/update_order_status.html"
+    template_name = "orders/order_invoice.html"
+    def get(self, request, id):
+        context={'ch':"dsdd"}
+        html_template =render_to_string(self.template_name, context)
+        pdf_file = HTML(string=html_template, base_url=request.build_absolute_uri()).write_pdf()
+        
+        response = HttpResponse(pdf_file, content_type='application/pdf')
+        response['Content-Disposition'] = 'inline; attachment; filename="page.pdf"'
+        response['Content-Transfer-Encoding'] = 'binary'
+        
+        #return response
+        return render(request, self.template_name, {})
 
-class OrderUpdateView(UpdateView):
+class OrderUpdateView(DetailView):
     model = Orders
-    form_class = OrderStatusUpdatedForm
-    template_name = "orders/update_order_status.html"        
-    pk_url_kwarg = 'id'
+    template_name = "orders/order_page.html"        
+    context_object_name = 'order'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        order_id=self.get_object().id
+        context['order_details'] =OrderDetails.objects.filter(order=order_id)
+        return context

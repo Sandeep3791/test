@@ -60,7 +60,7 @@ class OrderDetails(models.Model):
     order = models.ForeignKey('Orders', models.DO_NOTHING)
     sku = models.CharField(max_length=100)
     product = models.ForeignKey('wayrem_admin.Products', models.DO_NOTHING)
-    produt_name = models.CharField(max_length=250)
+    product_name = models.CharField(max_length=250)
     price = models.FloatField()
     item_margin = models.FloatField()
     discount = models.FloatField()
