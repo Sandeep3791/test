@@ -250,7 +250,7 @@ class ProductFormOne(forms.Form):
     price = forms.CharField(
         widget=forms.NumberInput(attrs={'class': "form-control", 'min': 1, 'step': '0.01'}))
     discount = forms.CharField(
-        widget=forms.NumberInput(attrs={'class': "form-control", 'min': 0}))
+        widget=forms.NumberInput(attrs={'class': "form-control", 'min': 0}), required=False)
     dis_abs_percent = forms.ChoiceField(
         choices=DIS_ABS_PERCENT, widget=forms.Select(attrs={'class': 'form-select'}))
     wayrem_margin = forms.IntegerField(

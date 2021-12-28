@@ -293,6 +293,7 @@ class PurchaseOrder(models.Model):
         ('waiting for approval', 'Waiting for approval'),
         ('delivered', 'Delivered'),
     )
+    available = models.BooleanField(default=True)
     status = models.CharField(
         max_length=35, choices=po_status, default='waiting for approval', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

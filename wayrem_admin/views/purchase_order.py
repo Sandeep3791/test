@@ -286,7 +286,7 @@ def po_pdf(request):
     context = {
         'data': 'data'
     }
-    html_string = render_to_string('pdf_category.html', context)
+    html_string = render_to_string('pdf_po/po_customer.html', context)
     html = HTML(string=html_string)
 
     result = html.write_pdf()
