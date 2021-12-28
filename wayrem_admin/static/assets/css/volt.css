@@ -4675,7 +4675,6 @@ textarea.form-control-lg {
 
 .btn-check:focus + .btn, .btn:focus {
     outline: 0;
-    box-shadow: 0 0 0 0.2rem rgba(38, 43, 64, 0.2);
 }
 
 .btn-check:checked + .btn,
@@ -31577,3 +31576,7 @@ nav#topbar_content {
         height: 400px;
         overflow: auto;
     }
+    .message-100 label, .message-100 .django-ckeditor-widget {width: 100%;}
+    .django-ckeditor-widget .cke_chrome {border: 1px solid #e2e2e2;
+        border-radius: 6px;
+        padding: 1px;}

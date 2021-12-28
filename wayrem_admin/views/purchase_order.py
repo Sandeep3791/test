@@ -287,7 +287,8 @@ def po_pdf(request):
         'data': 'data'
     }
     html_string = render_to_string('pdf_po/po_customer.html', context)
-    html = HTML(string=html_string)
+    html = HTML(string=html_string,
+                base_url=request.build_absolute_uri()).render()
 
     result = html.write_pdf()
 
