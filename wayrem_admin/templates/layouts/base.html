@@ -154,7 +154,12 @@
       $(".simplebar-mask .sidebar-inner ul.nav a[href*='/category/categories-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
       $(".simplebar-mask .sidebar-inner ul.nav a[href*='/category/categories-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
     }
-    if(path.indexOf('/category/addcategory/') != -1){
+    if(path.indexOf('/category/update-categories') != -1){
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/category/categories-list/']").addClass("active");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/category/categories-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/category/categories-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
+    }
+    if(path.indexOf('/category/category-details/') != -1){
       $(".simplebar-mask .sidebar-inner ul.nav a[href*='/category/categories-list/']").addClass("active");
       $(".simplebar-mask .sidebar-inner ul.nav a[href*='/category/categories-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
       $(".simplebar-mask .sidebar-inner ul.nav a[href*='/category/categories-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
@@ -175,7 +180,18 @@
       $(".simplebar-mask .sidebar-inner ul.nav a[href*='/roles/list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
       $(".simplebar-mask .sidebar-inner ul.nav a[href*='/roles/list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
     }
+    if(path.indexOf('/roles/update/') != -1){
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/roles/list/']").addClass("active");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/roles/list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/roles/list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
+    }
+    
     if(path.indexOf('/account/users-registration/') != -1){
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/account/users-list/']").addClass("active");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/account/users-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/account/users-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
+    }
+    if(path.indexOf('/account/update-user/') != -1){
       $(".simplebar-mask .sidebar-inner ul.nav a[href*='/account/users-list/']").addClass("active");
       $(".simplebar-mask .sidebar-inner ul.nav a[href*='/account/users-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
       $(".simplebar-mask .sidebar-inner ul.nav a[href*='/account/users-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
@@ -190,6 +206,14 @@
       $(".simplebar-mask .sidebar-inner ul.nav a[href*='/purchase_order/po-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
       $(".simplebar-mask .sidebar-inner ul.nav a[href*='/purchase_order/po-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
     }
+
+    if(path.indexOf('/email-templates/') != -1){
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/email-templates/list/']").addClass("active");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/email-templates/list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/email-templates/list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
+    }
+
+    
     
 
     function clickaction(){

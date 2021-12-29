@@ -64,7 +64,7 @@ def details_gs1(request):
     except:
         pass
     data = [request.session.get('SKU'), request.session.get(
-        'price'), request.session.get('date_of_exp'), request.session.get('weight'), request.session.get('unit')]
+        'price'), request.session.get('date_of_exp'), request.session.get('weight'), request.session.get('weight_unit')]
     return render(request, 'barcode_details.html', {'data': data})
 
 

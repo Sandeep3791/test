@@ -10,7 +10,7 @@
 {% endblock head %}
 {% block content %}
 <div class="dashboard_content_inner">
-    <div class="topbar_pages padding-0">
+    <div class="topbar_pages">
         <h4 class="text-title">Orders</h2>
         <div class="breadcrumb-section">
             <nav aria-label="breadcrumb">
@@ -21,21 +21,41 @@
             </nav>
         </div>
     </div>
-    <main class="content_admin_dashbboard">
-        <div class="alert-container"></div>
-        {% if messages %}
-        {% for message in messages %}
-        <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
-            <strong> {{ message }}!</strong>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    <div class="table-settings mb-4">
+        <div class="subheader row align-items-center justify-content-between">
+            <div class="col-xl-8 col-lg-8 col-12">
+                <div class="col-xl-3 col-lg-3 col-md-3">
+                </div>
+            </div>
+            <div class="col-xl-4 col-lg-4 col-12 my-2">
+                <div class="row d-flex align-items-center">
+                    <div class="col-xl-12 col-lg-3 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 " style="height:40px;">
+                        <div class="input-group subadmin_search">
+                            <span class="input-group-text" id="basic-addon2"><span class="fas fa-search"></span></span>
+                            <input type="text" class="form-control table_searchbar" id="table_search" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2">
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
         </div>
-        {% endfor %}
-        {% endif %}
-        <div class="card card-body border-light shadow-sm table-wrapper table-responsive pt-0">
-            {% include "orders/grid_orders.html" %} 
-            {% include "orders/pagination.html" %}    
-        </div>
-    </main>
+    </div>
+    
+    <div class="alert-container"></div>
+    {% if messages %}
+    {% for message in messages %}
+    <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
+        <strong> {{ message }}!</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    <div class="card card-body border-light shadow-sm table-wrapper table-responsive pt-0">
+        {% include "orders/grid_orders.html" %} 
+        {% include "orders/pagination.html" %}    
+    </div>
+
     <div class="modal fade" id="orderpopup" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
