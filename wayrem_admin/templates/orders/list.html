@@ -22,24 +22,8 @@
         </div>
     </div>
     <div class="table-settings mb-4">
-        <div class="subheader row align-items-center justify-content-between">
-            <div class="col-xl-8 col-lg-8 col-12">
-                <div class="col-xl-3 col-lg-3 col-md-3">
-                </div>
-            </div>
-            <div class="col-xl-4 col-lg-4 col-12 my-2">
-                <div class="row d-flex align-items-center">
-                    <div class="col-xl-12 col-lg-3 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 " style="height:40px;">
-                        <div class="input-group subadmin_search">
-                            <span class="input-group-text" id="basic-addon2"><span class="fas fa-search"></span></span>
-                            <input type="text" class="form-control table_searchbar" id="table_search" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2">
-                        </div>
-
-                    </div>
-                </div>
-
-            </div>
-        </div>
+          {% include "orders/order_filter.html" %} 
+         
     </div>
     
     <div class="alert-container"></div>
@@ -74,9 +58,60 @@
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
-  
-  <script> 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" defer></script>
+  <link type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
+  <script>
+  function getUrlParams(urlOrQueryString) {
+	if ((i = urlOrQueryString.indexOf('?')) >= 0) {
+		const queryString = urlOrQueryString.substring(i + 1);
+		if (queryString) {
+			return _mapUrlParams(queryString);
+		}
+	}
+	return {};
+}
+
+    function _mapUrlParams(queryString) {
+	    return queryString
+		.split('&')
+		.map(function (keyValueString) {
+			return keyValueString.split('=')
+		})
+		.reduce(function (urlParams, [key, value]) {
+			if (Number.isInteger(parseInt(value)) && parseInt(value) == value) {
+				urlParams[key] = parseInt(value);
+			} else {
+				urlParams[key] = decodeURI(value);
+			}
+			return urlParams;
+		}, {});
+    } 
     $(document).ready(function(){
+        $(".exportorders").on('click', function (e) {
+		    e.preventDefault();
+            var qs = location.search,message;
+            is_url_parameter = false;
+		    url_parameters = getUrlParams(qs)
+            $.each(url_parameters, function (index, value) {
+			    if (value != "" && index != 'page' && index != 'filter_date_type') {
+				    is_url_parameter = true;
+			    }
+		    });
+
+            if (qs && is_url_parameter) {
+                url ="/orders/export-order/"+qs
+				window.location = url;
+            }
+
+
+        })
+
+
+
+        $('.date_pickers').datepicker({
+            format: 'yyyy-mm-dd',
+        });
+
         $('.orderstatus').click(function(){
             order_status_id=$(this).data("id");
             var url="/orders/updateorderstatus/"+order_status_id;

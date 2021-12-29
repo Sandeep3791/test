@@ -12,7 +12,7 @@ def create_new_ref_number():
 
 
 class Orders(models.Model):
-    ref_number = models.CharField(unique=True, max_length=100,editable=False,default=create_new_ref_number)
+    ref_number = models.CharField(unique=True, max_length=100,editable=False)
     customer = models.ForeignKey('wayrem_admin.Customer', models.DO_NOTHING)
     status = models.ForeignKey('OrderStatus', models.DO_NOTHING, db_column='status')
     sub_total = models.FloatField()

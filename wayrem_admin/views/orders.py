@@ -10,18 +10,69 @@ from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from wayrem_admin.export import generate_excel
 from wayrem_admin.models_orders import Orders,OrderDetails,OrderStatus
+from wayrem_admin.models import Settings
 from django.views.generic.edit import CreateView,UpdateView
 from django.views.generic import ListView,DetailView
-from wayrem_admin.forms import OrderStatusUpdatedForm
+from wayrem_admin.forms import OrderStatusUpdatedForm,OrderAdvanceFilterForm
 from django.http import HttpResponse,HttpResponseRedirect
 from django.urls import reverse_lazy
 from wayrem_admin.decorators import role_required
 from wayrem_admin.utils.constants import * 
+from wayrem_admin.filters.order_filters import OrderFilter
+from django.db.models import Sum,Case,CharField, Value, When
+from django.db.models import F
 import datetime
+import xlsxwriter
+import io
 # pdf export
 from django.template.loader import render_to_string
 from weasyprint import HTML
 import tempfile
+from django.db.models.functions import Cast
+from django.db.models.fields import DateField
+
+class OrderExportView(View):
+    def get(self, request,**kwargs):
+        qs = Orders.objects.annotate(OrderReference=F('ref_number'),OrderDate=F('order_date'),Customer=F('customer__first_name'),Mobile=F('order_phone'),Status=F('status__name'),Items=Value('', output_field=CharField()),Total=F('grand_total')).values('id','OrderReference','OrderDate','Customer','Mobile','Status','Items','Total')
+        filtered_list = OrderFilter(self.request.GET, queryset=qs)
+        query_set=filtered_list.qs
+        for qs_field in query_set:
+            qs_field['Items']=OrderDetails.objects.filter(order=qs_field['id']).count()
+            qs_field['OrderDate'] = qs_field['OrderDate'].strftime("%d %b %Y")
+            del qs_field['id']
+        response=self.genrate_excel(query_set)
+        return response
+
+    def genrate_excel(self,query_set):
+        # Create an in-memory output file for the new workbook.
+        output = io.BytesIO()
+        workbook = xlsxwriter.Workbook(output)
+        worksheet = workbook.add_worksheet()
+        for row_number,query in enumerate(query_set):
+            col_key=0
+            for key,values in query.items():
+                if row_number == 0:
+                    bold = workbook.add_format({'bold': True,'font_color': 'white','bg_color':'#0d72ba'})
+                    worksheet.set_row(row_number,30) 
+                    worksheet.write(row_number,col_key,key,bold)
+                    worksheet.set_column(row_number,col_key,20)
+                worksheet.write(row_number+1,col_key,values)
+                col_key=col_key+1
+        
+        # Close the workbook before sending the data.
+        workbook.close()
+        
+        # Rewind the buffer.
+        output.seek(0)
+        filename = 'order_report.xlsx'
+        response = HttpResponse(
+            output,
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        response['Content-Disposition'] = 'attachment; filename=%s' % filename
+        return response
+
+
 
 class OrdersList(ListView):
     model=Orders
@@ -30,6 +81,15 @@ class OrdersList(ListView):
     paginate_by = RECORDS_PER_PAGE
     success_url = reverse_lazy('wayrem_admin:orderlist')
 
+    def get_queryset(self):
+        qs=Orders.objects.filter()
+        filtered_list = OrderFilter(self.request.GET, queryset=qs)
+        return filtered_list.qs
+
+    def get_context_data(self, **kwargs):
+        context = super(OrdersList,self).get_context_data(**kwargs)
+        context['filter_form'] = OrderAdvanceFilterForm(self.request.GET)
+        return context
 
 class OrderStatusUpdated(UpdateView):
     model = Orders
@@ -78,9 +138,11 @@ class OrderUpdateView(DetailView):
     model = Orders
     template_name = "orders/order_page.html"        
     context_object_name = 'order'
+    KEY='tax_vat'
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         order_id=self.get_object().id
         context['order_details'] =OrderDetails.objects.filter(order=order_id)
+        context['tax_vat'] =Settings.objects.filter(key=self.KEY).first()
         return context

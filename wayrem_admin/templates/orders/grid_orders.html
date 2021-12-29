@@ -21,10 +21,10 @@
                 <td>{{order.ref_number}}</td>
                 <td>{{order.order_date|date:"M d, Y"}}</td>
                 <td>{{order.customer.first_name}}</td>
-                <td>{{order.customer.contact|default_if_none:""}}</td>
+                <td>{{order.order_phone|default_if_none:""}}</td>
                 <td class="status_{{order.id}}">{{order.status.name}}</td>
                 <td>{{order.id|total_items}}</td>
-                <td>{{order.total}}</td>
+                <td>{{order.grand_total}}</td>
                 <td>
                     <div class="btn-group">
                         <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

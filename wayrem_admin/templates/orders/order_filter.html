@@ -1,0 +1,133 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4">
+    <div class="d-block mb-4 mb-md-0"></div>
+    <div class="btn-toolbar mb-2 mb-md-0">
+                <div class="btn-group">
+                    <button class="button button1 export_file dropdown-toggle btn btn-sm btn-outline-primary" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                        Export
+                    </button>
+                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <li>
+                            <a class="dropdown-item exportorders" href="/orders/excel_export/"> Export Orders </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+</div>        
+<div class="subheader row align-items-center justify-content-between">
+            <div class="col-xl-5 col-lg-5 col-5">
+                <div class="col-xl-3 col-lg-3 col-md-3">
+                </div>
+            </div>
+
+            <div class="col-xl-4 col-lg-4 col-8 my-2">
+                <div class="row d-flex align-items-center">
+                    <div class="col-xl-12 col-lg-3 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 " style="height:40px;">
+                    <form method="GET">    
+                        <div class="input-group subadmin_search">
+                            {{filter_form.order_ref}}
+                            <button type="submit" class="btn btn-dark border-0 col-xl-3 col-md-5 col-12 fas fa-search"> Search</button>
+                        </div>
+                    </form>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-xl-2 col-lg-2 col-md-2 padding-right-0 m-2 justify-content-end d-flex">
+                        <a class=" btn btn-primary col-xl-12 col-lg-12" data-bs-toggle="modal" data-bs-target="#advance_filter" href="#">Filter <img src="/static/assets/img/logo/filter1.svg" height="" width=""> </a>
+            </div>
+</div>
+
+
+<div class="modal fade" id="advance_filter" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Advance Filter</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="GET" autocomplete="off">
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
+                                <label for="inputPassword4">Order reference </label>
+                            </div>
+                            <div class="col-12 input_border">
+                                {{filter_form.order_ref}}
+                            </div>
+                        </div>
+            
+                        <div class="col-4">
+                            <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
+                                <label for="inputPassword4">Start date</label>
+                            </div>
+                            <div class="col-12 input_border">
+                                <div class="input-group date date_pickers"  >
+                                    {{filter_form.start_date}}
+                                    <div class="input-group-addon">
+                                        <span class="glyphicon glyphicon-th"></span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+            
+                        <div class="col-4">
+                            <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
+                                <label for="inputPassword4">End date</label>
+                            </div>
+                            <div class="col-12 input_border">
+                                <div class="input-group date date_pickers"  >
+                                    {{filter_form.end_date}}
+                                    <div class="input-group-addon">
+                                        <span class="glyphicon glyphicon-th"></span>
+                                    </div>
+                                </div>
+    
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-4">
+                            <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
+                                <label for="inputPassword4">Customer</label>
+                            </div>
+                            <div class="col-12 input_border">
+                                {{filter_form.customer_name}}
+                            </div>
+                    </div>
+
+                    <div class="col-4">
+                            <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
+                                <label for="inputPassword4">Contact</label>
+                            </div>
+                            <div class="col-12 input_border">
+                                {{filter_form.contact}}
+                            </div>
+                    </div>
+
+                    <div class="col-4">
+                            <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
+                                <label for="inputPassword4">Status</label>
+                            </div>
+                            <div class="col-12 input_border">
+                                {{filter_form.status}}
+                            </div>
+                    </div>
+
+                    <div class="row mt-4 d-flex justify-content-end">
+                                    <button type="cancel" onclick="cancelBtn()" class="btn  btn-danger me-2 btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Cancel</button>
+                                <button type="submit" class="btn btn-dark border-0 col-xl-3 col-md-5 col-12">Apply</button>
+                            </div>
+                    </div>
+                    
+                       
+                                
+                </form>
+            </div>
+           
+        </div>
+    </div>
+</div>
