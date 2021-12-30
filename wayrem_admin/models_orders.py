@@ -76,10 +76,10 @@ class OrderDetails(models.Model):
 
 class OrderDeliveryLogs(models.Model):
     order = models.ForeignKey('Orders', models.DO_NOTHING)
-    order_status = models.CharField(max_length=250)
+    order_status = models.ForeignKey('OrderStatus', models.DO_NOTHING)
     order_status_details = models.TextField(blank=True, null=True)
     log_date = models.DateTimeField()
-    user_id = models.IntegerField()
+    user = models.ForeignKey('wayrem_admin.User', models.DO_NOTHING)
 
     class Meta:
         app_label = "wayrem_admin"

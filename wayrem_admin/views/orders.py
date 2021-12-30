@@ -9,7 +9,7 @@ from wayrem_admin.forms import SettingsForm
 from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from wayrem_admin.export import generate_excel
-from wayrem_admin.models_orders import Orders,OrderDetails,OrderStatus
+from wayrem_admin.models_orders import Orders,OrderDetails,OrderStatus,OrderDeliveryLogs
 from wayrem_admin.models import Settings
 from django.views.generic.edit import CreateView,UpdateView
 from django.views.generic import ListView,DetailView
@@ -131,7 +131,7 @@ class OrderInvoiceView(View):
         response['Content-Disposition'] = 'inline; attachment; filename="page.pdf"'
         response['Content-Transfer-Encoding'] = 'binary'
         
-        #return response
+        return response
         return render(request, self.template_name, {})
 
 class OrderUpdateView(DetailView):
@@ -145,4 +145,6 @@ class OrderUpdateView(DetailView):
         order_id=self.get_object().id
         context['order_details'] =OrderDetails.objects.filter(order=order_id)
         context['tax_vat'] =Settings.objects.filter(key=self.KEY).first()
+        context['order_timeline']=OrderDeliveryLogs.objects.filter(order=order_id).order_by('-id')
+
         return context

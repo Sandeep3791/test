@@ -24,6 +24,7 @@ class OrderStatusUpdatedForm(ModelForm):
 class OrderAdvanceFilterForm(ModelForm):
     status = forms.ChoiceField(required=False, widget=forms.Select(attrs={'class': 'form-control form-control-select'}))
     order_ref = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control p-2'}),required=False)
+    orderrefer=forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control p-2'}),required=False)
     contact=forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control p-2'}),required=False)
     customer_name=forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control p-2'}),required=False)
 
@@ -38,5 +39,5 @@ class OrderAdvanceFilterForm(ModelForm):
         self.fields['status'].choices = order_choices
     class Meta:
         model = Orders
-        fields = ['order_ref','status','contact','customer_name','start_date','end_date']
+        fields = ['orderrefer','order_ref','status','contact','customer_name','start_date','end_date']
        

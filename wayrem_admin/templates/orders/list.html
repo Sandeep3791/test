@@ -144,7 +144,7 @@ $("#orderpopup").on("click",".order_submit_success",function(e){
                      $(".status_"+order_status_id).html(data);
                      var alert_message='<div class="alert-container alert alert-success alert-dismissible fade show" role="alert" ><strong> Order status Updated!!</strong><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
                      $(".alert-container").html(alert_message);   
-                     
+                     $(".alert-container").fadeOut(2500);
                 }
          })
 
