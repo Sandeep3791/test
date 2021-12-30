@@ -1,1 +1,2 @@
 RECORDS_PER_PAGE=25
+CURRENCY_KEY="currency_key"

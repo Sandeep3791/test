@@ -13,184 +13,232 @@
         <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
         <!-- <link href="newinvoice_files/css2.css" rel="stylesheet"> -->
     </head>
-    <body style="font-family: 'Roboto', sans-serif; direction: ltr; text-align: left;">
-        <table style="background-color:#F8F8F8;font-family: 'roboto', sans-serif !important; margin: auto;" width="1400" cellspacing="0" cellpadding="0">
-            <tbody>
-                <tr>
-                    <td>
-                        <table style="margin-top:20px 0; margin: auto;padding: 10px 20px;" width="1400">
-                            <tbody>
-                                <tr>
-                                    <td style="color:#4F4F4F;padding: 20px;font-family: 'Roboto', sans-serif;width: 50%;"><span style="font-size: 1.2rem; font-weight: 600;line-height: 1.6;">WAYREM</span><br> <span>Tax Sales Invoice</span>
-                                        <br><span>VAT NO: 9846322442242442</span>{{ch}}</td>
-                                    <td style="font-size: 1.2rem; color:#4F4F4F;padding: 20px;font-family: 'Roboto', sans-serif;font-weight: 400;text-align: right;width: 50%;">
-                                    <img src="{% static '/assets/img/logo/wayrem_logo.png' %}" alt="">
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+  <body style="font-family: 'Roboto', sans-serif; direction: ltr; text-align: left;">
 
-                        <table style="margin-top:20px 0; margin: auto;padding: 10px 20px;" width="1400">
-                            <tbody>
-                                <tr>
-                                    <td style="font-size: 2.5rem;padding:0 20px; font-weight: 500;">Invoice</td>
-                                </tr>
-                                <tr>
+    <!-- Header -->
+    <table style="background-color:#F8F8F8;font-family: 'roboto', sans-serif !important; margin: auto;" width="100%" cellspacing="0" cellpadding="0">
+        <tbody>
+            <tr>
+                <td>
+                    <table style="margin-top:20px 0; margin: auto;padding: 10px 20px;" width="100%">
+                        <tbody>
+                            <tr>
+                                <td style="color:#4F4F4F;padding:20px 0;font-family: 'Roboto', sans-serif;width: 50%;"><span style="font-size: 1.2rem; font-weight: 600;line-height: 1.6;">WAYREM</span><br> <span>Tax Sales Invoice</span>
+                                    <br><span>VAT NO: 9846322442242442</span></td>
+                                <td style="font-size: 1.2rem; color:#4F4F4F;padding: 20px 0;font-family: 'Roboto', sans-serif;font-weight: 400;text-align: right;width: 50%;">
+                                <img src="{% static '/assets/img/logo/wayrem_logo.png' %}" alt=""></td>
+                            </tr>
+                        </tbody>
+                    </table>
 
-                                    <td style="color:#4F4F4F;padding: 20px;font-family: 'Roboto', sans-serif;width: 50%;    line-height:2;" valign="top">
+                    <table style="margin-top:20px 0; margin: auto;padding: 10px 20px;" width="100%">
+                        <tbody>
+                            <tr>
+                                <td style="font-size: 2.5rem;font-weight: 500;">Invoice</td>
+                            </tr>
+                            <tr>
 
-                                        <table style="width: 100%;">
-                                            <tbody>
-                                                <tr>
-                                                    <td style="width: 40%;font-size: 1.1rem; font-weight: 600; text-transform: uppercase; color: #000;">INVOICE NO.</td>
-                                                    <td style="width: 60%;font-size: 1.1rem; color:#4F4F4F;">#11224</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                        <table style="width: 100%;">
-                                            <tbody>
-                                                <tr>
-                                                    <td style="width: 40%;font-size: 1.1rem; font-weight: 600; text-transform: uppercase; color: #000;">CUSTOMER NAME</td>
-                                                    <td style="width: 60%;font-size: 1.1rem; color:#4F4F4F;">John Doe</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                        <table style="width: 100%;">
-                                            <tbody>
-                                                <tr>
-                                                    <td style="width: 40%;font-size: 1.1rem; font-weight: 600; text-transform: uppercase; color: #000;">CUSTOMER VAT</td>
-                                                    <td style="width: 60%;font-size: 1.1rem; color:#4F4F4F;">76543234567</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
+                                <td style="color:#4F4F4F;padding: 20px 0;font-family: 'Roboto', sans-serif;width: 50%;line-height:1;" valign="top">
 
-                                    </td>
+                                    <table style="width: 100%;">
+                                        <tbody>
+                                            <tr>
+                                                <td style="width: 30%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" valign="top" align="left">Invoice No.</td>
+                                                <td style="width: 70%;font-size: .8rem; color:#4F4F4F;" valign="top" align="left">#11224</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table style="width: 100%;">
+                                        <tbody>
+                                            <tr>
+                                                <td style="width: 30%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" valign="top" align="left">Customer</td>
+                                                <td style="width: 70%;font-size: .8rem; color:#4F4F4F;" valign="top" align="left">John Doe</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table style="width: 100%;">
+                                        <tbody>
+                                            <tr>
+                                                <td style="width: 30%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" valign="top" align="left">Customer VAT</td>
+                                                <td style="width: 70%;font-size: .8rem; color:#4F4F4F;" valign="top" align="left">76543234567</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
 
-                                    <td style="color:#4F4F4F;padding: 20px;font-family: 'Roboto', sans-serif;width: 50%;    line-height: 2;" valign="top">
+                                </td>
 
-                                        <table style="width: 100%;">
-                                            <tbody>
-                                                <tr>
-                                                    <td style="width: 40%;font-size: 1.1rem; font-weight: 600; text-transform: uppercase; color: #000;">INVOICE DATE</td>
-                                                    <td style="width: 60%;font-size: 1.1rem; color:#4F4F4F;">00-00-0000</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                        <table style="width: 100%;">
-                                            <tbody>
-                                                <tr>
-                                                    <td style="width: 40%;font-size: 1.1rem; font-weight: 600; text-transform: uppercase; color: #000;">Payment Type</td>
-                                                    <td style="width: 60%;font-size: 1.1rem; color:#4F4F4F;">Online</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-
-                                    </td>
+                                <td style="color:#4F4F4F;padding: 20px 0;font-family: 'Roboto', sans-serif;width: 50%;    line-height: 1;" valign="top">
 
 
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <!-- <hr style="width:100%; border:1px solid #e5e5e5 "> -->
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <!-- Table -->
-        <table style="background-color:#FFF; font-size: 1.1rem;font-family: 'roboto', sans-serif !important; margin: auto;padding: 1rem 3rem;" width="1400" cellspacing="0" cellpadding="0" valign="top">
-            <tbody>
-                <tr>
-                    <td style="width: 3%;" valign="top">S.no</td>
-                    <td style="width: 5%;" valign="top">Item Code</td>
-                    <td style="width: 7%;" valign="top">Description</td>
-                    <td style="width: 5%;" valign="top">Price</td>
-                    <td style="width: 5%;" valign="top">Unit</td>
-                    <td style="width: 3%;" valign="top">Qty</td>
-                    <td style="width: 7%;" valign="top">Discount</td>
-                    <td style="width: 5%;" valign="top">Gross</td>
-                    <td style="width: 5%;" valign="top">Vat Amt.</td>
-                    <td style="width: 5%;" valign="top">Net Amt.</td>
-                </tr>
-            </tbody>
-        </table>
-        <!-- <hr style="border:1px solid #e5e5e5" width="1400"> -->
-        <table style="background-color:#FFF; color: #828282; font-size: 1rem; font-family: 'roboto', sans-serif !important; margin: auto;padding: 1rem 3rem; border-bottom: 1px solid #e5e5e5; border-top: 1px solid #e5e5e5;" width="1400" cellspacing="0" cellpadding="0">
-            <tbody>
-                <tr>
-                    <td style="width: 3%; padding: 1rem 0;">1</td>
-                    <td style="width: 5%; padding: 1rem 0;">110208</td>
-                    <td style="width: 7%; padding: 1rem 0;">Lipton Ice Tea Peach</td>
-                    <td style="width: 5%; padding: 1rem 0;">09</td>
-                    <td style="width: 5%; padding: 1rem 0;">327</td>
-                    <td style="width: 3%; padding: 1rem 0;">5</td>
-                    <td style="width: 7%; padding: 1rem 0;">1,635.00</td>
-                    <td style="width: 5%; padding: 1rem 0;">480.00</td>
-                    <td style="width: 5%; padding: 1rem 0;">245.25</td>
-                    <td style="width: 5%; padding: 1rem 0;">1,880.25</td>
-                </tr>
-                <tr>
-                    <td style="width: 3%; padding: 1rem 0;">2</td>
-                    <td style="width: 5%; padding: 1rem 0;">110208</td>
-                    <td style="width: 7%; padding: 1rem 0;">Lipton Ice Tea Peach</td>
-                    <td style="width: 5%; padding: 1rem 0;">09</td>
-                    <td style="width: 5%; padding: 1rem 0;">327</td>
-                    <td style="width: 3%; padding: 1rem 0;">5</td>
-                    <td style="width: 7%; padding: 1rem 0;">1,635.00</td>
-                    <td style="width: 5%; padding: 1rem 0;">480.00</td>
-                    <td style="width: 5%; padding: 1rem 0;">245.25</td>
-                    <td style="width: 5%; padding: 1rem 0;">1,880.25</td>
-                </tr>
-            </tbody>
-
-        </table>
-        <table style="margin-top:20px 0; margin: auto;padding: 10px 20px;" width="1400">
-            <tbody>
-
-                <tr>
-
-                    <td style="width:50%"> </td>
-
-                    <td style="color:#4F4F4F;padding: 20px;font-family: 'Roboto', sans-serif;width: 50%;    line-height: 2;" valign="top">
-
-                        <table style="width: 100%;">
-                            <tbody>
-                                <tr>
-                                    <td style="width: 70%;font-size: 1.1rem; font-weight: 600; text-transform: uppercase; color: #000;" align="right">Total Exc. Vat</td>
-                                    <td style="width: 30%;font-size: 1.1rem; color:#4F4F4F;" align="right">297</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <table style="width: 100%;">
-                            <tbody>
-                                <tr>
-                                    <td style="width: 70%;font-size: 1.1rem; font-weight: 600; text-transform: uppercase; color: #000;" align="right">Discount</td>
-                                    <td style="width: 30%;font-size: 1.1rem; color:#4F4F4F;" align="right">17</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <table style="width: 100%;">
-                            <tbody>
-                                <tr>
-                                    <td style="width: 70%;font-size: 1.1rem; font-weight: 600; text-transform: uppercase; color: #000;" align="right">Vat 15%</td>
-                                    <td style="width: 30%;font-size: 1.1rem; color:#4F4F4F;" align="right">44.55</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <table style="width: 100%;">
-                            <tbody>
-                                <tr>
-                                    <td style="width: 70%;font-size: 1.1rem; font-weight: 600; text-transform: uppercase; color: #000;" align="right">Total After Vat</td>
-                                    <td style="width: 30%;font-size: 1.1rem; color:#4F4F4F;" align="right">341.55</td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                    </td>
+                                    <table style="width: 100%;">
+                                        <tbody>
+                                            <tr>
+                                                <td style="width: 30%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" valign="top" align="left">Date</td>
+                                                <td style="width: 70%;font-size: .8rem; color:#4F4F4F;" valign="top" align="left">00-00-0000</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table style="width: 100%;">
+                                        <tbody>
+                                            <tr>
+                                                <td style="width: 30%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" valign="top" align="left">Order Ref.</td>
+                                                <td style="width: 70%;font-size: .8rem; color:#4F4F4F;" valign="top" align="left">0000000</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table style="width: 100%;">
+                                        <tbody>
+                                            <tr>
+                                                <td style="width: 30%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" valign="top" align="left">Payment Type</td>
+                                                <td style="width: 70%;font-size: .8rem; color:#4F4F4F;" valign="top" align="left">Online</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
 
 
-                </tr>
-            </tbody>
-        </table>
-    </body>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <!-- <hr style="width:100%; border:1px solid #e5e5e5 "> -->
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+
+    <!-- Table -->
+    <table style="background-color:#FFF; font-size: .8rem;font-family: 'roboto', sans-serif !important; margin: auto;padding: 1rem;" width="100%" cellspacing="0" cellpadding="0" valign="top">
+        <tbody>
+            <tr>
+                <td style="width: 14.25%; padding: 1rem .4rem;" valign="top" align="left">S.no</td>
+                <td style="width: 14.25%; padding: 1rem .4rem;" valign="top" align="left">SKU</td>
+                <td style="width: 15%; padding: 1rem .4rem;" valign="top" align="left">Description</td>
+                <td style="width: 14.25%; padding: 1rem .4rem;" valign="top" align="center">Qty</td>
+                <td style="width: 14.25%; padding: 1rem .4rem;" valign="top" align="right">Unit Price</td>
+                <td style="width: 14.25%; padding: 1rem .4rem;" valign="top" align="right">Discount</td>
+                <td style="width: 14.25%; padding: 1rem .4rem;" valign="top" align="right">Total</td>
+                <!-- <td style="width: 5%;" valign="top">Vat Amt.</td>
+                <td style="width: 5%;" valign="top">Net Amt.</td> -->
+            </tr>
+        </tbody>
+    </table>
+    <!-- <hr style="border:1px solid #e5e5e5" width="100%"> -->
+    <table style="background-color:#FFF; color: #828282; font-size: .8rem; font-family: 'roboto', sans-serif !important; margin: auto;padding:0 1rem; border-bottom: 1px solid #e5e5e5; border-top: 1px solid #e5e5e5;" width="100%" cellspacing="0" cellpadding="0">
+        <tbody>
+            <tr>
+                <td style="width: 14.25%; padding: 1rem .4rem;" valign="top" align="left">1</td>
+                <td style="width: 14.25%; padding: 1rem .4rem;" valign="top" align="left">110208</td>
+                <td style="width: 15%; padding: 1rem .4rem;" valign="top" align="left">Lipton Ice Tea Peach</td>
+                <td style="width: 14.25%; padding: 1rem .4rem;" valign="top" align="center">5</td>
+                <td style="width: 14.25%; padding: 1rem .4rem;" valign="top" align="right">SAR 5.5</td>
+                <td style="width: 14.25%; padding: 1rem .4rem;" valign="top" align="right">0.5%</td>
+                <td style="width: 14.25%; padding: 1rem .4rem;" valign="top" align="right">SAR 25.25</td>
+                <!-- <td style="width: 5%; padding: 1rem 0;">245.25</td>
+                <td style="width: 5%; padding: 1rem 0;">1,880.25</td> -->
+            </tr>
+            <tr>
+                <td style="width: 14.25%; padding: 1rem .4rem;" valign="top" align="left">2</td>
+                <td style="width: 14.25%; padding: 1rem .4rem;" valign="top" align="left">110208</td>
+                <td style="width: 15%; padding: 1rem .4rem;" valign="top" align="left">Lipton Ice Tea Peach</td>
+                <td style="width: 14.25%; padding: 1rem .4rem;" valign="top" align="center">5</td>
+                <td style="width: 14.25%; padding: 1rem .4rem;" valign="top" align="right">SAR 5.5</td>
+                <td style="width: 14.25%; padding: 1rem .4rem;" valign="top" align="right">0.5%</td>
+                <td style="width: 14.25%; padding: 1rem .4rem;" valign="top" align="right">SAR 25.25</td>
+                <!-- <td style="width: 5%; padding: 1rem 0;">245.25</td>
+                <td style="width: 5%; padding: 1rem 0;">1,880.25</td> -->
+            </tr>
+        </tbody>
+
+    </table>
+    <table style="margin-top:20px 0; margin: auto;padding: 10px 20px;" width="100%">
+        <tbody>
+
+            <tr>
+
+                <td style="width:50%"> </td>
+
+                <td style="color:#4F4F4F;padding: 20px 0;font-family: 'Roboto', sans-serif;width: 20%; line-height: 1.6;" valign="top">
+
+                    <table style="width: 100%;">
+                        <tbody>
+                            <tr>
+                                <td style="width: 65%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" align="left">Subtotal</td>
+                                <td style="width: 42%;font-size: .8rem; color:#4F4F4F;" align="right" valign="top">SAR 50.50</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table style="width: 100%;">
+                        <tbody>
+                            <tr>
+                                <td style="width: 65%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" align="left">Discount</td>
+                                <td style="width: 42%;font-size: .8rem; color:#4F4F4F;" align="right" valign="top">SAR 25</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table style="width: 100%;">
+                        <tbody>
+                            <tr>
+                                <td style="width: 65%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" align="left">Vat(15%)</td>
+                                <td style="width: 42%;font-size: .8rem; color:#4F4F4F;" align="right" valign="top">SAR 44.55</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table style="width: 100%;">
+                        <tbody>
+                            <tr>
+                                <td style="width: 65%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" align="left">Grand Total</td>
+                                <td style="width: 42%;font-size: .8rem; color:#4F4F4F;" align="right" valign="top">SAR 40.00</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </td>
+
+
+            </tr>
+        </tbody>
+    </table>
+    <!-- <table style="background-color:#FFF; font-size: 1.2rem; font-family: 'roboto', sans-serif !important; margin: auto;padding: 1rem;font-weight: 600;" width="100%" cellspacing="0" cellpadding="0">
+        <tbody>
+            <tr>
+                <td style="width: 50%;"></td>
+                <td style="width: 50%;">
+                    <table style="margin-left: auto; width: 100%;">
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <span style="width: 50%;">Total Exc. Vat</span>
+                                    <span style="width: 50%;">297</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span style="width: 50%;">Discount</span>
+                                    <span style="width: 50%;">17</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span style="width: 50%;">Vat 15%</span>
+                                    <span style="width: 50%;">44.55</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span style="width: 50%;">Total After Vat</span>
+                                    <span style="width: 50%;">341.55</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+
+        </tbody>
+    </table> -->
+
+
+</body>
 </html>
