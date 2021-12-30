@@ -2,7 +2,7 @@
                     <h2 class="h5 mb-3">Cutomer</h2>
                     <div>
                        <a class="h6 text-info" href="{{order.customer.id}}">{{order.customer.first_name|default_if_none:""}} {{order.customer.last_name|default_if_none:""}}</a>
-                        <h6>No Orders</h6>
+                        <h6>{{order_details.count}} {% if order_details.count == 1 %} Order {% else %} Orders{% endif %}</h6>
                     </div>
 
                     <hr>
@@ -10,7 +10,7 @@
                     <div class="my-3">
                         <div class="row">
                          <h2 class="h5 mb-2 col-10">Contact Information</h2>
-                          <div class="col-2 text-center">
+                          <div class="col-2 text-center d-none">
                               <h6>Edit</h6>
                             <i class="fas fa-file-alt"></i>
                           </div>
@@ -27,7 +27,7 @@
                     <div class="my-3">
                         <div class="row">
                          <h2 class="h5 mb-2 col-10">Shipping Address</h2>
-                          <div class="col-2 text-center">
+                          <div class="col-2 text-center d-none">
                               <h6>Edit</h6>
                             <i class="fas fa-file-alt"></i>
                           </div>
@@ -44,7 +44,7 @@
                     <div class="my-3">
                         <div class="row">
                          <h2 class="h5 mb-2 col-10">Billing Address</h2>
-                         <div class="col-2 text-center">
+                         <div class="col-2 text-center d-none">
                               <h6>Edit</h6>
                             <i class="fas fa-file-alt"></i>
                           </div>

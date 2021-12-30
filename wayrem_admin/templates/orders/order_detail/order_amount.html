@@ -1,7 +1,7 @@
  {% load util_tags  %}
  {% block content %}
 <div class="card card-body bg-white border-light shadow-sm mb-4">
-            <h2 class="h5 mb-4"> <span><img src="/static/assets/img/paid.svg" alt=""></span> Paid</h2>
+            <h2 class="h5 mb-4"> <span><img src="/static/assets/img/paid.svg" alt=""></span>{{order_transaction.payment_status.name}}</h2>
 
             <div class="row col-12">
                 <div class="col-4 h6">Subtotal</div>
@@ -14,10 +14,9 @@
                 <div class="col-4 h6">Standard (200 g)</div>
                 <div class="col-4 d-flex justify-content-end h6">{{order.shipping}}</div>
             </div>
-
             <div class="row col-12">
-                <div class="col-4 h6">Tax</div>
-                <div class="col-4 h6">IGST 18%</div>
+                <div class="col-4 h6">{{tax_vat.display_name}}</div>
+                <div class="col-4 h6">{{tax_vat.value}}%</div>
                 <div class="col-4 d-flex justify-content-end h6">{{order.tax}}</div>
             </div>
 
@@ -30,7 +29,7 @@
 
             <div class="row col-12">
                 <div class="col-6 fw-bold h6">Paid by Customer</div>
-                <div class="col-6 d-flex justify-content-end h6">{{order.total}}</div>
+                <div class="col-6 d-flex justify-content-end h6">{{order.grand_total}}</div>
             </div>
                
         </div>

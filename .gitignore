@@ -1,7 +1,6 @@
 migrations
 __pycache__
 wayrem_env
-settings.py
 media
 pipfile
 pipfile.lock
