@@ -9,11 +9,11 @@ from wayrem_admin.forms import SettingsForm
 from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from wayrem_admin.export import generate_excel
-from wayrem_admin.models_orders import Orders,OrderDetails,OrderStatus,OrderDeliveryLogs
+from wayrem_admin.models_orders import Orders,OrderDetails,OrderStatus,OrderDeliveryLogs,OrderTransactions
 from wayrem_admin.models import Settings
 from django.views.generic.edit import CreateView,UpdateView
 from django.views.generic import ListView,DetailView
-from wayrem_admin.forms import OrderStatusUpdatedForm,OrderAdvanceFilterForm
+from wayrem_admin.forms import OrderStatusUpdatedForm,OrderAdvanceFilterForm,OrderStatusDetailForm
 from django.http import HttpResponse,HttpResponseRedirect
 from django.urls import reverse_lazy
 from wayrem_admin.decorators import role_required
@@ -146,5 +146,9 @@ class OrderUpdateView(DetailView):
         context['order_details'] =OrderDetails.objects.filter(order=order_id)
         context['tax_vat'] =Settings.objects.filter(key=self.KEY).first()
         context['order_timeline']=OrderDeliveryLogs.objects.filter(order=order_id).order_by('-id')
-
+        context['order_transaction']=OrderTransactions.objects.filter(order=order_id).first()
+        duplicaterequest=[]
+        duplicaterequest=self.request.GET.copy()
+        duplicaterequest['status']=self.get_object().status.id
+        context['status_form']=OrderStatusDetailForm(duplicaterequest)
         return context

@@ -10,6 +10,23 @@ def create_new_ref_number():
             not_unique = False
     return str(unique_ref)
 
+class PaymentMode(models.Model):
+    id = models.SmallAutoField(primary_key=True)
+    name = models.CharField(max_length=255, db_collation='utf8mb4_unicode_ci')
+    status = models.IntegerField()
+
+    class Meta:
+        app_label = "wayrem_admin"
+        db_table = 'payment_mode'
+
+class PaymentStatus(models.Model):
+    id = models.SmallAutoField(primary_key=True)
+    name = models.CharField(max_length=255, db_collation='utf8mb4_unicode_ci')
+    status = models.IntegerField()
+
+    class Meta:
+        app_label = "wayrem_admin"
+        db_table = 'payment_status'
 
 class Orders(models.Model):
     ref_number = models.CharField(unique=True, max_length=100,editable=False)
@@ -89,10 +106,11 @@ class OrderDeliveryLogs(models.Model):
 class OrderTransactions(models.Model):
     user_id = models.IntegerField()
     order = models.ForeignKey('Orders', models.DO_NOTHING)
+    invoices_id = models.IntegerField(blank=True, null=True)
     code = models.CharField(max_length=100)
     order_type = models.SmallIntegerField()
-    mode = models.SmallIntegerField()
-    status = models.SmallIntegerField()
+    payment_mode = models.ForeignKey('PaymentMode', models.DO_NOTHING)
+    payment_status = models.ForeignKey('PaymentStatus', models.DO_NOTHING)
     created_at = models.DateTimeField()
     updated_at = models.DateTimeField(blank=True, null=True)
     content = models.TextField(blank=True, null=True)
@@ -100,4 +118,3 @@ class OrderTransactions(models.Model):
     class Meta:
         app_label = "wayrem_admin"
         db_table = 'order_transactions'
-        

@@ -2,7 +2,7 @@
                     <h2 class="h5 mb-3">Cutomer</h2>
                     <div>
                        <a class="h6 text-info" href="{{order.customer.id}}">{{order.customer.first_name|default_if_none:""}} {{order.customer.last_name|default_if_none:""}}</a>
-                        <h6>No Orders</h6>
+                        <h6>{{order_details.count}} {% if order_details.count == 1 %} Order {% else %} Orders{% endif %}</h6>
                     </div>
 
                     <hr>

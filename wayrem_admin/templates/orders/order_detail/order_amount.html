@@ -1,7 +1,7 @@
  {% load util_tags  %}
  {% block content %}
 <div class="card card-body bg-white border-light shadow-sm mb-4">
-            <h2 class="h5 mb-4"> <span><img src="/static/assets/img/paid.svg" alt=""></span> Paid</h2>
+            <h2 class="h5 mb-4"> <span><img src="/static/assets/img/paid.svg" alt=""></span>{{order_transaction.payment_status.name}}</h2>
 
             <div class="row col-12">
                 <div class="col-4 h6">Subtotal</div>
