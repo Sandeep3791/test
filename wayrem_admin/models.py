@@ -1,4 +1,5 @@
 # from typing_extensions import Required
+from django.core.files.storage import FileSystemStorage
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.db.models.base import Model
@@ -96,11 +97,15 @@ class Otp(models.Model):
         db_table = 'otp'
 
 
+upload_storage = FileSystemStorage(
+    location='/home/fealty/Desktop/wayrem_kapil')
+
+
 class Categories(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
     name = models.CharField(max_length=35, unique=True)
     image = models.ImageField(
-        upload_to='assets/category/', blank=False, null=True)
+        upload_to='assets/category/', storage=upload_storage, blank=False, null=True)
     tag = models.TextField(null=True, blank=True)
     parent = models.CharField(max_length=35,  null=True)
     margin = models.IntegerField()
