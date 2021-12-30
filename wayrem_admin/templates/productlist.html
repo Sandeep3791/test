@@ -18,6 +18,19 @@
 {% endblock head %}
 
 {% block content %}
+<div class="dashboard_content_inner">
+    <div class="topbar_pages">
+        <h4 class="text-title">All Products</h2>
+        <div class="breadcrumb-section">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb padding-left-0">
+                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="#"><span class="sidebar-icon"><i class="fas fa-gift"></i></span> <span class="sidebar-text">Product Management &nbsp; </span></a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Manage Products</li>
+                </ol>
+            </nav>
+        </div>
+    </div> 
 
 <div class="filter_width p-4 dropdown_content" id="myProfile">
    
@@ -190,19 +203,7 @@
         </div>
     </div>
 </div>
-<div class="dashboard_content_inner">
-    <div class="topbar_pages">
-        <h4 class="text-title">All Products</h2>
-        <div class="breadcrumb-section">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb padding-left-0">
-                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="#"><span class="sidebar-icon"><i class="fas fa-gift"></i></span> <span class="sidebar-text">Product Management &nbsp; </span></a></li>
-                    <li class="breadcrumb-item active" aria-current="page">Manage Products</li>
-                </ol>
-            </nav>
-        </div>
-    </div> 
+
     {% if messages %}
     {% for message in messages %}
     <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">

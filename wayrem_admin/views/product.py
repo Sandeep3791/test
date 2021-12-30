@@ -1,3 +1,7 @@
+from wayrem_admin.utils.constants import *
+from wayrem_admin.filters.product_filters import ProductFilter
+from django.views.generic import ListView
+from django.urls import reverse_lazy
 from django.db.models import Q
 import json
 from django.http.response import HttpResponse
@@ -242,50 +246,69 @@ def product_images(request):
         form = ProductImageForm()
     return render(request, "product4.html", {'form': form})
 
+
 # # ----------------------------------------------------------------------------
 
 
-class ProductList(View):
-    template_name = "productlist.html"
+class ProductList(ListView):
+    model = Products
+    template_name = "product/list.html"
+    context_object_name = 'productslist'
+    paginate_by = RECORDS_PER_PAGE
+    success_url = reverse_lazy('wayrem_admin:productlist')
 
-    @method_decorator(login_required(login_url='wayrem_admin:root'))
-    @method_decorator(role_required('Products View'))
-    def get(self, request, format=None):
-        productslist = Products.objects.all()
-        search_filter = Q()
-        product_name = request.GET.get('product_name')
-        product_sku = request.GET.get('product_sku')
-        supplier_name = request.GET.get('suppliers')
-        product_category = request.GET.get('product_category')
-        if product_name:
-            search_filter |= Q(name=product_name)
-        if product_sku:
-            search_filter |= Q(SKU=product_sku)
-        if supplier_name:
-            search_filter |= Q(supplier__company_name=supplier_name)
-        if product_category:
-            search_filter |= Q(category__name=product_category)
-        productslist = productslist.filter(search_filter)
-        suppliers = Supplier.objects.values_list('username', flat=True)
-        paginator = Paginator(productslist, 5)
-        page = request.GET.get('page')
-        try:
-            plist = paginator.page(page)
-        except PageNotAnInteger:
-            # If page is not an integer, deliver first page.
-            plist = paginator.page(1)
-        except EmptyPage:
-            # If page is out of range (e.g. 9999), deliver last page of results.
-            plist = paginator.page(paginator.num_pages)
-        # return render(request, self.template_name, {"productslist": plist, 'suppliers_name': suppliers})
-        suppliers = Supplier.objects.values_list('company_name', flat=True)
-        categories = Categories.objects.values_list('name', flat=True)
-        context = {
-            "productslist": plist,
-            "suppliers_name": suppliers,
-            "categories": categories
-        }
-        return render(request, self.template_name, context)
+    def get_queryset(self):
+        qs = Products.objects.filter()
+        filtered_list = ProductFilter(self.request.GET, queryset=qs)
+        return filtered_list.qs
+
+    def get_context_data(self, **kwargs):
+        context = super(ProductList, self).get_context_data(**kwargs)
+        context['filter_form'] = ProductAdvanceFilterForm(self.request.GET)
+        return context
+
+
+# class ProductList(View):
+#     template_name = "productlist.html"
+
+#     @method_decorator(login_required(login_url='wayrem_admin:root'))
+#     @method_decorator(role_required('Products View'))
+#     def get(self, request, format=None):
+#         productslist = Products.objects.all()
+#         search_filter = Q()
+#         product_name = request.GET.get('product_name')
+#         product_sku = request.GET.get('product_sku')
+#         supplier_name = request.GET.get('suppliers')
+#         product_category = request.GET.get('product_category')
+#         if product_name:
+#             search_filter |= Q(name=product_name)
+#         if product_sku:
+#             search_filter |= Q(SKU=product_sku)
+#         if supplier_name:
+#             search_filter |= Q(supplier__company_name=supplier_name)
+#         if product_category:
+#             search_filter |= Q(category__name=product_category)
+#         productslist = productslist.filter(search_filter)
+#         suppliers = Supplier.objects.values_list('username', flat=True)
+#         paginator = Paginator(productslist, 5)
+#         page = request.GET.get('page')
+#         try:
+#             plist = paginator.page(page)
+#         except PageNotAnInteger:
+#             # If page is not an integer, deliver first page.
+#             plist = paginator.page(1)
+#         except EmptyPage:
+#             # If page is out of range (e.g. 9999), deliver last page of results.
+#             plist = paginator.page(paginator.num_pages)
+#         # return render(request, self.template_name, {"productslist": plist, 'suppliers_name': suppliers})
+#         suppliers = Supplier.objects.values_list('company_name', flat=True)
+#         categories = Categories.objects.values_list('name', flat=True)
+#         context = {
+#             "productslist": plist,
+#             "suppliers_name": suppliers,
+#             "categories": categories
+#         }
+#         return render(request, self.template_name, context)
 
 
 @role_required('Product View')

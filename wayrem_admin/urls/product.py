@@ -27,7 +27,7 @@ urlpatterns = [
          views.lowest_deliverytime_supplier, name='lowest_time'),
     path('delete_prodimg/', views.delete_product_images,
          name='delete_product_images'),
-         
+
 
 
 ]

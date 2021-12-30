@@ -286,3 +286,37 @@ class ProductFormOne(forms.Form):
         if Products.objects.filter(SKU=SKU).exists():
             raise forms.ValidationError("SKU already Exists!")
         return SKU
+
+
+# Advance Filters
+
+class ProductAdvanceFilterForm(forms.ModelForm):
+    category = forms.ChoiceField(required=False, widget=forms.Select(
+        attrs={'class': 'form-control form-control-select'}))
+    supplier = forms.ChoiceField(required=False, widget=forms.Select(
+        attrs={'class': 'form-control form-control-select'}))
+    name = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'form-control p-2'}), required=False)
+    SKU = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'form-control p-2'}), required=False)
+    date_of_mfg = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'form-control p-2'}), required=False)
+    date_of_exp = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'form-control p-2'}), required=False)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        category_choice = [(get_users_options.pk, get_users_options.name)
+                           for get_users_options in Categories.objects.filter()]
+        category_choice.insert(0, ('', 'Select Status'))
+        self.fields['category'].choices = category_choice
+        supplier_choice = [(get_users_options.pk, get_users_options.company_name)
+                           for get_users_options in Supplier.objects.filter()]
+        supplier_choice.insert(0, ('', 'Select Company'))
+        self.fields['supplier'].choices = supplier_choice
+
+    class Meta:
+        model = Products
+        fields = ['name', 'SKU', 'supplier',
+                  'category', 'date_of_mfg', 'date_of_exp']

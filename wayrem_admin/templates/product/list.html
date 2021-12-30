@@ -1,0 +1,192 @@
+{% extends "layouts/base.html" %}
+{% load static  %}
+{% block title %} Products {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+{% endblock head %}
+{% block content %}
+<div class="dashboard_content_inner">
+    <div class="topbar_pages">
+        <h4 class="text-title">All Products</h2>
+        <div class="breadcrumb-section">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb padding-left-0">
+                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="#"><span class="sidebar-icon"><i class="fas fa-gift"></i></span> <span class="sidebar-text">Product Management &nbsp; </span></a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Manage Products</li>
+                </ol>
+            </nav>
+        </div>
+    </div> 
+    <div class="table-settings mb-4">
+          {% include "product/product_filter.html" %} 
+    </div>
+    
+    <div class="alert-container"></div>
+    {% if messages %}
+    {% for message in messages %}
+    <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
+        <strong> {{ message }}!</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    <div class="card card-body border-light shadow-sm table-wrapper table-responsive pt-0">
+        {% include "product/grid_product.html" %} 
+        {% include "product/pagination.html" %}    
+    </div>
+
+    <div class="modal fade" id="orderpopup" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Update User Shift</h5>
+                </div>
+                <div class="modal-body"></div>
+            </div>     
+        </div>
+    </div>
+    
+</div>
+
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" defer></script>
+  <link type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css" rel="stylesheet">
+  <script>
+  function getUrlParams(urlOrQueryString) {
+	if ((i = urlOrQueryString.indexOf('?')) >= 0) {
+		const queryString = urlOrQueryString.substring(i + 1);
+		if (queryString) {
+			return _mapUrlParams(queryString);
+		}
+	}
+	return {};
+}
+
+    function _mapUrlParams(queryString) {
+	    return queryString
+		.split('&')
+		.map(function (keyValueString) {
+			return keyValueString.split('=')
+		})
+		.reduce(function (urlParams, [key, value]) {
+			if (Number.isInteger(parseInt(value)) && parseInt(value) == value) {
+				urlParams[key] = parseInt(value);
+			} else {
+				urlParams[key] = decodeURI(value);
+			}
+			return urlParams;
+		}, {});
+    } 
+    $(document).ready(function(){
+        $(".exportorders").on('click', function (e) {
+		    e.preventDefault();
+            var qs = location.search,message;
+            is_url_parameter = false;
+		    url_parameters = getUrlParams(qs)
+            $.each(url_parameters, function (index, value) {
+			    if (value != "" && index != 'page' && index != 'filter_date_type') {
+				    is_url_parameter = true;
+			    }
+		    });
+
+            if (qs && is_url_parameter) {
+                url ="/orders/export-order/"+qs
+				window.location = url;
+            }
+
+
+        })
+
+
+
+        $('.date_pickers').datepicker({
+            format: 'yyyy-mm-dd',
+        });
+    })   
+
+</script>
+
+<script>
+    function supplierFunc(SKU){
+      
+        const url="{% url 'wayrem_admin:viewprodsupplier' %}";
+        $.ajax({
+            
+            url:url,
+            data: {
+                        'product': SKU       // add the country id to the GET parameters
+                    },
+            success:function(data){
+            $("#test"+SKU).html(data);
+            
+            $("#supplier"+SKU).modal('show');
+            },
+        });
+    
+        }
+        $(document).ready(function(){
+        
+            $('#supplier').modal('hide');
+        
+        });
+    </script>
+    
+    <script>
+    function lowestFunc(SKU){
+      
+        const url="{% url 'wayrem_admin:lowest_price' %}";
+        $.ajax({
+            
+            url:url,
+            data: {
+                        'product': SKU       // add the country id to the GET parameters
+                    },
+            success:function(data){
+            $("#lowest_price"+SKU).html(data);
+            
+            $("#lowest"+SKU).modal('show');
+            },
+        });
+    
+        }
+        $(document).ready(function(){
+        
+            $('#lowest').modal('hide');
+        
+        });
+    </script>
+    
+    <script>
+    function lowesttimeFunc(SKU){
+      
+        const url="{% url 'wayrem_admin:lowest_time' %}";
+        $.ajax({
+            
+            url:url,
+            data: {
+                        'product': SKU       // add the country id to the GET parameters
+                    },
+            success:function(data){
+            $("#lowest_time"+SKU).html(data);
+            
+            $("#lowesttime"+SKU).modal('show');
+            },
+        });
+    
+        }
+        $(document).ready(function(){
+        
+            $('#lowest').modal('hide');
+        
+        });
+    </script>
+{% endblock javascripts %}

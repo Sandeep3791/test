@@ -1,4 +1,6 @@
 # from typing_extensions import Required
+# from models_orders import Orders
+from django.core.validators import MinValueValidator
 from django.core.files.storage import FileSystemStorage
 from django.db import models
 from django.contrib.auth.models import AbstractUser
@@ -462,3 +464,25 @@ class PO_log(models.Model):
 
     class Meta:
         db_table = 'po_logs'
+
+
+class Inventory(models.Model):
+    inventory_types = (
+        ('Starting', 'Starting'),
+        ('Received', 'Received'),
+        ('Shipped', 'Shipped'),
+    )
+    id = models.AutoField(primary_key=True, unique=True)
+    product = models.ForeignKey(
+        Products, on_delete=models.CASCADE, null=True, blank=True)
+    quantity = models.IntegerField(
+        validators=[MinValueValidator(0)], blank=False, null=False)
+    inventory_type = models.CharField(
+        max_length=30, choices=inventory_types, default='Starting')
+    order = models.ForeignKey(
+        'wayrem_admin.Orders', on_delete=models.CASCADE, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'inventory'

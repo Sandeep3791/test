@@ -16,7 +16,9 @@
 <div class="subheader row align-items-center justify-content-between">
             <div class="col-xl-5 col-lg-5 col-5">
                 <div class="col-xl-4 col-lg-4 col-md-4">
-                    
+                    <a class="btn anchor_btn ps-0 pe-0" href="{% url 'wayrem_admin:product' %}">
+                        <button class="btn btn-success create_new">Create Product</button>
+                    </a>
                 </div>
             </div>
 
@@ -25,7 +27,7 @@
                     <div class="col-xl-12 col-lg-3 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 " style="height:40px;">
                     <form method="GET">    
                         <div class="input-group subadmin_search">
-                            {{filter_form.orderrefer}}
+                            {{filter_form.name}}
                             <button type="submit" class="btn btn-dark border-0 col-xl-3 col-md-5 col-12 fas fa-search"> Search</button>
                         </div>
                     </form>
@@ -52,20 +54,20 @@
                     <div class="row">
                         <div class="col-4">
                             <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
-                                <label for="inputPassword4">Order reference </label>
+                                <label for="inputPassword4">Product Name</label>
                             </div>
                             <div class="col-12 input_border">
-                                {{filter_form.order_ref}}
+                                {{filter_form.name}}
                             </div>
                         </div>
             
                         <div class="col-4">
                             <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
-                                <label for="inputPassword4">Start date</label>
+                                <label for="inputPassword4">Manufacturing Date</label>
                             </div>
                             <div class="col-12 input_border">
                                 <div class="input-group date date_pickers"  >
-                                    {{filter_form.start_date}}
+                                    {{filter_form.date_of_mfg}}
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-th"></span>
                                     </div>
@@ -76,11 +78,11 @@
             
                         <div class="col-4">
                             <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
-                                <label for="inputPassword4">End date</label>
+                                <label for="inputPassword4">Expiry Date</label>
                             </div>
                             <div class="col-12 input_border">
                                 <div class="input-group date date_pickers"  >
-                                    {{filter_form.end_date}}
+                                    {{filter_form.date_of_exp}}
                                     <div class="input-group-addon">
                                         <span class="glyphicon glyphicon-th"></span>
                                     </div>
@@ -93,28 +95,28 @@
                     <div class="row mt-4">
                         <div class="col-4">
                             <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
-                                <label for="inputPassword4">Customer</label>
+                                <label for="inputPassword4">SKU</label>
                             </div>
                             <div class="col-12 input_border">
-                                {{filter_form.customer_name}}
+                                {{filter_form.SKU}}
                             </div>
                     </div>
 
                     <div class="col-4">
                             <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
-                                <label for="inputPassword4">Contact</label>
+                                <label for="inputPassword4">Category</label>
                             </div>
                             <div class="col-12 input_border">
-                                {{filter_form.contact}}
+                                {{filter_form.category}}
                             </div>
                     </div>
 
                     <div class="col-4">
                             <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
-                                <label for="inputPassword4">Status</label>
+                                <label for="inputPassword4">Supplier</label>
                             </div>
                             <div class="col-12 input_border">
-                                {{filter_form.status}}
+                                {{filter_form.supplier}}
                             </div>
                     </div>
 
