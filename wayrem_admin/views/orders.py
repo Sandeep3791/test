@@ -9,11 +9,11 @@ from wayrem_admin.forms import SettingsForm
 from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from wayrem_admin.export import generate_excel
-from wayrem_admin.models_orders import Orders,OrderDetails,OrderStatus,OrderDeliveryLogs,OrderTransactions
+from wayrem_admin.models_orders import Orders,OrderDetails,OrderStatus,OrderDeliveryLogs,OrderTransactions,PaymentStatus
 from wayrem_admin.models import Settings
 from django.views.generic.edit import CreateView,UpdateView
 from django.views.generic import ListView,DetailView
-from wayrem_admin.forms import OrderStatusUpdatedForm,OrderAdvanceFilterForm,OrderStatusDetailForm
+from wayrem_admin.forms import OrderStatusUpdatedForm,OrderAdvanceFilterForm,OrderStatusDetailForm,OrderUpdatedPaymentStatusForm
 from django.http import HttpResponse,HttpResponseRedirect
 from django.urls import reverse_lazy
 from wayrem_admin.decorators import role_required
@@ -30,6 +30,7 @@ from weasyprint import HTML
 import tempfile
 from django.db.models.functions import Cast
 from django.db.models.fields import DateField
+from wayrem_admin.utils.constants import *
 
 class OrderExportView(View):
     def get(self, request,**kwargs):
@@ -119,20 +120,41 @@ class OrderStatusUpdated(UpdateView):
         #messages.success(self.request, 'Order status Updated!')
         return HttpResponse(obj_stat_instance.name)
 
+class OrderPaymentStatusUpdated(UpdateView):
+    model = OrderTransactions
+    form_class = OrderUpdatedPaymentStatusForm
+    template_name = "orders/update_order_status.html"
+    pk_url_kwarg = 'id'
+
+    def post(self,request, *args, **kwargs):
+        get_id = self.get_object().id
+        status_id=int(self.request.POST.get('payment_status'))
+        obj_stat_instance = PaymentStatus.objects.get(id=status_id)
+        OrderTransactions.objects.filter(id=get_id).update(payment_status=obj_stat_instance)
+        return HttpResponse(obj_stat_instance.name)
+
+
 class OrderInvoiceView(View):
     model = Orders
     template_name = "orders/order_invoice.html"
+    KEY='tax_vat'
+
     def get(self, request, id):
-        context={'ch':"dsdd"}
+        context={}
+        context['currency']=CURRENCY
+        order_id=id
+        filename=str(order_id)+".pdf"
+        context['order'] =Orders.objects.filter(id=order_id).first()
+        context['tax_vat'] =Settings.objects.filter(key=self.KEY).first()
+        context['order_details'] =OrderDetails.objects.filter(order=order_id)
+        context['order_transaction']=OrderTransactions.objects.filter(order=order_id).first()
         html_template =render_to_string(self.template_name, context)
         pdf_file = HTML(string=html_template, base_url=request.build_absolute_uri()).write_pdf()
-        
         response = HttpResponse(pdf_file, content_type='application/pdf')
-        response['Content-Disposition'] = 'inline; attachment; filename="page.pdf"'
         response['Content-Transfer-Encoding'] = 'binary'
-        
+        response['Content-Disposition'] = 'attachment;filename='+filename
         return response
-        return render(request, self.template_name, {})
+        #return render(request, self.template_name,context)
 
 class OrderUpdateView(DetailView):
     model = Orders
@@ -150,5 +172,8 @@ class OrderUpdateView(DetailView):
         duplicaterequest=[]
         duplicaterequest=self.request.GET.copy()
         duplicaterequest['status']=self.get_object().status.id
+        duplicaterequest['payment_status']=context['order_transaction'].payment_status.id
         context['status_form']=OrderStatusDetailForm(duplicaterequest)
+        context['payment_status_form']=OrderUpdatedPaymentStatusForm(duplicaterequest)
+        context['currency']=CURRENCY
         return context

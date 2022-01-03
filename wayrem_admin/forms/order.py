@@ -2,8 +2,23 @@ from ckeditor.widgets import CKEditorWidget
 from django.forms import Textarea, ModelChoiceField,CharField
 from django import forms
 from django.forms import widgets
-from wayrem_admin.models_orders import Orders, OrderStatus
+from wayrem_admin.models_orders import Orders, OrderStatus,OrderTransactions,PaymentStatus
 from django.forms import ModelForm
+
+class OrderUpdatedPaymentStatusForm(ModelForm):
+    payment_status = forms.ChoiceField(required=True, widget=forms.Select(
+        attrs={'class': 'form-control form-control-select'}))
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        order_choices = [(get_users_options.pk, get_users_options.name)
+                         for get_users_options in PaymentStatus.objects.filter()]
+        self.fields['payment_status'].choices = order_choices
+    
+    class Meta:
+        model = OrderTransactions
+        fields = ['payment_status']
+
 
 
 class OrderStatusUpdatedForm(ModelForm):

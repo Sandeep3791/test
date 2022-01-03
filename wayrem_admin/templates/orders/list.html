@@ -97,9 +97,12 @@
 				    is_url_parameter = true;
 			    }
 		    });
-
+            
             if (qs && is_url_parameter) {
                 url ="/orders/export-order/"+qs
+				window.location = url;
+            }else{
+                url ="/orders/export-order/";
 				window.location = url;
             }
 

@@ -36,6 +36,7 @@ class Orders(models.Model):
     item_discount = models.FloatField()
     item_margin = models.FloatField()
     tax = models.FloatField()
+    tax_vat = models.FloatField()
     shipping = models.FloatField()
     total = models.FloatField()
     promo = models.CharField(max_length=50, blank=True, null=True)
@@ -64,7 +65,7 @@ class Orders(models.Model):
 class OrderStatus(models.Model):
     id = models.SmallAutoField(primary_key=True)
     name = models.CharField(max_length=255, db_collation='utf8mb4_unicode_ci')
-
+    status_color = models.CharField(max_length=50)
     def __str__(self):
         return self.name
         

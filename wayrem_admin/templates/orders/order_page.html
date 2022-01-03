@@ -1,10 +1,7 @@
-{% extends "layouts/base.html" %}
-{% load static util_tags %}
-{% block title %} Settings {% endblock %}
+{% extends "layouts/base.html" %} {% load static util_tags %} {% block title %} Settings {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
-{% block stylesheets %}{% endblock stylesheets %}
-{% block head %}
+{% block stylesheets %}{% endblock stylesheets %} {% block head %}
 <script src="{% static 'assets/js/datatable_ajax.js' %}"></script>
 <link rel="stylesheet" href="{% static 'assets/css/datatable.css' %}">
 <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
@@ -14,116 +11,125 @@
 
 <style>
     .timeline {
-  position: relative;
-  max-width: 1200px;
-}
-
-/* The actual timeline (the vertical ruler) */
-.timeline::after {
-  content: '';
-  position: absolute;
-  width: 4px;
-  background-color: rgb(201, 201, 201);
-  top: 0;
-  bottom: 0;
-  margin-left: -3px;
-}
-
-/* Container around content */
-.timeline_container {
-  position: relative;
-  background-color: inherit;
-}
-
-/* The circles on the timeline */
-.timeline_container::after {
-  content: '';
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  right: -17px;
-  background-color: #a2a2a2;
-  border: 3px solid #ffffff;
-  top: 15px;
-  border-radius: 50%;
-  z-index: 1;
-}
-
-/* Fix the circle for containers on the right side */
-.right::after {
-  left: -11px;
-}
-
-/* The actual content */
-.timeline_content {
-  padding: 15px 30px;
-  background-color: white;
-  position: relative;
-  border-radius: 6px;
-}
+        position: relative;
+        max-width: 1200px;
+    }
+    /* The actual timeline (the vertical ruler) */
+    
+    .timeline::after {
+        content: '';
+        position: absolute;
+        width: 4px;
+        background-color: rgb(201, 201, 201);
+        top: 0;
+        bottom: 0;
+        margin-left: -3px;
+    }
+    /* Container around content */
+    
+    .timeline_container {
+        position: relative;
+        background-color: inherit;
+    }
+    /* The circles on the timeline */
+    
+    .timeline_container::after {
+        content: '';
+        position: absolute;
+        width: 20px;
+        height: 20px;
+        right: -17px;
+        background-color: #a2a2a2;
+        border: 3px solid #ffffff;
+        top: 15px;
+        border-radius: 50%;
+        z-index: 1;
+    }
+    /* Fix the circle for containers on the right side */
+    
+    .right::after {
+        left: -11px;
+    }
+    /* The actual content */
+    
+    .timeline_content {
+        padding: 15px 30px;
+        background-color: white;
+        position: relative;
+        border-radius: 6px;
+    }
 </style>
 
-{% endblock head %}
+{% endblock head %} {% block content %}
 
-{% block content %}
-
-
-<div class="d-flex justify-content-between w-100 flex-wrap mt-5 px-2">
+<div class="topbar_pages dashboard_content_inner">
+    <h4 class="text-title">Order Details</h4>
+    <div class="breadcrumb-section">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb padding-left-0">
+                <li class="breadcrumb-item"><a href="/home/dashboard/"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
+                <li class="breadcrumb-item " aria-current="page"> Orders</li>
+                <li class="breadcrumb-item active" aria-current="page">Order Details</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+<div class="d-flex justify-content-between w-100 flex-wrap my-4 dashboard_content_inner">
     <div class="mb-3 mb-lg-0">
         <h1 class="h4">#{{order.ref_number}}</h1>
         <p class="mb-0">{{order.order_date|date:"d M Y "}} at {{order.order_date|date:"H:i"}} from Online Store</p>
     </div>
-    
-</div>
 
+</div>
+<div class="alert-container"></div>
 <!--============================================-->
-<div class="row px-2">
+<div class="row dashboard_content_inner">
     <div class="col-12 col-xl-8">
         <div class="card card-body bg-white border-light shadow-sm mb-4">
             <h2 class="h5 mb-4"> <span><img src="/static/assets/img/paid.svg" alt=""></span> Full filled (1)</h2>
-               
-                {% for order_detail in order_details %}
-                
-                <div class="row">
-                    <div class="col-1">
-                        <img class="rounded" src="/media/{{order_detail.product.primary_image}}" width="100%" alt="">
-                    </div>
-                    <div class="col-4">
-                        <h6 class="mb-0">{{order_detail.product_name}}</h6>
-                        <h6 class="text-muted">SKU: {{order_detail.sku}}</h6>
-                    </div>
-                    <div class="col-3 d-flex justify-content-end">
-                        <h6>{{order_detail.price}} x {{order_detail.quantity}}</h6>
-                    </div>
-                    <div class="col-4 d-flex justify-content-end">
-                        <h6>{% widthratio order_detail.price 1 order_detail.quantity %}</h6>
-                    </div>
-                </div>
-                {% endfor %}
-                
 
-                <div class="mt-3 d-flex justify-content-end d-none">
-                    <button type="submit" class="btn btn-success">Add Tracking</button>
+            {% for order_detail in order_details %}
+
+            <div class="row">
+                <div class="col-2">
+                    <img class="rounded-1" src="/media/{{order_detail.product.primary_image}}" width="50%" height="100%" alt="" style="object-fit: cover;">
                 </div>
+                <div class="col-4">
+                    <h6 class="mb-0">{{order_detail.product_name}}</h6>
+                    <h6 class="text-muted">SKU: {{order_detail.sku}}</h6>
+                </div>
+                <div class="col-3 d-flex justify-content-end">
+                    <h6>SAR {{order_detail.price|add_product_items:order_detail.item_margin}} x {{order_detail.quantity}}</h6>
+                </div>
+                <div class="col-3 d-flex justify-content-end">
+                    <h6>SAR {% widthratio order_detail.price|add_product_items:order_detail.item_margin 1 order_detail.quantity %}</h6>
+                </div>
+            </div>
+            {% endfor %}
+
+
+            <div class="mt-3 d-flex justify-content-end d-none">
+                <button type="submit" class="btn btn-success">Add Tracking</button>
+            </div>
         </div>
 
         <!--=================================-->
-            {% include "orders/order_detail/order_amount.html" %}
-        
+        {% include "orders/order_detail/order_amount.html" %}
+
         <!--============================-->
 
 
 
         <!--=================timeline================-->
-            {% include "orders/order_detail/order_timeline.html" %}
-        
+        {% include "orders/order_detail/order_timeline.html" %}
+
         <!--===========end timeline=================-->
 
     </div>
     <div class="col-12 col-xl-4">
         <div class="row">
             <div class="col-12">
-                {% include "orders/order_detail/order_status.html" %} 
+                {% include "orders/order_detail/order_status.html" %}
             </div>
 
             <div class="col-12">
@@ -133,47 +139,49 @@
         </div>
     </div>
 </div>
-<!--============================================-->
-
-
-<!--============================================-->
-
-
-
-<!--============================================-->
-
-
-<!-- <script>
-
-    $(document).ready(function () {
-        oTable = $('#filtertable').DataTable({
-            dom: 'rt',
-            'columnDefs': [{ 'orderable': false, 'targets': [2, 3] }],
-            "oLanguage": {
-                "oPaginate": {
-                    "sNext": '<i class="fas fa-arrow-circle-right text-primary"></i>',
-                    "sPrevious": '<i class="fas fa-arrow-circle-left text-primary"></i>'
-                }
-            },
-            "fnDrawCallback": function (oSettings) {
-                if (oSettings._iDisplayLength > oSettings.fnRecordsDisplay()) {
-                    $(oSettings.nTableWrapper).find('.dataTables_paginate').hide();
-                } else {
-                    $(oSettings.nTableWrapper).find('.dataTables_paginate').show();
-                }
-            }
-        });
-        $('#table_search').keyup(function () {
-            oTable.search($(this).val()).draw();
-        })
-        $("#table_search").on(
-          "change keyup paste input", function() {
-           oTable.search($(this).val()).draw();
-        })
-    });
-</script> -->
 
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
-{% block javascripts %}{% endblock javascripts %}
+{% block javascripts %}
+<script>
+$(".orderstatus").on("click",".order_submit_success",function(e){
+        url = $(".orderstatus .oderform").attr("action")
+		 type_form=$(".orderstatus .oderform").attr("method")
+	   	 data_ser=$(".orderstatus .oderform").serialize()
+         order_status_id=$(this).data("id");
+         $.ajax({
+	            type: type_form,
+	            url: url,
+	            data: data_ser,
+	            cache: false,
+	            success: function (data) {
+                    $(".alert-container").show();
+                     $(".status_"+order_status_id).html(data);
+                     var alert_message='<div class="alert-container alert alert-success alert-dismissible fade show" role="alert" ><strong> Order status Updated!!</strong><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
+                     $(".alert-container").html(alert_message);   
+                     $(".alert-container").fadeOut(2500);
+                }
+         })
+
+    })
+
+$(".orderpayment").on("click",".order_submit_success",function(e){
+        url = $(".orderpayment .oderform").attr("action")
+		 type_form=$(".orderpayment .oderform").attr("method")
+	   	 data_ser=$(".orderpayment .oderform").serialize()
+         order_status_id=$(this).data("id");
+         $.ajax({
+	            type: type_form,
+	            url: url,
+	            data: data_ser,
+	            cache: false,
+	            success: function (data) {
+                        location.reload();
+                }
+         })
+    })
+
+
+</script>
+{% endblock javascripts %}
