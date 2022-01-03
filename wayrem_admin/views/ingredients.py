@@ -49,7 +49,7 @@ def create_ingredients(request):
 
 def ingredientsList(request):
     ingredients_list = Ingredients.objects.all()
-    paginator = Paginator(ingredients_list, 5)
+    paginator = Paginator(ingredients_list, 25)
     page = request.GET.get('page')
     try:
         ingredientslist = paginator.page(page)
@@ -118,14 +118,14 @@ def import_ingredients(request):
                            indicator=True).loc[lambda x: x['_merge'] == 'left_only']
 
             ids = []
-            uuids = []
+            # uuids = []
 
             for id_counter in range(0, len(df3.index)):
-                ids.append(str(uuid.uuid4()))
+                # ids.append(str(uuid.uuid4()))
                 df3['ingredients_status'] = 'Active'
-            for i in ids:
-                uuids.append((uuid.UUID(i)).hex)
-            df3['id'] = uuids
+            # for i in ids:
+            #     uuids.append((uuid.UUID(i)).hex)
+            # df3['id'] = uuids
             df3['created_at'] = datetime.now()
             df3['updated_at'] = datetime.now()
             df3 = df3.drop('_merge', axis=1)

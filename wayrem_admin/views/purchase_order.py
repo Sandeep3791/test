@@ -229,7 +229,7 @@ class DeletePO(View):
 @role_required('Purchase Order View')
 def viewpo(request, id=None):
     po = PurchaseOrder.objects.filter(po_id=id).all()
-    return render(request, 'view_po.html', {"po": po})
+    return render(request, 'purchase_order/view_po.html', {"po": po})
 
 
 @role_required('Purchase Order Edit')
