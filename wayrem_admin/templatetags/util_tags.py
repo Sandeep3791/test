@@ -11,3 +11,8 @@ register = template.Library()
 def total_items(order_id):
     total_items = OrderDetails.objects.filter(order=order_id).count()
     return total_items
+
+@register.filter(name='add_product_items')
+def add_product_items(var1,var2):
+    price=var1+var2
+    return price 

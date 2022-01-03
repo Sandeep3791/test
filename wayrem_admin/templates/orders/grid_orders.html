@@ -20,9 +20,9 @@
            <tr>
                 <td>{{order.ref_number}}</td>
                 <td>{{order.order_date|date:"M d, Y"}}</td>
-                <td>{{order.customer.first_name}}</td>
+                <td>{{order.customer.first_name}} {{order.customer.last_name|default_if_none:""}}</td>
                 <td>{{order.order_phone|default_if_none:""}}</td>
-                <td class="status_{{order.id}}">{{order.status.name}}</td>
+                <td class="status_{{order.id}}"><span class="badge bg-primary" style="padding: 3px 8px;line-height: 11px;background-color:{{order.status.status_color}} !important">{{order.status.name}}</span></td>
                 <td>{{order.id|total_items}}</td>
                 <td>{{order.grand_total}}</td>
                 <td>
