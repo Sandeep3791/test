@@ -1,3 +1,5 @@
+import re
+from typing import Set
 from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect
@@ -279,12 +281,31 @@ def statuspo(request, id=None):
 
 
 def po_pdf(request):
+    id = request.GET.get('po_id')
     response = HttpResponse(content_type='application/pdf')
     response['Content-Disposition'] = 'inline; attachment; filename=po' + \
         str(datetime.datetime.now())+'.pdf'
     response['Content-Transfer-Encoding'] = 'binary'
+    po = PurchaseOrder.objects.filter(po_id=id).all()
+    vat = Settings.objects.filter(key="setting_vat").first()
+    vat = vat.value
+    net_value = []
+    vat_amt = []
+    net_amt = []
+    for item in po:
+        total_amt = float(item.product_name.price)*float(item.product_qty)
+        vat_float = (total_amt/100) * float(vat[:-1])
+        net = total_amt+vat_float
+        net_value.append(total_amt)
+        vat_amt.append(vat_float)
+        net_amt.append(net)
     context = {
-        'data': 'data'
+        'data': po,
+        'vat': vat,
+        'total_items': len(po),
+        'total_net': "{:.2f}".format(sum(net_value)),
+        'total_vat': "{:.2f}".format(sum(vat_amt)),
+        'total_net_amt': "{:.2f}".format(sum(net_amt))
     }
     html_string = render_to_string('pdf_po/po_customer.html', context)
     html = HTML(string=html_string,

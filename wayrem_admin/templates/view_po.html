@@ -72,6 +72,7 @@
                         </table>
                         <div class="text-right">
                         <a href="{% url 'wayrem_admin:polist' %}" class="btn btn-dark my-3" >Back</a>
+                        <a href="{% url 'wayrem_admin:pdf_po' %}?po_id={{po.0.po_id}}" class="btn btn-danger my-3" >Download</a>
                         </div>
                     </div>
                 </div>
