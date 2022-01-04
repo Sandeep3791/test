@@ -138,7 +138,7 @@
                 <td style="width: 14.25%; padding: 1rem .4rem; text-align: center;" valign="top" align="center">{{order_detail.quantity}}</td>
                 <td style="width: 14.25%; padding: 1rem .4rem; text-align: center;" valign="top" align="right">{{currency}} {{ order_detail.price|add_product_items:order_detail.item_margin }}</td>
                 <td style="width: 14.25%; padding: 1rem .4rem; text-align: center;" valign="top" align="right">{{ order_detail.discount }}</td>
-                <td style="width: 14.25%; padding: 1rem .4rem; text-align: right;" valign="top" align="right">{{currency}} {% widthratio order_detail.price|add_product_items:order_detail.item_margin 1 order_detail.quantity %}</td>
+                <td style="width: 14.25%; padding: 1rem .4rem; text-align: right;" valign="top" align="right">{{currency}} {{ order_detail.id|unit_product_total }}</td>
             </tr>
         {% endfor %}
         </tbody>

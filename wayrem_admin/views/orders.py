@@ -9,7 +9,7 @@ from wayrem_admin.forms import SettingsForm
 from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from wayrem_admin.export import generate_excel
-from wayrem_admin.models_orders import Orders,OrderDetails,OrderStatus,OrderDeliveryLogs,OrderTransactions,PaymentStatus
+from wayrem_admin.models_orders import Orders,OrderDetails,StatusMaster,OrderDeliveryLogs,OrderTransactions
 from wayrem_admin.models import Settings
 from django.views.generic.edit import CreateView,UpdateView
 from django.views.generic import ListView,DetailView
@@ -30,7 +30,7 @@ from weasyprint import HTML
 import tempfile
 from django.db.models.functions import Cast
 from django.db.models.fields import DateField
-from wayrem_admin.utils.constants import *
+
 
 class OrderExportView(View):
     def get(self, request,**kwargs):
@@ -82,8 +82,9 @@ class OrdersList(ListView):
     paginate_by = RECORDS_PER_PAGE
     success_url = reverse_lazy('wayrem_admin:orderlist')
 
+
     def get_queryset(self):
-        qs=Orders.objects.filter()
+        qs=Orders.objects.filter().order_by("-id")
         filtered_list = OrderFilter(self.request.GET, queryset=qs)
         return filtered_list.qs
 
@@ -108,17 +109,24 @@ class OrderStatusUpdated(UpdateView):
         # This method is called when valid form data has been POSTed. 
         obj = form.save(commit=False) 
         status_id=int(self.request.POST.get('status'))
-        obj.status = OrderStatus.objects.get(id=status_id)
+        obj.status = StatusMaster.objects.get(id=status_id)
         obj.save()
         return HttpResponse(True)
 
     def post(self,request, *args, **kwargs):
         get_id = self.get_object().id
+        exist_status_id=self.get_object().status.id
         status_id=int(self.request.POST.get('status'))
-        obj_stat_instance = OrderStatus.objects.get(id=status_id)
-        Orders.objects.filter(id=get_id).update(status=obj_stat_instance)
-        #messages.success(self.request, 'Order status Updated!')
-        return HttpResponse(obj_stat_instance.name)
+        if exist_status_id != status_id:
+            obj_stat_instance = StatusMaster.objects.get(id=status_id)
+            Orders.objects.filter(id=get_id).update(status=obj_stat_instance)
+            now = datetime.datetime.now()
+            odl=OrderDeliveryLogs(order_id=get_id,order_status=obj_stat_instance,order_status_details="status change",log_date=now,user_id=1)
+            odl.save()
+        else:
+            obj_stat_instance = StatusMaster.objects.get(id=status_id)
+        check='<span class="badge bg-primary" style="padding: 3px 8px;line-height: 11px;background-color:'+obj_stat_instance.status_color+' !important">'+obj_stat_instance.name+'</span>'
+        return HttpResponse(check)
 
 class OrderPaymentStatusUpdated(UpdateView):
     model = OrderTransactions
@@ -129,7 +137,7 @@ class OrderPaymentStatusUpdated(UpdateView):
     def post(self,request, *args, **kwargs):
         get_id = self.get_object().id
         status_id=int(self.request.POST.get('payment_status'))
-        obj_stat_instance = PaymentStatus.objects.get(id=status_id)
+        obj_stat_instance = StatusMaster.objects.get(id=status_id)
         OrderTransactions.objects.filter(id=get_id).update(payment_status=obj_stat_instance)
         return HttpResponse(obj_stat_instance.name)
 
@@ -167,7 +175,7 @@ class OrderUpdateView(DetailView):
         order_id=self.get_object().id
         context['order_details'] =OrderDetails.objects.filter(order=order_id)
         context['tax_vat'] =Settings.objects.filter(key=self.KEY).first()
-        context['order_timeline']=OrderDeliveryLogs.objects.filter(order=order_id).order_by('-id')
+        context['order_timeline']=OrderDeliveryLogs.objects.filter(order=order_id).order_by('id')
         context['order_transaction']=OrderTransactions.objects.filter(order=order_id).first()
         duplicaterequest=[]
         duplicaterequest=self.request.GET.copy()
@@ -176,4 +184,6 @@ class OrderUpdateView(DetailView):
         context['status_form']=OrderStatusDetailForm(duplicaterequest)
         context['payment_status_form']=OrderUpdatedPaymentStatusForm(duplicaterequest)
         context['currency']=CURRENCY
+        context['PAYMENT_STATUS_CONFIRM']=PAYMENT_STATUS_CONFIRM
+        context['PAYMENT_STATUS_DECLINED']=PAYMENT_STATUS_DECLINED
         return context
