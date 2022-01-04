@@ -1,10 +1,14 @@
+from wayrem_admin.utils.constants import *
+from wayrem_admin.filters.ingredient_filters import *
+from django.views.generic import ListView
+from django.urls import reverse_lazy
 from datetime import datetime
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views import View
 from wayrem_admin.models import Ingredients
 from django.contrib.auth.decorators import login_required
-from wayrem_admin.forms import IngredientsCreateForm
+from wayrem_admin.forms import IngredientsCreateForm, IngredientFilterForm
 import pandas as pd
 from sqlalchemy import create_engine
 import uuid
@@ -45,6 +49,24 @@ def create_ingredients(request):
 #         # user_role = Roles.objects.all()
 #         # "roles":user_role
 #         return render(request, self.template_name, {"ingredientslist": ingredientslist})
+
+
+class IngredientList(ListView):
+    model = Ingredients
+    template_name = "ingredient/list.html"
+    context_object_name = 'list'
+    paginate_by = RECORDS_PER_PAGE
+    success_url = reverse_lazy('wayrem_admin:ingredientlist')
+
+    def get_queryset(self):
+        qs = Ingredients.objects.filter()
+        filtered_list = IngredientFilter(self.request.GET, queryset=qs)
+        return filtered_list.qs
+
+    def get_context_data(self, **kwargs):
+        context = super(IngredientList, self).get_context_data(**kwargs)
+        context['filter_form'] = IngredientFilterForm(self.request.GET)
+        return context
 
 
 def ingredientsList(request):

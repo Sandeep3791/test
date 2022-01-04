@@ -16,3 +16,12 @@ class IngredientsCreateForm(forms.ModelForm):
                 'unique': "This ingredient already exist.",
             },
         }
+
+
+class IngredientFilterForm(forms.ModelForm):
+    ingredients_name = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'form-control p-2'}), required=False)
+
+    class Meta:
+        model = Ingredients
+        fields = ['ingredients_name']

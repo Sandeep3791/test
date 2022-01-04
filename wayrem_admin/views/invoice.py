@@ -68,7 +68,7 @@ class DownloadInvoice(View):
             invoice = number
             # invoice="INV/26112021/0001"
             contents = Invoice.objects.get(invoice_no=invoice)
-            filename = contents.file.name.split('/')[-1]
+            filename = contents.file.split('/')[-1]
             response = HttpResponse(contents.file.url)
             response['Content-Disposition'] = 'attachment; filename=%s' % filename
 

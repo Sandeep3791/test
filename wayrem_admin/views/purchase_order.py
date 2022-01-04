@@ -1,3 +1,7 @@
+from django.urls import reverse_lazy
+from django.views.generic import ListView
+from wayrem_admin.filters.po_filters import *
+from wayrem_admin.utils.constants import *
 import re
 from typing import Set
 from django.core.paginator import Paginator
@@ -6,7 +10,7 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views import View
 from wayrem_admin.models import EmailTemplateModel, Notification, PurchaseOrder, Products, Settings, Supplier
-from wayrem_admin.forms import POForm, POEditForm
+from wayrem_admin.forms import POForm, POEditForm, POSearchFilter
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from wayrem_admin.services import inst_Product, inst_Supplier, delSession, send_email
@@ -184,7 +188,25 @@ def delete_inserted_item(request, id=None):
     return redirect('wayrem_admin:create_po')
 
 
-class POList(View):
+class POList(ListView):
+    model = PurchaseOrder
+    template_name = "purchase_order/list.html"
+    context_object_name = 'list'
+    paginate_by = RECORDS_PER_PAGE
+    success_url = reverse_lazy('wayrem_admin:polist')
+
+    def get_queryset(self):
+        qs = PurchaseOrder.objects.filter().distinct()
+        filtered_list = POFilter(self.request.GET, queryset=qs)
+        return filtered_list.qs
+
+    def get_context_data(self, **kwargs):
+        context = super(POList, self).get_context_data(**kwargs)
+        context['filter_form'] = POSearchFilter(self.request.GET)
+        return context
+
+
+class POList1(View):
     template_name = "po_list.html"
 
     @method_decorator(login_required(login_url='wayrem_admin:root'))
@@ -194,7 +216,7 @@ class POList(View):
         # polist = PurchaseOrder.objects.values(
         #     'po_id', 'po_name', 'supplier_name', 'status').distinct()
         po = PurchaseOrder.objects.all().order_by('po_name').distinct()
-        paginator = Paginator(po, 5)
+        paginator = Paginator(po, 25)
         page = request.GET.get('page')
         try:
             ulist = paginator.page(page)
@@ -282,10 +304,10 @@ def statuspo(request, id=None):
 
 def po_pdf(request):
     id = request.GET.get('po_id')
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = 'inline; attachment; filename=po' + \
-        str(datetime.datetime.now())+'.pdf'
-    response['Content-Transfer-Encoding'] = 'binary'
+    # response = HttpResponse(content_type='application/pdf')
+    # response['Content-Disposition'] = 'inline; attachment; filename=po' + \
+    #     str(datetime.datetime.now())+'.pdf'
+    # response['Content-Transfer-Encoding'] = 'binary'
     po = PurchaseOrder.objects.filter(po_id=id).all()
     vat = Settings.objects.filter(key="setting_vat").first()
     vat = vat.value
@@ -307,18 +329,26 @@ def po_pdf(request):
         'total_vat': "{:.2f}".format(sum(vat_amt)),
         'total_net_amt': "{:.2f}".format(sum(net_amt))
     }
-    html_string = render_to_string('pdf_po/po_customer.html', context)
-    html = HTML(string=html_string,
-                base_url=request.build_absolute_uri()).render()
-
-    result = html.write_pdf()
-
-    with tempfile.NamedTemporaryFile(delete=True) as output:
-        output.write(result)
-        output.flush()
-        output = open(output.name, 'rb')
-        response.write(output.read())
+    filename = str(datetime.datetime.now())+".pdf"
+    html_template = render_to_string('pdf_po/po_customer.html', context)
+    pdf_file = HTML(string=html_template,
+                    base_url=request.build_absolute_uri()).write_pdf()
+    response = HttpResponse(pdf_file, content_type='application/pdf')
+    response['Content-Transfer-Encoding'] = 'binary'
+    response['Content-Disposition'] = 'inline; attachment;filename='+filename
     return response
+    # html_string = render_to_string('pdf_po/po_customer.html', context)
+    # html = HTML(string=html_string,
+    #             base_url=request.build_absolute_uri()).render()
+
+    # result = html.write_pdf()
+
+    # with tempfile.NamedTemporaryFile(delete=True) as output:
+    #     output.write(result)
+    #     output.flush()
+    #     output = open(output.name, 'rb')
+    #     response.write(output.read())
+    # return response
 
 
 def confirm_delivery(request):

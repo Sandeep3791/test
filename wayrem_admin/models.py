@@ -9,7 +9,7 @@ from django.utils.translation import ugettext_lazy as _
 from datetime import datetime
 import uuid
 from multiselectfield import MultiSelectField
-from django.template.defaultfilters import slugify
+from django.template.defaultfilters import default, slugify
 
 
 # Create your models here.
@@ -164,7 +164,8 @@ class Supplier(models.Model):
     email = models.EmailField(blank=False, unique=True, null=True)
     password = models.CharField(max_length=200)
     contact = models.BigIntegerField(null=True)
-    logo = models.ImageField(upload_to='images/', null=True)
+    logo = models.ImageField(
+        upload_to='supplier/', null=True, default='supplier/default.jpg')
     address = models.TextField(null=True, blank=True)
     delivery_incharge = models.CharField(max_length=500, blank=True, null=True)
     company_name = models.CharField(max_length=100, blank=False, null=True)
@@ -249,7 +250,7 @@ class Products(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.name
+        return self.name + " (" + self.SKU + ")"
 
     class Meta:
         db_table = 'products_master'
@@ -302,7 +303,7 @@ class PurchaseOrder(models.Model):
         ('delivered', 'Delivered'),
     )
     available = models.BooleanField(default=True)
-    reason = models.TextField(default=None)
+    reason = models.TextField(default=None, null=True)
     status = models.CharField(
         max_length=35, choices=po_status, default='waiting for approval', null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

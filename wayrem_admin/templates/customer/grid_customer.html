@@ -1,0 +1,93 @@
+{% load util_tags  %}
+{% block content %}
+<table class="table table-hover text-center" id="filtertable">
+    <thead class=" ">
+        <tr>
+            {% comment %} <th scope="col">S. No.</th> {% endcomment %}
+            <th scope="col">Username</th>
+            <th scope="col">Email</th>
+            <th scope="col">Contact</th>
+            <th scope="col">Status</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody class="bg-white">
+        {% for user in list %}
+        {% if user.is_superuser %}
+        {% else %}
+        <tr>
+            {% comment %} <th scope="row">{{forloop.counter}}</th> {% endcomment %}
+            <td>{{user.first_name}} {{user.last_name}}</td>
+            <td>{{user.email}}</td>
+            <td>{{user.contact}}</td>
+            <td>
+                {% if 'User Edit' in request.user.role.permission or request.user.is_superuser %}
+                {% if user.status %} <a href="{% url 'wayrem_admin:customerstatus' user.id %}"
+                    class="btn-sm text-success"><i class="fas fa-toggle-on text-success"> Active</i></a> 
+                    {% else %}
+                     <a href="{% url 'wayrem_admin:customerstatus' user.id %}" class="btn-sm text-danger"><i
+                        class="fas fa-toggle-off"> Blocked</i></a>
+
+                {% endif %}
+                     </td>
+{% comment %} href="{% url 'wayrem_admin:customerdetails' user.id %}" {% endcomment %}
+                <!-- <a type="button" class="btn btn-sm " data-bs-toggle="modal" data-bs-target="#customerModal{{user.id}}" >
+                        <i class="mx-1 fas fa-eye text-success" style="font-size:15px;"></i>
+                    </a> -->
+                    <td>
+                    <div class="btn-group">
+                        <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="icon icon-sm">
+                                <span class="fas fa-ellipsis-h icon-dark"></span>
+                            </span>
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#customerModal{{user.id}}"><span class="fas fa-eye mr-2"></span>View Details</a>
+                            <a class="dropdown-item" href=""><span class="fas fa-edit mr-2"></span>Edit</a>
+                            <a class="dropdown-item text-danger"  data-bs-toggle="modal" data-bs-target="#deleteModal{{suppl.id}}" href="#"> <span class="fas fa-trash-alt mr-2"></span>Remove</a>
+                        </div>
+                    </div>
+
+                <!-- Modal -->
+                <div class="modal fade" id="customerModal{{user.id}}" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">{{user.first_name | title}}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card shadow-sm text-center p-0">
+                        <div class="profile-cover rounded-top" data-background="/static/assets/img/profile-cover.jpg" style="background: url(&quot;/static/assets/img/profile-cover.jpg&quot;);"></div>
+                        <div class="card-body pb-5">
+                            {% comment %} <img src="/static/assets/img/team/profile-picture-2.jpg" class="user-avatar large-avatar rounded-circle mx-auto mt-n7 mb-4" alt="Neil Portrait"> {% endcomment %}
+                            <h5 class="fw-normal ">
+                                {{user.email}}
+                            </h5>
+                            <h4 class="h3">
+                                {{user.first_name | title}} {{user.last_name | title}}
+                            </h4>
+                            <p class="text-gray mb-4">{{user.contact}}</p>
+                        </div>
+                        </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                No Permission
+            </td>
+            {% endif %}
+            
+        </tr>
+        {% endif %}
+        {% endfor %}
+
+    </tbody>
+</table>
+{% endblock content %}

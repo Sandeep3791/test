@@ -5,6 +5,7 @@ from wayrem_admin.forms.purchase_order import *
 from wayrem_admin.forms.product import *
 from wayrem_admin.forms.ingredients import *
 from wayrem_admin.forms.categories import *
+from wayrem_admin.forms.customers import *
 from wayrem_admin.forms.subcategory import *
 from wayrem_admin.forms.setting import *
 from wayrem_admin.forms.emailtemplates import *
