@@ -186,7 +186,7 @@ def supplier_products_po(request):
             request.session['products'].append(x)
             po = request.session['products']
         request.session['supplier_company'] = supplier
-        request.session.modified = True
+        # request.session.modified = True
         print('add more')
         # po_id = uuid.uuid4()
         # # po_name = "PO"+str(random_no)

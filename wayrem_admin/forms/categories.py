@@ -86,3 +86,8 @@ class CategoryUpdateForm(forms.ModelForm):
             'image': forms.FileInput(attrs={'class': 'form-file-input'}),
             'tag': forms.Textarea(attrs={'class': 'form-control', 'rows': '3'})
         }
+
+
+class CategorySearchFilter(forms.Form):
+    category = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'form-control p-2'}), required=False)

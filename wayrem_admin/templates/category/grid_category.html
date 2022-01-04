@@ -1,0 +1,77 @@
+{% load util_tags  %}
+{% block content %}
+<table class="table table-hover text-center" id="filtertable">
+    <thead class="">
+        <tr>
+            {% comment %} <th scope="col">S. No.</th> {% endcomment %}
+            <th scope="col">Category Name</th>
+            <th scope="col">Parent Category</th>
+            <th scope="col">Category Image</th>
+            <th scope="col">Description</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for cate in categorieslist %}
+        <tr>
+            {% comment %} <th scope="row">{{forloop.counter}}</th> {% endcomment %}
+            <td>{{cate.name}}</td>
+            <td>
+                {% if cate.parent == None %}
+                ----
+                {% else %}
+                {{cate.parent}}
+                {% endif %}
+            </td>
+            <td>
+
+                {% if cate.image %}
+                <img src="{{cate.image.url}}" style="height:45px">
+                {% else %}
+                No Image
+                {% endif %}
+            </td>
+            <td>{{cate.tag}}</td>
+            <td>
+                <div class="btn-group">
+                    <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="icon icon-sm">
+                            <span class="fas fa-ellipsis-h icon-dark"></span>
+                        </span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="{% url 'wayrem_admin:categorydetails' cate.id %}"><span class="fas fa-eye mr-2"></span>View Details</a>
+                        <a class="dropdown-item" href="{% url 'wayrem_admin:updatecategory' cate.id %}"><span class="fas fa-edit mr-2"></span>Edit</a>
+                        <a class="dropdown-item text-danger"  data-bs-toggle="modal" data-bs-target="#deleteModal{{cate.id}}" href="#"> <span class="fas fa-trash-alt mr-2"></span>Remove</a>
+                    </div>
+                </div>
+               
+                <!-- Modal -->
+                <div class="modal fade" id="deleteModal{{cate.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Delete {{cate.name | title}}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                Are you sure want to delete {{cate.name | title}} ?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+                                <form method="POST" action="{% url 'wayrem_admin:deletecategories' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" value="{{cate.id}}" name="category_id">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock content %}

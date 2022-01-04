@@ -1,0 +1,63 @@
+{% load util_tags  %}
+{% block content %}
+<table class="table table-hover text-center" id="filtertable">
+    <thead class=" ">
+        <tr>
+            <th scope="col">Purchase Order</th>
+            <th scope="col">Supplier</th>
+            <th scope="col">Status</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody class="bg-white">
+        {% for item in list %}
+        <tr>
+            <td>{{item.po_name}}</td>
+            <td>{{item.supplier_name}}</td>
+            <td>
+                {{item.status|title}}            
+            </td>
+            <td>
+                <div class="btn-group">
+                    <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="icon icon-sm">
+                            <span class="fas fa-ellipsis-h icon-dark"></span>
+                        </span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="{% url 'wayrem_admin:viewpo' item.po_id %}"><span class="fas fa-eye mr-2"></span>View Details</a>
+                        <a class="dropdown-item" href="{% url 'wayrem_admin:editpo' item.po_id %}"><span class="fas fa-edit mr-2"></span>Edit</a>
+                        <a class="dropdown-item text-danger"  data-bs-toggle="modal" data-bs-target="#deleteModal{{item.po_id}}" href="#"> <span class="fas fa-trash-alt mr-2"></span>Remove</a>
+                    </div>
+                </div>
+                <!-- Modal -->
+                <div class="modal fade" id="deleteModal{{item.po_id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Delete {{item.po_name}}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                Are you sure want to delete ?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+                                <form method="POST" action="{% url 'wayrem_admin:deletepo' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" value="{{item.po_id}}" name="po_id">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+    
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>   
+            
+        </tr>       
+        {% endfor %}        
+    </tbody>
+</table>
+{% endblock content %}

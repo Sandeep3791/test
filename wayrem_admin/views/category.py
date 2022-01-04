@@ -1,3 +1,7 @@
+from django.urls import reverse_lazy
+from django.views.generic import ListView
+from wayrem_admin.filters.category_filters import *
+from wayrem_admin.utils.constants import *
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -5,7 +9,7 @@ from wayrem_admin.decorators import role_required
 from wayrem_admin.forms import CategoryCreateForm
 from django.views import View
 from django.utils.decorators import method_decorator
-from wayrem_admin.forms.categories import CategoryForm, CategoryUpdateForm
+from wayrem_admin.forms.categories import CategoryForm, CategorySearchFilter, CategoryUpdateForm
 from wayrem_admin.models import Categories, SubCategories
 from wayrem_admin.export import generate_excel
 from wayrem_admin.services import inst_Category
@@ -34,24 +38,42 @@ def create_category(request):
     return render(request, 'edit_categories.html', context)
 
 
-class CategoriesList(View):
-    template_name = "categorieslist.html"
+class CategoriesList(ListView):
+    model = Categories
+    template_name = "category/list.html"
+    context_object_name = 'categorieslist'
+    paginate_by = RECORDS_PER_PAGE
+    success_url = reverse_lazy('wayrem_admin:categorieslist')
 
-    @method_decorator(login_required(login_url='wayrem_admin:root'))
-    @method_decorator(role_required('Categories View'))
-    def get(self, request, format=None):
-        categorieslist = Categories.objects.all()
-        paginator = Paginator(categorieslist, 5)
-        page = request.GET.get('page')
-        try:
-            clist = paginator.page(page)
-        except PageNotAnInteger:
-            # If page is not an integer, deliver first page.
-            clist = paginator.page(1)
-        except EmptyPage:
-            # If page is out of range (e.g. 9999), deliver last page of results.
-            clist = paginator.page(paginator.num_pages)
-        return render(request, self.template_name, {"categorieslist": clist})
+    def get_queryset(self):
+        qs = Categories.objects.filter()
+        filtered_list = CategoriesFilter(self.request.GET, queryset=qs)
+        return filtered_list.qs
+
+    def get_context_data(self, **kwargs):
+        context = super(CategoriesList, self).get_context_data(**kwargs)
+        context['filter_form'] = CategorySearchFilter(self.request.GET)
+        return context
+
+
+# class CategoriesList(View):
+#     template_name = "categorieslist.html"
+
+#     @method_decorator(login_required(login_url='wayrem_admin:root'))
+#     @method_decorator(role_required('Categories View'))
+#     def get(self, request, format=None):
+#         categorieslist = Categories.objects.all()
+#         paginator = Paginator(categorieslist, 5)
+#         page = request.GET.get('page')
+#         try:
+#             clist = paginator.page(page)
+#         except PageNotAnInteger:
+#             # If page is not an integer, deliver first page.
+#             clist = paginator.page(1)
+#         except EmptyPage:
+#             # If page is out of range (e.g. 9999), deliver last page of results.
+#             clist = paginator.page(paginator.num_pages)
+#         return render(request, self.template_name, {"categorieslist": clist})
 
 
 # class DeleteCategories(View):

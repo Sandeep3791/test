@@ -23,3 +23,8 @@ class POEditForm(forms.ModelForm):
             'product_name': forms.Select(attrs={'class': 'form-select'}),
             'product_qty': forms.NumberInput(attrs={'class': "form-control"}),
         }
+
+
+class POSearchFilter(forms.Form):
+    po = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'form-control p-2'}), required=False)
