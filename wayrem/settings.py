@@ -195,8 +195,10 @@ AUTH_USER_MODEL = 'wayrem_admin.User'
 MESSAGE_TAGS = {messages_s.ERROR: 'danger'}
 
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 # MEDIA_ROOT = os.path.join('/home/fealty/Desktop/wayrem_kapil/')
+MEDIA_ROOT = os.path.join('/home/ubuntu/docker_setup/database/')
 MEDIA_URL = '/media/'
 
 ####################################
