@@ -468,24 +468,50 @@ class PO_log(models.Model):
     class Meta:
         db_table = 'po_logs'
 
+class Warehouse(models.Model):
+    code_name = models.CharField(max_length=255)
+    address = models.TextField()
+    status = models.CharField(max_length=100, choices=status, default='Active')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.code_name
+
+    class Meta:
+        db_table = 'warehouse'
 
 class Inventory(models.Model):
-    inventory_types = (
+    inventory_types=(
         ('Starting', 'Starting'),
         ('Received', 'Received'),
         ('Shipped', 'Shipped'),
     )
-    id = models.AutoField(primary_key=True, unique=True)
-    product = models.ForeignKey(
-        Products, on_delete=models.CASCADE, null=True, blank=True)
-    quantity = models.IntegerField(
-        validators=[MinValueValidator(0)], blank=False, null=False)
-    inventory_type = models.CharField(
-        max_length=30, choices=inventory_types, default='Starting')
-    order = models.ForeignKey(
-        'wayrem_admin.Orders', on_delete=models.CASCADE, null=True, blank=True)
+    product=models.ForeignKey(Products, on_delete=models.CASCADE, null=True, blank=True)
+    quantity = models.IntegerField(validators=[MinValueValidator(0)], blank=False, null=False)
+    inventory_type = models.CharField(max_length=30, choices=inventory_types, default='Starting')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def update_product_inventory(self):
+        product = self.product
+        starting_inventory = 0
+        received_inventory = 0
+        shipped_inventory = 0
+        for inventory in Inventory.objects.filter(product=product):
+            if inventory.inventory_type == 'Starting':
+                starting_inventory += inventory.quantity
+            elif inventory.inventory_type == 'Received':
+                received_inventory += inventory.quantity
+            else:
+                shipped_inventory += inventory.quantity
+
+        inventory_onhand = (received_inventory+starting_inventory)-shipped_inventory
+        product.inventory_onhand = inventory_onhand if inventory_onhand >=0 else 0
+        product.inventory_received = received_inventory
+        product.starting_inventory = starting_inventory
+        product.inventory_shipped = shipped_inventory
+        product.save()
 
     class Meta:
         db_table = 'inventory'
