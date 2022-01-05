@@ -483,8 +483,8 @@ class Inventory(models.Model):
         validators=[MinValueValidator(0)], blank=False, null=False)
     inventory_type = models.CharField(
         max_length=30, choices=inventory_types, default='Starting')
-    order = models.ForeignKey(
-        'wayrem_admin.Orders', on_delete=models.CASCADE, null=True, blank=True)
+    # order = models.ForeignKey(
+    #     'wayrem_admin.Orders', on_delete=models.CASCADE, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
