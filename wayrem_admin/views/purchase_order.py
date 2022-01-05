@@ -9,7 +9,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views import View
-from wayrem_admin.models import EmailTemplateModel, Notification, PurchaseOrder, Products, Settings, Supplier
+from wayrem_admin.models import EmailTemplateModel, Notification, PO_log, PurchaseOrder, Products, Settings, Supplier
 from wayrem_admin.forms import POForm, POEditForm, POSearchFilter
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -254,7 +254,13 @@ class DeletePO(View):
 @role_required('Purchase Order View')
 def viewpo(request, id=None):
     po = PurchaseOrder.objects.filter(po_id=id).all()
-    return render(request, 'purchase_order/view_po.html', {"po": po})
+    poname = po[0].po_name
+    po_log = PO_log.objects.filter(po=poname).order_by('id')
+    context = {
+        "po": po,
+        "po_logs": po_log
+    }
+    return render(request, 'purchase_order/view_po.html', context)
 
 
 @role_required('Purchase Order Edit')

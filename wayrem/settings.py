@@ -106,7 +106,7 @@ DATABASES = {
         'NAME': 'wayrem_v9',
         'USER': 'root',
         'PASSWORD': 'r2wXJfUs78NczMFWRXcV',
-        'HOST': '15.184.218.191',
+        'HOST': '157.175.165.173',
         'PORT': '3306',
         'OPTIONS': {
             "init_command": "SET foreign_key_checks = 0;",
@@ -197,8 +197,8 @@ MESSAGE_TAGS = {messages_s.ERROR: 'danger'}
 
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# MEDIA_ROOT = os.path.join('/home/fealty/Desktop/wayrem_kapil/')
-MEDIA_ROOT = os.path.join('/home/ubuntu/docker_setup/database/')
+MEDIA_ROOT = os.path.join('/home/fealty/Desktop/wayrem_kapil/')
+# MEDIA_ROOT = os.path.join('/home/ubuntu/docker_setup/database/')
 MEDIA_URL = '/media/'
 
 ####################################

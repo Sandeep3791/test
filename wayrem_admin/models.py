@@ -100,7 +100,7 @@ class Otp(models.Model):
 
 
 upload_storage = FileSystemStorage(
-    location='/home/ubuntu/docker_setup/database')
+    location='/home/fealty/Desktop/wayrem_kapil')
 # local storage = /home/fealty/Desktop/wayrem_kapil
 # storage=upload_storage,
 # server storage =  /home/ubuntu/docker_setup/database
