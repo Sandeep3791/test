@@ -2,8 +2,9 @@ from ckeditor.widgets import CKEditorWidget
 from django.forms import Textarea, ModelChoiceField,CharField
 from django import forms
 from django.forms import widgets
-from wayrem_admin.models_orders import Orders, OrderStatus,OrderTransactions,PaymentStatus
+from wayrem_admin.models_orders import Orders,OrderTransactions,StatusMaster
 from django.forms import ModelForm
+from wayrem_admin.utils.constants import * 
 
 class OrderUpdatedPaymentStatusForm(ModelForm):
     payment_status = forms.ChoiceField(required=True, widget=forms.Select(
@@ -12,7 +13,7 @@ class OrderUpdatedPaymentStatusForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         order_choices = [(get_users_options.pk, get_users_options.name)
-                         for get_users_options in PaymentStatus.objects.filter()]
+                         for get_users_options in StatusMaster.objects.filter(status_type=PAYMENT_STATUS,status=1)]
         self.fields['payment_status'].choices = order_choices
     
     class Meta:
@@ -28,10 +29,9 @@ class OrderStatusUpdatedForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         order_choices = [(get_users_options.pk, get_users_options.name)
-                         for get_users_options in OrderStatus.objects.filter()]
+                         for get_users_options in StatusMaster.objects.filter(status_type=ORDER_STATUS,status=1).exclude(id=ORDER_STATUS_Received)]
         self.fields['status'].choices = order_choices
-        #self.fields['status'].queryset = OrderStatus.objects
-
+     
     class Meta:
         model = Orders
         fields = ['status']
@@ -49,7 +49,7 @@ class OrderAdvanceFilterForm(ModelForm):
         super().__init__(*args, **kwargs)
         
         order_choices = [(get_users_options.pk, get_users_options.name)
-                         for get_users_options in OrderStatus.objects.filter()]
+                         for get_users_options in StatusMaster.objects.filter(status_type=ORDER_STATUS,status=1).exclude(id=ORDER_STATUS_Received)]
         order_choices.insert(0,('','Select Status'))
         self.fields['status'].choices = order_choices
     class Meta:
@@ -64,7 +64,7 @@ class OrderStatusDetailForm(ModelForm):
         
         super().__init__(*args, **kwargs)
         order_choices = [(get_users_options.pk, get_users_options.name)
-                         for get_users_options in OrderStatus.objects.filter()]
+                         for get_users_options in StatusMaster.objects.filter(status_type=ORDER_STATUS,status=1).exclude(id=ORDER_STATUS_Received)]
         self.fields['status'].choices = order_choices
     class Meta:
         model = Orders

@@ -1,25 +1,27 @@
 <div class="card card-body border-light shadow-sm mb-4">
-              <h5>Timeline</h5> 
-              <hr>
+    <h5>Timeline</h5>
+    <hr>
 
-              <!--line-->
-              <div class="timeline" style="">
-                 {% for timeline in order_timeline %}
-                <div class="timeline_container right row ms-0 me-0">
-                    <div class="timeline_content col-10">
-                    {% if timeline.order_status.id == 1  %} 
-                        <p>{{timeline.order.customer.first_name|default_if_none:""}} {{timeline.order.customer.last_name|default_if_none:""}}  placed this order ({{currency}} {{timeline.order.grand_total}}) on Online Store(#{{timeline.order.ref_number}}) .</p>
-                    {% else %}
-                        <p>{{timeline.order_status.name}} </p>
-                    {% endif %}
-                    </div>
-                    <div class="col-2 pt-2 pb-4 text-muted d-flex justify-content-end">{{timeline.log_date|date:"d M, y g:i a"}}</div>
+    <!--line-->
+    <section class="timeline_area">
+        {% for timeline in order_timeline %}
+            {% if forloop.counter == 1 %}
+                <div class="timline_status fill_status_comp pe-0">
+            {% else %}
+                {% if forloop.last %}
+                <div class="timline_status fill_status_current pe-0">
+                {% else %}
+                <div class="timline_status  pe-0">
+                {% endif %}
+            {% endif %}
+                <div class="comp_status">{{timeline.order_status.name}}</div>
+                <div class="d-flex align-items-end flex-column">
+                    <span>{{timeline.log_date|date:"d M, y"}}</span>
+                    <span>{{timeline.log_date|date:"g:i a"}}</span>
                 </div>
-            {% endfor %}
-              
-
-
-              </div>
-              <!--line end-->
-
-        </div>
+            </div>
+        {% endfor %}
+       
+        
+    </section>
+</div>

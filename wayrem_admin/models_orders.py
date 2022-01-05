@@ -10,28 +10,10 @@ def create_new_ref_number():
             not_unique = False
     return str(unique_ref)
 
-class PaymentMode(models.Model):
-    id = models.SmallAutoField(primary_key=True)
-    name = models.CharField(max_length=255, db_collation='utf8mb4_unicode_ci')
-    status = models.IntegerField()
-
-    class Meta:
-        app_label = "wayrem_admin"
-        db_table = 'payment_mode'
-
-class PaymentStatus(models.Model):
-    id = models.SmallAutoField(primary_key=True)
-    name = models.CharField(max_length=255, db_collation='utf8mb4_unicode_ci')
-    status = models.IntegerField()
-
-    class Meta:
-        app_label = "wayrem_admin"
-        db_table = 'payment_status'
-
 class Orders(models.Model):
     ref_number = models.CharField(unique=True, max_length=100,editable=False)
     customer = models.ForeignKey('wayrem_admin.Customer', models.DO_NOTHING)
-    status = models.ForeignKey('OrderStatus', models.DO_NOTHING, db_column='status')
+    status = models.ForeignKey('StatusMaster', models.DO_NOTHING, db_column='status')
     sub_total = models.FloatField()
     item_discount = models.FloatField()
     item_margin = models.FloatField()
@@ -62,17 +44,21 @@ class Orders(models.Model):
         app_label = "wayrem_admin"
         db_table = 'orders'
 
-class OrderStatus(models.Model):
+
+class StatusMaster(models.Model):
     id = models.SmallAutoField(primary_key=True)
     name = models.CharField(max_length=255, db_collation='utf8mb4_unicode_ci')
     status_color = models.CharField(max_length=50)
+    status_type = models.SmallIntegerField()
+    sort_order = models.SmallIntegerField()
+    status = models.IntegerField()
+
     def __str__(self):
         return self.name
-        
+
     class Meta:
         app_label = "wayrem_admin"
-        db_table = 'order_status'
-
+        db_table = 'status_master'
 
 class OrderDetails(models.Model):
     order = models.ForeignKey('Orders', models.DO_NOTHING)
@@ -94,7 +80,7 @@ class OrderDetails(models.Model):
 
 class OrderDeliveryLogs(models.Model):
     order = models.ForeignKey('Orders', models.DO_NOTHING)
-    order_status = models.ForeignKey('OrderStatus', models.DO_NOTHING)
+    order_status = models.ForeignKey('StatusMaster', models.DO_NOTHING)
     order_status_details = models.TextField(blank=True, null=True)
     log_date = models.DateTimeField()
     user = models.ForeignKey('wayrem_admin.User', models.DO_NOTHING)
@@ -110,8 +96,8 @@ class OrderTransactions(models.Model):
     invoices_id = models.IntegerField(blank=True, null=True)
     code = models.CharField(max_length=100)
     order_type = models.SmallIntegerField()
-    payment_mode = models.ForeignKey('PaymentMode', models.DO_NOTHING)
-    payment_status = models.ForeignKey('PaymentStatus', models.DO_NOTHING)
+    payment_mode = models.ForeignKey('StatusMaster', models.DO_NOTHING,db_column='payment_mode_id',related_name='ae_payment_mode')
+    payment_status = models.ForeignKey('StatusMaster', models.DO_NOTHING,db_column='payment_status_id',related_name='ae_payment_status')
     created_at = models.DateTimeField()
     updated_at = models.DateTimeField(blank=True, null=True)
     content = models.TextField(blank=True, null=True)

@@ -1,7 +1,7 @@
 <div class="card card-body bg-white border-light shadow-sm mb-4">
                     <h2 class="h5 mb-3">Cutomer</h2>
                     <div>
-                       <a class="h6 text-info" href="{{order.customer.id}}">{{order.customer.first_name|default_if_none:""}} {{order.customer.last_name|default_if_none:""}}</a>
+                       {{order.customer.first_name|default_if_none:""}} {{order.customer.last_name|default_if_none:""}}
                         <h6>{{order_details.count}} {% if order_details.count == 1 %} Order {% else %} Orders{% endif %}</h6>
                     </div>
 
@@ -16,7 +16,7 @@
                           </div>
                         </div>
                         <div>
-                           <a class="h6 text-info" href="#">{{order.customer.email|default_if_none:""}}</a>
+                           <span class="h6 " >{{order.customer.email|default_if_none:""}}</span>
                             <h6>{{order.customer.contact|default_if_none:""}}</h6>
                         </div>
     
