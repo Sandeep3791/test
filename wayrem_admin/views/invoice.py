@@ -1,5 +1,5 @@
 import base64
-
+from wayrem_admin.utils.constants import *
 from django.contrib import messages
 from wayrem import settings
 import os

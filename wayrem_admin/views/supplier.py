@@ -1,4 +1,5 @@
 # Suppliers Registration and Management Start
+from wayrem_admin.utils.constants import *
 import uuid
 from wayrem_admin.services import inst_Product, inst_Supplier
 from wayrem_admin.models import PurchaseOrder
@@ -87,7 +88,7 @@ class SupplierList(View):
     @method_decorator(role_required('Supplier View'))
     def get(self, request, format=None):
         supplierlist = Supplier.objects.all()
-        paginator = Paginator(supplierlist, 5)
+        paginator = Paginator(supplierlist, RECORDS_PER_PAGE)
         page = request.GET.get('page')
         try:
             slist = paginator.page(page)

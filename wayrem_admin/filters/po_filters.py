@@ -15,4 +15,5 @@ class POFilter(django_filters.FilterSet):
         return PurchaseOrder.objects.filter(
             Q(po_name__icontains=value) | Q(
                 status__icontains=value) | Q(supplier_name__company_name__icontains=value)
-        )
+        ).values(
+            'po_name', 'supplier_name', 'supplier_name__company_name', 'po_id', 'status').distinct()

@@ -1,3 +1,4 @@
+from wayrem_admin.utils.constants import *
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from wayrem_admin.forms import SubAdminForm, ProfileUpdateForm, SubAdminUpdateForm, SupplierForm, SupplierUpdateForm
@@ -66,7 +67,7 @@ class UsersList(View):
     @method_decorator(role_required('User View'))
     def get(self, request, format=None):
         userlist = User.objects.all()
-        paginator = Paginator(userlist, 5)
+        paginator = Paginator(userlist, RECORDS_PER_PAGE)
         page = request.GET.get('page')
         try:
             ulist = paginator.page(page)

@@ -196,7 +196,8 @@ class POList(ListView):
     success_url = reverse_lazy('wayrem_admin:polist')
 
     def get_queryset(self):
-        qs = PurchaseOrder.objects.filter().distinct()
+        qs = PurchaseOrder.objects.filter().values(
+            'po_name', 'supplier_name__company_name', 'po_id', 'status').distinct()
         filtered_list = POFilter(self.request.GET, queryset=qs)
         return filtered_list.qs
 
@@ -215,7 +216,9 @@ class POList1(View):
         delSession(request)
         # polist = PurchaseOrder.objects.values(
         #     'po_id', 'po_name', 'supplier_name', 'status').distinct()
-        po = PurchaseOrder.objects.all().order_by('po_name').distinct()
+        po = PurchaseOrder.objects.values(
+            'po_name', 'supplier_name', 'po_id', 'status').distinct()
+        # po = PurchaseOrder.objects.all().order_by('po_name').distinct()
         paginator = Paginator(po, 25)
         page = request.GET.get('page')
         try:

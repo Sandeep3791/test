@@ -29,7 +29,7 @@
                     <div>
                         <h4>#{{po.0.po_name}}</h4>
                         <span class="font-weight-bold text-dark">{{po.0.created_at|date:"d M Y"}}</span> at
-                        <span class="font-weight-bold text-dark">{{po.0.created_at|time:"H:i A" }}</span><br>
+                        <span class="font-weight-bold text-dark">{{po.0.created_at|time:"h:i A" }}</span><br>
                         <!-- <span class="font-weight-bold text-gray bg-gradient-danger badge badge-sm py-3">Your Purchase Order need your Approval</span> -->
                     </div>
 
@@ -77,7 +77,7 @@
                                     <th scope="col" class="border-0">Product</th>
                                     <th scope="col" class="border-0">Quantity</th>
                                     <th scope="col" class="border-0">Price</th>
-                                    <th scope="col" class="border-0">Delivery</th>
+                                    {% comment %} <th scope="col" class="border-0">Delivery</th> {% endcomment %}
                                     <th scope="col" class="border-0 rounded-end">Availability</th>
                                 </tr>
                             </thead>
@@ -89,7 +89,7 @@
                                     <td>{{i.product_name}}</td>
                                     <td>{{i.product_qty}}</td>
                                     <td>SAR {{i.product_name.price}}</td>
-                                    <td>within 2days</td>
+                                    {% comment %} <td>within 2days</td> {% endcomment %}
                                     <td class="text-success font-weight-bold">Available</td>
                                 </tr>
                                 {% else %}
@@ -98,7 +98,7 @@
                                     <td><strike>{{i.product_name}}</strike></td>
                                     <td><strike>{{i.product_qty}}</strike></td>
                                     <td><strike>SAR {{i.product_name.price}}</strike></td>
-                                    <td><strike>within 2days</strike></td>
+                                    {% comment %} <td><strike>within 2days</strike></td> {% endcomment %}
                                     <td class="text-danger font-weight-bold"><strike>Not Available</strike></td>
                                 </tr>
                                 {% endif %}
