@@ -9,7 +9,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views import View
-from wayrem_admin.models import EmailTemplateModel, Notification, PurchaseOrder, Products, Settings, Supplier
+from wayrem_admin.models import EmailTemplateModel, Notification, PO_log, PurchaseOrder, Products, Settings, Supplier
 from wayrem_admin.forms import POForm, POEditForm, POSearchFilter
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -196,7 +196,8 @@ class POList(ListView):
     success_url = reverse_lazy('wayrem_admin:polist')
 
     def get_queryset(self):
-        qs = PurchaseOrder.objects.filter().distinct()
+        qs = PurchaseOrder.objects.filter().values(
+            'po_name', 'supplier_name__company_name', 'po_id', 'status').distinct()
         filtered_list = POFilter(self.request.GET, queryset=qs)
         return filtered_list.qs
 
@@ -215,7 +216,9 @@ class POList1(View):
         delSession(request)
         # polist = PurchaseOrder.objects.values(
         #     'po_id', 'po_name', 'supplier_name', 'status').distinct()
-        po = PurchaseOrder.objects.all().order_by('po_name').distinct()
+        po = PurchaseOrder.objects.values(
+            'po_name', 'supplier_name', 'po_id', 'status').distinct()
+        # po = PurchaseOrder.objects.all().order_by('po_name').distinct()
         paginator = Paginator(po, 25)
         page = request.GET.get('page')
         try:
@@ -251,7 +254,13 @@ class DeletePO(View):
 @role_required('Purchase Order View')
 def viewpo(request, id=None):
     po = PurchaseOrder.objects.filter(po_id=id).all()
-    return render(request, 'purchase_order/view_po.html', {"po": po})
+    poname = po[0].po_name
+    po_log = PO_log.objects.filter(po=poname).order_by('id')
+    context = {
+        "po": po,
+        "po_logs": po_log
+    }
+    return render(request, 'purchase_order/view_po.html', context)
 
 
 @role_required('Purchase Order Edit')

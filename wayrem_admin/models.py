@@ -101,14 +101,16 @@ class Otp(models.Model):
 
 upload_storage = FileSystemStorage(
     location='/home/fealty/Desktop/wayrem_kapil')
+# local storage = /home/fealty/Desktop/wayrem_kapil
 # storage=upload_storage,
+# server storage =  /home/ubuntu/docker_setup/database
 
 
 class Categories(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
     name = models.CharField(max_length=35, unique=True)
     image = models.ImageField(
-        upload_to='assets/category/', blank=False, null=True)
+        upload_to='assets/category/', storage=upload_storage, blank=False, null=True)
     tag = models.TextField(null=True, blank=True)
     parent = models.CharField(max_length=35,  null=True)
     margin = models.IntegerField()
@@ -460,8 +462,7 @@ class Notification(models.Model):
 
 class PO_log(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
-    po = models.ForeignKey(
-        PurchaseOrder, on_delete=models.CASCADE, null=True, blank=True)
+    po = models.CharField(max_length=255, null=True)
     status = models.CharField(max_length=255, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
@@ -490,6 +491,9 @@ class Inventory(models.Model):
     product=models.ForeignKey(Products, on_delete=models.CASCADE, null=True, blank=True)
     quantity = models.IntegerField(validators=[MinValueValidator(0)], blank=False, null=False)
     inventory_type = models.CharField(max_length=30, choices=inventory_types, default='Starting')
+    id = models.AutoField(primary_key=True, unique=True)
+    # order = models.ForeignKey(
+    #     'wayrem_admin.Orders', on_delete=models.CASCADE, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

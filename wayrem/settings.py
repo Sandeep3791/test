@@ -104,21 +104,6 @@ DATABASES = {
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'wayrem_v9',
-#         'USER': 'root',
-#         'PASSWORD': 'r2wXJfUs78NczMFWRXcV',
-#         'HOST': '15.184.218.191',
-#         'PORT': '3306',
-#         'OPTIONS': {
-#             "init_command": "SET foreign_key_checks = 0;",
-#         },
-#     }
-# }
-
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
 #         'NAME': 'wayrem_v1',
 #         'USER': 'admin',
 #         'PASSWORD': 'Merlin007#',
@@ -129,7 +114,6 @@ DATABASES = {
 
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
 #         'NAME': 'wayrem_v1',
 #         'USER': 'admin',
 #         'PASSWORD': 'Merlin007#',
@@ -196,8 +180,10 @@ AUTH_USER_MODEL = 'wayrem_admin.User'
 MESSAGE_TAGS = {messages_s.ERROR: 'danger'}
 
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-# MEDIA_ROOT = os.path.join('/home/fealty/Desktop/wayrem_kapil/')
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+MEDIA_ROOT = os.path.join('/home/fealty/Desktop/wayrem_kapil/')
+# MEDIA_ROOT = os.path.join('/home/ubuntu/docker_setup/database/')
 MEDIA_URL = '/media/'
 
 ####################################

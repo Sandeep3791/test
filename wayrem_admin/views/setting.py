@@ -8,6 +8,7 @@ from wayrem_admin.models import Settings
 from wayrem_admin.forms import SettingsForm
 from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from wayrem_admin.utils.constants import *
 
 
 from wayrem_admin.export import generate_excel
@@ -24,7 +25,7 @@ class SettingList(View):
     @method_decorator(login_required(login_url='wayrem_admin:root'))
     def get(self, request, format=None):
         userlist = Settings.objects.all()
-        paginator = Paginator(userlist, 5)
+        paginator = Paginator(userlist, RECORDS_PER_PAGE)
         page = request.GET.get('page')
         try:
             slist = paginator.page(page)

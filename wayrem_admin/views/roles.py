@@ -5,13 +5,14 @@ from wayrem_admin.forms import RoleForm, RoleViewForm
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from wayrem_admin.utils.constants import *
 
 
 @role_required('Roles View')
 def rolesList(request):
     context = {}
     roles = Roles.objects.all().order_by('-pk')
-    paginator = Paginator(roles, 5)
+    paginator = Paginator(roles, RECORDS_PER_PAGE)
     page = request.GET.get('page')
     try:
         rolelist = paginator.page(page)
