@@ -145,8 +145,8 @@ class OrderPaymentStatusUpdated(UpdateView):
 class OrderInvoiceView(View):
     model = Orders
     template_name = "orders/order_invoice.html"
-    KEY='tax_vat'
-
+    KEY='setting_vat'
+    WAYREM_VAT='wayrem_vat'
     def get(self, request, id):
         context={}
         context['currency']=CURRENCY
@@ -154,6 +154,7 @@ class OrderInvoiceView(View):
         filename=str(order_id)+".pdf"
         context['order'] =Orders.objects.filter(id=order_id).first()
         context['tax_vat'] =Settings.objects.filter(key=self.KEY).first()
+        context['wayrem_vat'] =Settings.objects.filter(key=self.WAYREM_VAT).first()
         context['order_details'] =OrderDetails.objects.filter(order=order_id)
         context['order_transaction']=OrderTransactions.objects.filter(order=order_id).first()
         html_template =render_to_string(self.template_name, context)

@@ -10,7 +10,7 @@ from datetime import datetime
 import uuid
 from multiselectfield import MultiSelectField
 from django.template.defaultfilters import default, slugify
-
+from django.db.models import Sum
 
 # Create your models here.
 roles_options = (
@@ -487,24 +487,45 @@ class Warehouse(models.Model):
     class Meta:
         db_table = 'warehouse'
 
+class InventoryType(models.Model):
+    id = models.SmallAutoField(primary_key=True)
+    type_name = models.CharField(max_length=50, db_collation='utf8mb4_unicode_ci')
+    status = models.IntegerField(default=1)
+
+    class Meta:
+        db_table = 'inventory_type'
 
 class Inventory(models.Model):
-    inventory_types = (
-        ('Starting', 'Starting'),
-        ('Received', 'Received'),
-        ('Shipped', 'Shipped'),
-    )
-    product = models.ForeignKey(
-        Products, on_delete=models.CASCADE, null=True, blank=True)
-    quantity = models.IntegerField(
-        validators=[MinValueValidator(0)], blank=False, null=False)
-    inventory_type = models.CharField(
-        max_length=30, choices=inventory_types, default='Starting')
-    id = models.AutoField(primary_key=True, unique=True)
-    order = models.ForeignKey(
-        'wayrem_admin.Orders', on_delete=models.CASCADE, null=True, blank=True)
+    order_status_choices = (('ordered', 'Ordered'),('shipped', 'Shipped'),('canceled', 'Canceled'))
+    id = models.BigAutoField(primary_key=True)
+    inventory_type = models.ForeignKey('InventoryType', models.DO_NOTHING)
+    quantity = models.IntegerField(validators=[MinValueValidator(0)], blank=False, null=False)
+    product = models.ForeignKey('Products', on_delete=models.CASCADE, null=True, blank=True)
+    warehouse = models.ForeignKey('Warehouse', models.DO_NOTHING)
+    po_id = models.IntegerField(blank=True, null=True)
+    supplier_id = models.IntegerField(blank=True, null=True)
+    order_id = models.IntegerField(blank=True, null=True)
+    order_status =models.CharField(max_length=30, blank=True, null=True,choices=order_status_choices)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True)    
+
+    def update_product_quantity(self,product_id):
+        try:
+            total_quantity = 0
+            product_type=Inventory.objects.annotate(inventory_quantity = Sum('quantity')).values('inventory_type','inventory_quantity').filter(product=product_id).order_by('inventory_type_id')
+            product_type.query.group_by = [('inventory_type')]
+            for quantity_cal in product_type:
+                quantity=quantity_cal['inventory_quantity']
+                if quantity_cal['inventory_type'] == 3:
+                    total_quantity -=quantity
+                else:
+                    total_quantity +=quantity
+
+            Products.objects.filter(id=product_id).update(quantity=total_quantity)
+                
+            print(total_quantity)
+        except:
+            print("An exception occurred")
 
     def update_product_inventory(self):
         product = self.product

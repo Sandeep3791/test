@@ -17,6 +17,7 @@ from django.http import HttpResponse,HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.db.models import Q
 from wayrem_admin.decorators import role_required
+from wayrem_admin.utils.constants import * 
 
 class InventoriesList(View):
     template_name = "inventories/list.html"
@@ -24,12 +25,12 @@ class InventoriesList(View):
     @method_decorator(login_required(login_url='wayrem_admin:root'))
     @method_decorator(role_required('Inventory View'))
     def get(self, request, format=None):
-
         inventories = Inventory.objects.all()
         q = request.GET.get('q') if request.GET.get('q') != None else '' 
         if q != None:
-            inventories = inventories.filter(Q(product__SKU__icontains=q) | Q(inventory_type__icontains=q))
-        paginator = Paginator(inventories,25)
+            inventories = inventories.filter(Q(product__SKU__icontains=q) )
+            #inventories = inventories.filter(Q(product__SKU__icontains=q) | Q(inventory_type__icontains=q))
+        paginator = Paginator(inventories,RECORDS_PER_PAGE)
         page = request.GET.get('page')
         try:
             slist = paginator.page(page)
