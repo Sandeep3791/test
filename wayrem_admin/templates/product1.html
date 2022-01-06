@@ -721,7 +721,7 @@
 </script>
 
 <script>
-    $("#id_product_category").change(function () {
+    $("#id_category").change(function () {
         const url = $("#product1").attr("data-supplier-url");  // get the url of the load_cities view
         const supplierId = $(this).val();  // get the selected supplier ID from the HTML input
 
@@ -731,7 +731,7 @@
                 'category_product': supplierId       // add the country id to the GET parameters
             },
             success: function (data) {   // data is the return of the load_cities view function
-                $("#id_supplier_name").html(data);  // replace the contents of the city input with the data that came from the server
+                $("#id_supplier").html(data);  // replace the contents of the city input with the data that came from the server
                 
             }
         });

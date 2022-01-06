@@ -1,3 +1,4 @@
+import datetime
 from django.urls import reverse_lazy
 from django.views.generic import ListView
 from wayrem_admin.filters.po_filters import *
@@ -9,8 +10,8 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views import View
-from wayrem_admin.models import EmailTemplateModel, Notification, PO_log, PurchaseOrder, Products, Settings, Supplier
-from wayrem_admin.forms import POForm, POEditForm, POSearchFilter
+from wayrem_admin.models import EmailTemplateModel, Notification, PO_log, PurchaseOrder, Products, Settings, Supplier, SupplierProducts
+from wayrem_admin.forms import POForm, POEditForm, POSearchFilter, POFormOne
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from wayrem_admin.services import inst_Product, inst_Supplier, delSession, send_email
@@ -43,9 +44,12 @@ def create_purchase_order(request):
             product_id = request.POST['product_name']
             product_qty = request.POST['product_qty']
             name = inst_Product(product_id)
-            if any(e[0] == product_id for e in request.session.get('products')):
-                messages.error(request, "Product already added!")
-                return redirect("wayrem_admin:create_po")
+            try:
+                if any(e[0] == product_id for e in request.session.get('products')):
+                    messages.error(request, "Product already added!")
+                    return redirect("wayrem_admin:create_po")
+            except:
+                pass
             x = (product_id, name.name, product_qty)
             request.session['products'].append(x)
             po = request.session['products']
@@ -108,7 +112,7 @@ def create_purchase_order(request):
             form = POForm(
                 initial={"product_name": product, "supplier_name": x[0]})
         else:
-            form = POForm(
+            form = POFormOne(
                 initial={'supplier_name': request.session.get('supplier_company', None)})
     po = request.session.get('products', None)
     return render(request, "po_step1.html", {'form': form, "po": po})
@@ -202,6 +206,8 @@ class POList(ListView):
         return filtered_list.qs
 
     def get_context_data(self, **kwargs):
+        delSession(self.request)
+        self.request.session['products'] = []
         context = super(POList, self).get_context_data(**kwargs)
         context['filter_form'] = POSearchFilter(self.request.GET)
         return context
@@ -317,6 +323,8 @@ def po_pdf(request):
     # response['Content-Disposition'] = 'inline; attachment; filename=po' + \
     #     str(datetime.datetime.now())+'.pdf'
     # response['Content-Transfer-Encoding'] = 'binary'
+    wayrem_vat = Settings.objects.filter(key="wayrem_vat").first()
+    wayrem_vat = wayrem_vat.value
     po = PurchaseOrder.objects.filter(po_id=id).all()
     vat = Settings.objects.filter(key="setting_vat").first()
     vat = vat.value
@@ -325,12 +333,15 @@ def po_pdf(request):
     net_amt = []
     for item in po:
         total_amt = float(item.product_name.price)*float(item.product_qty)
-        vat_float = (total_amt/100) * float(vat[:-1])
+        vat_float = (total_amt/100) * float(vat)
         net = total_amt+vat_float
         net_value.append(total_amt)
         vat_amt.append(vat_float)
         net_amt.append(net)
+    delivery_date = (po[0].created_at + datetime.timedelta(days=5))
     context = {
+        'wayrem_vat': wayrem_vat,
+        'delivery_on': delivery_date,
         'data': po,
         'vat': vat,
         'total_items': len(po),
@@ -362,3 +373,9 @@ def po_pdf(request):
 
 def confirm_delivery(request):
     pass
+
+
+def load_supplier_products(request):
+    supplier = request.GET.get('supplier')
+    products = SupplierProducts.objects.filter(supplier_id=supplier)
+    return render(request, 'po_supplier_products.html', {'products': products})

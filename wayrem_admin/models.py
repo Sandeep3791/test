@@ -99,8 +99,8 @@ class Otp(models.Model):
         db_table = 'otp'
 
 
-upload_storage = FileSystemStorage(
-    location='/home/fealty/Desktop/wayrem_kapil/backup')
+# upload_storage = FileSystemStorage(
+#     location='/home/fealty/Desktop/wayrem_kapil/backup')
 # local storage = /home/fealty/Desktop/wayrem_kapil
 #
 # server storage =  /home/ubuntu/docker_setup/database
@@ -110,7 +110,7 @@ class Categories(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
     name = models.CharField(max_length=35, unique=True)
     image = models.ImageField(
-        upload_to='assets/category/',  blank=False, null=True)
+        upload_to='assets/category/', default='assets/category/category.jpg', blank=False, null=True)
     tag = models.TextField(null=True, blank=True)
     parent = models.CharField(max_length=35,  null=True)
     margin = models.IntegerField()
@@ -133,7 +133,7 @@ class SubCategories(models.Model):
     tag = models.TextField(null=True, blank=True)
     margin = models.IntegerField()
     image = models.ImageField(
-        upload_to='assets/subcategory/',  blank=False, null=True)
+        upload_to='assets/subcategory/', blank=False, null=True)
     category = models.ForeignKey(
         Categories, on_delete=models.CASCADE, blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -247,13 +247,13 @@ class Products(models.Model):
     margin_unit = models.CharField(
         max_length=20, choices=DIS_ABS_PERCENT, null=True, blank=False)
     primary_image = models.ImageField(
-        upload_to='product/images/',  null=True)
+        upload_to='product/images/', default='product/images/product.jpg', null=True)
     gs1 = models.CharField(max_length=255, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.name + " (" + self.SKU + ")"
+        return self.name + " (SKU: " + self.SKU + ")"
 
     class Meta:
         db_table = 'products_master'
@@ -289,12 +289,40 @@ class ProductIngredients(models.Model):
         db_table = 'product_ingredients'
 
 
+class SupplierProducts(models.Model):
+    id = models.AutoField(primary_key=True, unique=True)
+    supplier_id = models.ForeignKey(
+        Supplier, on_delete=models.CASCADE, null=True)
+    product_id = models.IntegerField()
+    SKU = models.CharField(max_length=250, null=True, blank=True)
+    product_name = models.CharField(max_length=500, null=True, blank=True)
+    quantity = models.IntegerField(null=True, default=1)
+    price = models.CharField(null=True, max_length=255)
+    available = models.BooleanField(default=True)
+    deliverable = (
+        ('1', 'within 1 day'),
+        ('2', 'within 2 day'),
+        ('3', 'within 3 day'),
+        ('4', 'within 4 day'),
+        ('5', 'within 5 day'),
+    )
+    deliverable_days = models.CharField(max_length=20,
+                                        choices=deliverable, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'product_suppliers'
+
+
 class PurchaseOrder(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
     po_id = models.UUIDField(default=uuid.uuid4)
     po_name = models.CharField(max_length=250, null=True)
     product_name = models.ForeignKey(
         Products, on_delete=models.SET_NULL, null=True)
+    supplier_product = models.ForeignKey(
+        SupplierProducts, on_delete=models.SET_NULL, null=True)
     product_qty = models.IntegerField(null=False, default=1)
     supplier_name = models.ForeignKey(
         Supplier, on_delete=models.CASCADE, null=False)
@@ -324,32 +352,6 @@ class OtpDetails(models.Model):
 
     class Meta:
         db_table = 'supplier_otp'
-
-
-class SupplierProducts(models.Model):
-    id = models.AutoField(primary_key=True, unique=True)
-    supplier_id = models.ForeignKey(
-        Supplier, on_delete=models.CASCADE, null=True)
-    product_id = models.IntegerField()
-    SKU = models.CharField(max_length=250, null=True, blank=True)
-    product_name = models.CharField(max_length=500, null=True, blank=True)
-    quantity = models.IntegerField(null=True, default=1)
-    price = models.CharField(null=True, max_length=255)
-    available = models.BooleanField(default=True)
-    deliverable = (
-        ('1', 'within 1 day'),
-        ('2', 'within 2 day'),
-        ('3', 'within 3 day'),
-        ('4', 'within 4 day'),
-        ('5', 'within 5 day'),
-    )
-    deliverable_days = models.CharField(max_length=20,
-                                        choices=deliverable, null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        db_table = 'product_suppliers'
 
 
 class Customer(models.Model):
@@ -388,7 +390,7 @@ class Invoice(models.Model):
     invoice_id = models.AutoField(primary_key=True, unique=True)
     invoice_no = models.CharField(max_length=250, null=True)
     po_name = models.CharField(max_length=250, null=True)
-    file = models.FileField(upload_to='images/',
+    file = models.FileField(upload_to='invoices/',
                             null=True)
     supplier_name = models.CharField(max_length=250, null=True)
     invoice_status = (

@@ -14,8 +14,8 @@ def net_value(unit_price, qty, *args, **kwargs):
 @register.simple_tag()
 def vat_amt(unit_price, qty, *args, **kwargs):
     obj = Settings.objects.filter(key="setting_vat").first()
-    vat = obj.value
-    vat = float(vat[:-1])
+    vat = float(obj.value)
+    # vat = float(vat[:-1])
     # you would need to do any localization of the result here
     total_amt = float(qty) * float(unit_price)
     vat_float = (total_amt/100)*vat
@@ -25,8 +25,8 @@ def vat_amt(unit_price, qty, *args, **kwargs):
 @register.simple_tag()
 def net_vat_amt(unit_price, qty, *args, **kwargs):
     obj = Settings.objects.filter(key="setting_vat").first()
-    vat = obj.value
-    vat = float(vat[:-1])
+    vat = float(obj.value)
+    # vat = float(vat[:-1])
     # you would need to do any localization of the result here
     total_amt = float(qty) * float(unit_price)
     vat_amt = (total_amt/100)*vat

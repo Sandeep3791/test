@@ -124,7 +124,39 @@
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
-{% block javascripts %}{% endblock javascripts %}
+{% block javascripts %}
+<script>
+    $(document).ready(function () {
+    $("#id_supplier_name").change(function () {
+        const url = "{% url 'wayrem_admin:load_supplier_products' %}";
+        const supplierId = $(this).val();
+
+        $.ajax({
+            url: url,
+            data: {
+                'supplier': supplierId
+            },
+            success: function (data) {
+                $("#id_product_name").html(data);                
+            }
+        });
+
+    });
+    const url = "{% url 'wayrem_admin:load_supplier_products' %}";
+    const supplierId = $("#id_supplier_name").val();
+
+        $.ajax({
+            url: url,
+            data: {
+                'supplier': supplierId
+            },
+            success: function (data) {
+                $("#id_product_name").html(data);                
+            }
+        });
+});
+</script>
+{% endblock javascripts %}
 
 
 

@@ -42,7 +42,7 @@
                                 <td style="margin: 0; text-align: left;color:#4F4F4F;padding:10px;font-family: 'Roboto', sans-serif;width: 70%;" align="left">
                                     <span align="left" style=" display: flex; flex-direction: row; font-size: 1rem; font-weight: 600; text-align: left;">WAYREM</span>
                                     <span style=" display: flex; flex-direction: row; text-align: left; font-size:.8rem;">Tax Sales Invoice</span>
-                                    <span style=" text-align: left;font-size:.8rem;">VAT NO: 9846322442242442</span>
+                                    <span style=" text-align: left;font-size:.8rem;">VAT NO: {{wayrem_vat}}</span>
                                 </td>
                                 <td style="font-size: 1rem; color:#4F4F4F;padding: 10px;font-family: 'Roboto', sans-serif;font-weight: 400;text-align: right;width: 30%;" align="right">
                                     <img src="{% static '/assets/img/logo/wayrem_logo.png' %}" alt="" align="right" style="text-align: right;"></td>
@@ -120,9 +120,9 @@
                                     <table style="width: 100%;">
                                         <tbody>
                                             <tr>
-                                                <td style="width: 30%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" valign="top" align="left">Delivery Date
+                                                <td style="width: 30%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" valign="top" align="left">Delivery On
                                                 </td>
-                                                <td style="width: 70%;font-size: .8rem; color:#4F4F4F;" valign="top" align="left">01-02-2022</td>
+                                                <td style="width: 70%;font-size: .8rem; color:#4F4F4F;" valign="top" align="left">{{delivery_on|date:"d M Y"}}</td>
                                             </tr>
                                         </tbody>
                                     </table>
