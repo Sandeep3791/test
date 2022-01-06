@@ -1,7 +1,7 @@
 from django.forms import (
     formset_factory, modelformset_factory, BaseModelFormSet)
 from django import forms
-from wayrem_admin.models import ProductIngredients, Supplier, Categories, Images, Ingredients, Products, DIS_ABS_PERCENT, Unit
+from wayrem_admin.models import ProductIngredients, Supplier, Categories, Images, Ingredients, Products, DIS_ABS_PERCENT, Unit,Warehouse
 from datetime import datetime
 
 
@@ -155,7 +155,7 @@ class ProductFormImageView(forms.ModelForm):
     class Meta:
         model = Products
         fields = ("name", "SKU", "category", "meta_key", "feature_product", "publish", "date_of_mfg", "date_of_exp", "mfr_name", "supplier",
-                  "dis_abs_percent", "description", "quantity", "quantity_unit", "weight", "weight_unit", "price", "discount", "package_count", "wayrem_margin", "margin_unit", "primary_image")
+                  "dis_abs_percent", "description","warehouse" ,"quantity","inventory_starting","inventory_received","inventory_shipped","inventory_cancelled", "quantity_unit", "weight", "weight_unit", "price", "discount", "package_count", "wayrem_margin", "margin_unit", "primary_image")
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
@@ -169,7 +169,12 @@ class ProductFormImageView(forms.ModelForm):
             'mfr_name': forms.TextInput(attrs={'class': 'form-control'}),
             'dis_abs_percent': forms.Select(attrs={'class': 'form-select'}),
             'description': forms.Textarea(attrs={'class': "form-control", 'rows': '3'}),
-            'quantity': forms.NumberInput(attrs={'class': 'form-control'}),
+            'warehouse': forms.Select(attrs={'class': 'form-select'}),
+            'quantity': forms.NumberInput(attrs={'class': 'form-control','readonly':'True'}),
+            'inventory_starting':forms.TextInput(attrs={'class': 'form-control','readonly':'True'}),
+            'inventory_received':forms.TextInput(attrs={'class': 'form-control','readonly':'True'}),
+            'inventory_shipped':forms.TextInput(attrs={'class': 'form-control','readonly':'True'}),
+            'inventory_cancelled':forms.TextInput(attrs={'class': 'form-control','readonly':'True'}),
             'quantity_unit': forms.Select(attrs={'class': 'form-select'}),
             'weight': forms.NumberInput(attrs={'class': 'form-control'}),
             'weight_unit': forms.Select(attrs={'class': 'form-select'}),
@@ -223,6 +228,13 @@ def get_unit():
 
 choices_unit = get_unit
 
+def get_warehouse():
+    obj = Warehouse.objects.all()
+    choice = [(r.id, r.code_name) for r in obj]
+    return choice
+
+choices_warehouse=get_warehouse
+
 
 class ProductFormOne(forms.Form):
     SKU = forms.CharField(widget=forms.TextInput(
@@ -263,6 +275,10 @@ class ProductFormOne(forms.Form):
         widget=forms.Textarea(attrs={'class': "form-control", 'rows': '3'}))
     description = forms.CharField(
         widget=forms.Textarea(attrs={'class': "form-control", 'rows': '3'}), required=False)
+    
+    warehouse=forms.ChoiceField(choices=choices_warehouse, widget=forms.Select(
+        attrs={'class': 'form-select'}))
+    
     quantity = forms.IntegerField(
         widget=forms.NumberInput(attrs={'class': "form-control"}), min_value=0)
     quantity_unit = forms.ChoiceField(choices=choices_unit, widget=forms.Select(

@@ -233,6 +233,7 @@ class Products(models.Model):
     dis_abs_percent = models.CharField(
         max_length=20, choices=DIS_ABS_PERCENT, null=True, blank=False)
     description = models.TextField()
+    warehouse = models.ForeignKey('Warehouse', models.DO_NOTHING)
     quantity = models.CharField(max_length=100, null=True, default=1)
     quantity_unit = models.ForeignKey(
         Unit, on_delete=models.CASCADE, null=True, blank=True, related_name='%(class)s_quantity_unit')
@@ -251,6 +252,11 @@ class Products(models.Model):
     gs1 = models.CharField(max_length=255, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    inventory_starting = models.SmallIntegerField(default=0)
+    inventory_received = models.SmallIntegerField(default=0)
+    inventory_shipped = models.SmallIntegerField(default=0)
+    inventory_cancelled = models.SmallIntegerField(default=0)
+    inventory_onhand = models.SmallIntegerField(default=0)
 
     def __str__(self):
         return self.name + " (" + self.SKU + ")"
@@ -507,21 +513,45 @@ class Inventory(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)    
 
+    def insert_inventory(self,inventory_dict):
+        try:
+            if ('product_id' in inventory_dict) and ('quantity' in inventory_dict) and ('inventory_type_id' in inventory_dict) and ('warehouse_id' in inventory_dict):
+                #inventory_dict={'inventory_type_id':1,'quantity':2,'product_id':1,'warehouse_id':1,'po_id':None,'supplier_id':None,'order_id':None,'order_status':None}
+                inventory_create=Inventory(**inventory_dict)
+                inventory_create.save()
+                product_id=inventory_dict['product_id']
+                self.update_product_quantity(product_id)
+                return True
+            else:
+                print("missing value")
+        except Exception as e:
+            print(e)
+            return False
+
+
     def update_product_quantity(self,product_id):
         try:
             total_quantity = 0
+            inventory_starting=0
+            inventory_received=0
+            inventory_shipped=0
+            inventory_cancelled=0
             product_type=Inventory.objects.annotate(inventory_quantity = Sum('quantity')).values('inventory_type','inventory_quantity').filter(product=product_id).order_by('inventory_type_id')
             product_type.query.group_by = [('inventory_type')]
             for quantity_cal in product_type:
                 quantity=quantity_cal['inventory_quantity']
                 if quantity_cal['inventory_type'] == 3:
                     total_quantity -=quantity
+                    inventory_shipped=quantity
                 else:
                     total_quantity +=quantity
-
-            Products.objects.filter(id=product_id).update(quantity=total_quantity)
-                
-            print(total_quantity)
+                    if quantity_cal['inventory_type'] == 1:
+                        inventory_starting=quantity
+                    elif quantity_cal['inventory_type'] == 2: 
+                        inventory_received=quantity
+                    else:
+                        inventory_cancelled=quantity
+            Products.objects.filter(id=product_id).update(quantity=total_quantity,inventory_starting=inventory_starting,inventory_received=inventory_received,inventory_shipped=inventory_shipped,inventory_cancelled=inventory_cancelled,inventory_onhand=total_quantity)
         except:
             print("An exception occurred")
 

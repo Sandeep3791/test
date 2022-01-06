@@ -337,8 +337,24 @@
                     <h4 class="mb-4 mt-4">
                         Stock Management
                     </h4>
-
+                      
                     <div class="col-lg-6">
+
+                        <div class="form-group mb-4">
+                                <label for="name">Warehouse <span class="text-danger">*</span><span class="text-danger"><em> {{form.quantity.errors | striptags}}
+                                </em>
+                                </span></label>
+                                <div class="input-group">   
+                                    <div class="w-75 px-2">{{form.warehouse}}</div>
+                                    <div class="input-group error_field_msg" id= "warehouse_error_message" style="color: #d12525;"></div>
+                                </div>
+                                <div class="input-group">
+                                    <span class="text-danger"><em> 
+                                        </em></span>
+                                </div>
+                                <span class="text-error"></span>
+                            </div>
+
                         <div class="form-group mb-4">
                             <label for="name">Product Quantity <span class="text-danger">*</span><span class="text-danger"><em> {{form.quantity.errors | striptags}}
                             </em>
@@ -359,7 +375,37 @@
                     </div>
 
                     <!-- Form -->
-                    <div class="col-lg-6">
+                    <div class="col-lg-12">
+                    <div class="row">
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label >Starting Inventory</label>
+                                <div class="">{{form.inventory_starting}}</div>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label >Received Inventory</label>
+                                <div class="">{{form.inventory_received}}</div>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label >Shipped Inventory</label>
+                                <div class="">{{form.inventory_shipped}}</div>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label >Cancelled Inventory</label>
+                                <div class="">{{form.inventory_cancelled}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                    
+                    <div class="col-lg-12">
+                    <br/>
                         <div class="form-group mb-4">
                             <label for="image">Package Count <span class="text-danger"></span><span class="text-danger"><em> {{form.package_count.error | striptags}}
                                 </em>
