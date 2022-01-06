@@ -22,13 +22,13 @@
         <tbody>
             <tr>
                 <td>
-                    <table style="margin-top:20px 0; margin: auto;padding: 10px 5px;" width="100%">
+                    <table style="margin-top:20px 0; margin: auto;padding: 10px 5px;width:100%" >
                         <tbody>
                             <tr>
                                 <td style="margin: 0; text-align: left;color:#4F4F4F;padding:20px;font-family: 'Roboto', sans-serif;width: 70%;" align="left">
                                     <span align="left" style=" display: flex; flex-direction: row; font-size: 1rem; font-weight: 600; text-align: left;">WAYREM</span>
                                     <span style=" display: flex; flex-direction: row; text-align: left; font-size:.8rem;">Tax Sales Invoice</span>
-                                    <span style=" text-align: left;font-size:.8rem;">VAT NO: 9846322442242442</span>
+                                    <span style=" text-align: left;font-size:.8rem;">VAT NO: {{wayrem_vat.value}}</span>
                                 </td>
                                 <td style="font-size: 1rem; color:#4F4F4F;padding: 20px;font-family: 'Roboto', sans-serif;font-weight: 400;text-align: right;width: 30%;" align="right">
                                     <img src="{% static '/assets/img/logo/wayrem_logo.png' %}" alt="" align="right" style="text-align: right;"></td>
@@ -65,7 +65,7 @@
                                         <tbody>
                                             <tr>
                                                 <td style="width: 30%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" valign="top" align="left">Customer VAT</td>
-                                                <td style="width: 70%;font-size: .8rem; color:#4F4F4F;" valign="top" align="left">76543234567</td>
+                                                <td style="width: 70%;font-size: .8rem; color:#4F4F4F;" valign="top" align="left">{{order.customer.tax_number|default_if_none:"-"}}</td>
                                             </tr>
                                         </tbody>
                                     </table>
