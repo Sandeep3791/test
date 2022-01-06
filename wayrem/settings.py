@@ -198,7 +198,7 @@ MESSAGE_TAGS = {messages_s.ERROR: 'danger'}
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # MEDIA_ROOT = os.path.join('/home/fealty/Desktop/wayrem_kapil/backup/')
-# MEDIA_ROOT = os.path.join('/home/ubuntu/docker_setup/database/')
+MEDIA_ROOT = os.path.join('/opt/app/wayrem-admin-backend/media/common_folder/')
 MEDIA_URL = '/media/'
 
 ####################################
