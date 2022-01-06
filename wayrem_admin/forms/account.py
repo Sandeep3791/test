@@ -42,13 +42,14 @@ class SubAdminUpdateForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ("username", "email", "contact", "role")
+        fields = ("username", "email", "contact", "role", "po_notify")
 
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
             'contact': forms.NumberInput(attrs={'class': 'form-control', 'minlength': 10}),
-            'role': forms.Select(attrs={'class': 'form-select'})
+            'role': forms.Select(attrs={'class': 'form-select'}),
+            'po_notify': forms.CheckboxInput(attrs={'class': 'form-check-input'})
         }
 
 

@@ -98,6 +98,23 @@
                             </div>
                         </div>
                         <!-- End of Form -->
+                        <!-- Form -->
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                
+                                <div class="form-check">
+                                    {{form.po_notify}}
+                                    <label for="id_po_notify">Purchase Order Notifications </label>
+                                    <div class="invalid-feedback" id="email_error_message"></div>
+
+                                </div>
+                                {% comment %} <div class="input-group">
+                                    <span class="text-danger"> {{form.email.errors | striptags}} </span>
+                                </div> {% endcomment %}
+                                <span class="text-error"></span>
+                            </div>
+                        </div>
+                        <!-- End of Form -->
 
 
                         <!-- Form -->

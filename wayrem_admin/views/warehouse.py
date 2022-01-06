@@ -17,6 +17,7 @@ from django.http import HttpResponse,HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.db.models import Q
 from wayrem_admin.decorators import role_required
+from wayrem_admin.utils.constants import * 
 
 class WarehouseList(View):
     template_name = "warehouses/list.html"
@@ -28,7 +29,7 @@ class WarehouseList(View):
         q = request.GET.get('q') if request.GET.get('q') != None else '' 
         if q != None:
             warehouses = warehouses.filter(code_name__icontains=q)
-        paginator = Paginator(warehouses,25)
+        paginator = Paginator(warehouses,RECORDS_PER_PAGE)
         page = request.GET.get('page')
         try:
             slist = paginator.page(page)

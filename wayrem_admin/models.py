@@ -10,7 +10,7 @@ from datetime import datetime
 import uuid
 from multiselectfield import MultiSelectField
 from django.template.defaultfilters import default, slugify
-
+from django.db.models import Sum
 
 # Create your models here.
 roles_options = (
@@ -100,9 +100,9 @@ class Otp(models.Model):
 
 
 upload_storage = FileSystemStorage(
-    location='/home/fealty/Desktop/wayrem_kapil')
+    location='/home/fealty/Desktop/wayrem_kapil/backup')
 # local storage = /home/fealty/Desktop/wayrem_kapil
-# storage=upload_storage,
+#
 # server storage =  /home/ubuntu/docker_setup/database
 
 
@@ -110,7 +110,7 @@ class Categories(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
     name = models.CharField(max_length=35, unique=True)
     image = models.ImageField(
-        upload_to='assets/category/', storage=upload_storage, blank=False, null=True)
+        upload_to='assets/category/',  blank=False, null=True)
     tag = models.TextField(null=True, blank=True)
     parent = models.CharField(max_length=35,  null=True)
     margin = models.IntegerField()
@@ -133,7 +133,7 @@ class SubCategories(models.Model):
     tag = models.TextField(null=True, blank=True)
     margin = models.IntegerField()
     image = models.ImageField(
-        upload_to='assets/subcategory/', blank=False, null=True)
+        upload_to='assets/subcategory/',  blank=False, null=True)
     category = models.ForeignKey(
         Categories, on_delete=models.CASCADE, blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -167,7 +167,7 @@ class Supplier(models.Model):
     password = models.CharField(max_length=200)
     contact = models.BigIntegerField(null=True)
     logo = models.ImageField(
-        upload_to='supplier/', null=True, default='supplier/default.jpg')
+        upload_to='supplier/',  null=True, default='supplier/default.jpg')
     address = models.TextField(null=True, blank=True)
     delivery_incharge = models.CharField(max_length=500, blank=True, null=True)
     company_name = models.CharField(max_length=100, blank=False, null=True)
@@ -246,7 +246,8 @@ class Products(models.Model):
     wayrem_margin = models.CharField(max_length=100, null=True)
     margin_unit = models.CharField(
         max_length=20, choices=DIS_ABS_PERCENT, null=True, blank=False)
-    primary_image = models.ImageField(upload_to='product/images/', null=True)
+    primary_image = models.ImageField(
+        upload_to='product/images/',  null=True)
     gs1 = models.CharField(max_length=255, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -387,7 +388,8 @@ class Invoice(models.Model):
     invoice_id = models.AutoField(primary_key=True, unique=True)
     invoice_no = models.CharField(max_length=250, null=True)
     po_name = models.CharField(max_length=250, null=True)
-    file = models.FileField(upload_to='images/', null=True)
+    file = models.FileField(upload_to='images/',
+                            null=True)
     supplier_name = models.CharField(max_length=250, null=True)
     invoice_status = (
         ('released', 'Released'),
@@ -469,6 +471,7 @@ class PO_log(models.Model):
     class Meta:
         db_table = 'po_logs'
 
+
 class Warehouse(models.Model):
     code_name = models.CharField(max_length=255)
     address = models.TextField()
@@ -482,20 +485,45 @@ class Warehouse(models.Model):
     class Meta:
         db_table = 'warehouse'
 
+class InventoryType(models.Model):
+    id = models.SmallAutoField(primary_key=True)
+    type_name = models.CharField(max_length=50, db_collation='utf8mb4_unicode_ci')
+    status = models.IntegerField(default=1)
+
+    class Meta:
+        db_table = 'inventory_type'
+
 class Inventory(models.Model):
-    inventory_types=(
-        ('Starting', 'Starting'),
-        ('Received', 'Received'),
-        ('Shipped', 'Shipped'),
-    )
-    product=models.ForeignKey(Products, on_delete=models.CASCADE, null=True, blank=True)
+    order_status_choices = (('ordered', 'Ordered'),('shipped', 'Shipped'),('canceled', 'Canceled'))
+    id = models.BigAutoField(primary_key=True)
+    inventory_type = models.ForeignKey('InventoryType', models.DO_NOTHING)
     quantity = models.IntegerField(validators=[MinValueValidator(0)], blank=False, null=False)
-    inventory_type = models.CharField(max_length=30, choices=inventory_types, default='Starting')
-    id = models.AutoField(primary_key=True, unique=True)
-    # order = models.ForeignKey(
-    #     'wayrem_admin.Orders', on_delete=models.CASCADE, null=True, blank=True)
+    product = models.ForeignKey('Products', on_delete=models.CASCADE, null=True, blank=True)
+    warehouse = models.ForeignKey('Warehouse', models.DO_NOTHING)
+    po_id = models.IntegerField(blank=True, null=True)
+    supplier_id = models.IntegerField(blank=True, null=True)
+    order_id = models.IntegerField(blank=True, null=True)
+    order_status =models.CharField(max_length=30, blank=True, null=True,choices=order_status_choices)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    updated_at = models.DateTimeField(auto_now=True)    
+
+    def update_product_quantity(self,product_id):
+        try:
+            total_quantity = 0
+            product_type=Inventory.objects.annotate(inventory_quantity = Sum('quantity')).values('inventory_type','inventory_quantity').filter(product=product_id).order_by('inventory_type_id')
+            product_type.query.group_by = [('inventory_type')]
+            for quantity_cal in product_type:
+                quantity=quantity_cal['inventory_quantity']
+                if quantity_cal['inventory_type'] == 3:
+                    total_quantity -=quantity
+                else:
+                    total_quantity +=quantity
+
+            Products.objects.filter(id=product_id).update(quantity=total_quantity)
+                
+            print(total_quantity)
+        except:
+            print("An exception occurred")
 
     def update_product_inventory(self):
         product = self.product
@@ -510,8 +538,9 @@ class Inventory(models.Model):
             else:
                 shipped_inventory += inventory.quantity
 
-        inventory_onhand = (received_inventory+starting_inventory)-shipped_inventory
-        product.inventory_onhand = inventory_onhand if inventory_onhand >=0 else 0
+        inventory_onhand = (received_inventory +
+                            starting_inventory)-shipped_inventory
+        product.inventory_onhand = inventory_onhand if inventory_onhand >= 0 else 0
         product.inventory_received = received_inventory
         product.starting_inventory = starting_inventory
         product.inventory_shipped = shipped_inventory
