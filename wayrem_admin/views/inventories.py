@@ -40,6 +40,7 @@ class InventoriesList(View):
         except EmptyPage:
             # If page is out of range (e.g. 9999), deliver last page of results.
             slist = paginator.page(paginator.num_pages)
+
         return render(request, self.template_name, {"inventories": slist, 'q':q, "form": self.form})
 
 class InventoryCreate(CreateView):

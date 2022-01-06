@@ -119,6 +119,7 @@ def product_view_one(request):
         'supplier': request.session.get("supplier", None),
         'dis_abs_percent': request.session.get("dis_abs_percent", None),
         'description': request.session.get("description", None),
+        'warehouse': request.session.get("warehouse", None),
         'quantity': request.session.get("quantity", None),
         'weight': request.session.get("weight", None),
         'weight_unit': request.session.get("weight_unit", None),
@@ -159,6 +160,7 @@ def product_view_one(request):
                 "dis_abs_percent")
             request.session["description"] = form.cleaned_data.get(
                 "description")
+            request.session["warehouse"] = form.cleaned_data.get("warehouse")
             request.session["quantity"] = form.cleaned_data.get("quantity")
             request.session["quantity_unit"] = form.cleaned_data.get(
                 "quantity_unit")
