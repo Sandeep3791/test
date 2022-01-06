@@ -313,7 +313,7 @@ class ProductAdvanceFilterForm(forms.ModelForm):
         self.fields['category'].choices = category_choice
         supplier_choice = [(get_users_options.pk, get_users_options.company_name)
                            for get_users_options in Supplier.objects.filter()]
-        supplier_choice.insert(0, ('', 'Select Company'))
+        supplier_choice.insert(0, ('', 'Select Supplier'))
         self.fields['supplier'].choices = supplier_choice
 
     class Meta:

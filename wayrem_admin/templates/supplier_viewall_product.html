@@ -20,7 +20,7 @@
     {% for i,j in list %}
       <tr>
         <td>
-          <input class="form-check-input" type="checkbox" value="{{i.product_id}}" name="prod{{forloop.counter}}" id="product_id" checked>
+          <input class="form-check-input" type="checkbox" value="{{i.id}}" name="prod{{forloop.counter}}" id="product_id" checked>
         </td>
         <td class = "text-center">{{ i.SKU }}</td>
         <td class = "text-center">{{i.product_name}}</td>
