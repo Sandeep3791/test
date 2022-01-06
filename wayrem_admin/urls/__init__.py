@@ -18,6 +18,8 @@ urlpatterns = [
     path('settings/', include('wayrem_admin.urls.setting')),
     path('invoices/', include('wayrem_admin.urls.invoice')),
     path('email-templates/', include('wayrem_admin.urls.emailtemplates')),
+    path('warehouses/', include('wayrem_admin.urls.warehouse')),
+    path('inventories/', include('wayrem_admin.urls.inventory')),
     path('orders/', include('wayrem_admin.urls.order')),
     path('', views.RootUrlView.as_view(), name='root')
 ]

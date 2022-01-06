@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'ckeditor',
     'wayrem_admin',
+    'widget_tweaks',
 
 ]
 
@@ -85,34 +86,19 @@ WSGI_APPLICATION = 'wayrem.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 
-# DATABASES = {
-#      'default': {
-#          'ENGINE': 'django.db.backends.mysql',
-#          'NAME': 'wayrem_v1',
-#          'USER': 'root',
-#          'PASSWORD': '',
-#          'HOST': 'localhost',
-#          'PORT': '3306',
-#          'OPTIONS': {
-#              "init_command": "SET foreign_key_checks = 0;",
-#          },
-#      }
-#  }
-
-
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'wayrem_v9',
-        'USER': 'root',
-        'PASSWORD': 'r2wXJfUs78NczMFWRXcV',
-        'HOST': '157.175.165.173',
-        'PORT': '3306',
-        'OPTIONS': {
-            "init_command": "SET foreign_key_checks = 0;",
-        },
-    }
-}
+     'default': {
+         'ENGINE': 'django.db.backends.mysql',
+         'NAME': 'wayrem_v1',
+         'USER': 'root',
+         'PASSWORD': '',
+         'HOST': 'localhost',
+         'PORT': '3306',
+         'OPTIONS': {
+             "init_command": "SET foreign_key_checks = 0;",
+         },
+     }
+ }
 
 
 # DATABASES = {
@@ -128,7 +114,6 @@ DATABASES = {
 
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
 #         'NAME': 'wayrem_v1',
 #         'USER': 'admin',
 #         'PASSWORD': 'Merlin007#',
