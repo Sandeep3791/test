@@ -471,6 +471,7 @@ class PO_log(models.Model):
     class Meta:
         db_table = 'po_logs'
 
+
 class Warehouse(models.Model):
     code_name = models.CharField(max_length=255)
     address = models.TextField()
@@ -484,18 +485,22 @@ class Warehouse(models.Model):
     class Meta:
         db_table = 'warehouse'
 
+
 class Inventory(models.Model):
-    inventory_types=(
+    inventory_types = (
         ('Starting', 'Starting'),
         ('Received', 'Received'),
         ('Shipped', 'Shipped'),
     )
-    product=models.ForeignKey(Products, on_delete=models.CASCADE, null=True, blank=True)
-    quantity = models.IntegerField(validators=[MinValueValidator(0)], blank=False, null=False)
-    inventory_type = models.CharField(max_length=30, choices=inventory_types, default='Starting')
+    product = models.ForeignKey(
+        Products, on_delete=models.CASCADE, null=True, blank=True)
+    quantity = models.IntegerField(
+        validators=[MinValueValidator(0)], blank=False, null=False)
+    inventory_type = models.CharField(
+        max_length=30, choices=inventory_types, default='Starting')
     id = models.AutoField(primary_key=True, unique=True)
-    # order = models.ForeignKey(
-    #     'wayrem_admin.Orders', on_delete=models.CASCADE, null=True, blank=True)
+    order = models.ForeignKey(
+        'wayrem_admin.Orders', on_delete=models.CASCADE, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -512,8 +517,9 @@ class Inventory(models.Model):
             else:
                 shipped_inventory += inventory.quantity
 
-        inventory_onhand = (received_inventory+starting_inventory)-shipped_inventory
-        product.inventory_onhand = inventory_onhand if inventory_onhand >=0 else 0
+        inventory_onhand = (received_inventory +
+                            starting_inventory)-shipped_inventory
+        product.inventory_onhand = inventory_onhand if inventory_onhand >= 0 else 0
         product.inventory_received = received_inventory
         product.starting_inventory = starting_inventory
         product.inventory_shipped = shipped_inventory
