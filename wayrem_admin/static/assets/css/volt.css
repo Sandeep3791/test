@@ -30578,3 +30578,13 @@ nav#topbar_content {
     border-radius: 10px;
     color: #e72751 !important;
 }
+
+.list_table_input {
+    max-width: 300px;
+    margin: auto;
+    height: 35px;
+}
+
+.btn-small{
+    margin: 0px !important;
+}

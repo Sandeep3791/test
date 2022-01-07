@@ -30,7 +30,9 @@
                         <h4>#{{po.0.po_name}}</h4>
                         <span class="font-weight-bold text-dark">{{po.0.created_at|date:"d M Y"}}</span> at
                         <span class="font-weight-bold text-dark">{{po.0.created_at|time:"h:i a" }}</span><br>
-                        <!-- <span class="font-weight-bold text-gray bg-gradient-danger badge badge-sm py-3">Your Purchase Order need your Approval</span> -->
+                        {% if po.0.status == "waiting for approval" %}
+                        <span class="font-weight-bold text-gray bg-gradient-danger badge badge-sm py-3">Your Purchase Order need to be approved by {{po.0.supplier_name|title}}</span>
+                        {% endif %}
                     </div>
 
                     <div class="d-flex flex-column justify-content-end align-items-end">
@@ -88,7 +90,7 @@
                                     <th scope="row">{{forloop.counter}}</th>
                                     <td>{{i.product_name}}</td>
                                     <td>{{i.product_qty}}</td>
-                                    <td>SAR {{i.product_name.price}}</td>
+                                    <td>SAR {{i.supplier_product.price}}</td>
                                     {% comment %} <td>within 2days</td> {% endcomment %}
                                     <td class="text-success font-weight-bold">Available</td>
                                 </tr>
@@ -117,28 +119,49 @@
                 <section class="timeline_area">
                    
                     <div class="timline_status {% if po_logs.1.created_at %}  fill_status_comp {% elif po_logs.0.created_at %} fill_status_current {% else %}  {% endif %} pe-0">
+                        {% if po_logs.1.created_at %}
                         <div class="comp_status">Approved</div>
+                        {% elif po_logs.0.created_at %}
+                        <div class="current_status">Approval Ongoing</div>
+                        {% else %}
+                        <div class="comp_status">Waiting for Approval</div> {% endif %}
                         <div class="d-flex align-items-end flex-column">
                             <span>{{po_logs.0.created_at|date:"d M Y"}}</span>
                             <span>{{po_logs.0.created_at|time:"h:i a"}}</span>
                         </div>
                     </div>
                     <div class="timline_status {% if po_logs.2.created_at %}  fill_status_comp {% elif po_logs.1.created_at %} fill_status_current {% else %}  {% endif %} pe-0">
-                        <div class="current_status">Prepared</div>
+                        {% if po_logs.2.created_at %}
+                        <div class="comp_status">Prepared</div>
+                        {% elif po_logs.1.created_at %}
+                        <div class="current_status">Preperation Ongoing</div>
+                        {% else %}
+                        <div class="comp_status">Waiting for Preperation</div> {% endif %}
+                        
                         <div class="d-flex align-items-end flex-column">
                             <span>{{po_logs.1.created_at|date:"d M Y"}}</span>
                             <span>{{po_logs.1.created_at|time:"h:i a"}}</span>
                         </div>
                     </div>
                     <div class="timline_status {% if po_logs.3.created_at %}  fill_status_comp {% elif po_logs.2.created_at %} fill_status_current {% else %}  {% endif %} pe-0">
-                        <div class="status">Shipped</div>
+                        {% if po_logs.3.created_at %}
+                        <div class="comp_status">Shipped</div>
+                        {% elif po_logs.2.created_at %}
+                        <div class="current_status">Shipping Ongoing</div>
+                        {% else %}
+                        <div class="comp_status">Waiting for Shipping</div> {% endif %}
                         <div class="d-flex align-items-end flex-column">
                             <span>{{po_logs.2.created_at|date:"d M Y"}}</span>
                             <span>{{po_logs.2.created_at|time:"h:i a"}}</span>
                         </div>
                     </div>
                     <div class="timline_status {% if po_logs.4.created_at %}  fill_status_comp {% elif po_logs.3.created_at %} fill_status_current {% else %}  {% endif %} pe-0">
-                        <div class="status">Delivered</div>
+                        {% if po_logs.4.created_at %}
+                        <div class="comp_status">Delivered</div>
+                        {% elif po_logs.3.created_at %}
+                        <div class="current_status">Delivery Ongoing</div>
+                        {% else %}
+                        <div class="comp_status">Waiting for Delivery</div> {% endif %}
                         <div class="d-flex align-items-end flex-column">
                             <span>{{po_logs.3.created_at|date:"d M Y"}}</span>
                             <span>{{po_logs.3.created_at|time:"h:i a"}}</span>
@@ -190,11 +213,7 @@
                 </div>
             </div>
             {% else %}
-            <div class="bg-white table_shadow rounded p-3 w-100">
-                <div class="waiting_po"><i class="fas fa-exclamation-circle" aria-hidden="true"></i> 
-                    <span> #{{po.0.po_name}} Waiting for approval by <span class="text-dark font-weight-bold"> {{po.0.supplier_name.company_name|title}}</span></span>
-                </div>
-            </div>
+
             {% endif %}
         </div>
     </div>

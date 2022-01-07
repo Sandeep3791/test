@@ -265,6 +265,7 @@ class ProductList(ListView):
         return filtered_list.qs
 
     def get_context_data(self, **kwargs):
+        delSession(self.request)
         context = super(ProductList, self).get_context_data(**kwargs)
         context['filter_form'] = ProductAdvanceFilterForm(self.request.GET)
         return context

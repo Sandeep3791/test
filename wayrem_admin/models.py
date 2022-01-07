@@ -50,6 +50,13 @@ UNIT = (
     ('%', '%'),
 )
 
+upload_storage = FileSystemStorage(
+    location='common_folder')
+# /opt/app/wayrem-admin-backend/media/common_folder
+# local storage = /home/fealty/Desktop/wayrem_kapil
+#
+# server storage =  /home/ubuntu/docker_setup/database
+
 
 class Roles(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
@@ -104,18 +111,11 @@ class Otp(models.Model):
         db_table = 'otp'
 
 
-# upload_storage = FileSystemStorage(
-#     location='/home/fealty/Desktop/wayrem_kapil/backup')
-# local storage = /home/fealty/Desktop/wayrem_kapil
-#
-# server storage =  /home/ubuntu/docker_setup/database
-
-
 class Categories(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
     name = models.CharField(max_length=35, unique=True)
     image = models.ImageField(
-        upload_to='assets/category/', default='assets/category/category.jpg', blank=False, null=True)
+        upload_to='',  default='category.jpg', blank=False, null=True)
     tag = models.TextField(null=True, blank=True)
     parent = models.CharField(max_length=35,  null=True)
     margin = models.IntegerField()
@@ -138,7 +138,7 @@ class SubCategories(models.Model):
     tag = models.TextField(null=True, blank=True)
     margin = models.IntegerField()
     image = models.ImageField(
-        upload_to='assets/subcategory/', blank=False, null=True)
+        upload_to='',  blank=False, null=True)
     category = models.ForeignKey(
         Categories, on_delete=models.CASCADE, blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -172,7 +172,7 @@ class Supplier(models.Model):
     password = models.CharField(max_length=200)
     contact = models.BigIntegerField(null=True)
     logo = models.ImageField(
-        upload_to='supplier/',  null=True, default='supplier/default.jpg')
+        upload_to='',   null=True, default='default.jpg')
     address = models.TextField(null=True, blank=True)
     delivery_incharge = models.CharField(max_length=500, blank=True, null=True)
     company_name = models.CharField(max_length=100, blank=False, null=True)
@@ -238,7 +238,7 @@ class Products(models.Model):
     dis_abs_percent = models.CharField(
         max_length=20, choices=DIS_ABS_PERCENT, null=True, blank=False)
     description = models.TextField()
-    warehouse = models.ForeignKey('Warehouse', models.DO_NOTHING)
+    warehouse = models.ForeignKey('Warehouse', models.DO_NOTHING, null=True)
     quantity = models.CharField(max_length=100, null=True, default=1)
     quantity_unit = models.ForeignKey(
         Unit, on_delete=models.CASCADE, null=True, blank=True, related_name='%(class)s_quantity_unit')
@@ -253,7 +253,7 @@ class Products(models.Model):
     margin_unit = models.CharField(
         max_length=20, choices=DIS_ABS_PERCENT, null=True, blank=False)
     primary_image = models.ImageField(
-        upload_to='product/images/', default='product/images/product.jpg', null=True)
+        upload_to='',  default='product.jpg', null=True)
     gs1 = models.CharField(max_length=255, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -280,7 +280,7 @@ class Images(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
     product = models.ForeignKey(
         Products, on_delete=models.CASCADE, default=None)
-    image = models.FileField(upload_to="product/images/",
+    image = models.FileField(upload_to="",
                              verbose_name='product_mage')
 
     class Meta:
@@ -401,7 +401,7 @@ class Invoice(models.Model):
     invoice_id = models.AutoField(primary_key=True, unique=True)
     invoice_no = models.CharField(max_length=250, null=True)
     po_name = models.CharField(max_length=250, null=True)
-    file = models.FileField(upload_to='invoices/',
+    file = models.FileField(upload_to='',
                             null=True)
     supplier_name = models.CharField(max_length=250, null=True)
     invoice_status = (
@@ -498,35 +498,42 @@ class Warehouse(models.Model):
     class Meta:
         db_table = 'warehouse'
 
+
 class InventoryType(models.Model):
     id = models.SmallAutoField(primary_key=True)
-    type_name = models.CharField(max_length=50, db_collation='utf8mb4_unicode_ci')
+    type_name = models.CharField(
+        max_length=50, db_collation='utf8mb4_unicode_ci')
     status = models.IntegerField(default=1)
 
     class Meta:
         db_table = 'inventory_type'
 
+
 class Inventory(models.Model):
-    order_status_choices = (('ordered', 'Ordered'),('shipped', 'Shipped'),('canceled', 'Canceled'))
+    order_status_choices = (('ordered', 'Ordered'),
+                            ('shipped', 'Shipped'), ('canceled', 'Canceled'))
     id = models.BigAutoField(primary_key=True)
     inventory_type = models.ForeignKey('InventoryType', models.DO_NOTHING)
-    quantity = models.IntegerField(validators=[MinValueValidator(0)], blank=False, null=False)
-    product = models.ForeignKey('Products', on_delete=models.CASCADE, null=True, blank=True)
-    warehouse = models.ForeignKey('Warehouse', models.DO_NOTHING)
+    quantity = models.IntegerField(
+        validators=[MinValueValidator(0)], blank=False, null=False)
+    product = models.ForeignKey(
+        'Products', on_delete=models.CASCADE, null=True, blank=True)
+    warehouse = models.ForeignKey('Warehouse', models.DO_NOTHING, null=True)
     po_id = models.IntegerField(blank=True, null=True)
     supplier_id = models.IntegerField(blank=True, null=True)
     order_id = models.IntegerField(blank=True, null=True)
-    order_status =models.CharField(max_length=30, blank=True, null=True,choices=order_status_choices)
+    order_status = models.CharField(
+        max_length=30, blank=True, null=True, choices=order_status_choices)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)    
+    updated_at = models.DateTimeField(auto_now=True)
 
-    def insert_inventory(self,inventory_dict):
+    def insert_inventory(self, inventory_dict):
         try:
             if ('product_id' in inventory_dict) and ('quantity' in inventory_dict) and ('inventory_type_id' in inventory_dict) and ('warehouse_id' in inventory_dict):
-                #inventory_dict={'inventory_type_id':1,'quantity':2,'product_id':1,'warehouse_id':1,'po_id':None,'supplier_id':None,'order_id':None,'order_status':None}
-                inventory_create=Inventory(**inventory_dict)
+                # inventory_dict={'inventory_type_id':1,'quantity':2,'product_id':1,'warehouse_id':1,'po_id':None,'supplier_id':None,'order_id':None,'order_status':None}
+                inventory_create = Inventory(**inventory_dict)
                 inventory_create.save()
-                product_id=inventory_dict['product_id']
+                product_id = inventory_dict['product_id']
                 self.update_product_quantity(product_id)
                 return True
             else:
@@ -535,30 +542,31 @@ class Inventory(models.Model):
             print(e)
             return False
 
-
-    def update_product_quantity(self,product_id):
+    def update_product_quantity(self, product_id):
         try:
             total_quantity = 0
-            inventory_starting=0
-            inventory_received=0
-            inventory_shipped=0
-            inventory_cancelled=0
-            product_type=Inventory.objects.annotate(inventory_quantity = Sum('quantity')).values('inventory_type','inventory_quantity').filter(product=product_id).order_by('inventory_type_id')
+            inventory_starting = 0
+            inventory_received = 0
+            inventory_shipped = 0
+            inventory_cancelled = 0
+            product_type = Inventory.objects.annotate(inventory_quantity=Sum('quantity')).values(
+                'inventory_type', 'inventory_quantity').filter(product=product_id).order_by('inventory_type_id')
             product_type.query.group_by = [('inventory_type')]
             for quantity_cal in product_type:
-                quantity=quantity_cal['inventory_quantity']
+                quantity = quantity_cal['inventory_quantity']
                 if quantity_cal['inventory_type'] == 3:
-                    total_quantity -=quantity
-                    inventory_shipped=quantity
+                    total_quantity -= quantity
+                    inventory_shipped = quantity
                 else:
-                    total_quantity +=quantity
+                    total_quantity += quantity
                     if quantity_cal['inventory_type'] == 1:
-                        inventory_starting=quantity
-                    elif quantity_cal['inventory_type'] == 2: 
-                        inventory_received=quantity
+                        inventory_starting = quantity
+                    elif quantity_cal['inventory_type'] == 2:
+                        inventory_received = quantity
                     else:
-                        inventory_cancelled=quantity
-            Products.objects.filter(id=product_id).update(quantity=total_quantity,inventory_starting=inventory_starting,inventory_received=inventory_received,inventory_shipped=inventory_shipped,inventory_cancelled=inventory_cancelled,inventory_onhand=total_quantity)
+                        inventory_cancelled = quantity
+            Products.objects.filter(id=product_id).update(quantity=total_quantity, inventory_starting=inventory_starting, inventory_received=inventory_received,
+                                                          inventory_shipped=inventory_shipped, inventory_cancelled=inventory_cancelled, inventory_onhand=total_quantity)
         except:
             print("An exception occurred")
 

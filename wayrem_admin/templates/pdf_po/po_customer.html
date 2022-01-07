@@ -165,12 +165,12 @@
                 <td style="width: 15%; padding: .2rem .2rem; text-align:left;" valign="top" align="left">{{item.product_name.SKU}}</td>
                 <td style="width: 10%; padding: .2rem .2rem; text-align:left;" valign="top" align="left">{{item.product_name.description}}</td>
                 <!-- <td style="width: 10%; padding: 1rem .2rem;" valign="top" align="left">09</td> -->
-                <td style="width: 10%; padding: .2rem .2rem; text-align:left;" valign="top" align="left">{{item.product_name.price}}</td>
+                <td style="width: 10%; padding: .2rem .2rem; text-align:left;" valign="top" align="left">{{item.supplier_product.price}}</td>
                 <td style="width: 10%; padding: .2rem .2rem; text-align:left;" valign="top" align="left">{{item.product_qty}}</td>
-                <td style="width: 10%; padding: .2rem .2rem; text-align:left;" valign="top" align="left">{% net_value item.product_name.price item.product_qty %}</td>
+                <td style="width: 10%; padding: .2rem .2rem; text-align:left;" valign="top" align="left">{% net_value item.supplier_product.price item.product_qty %}</td>
                 <td style="width: 10%; padding: .2rem .2rem; text-align:left;" valign="top" align="left">{{vat}}</td>
-                <td style="width: 10%; padding: .2rem .2rem; text-align:left;" valign="top" align="left">{% vat_amt item.product_name.price item.product_qty %}</td>
-                <td style="width: 10%; padding: .2rem .2rem; text-align:left;" valign="top" align="left">{% net_vat_amt item.product_name.price item.product_qty %}</td>
+                <td style="width: 10%; padding: .2rem .2rem; text-align:left;" valign="top" align="left">{% vat_amt item.supplier_product.price item.product_qty %}</td>
+                <td style="width: 10%; padding: .2rem .2rem; text-align:left;" valign="top" align="left">{% net_vat_amt item.supplier_product.price item.product_qty %}</td>
             </tr>
             {% endfor %}
         </tbody>
