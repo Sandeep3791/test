@@ -36,6 +36,11 @@ roles_options = (
                                                                        'Reports Delete'), ('Reports View', 'Reports View'),
     ('Email Template Add', 'Email Template Add'), ('Email Template Edit', 'Email Template Edit'), ('Email Template Delete',
                                                                                                    'Email Template Delete'), ('Email Template View', 'Email Template View'),
+    ('Warehouse Add', 'Warehouse Add'), ('Warehouse Edit', 'Warehouse Edit'), ('Warehouse Delete', 'Warehouse Delete'), ('Warehouse View', 'Warehouse View'),
+    ('Inventory Add', 'Inventory Add'), ('Inventory Edit', 'Inventory Edit'), ('Inventory Delete',
+                                                                       'Inventory Delete'), ('Inventory View', 'Inventory View'),
+    ('Order Add', 'Order Add'), ('Order Edit', 'Order Edit'), ('Order View', 'Order View'),('Invoice Order', 'Invoice Order'),
+
 )
 
 status = (("Active", "Active"), ("Inactive", "Inactive"))
