@@ -282,8 +282,8 @@ class Images(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
     product = models.ForeignKey(
         Products, on_delete=models.CASCADE, default=None)
-    image = models.FileField(upload_to="",
-                             verbose_name='product_mage')
+    image = models.FileField(
+        upload_to="", storage=upload_storage, verbose_name='product_mage')
 
     class Meta:
         db_table = 'product_images'
