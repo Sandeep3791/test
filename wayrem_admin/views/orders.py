@@ -33,7 +33,6 @@ from django.db.models.fields import DateField
 
 
 class OrderExportView(View):
-    @method_decorator(login_required(login_url='wayrem_admin:root'))
     def get(self, request,**kwargs):
         qs = Orders.objects.annotate(OrderReference=F('ref_number'),OrderDate=F('order_date'),Customer=F('customer__first_name'),Mobile=F('order_phone'),Status=F('status__name'),Items=Value('', output_field=CharField()),Total=F('grand_total')).values('id','OrderReference','OrderDate','Customer','Mobile','Status','Items','Total')
         filtered_list = OrderFilter(self.request.GET, queryset=qs)
@@ -83,8 +82,6 @@ class OrdersList(ListView):
     paginate_by = RECORDS_PER_PAGE
     success_url = reverse_lazy('wayrem_admin:orderlist')
 
-    @method_decorator(login_required(login_url='wayrem_admin:root'))
-    @method_decorator(role_required('Order View'))
     def get_queryset(self):
         qs=Orders.objects.filter().order_by("-id")
         filtered_list = OrderFilter(self.request.GET, queryset=qs)
@@ -101,8 +98,6 @@ class OrderStatusUpdated(UpdateView):
     template_name = "orders/update_order_status.html"        
     pk_url_kwarg = 'id'
 
-    @method_decorator(login_required(login_url='wayrem_admin:root'))
-    @method_decorator(role_required('Order Edit'))
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         id_pk=self.kwargs['id']
@@ -138,8 +133,6 @@ class OrderPaymentStatusUpdated(UpdateView):
     template_name = "orders/update_order_status.html"
     pk_url_kwarg = 'id'
     
-    @method_decorator(login_required(login_url='wayrem_admin:root'))
-    @method_decorator(role_required('Order Edit'))
     def post(self,request, *args, **kwargs):
         get_id = self.get_object().id
         status_id=int(self.request.POST.get('payment_status'))
@@ -154,8 +147,6 @@ class OrderInvoiceView(View):
     KEY='setting_vat'
     WAYREM_VAT='wayrem_vat'
     
-    @method_decorator(login_required(login_url='wayrem_admin:root'))
-    @method_decorator(role_required('Invoice Order'))
     def get(self, request, id):
         context={}
         context['currency']=CURRENCY
@@ -180,8 +171,6 @@ class OrderUpdateView(DetailView):
     context_object_name = 'order'
     KEY='tax_vat'
 
-    @method_decorator(login_required(login_url='wayrem_admin:root'))
-    @method_decorator(role_required('Order Edit'))
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         order_id=self.get_object().id
