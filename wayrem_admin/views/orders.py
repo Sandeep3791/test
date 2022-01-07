@@ -33,6 +33,7 @@ from django.db.models.fields import DateField
 
 
 class OrderExportView(View):
+    @method_decorator(login_required(login_url='wayrem_admin:root'))
     def get(self, request,**kwargs):
         qs = Orders.objects.annotate(OrderReference=F('ref_number'),OrderDate=F('order_date'),Customer=F('customer__first_name'),Mobile=F('order_phone'),Status=F('status__name'),Items=Value('', output_field=CharField()),Total=F('grand_total')).values('id','OrderReference','OrderDate','Customer','Mobile','Status','Items','Total')
         filtered_list = OrderFilter(self.request.GET, queryset=qs)
