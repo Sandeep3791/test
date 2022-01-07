@@ -36,10 +36,12 @@ roles_options = (
                                                                        'Reports Delete'), ('Reports View', 'Reports View'),
     ('Email Template Add', 'Email Template Add'), ('Email Template Edit', 'Email Template Edit'), ('Email Template Delete',
                                                                                                    'Email Template Delete'), ('Email Template View', 'Email Template View'),
-    ('Warehouse Add', 'Warehouse Add'), ('Warehouse Edit', 'Warehouse Edit'), ('Warehouse Delete', 'Warehouse Delete'), ('Warehouse View', 'Warehouse View'),
+    ('Warehouse Add', 'Warehouse Add'), ('Warehouse Edit', 'Warehouse Edit'), (
+        'Warehouse Delete', 'Warehouse Delete'), ('Warehouse View', 'Warehouse View'),
     ('Inventory Add', 'Inventory Add'), ('Inventory Edit', 'Inventory Edit'), ('Inventory Delete',
-                                                                       'Inventory Delete'), ('Inventory View', 'Inventory View'),
-    ('Order Add', 'Order Add'), ('Order Edit', 'Order Edit'), ('Order View', 'Order View'),('Invoice Order', 'Invoice Order'),
+                                                                               'Inventory Delete'), ('Inventory View', 'Inventory View'),
+    ('Order Add', 'Order Add'), ('Order Edit', 'Order Edit'), ('Order View',
+                                                               'Order View'), ('Invoice Order', 'Invoice Order'),
 
 )
 
@@ -51,7 +53,7 @@ UNIT = (
 )
 
 upload_storage = FileSystemStorage(
-    location='common_folder')
+    location='/opt/app/wayrem-admin-backend/media/common_folder')
 # /opt/app/wayrem-admin-backend/media/common_folder
 # local storage = /home/fealty/Desktop/wayrem_kapil
 #
@@ -115,7 +117,7 @@ class Categories(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
     name = models.CharField(max_length=35, unique=True)
     image = models.ImageField(
-        upload_to='',  default='category.jpg', blank=False, null=True)
+        upload_to='',  default='category.jpg', storage=upload_storage, blank=False, null=True)
     tag = models.TextField(null=True, blank=True)
     parent = models.CharField(max_length=35,  null=True)
     margin = models.IntegerField()
@@ -138,7 +140,7 @@ class SubCategories(models.Model):
     tag = models.TextField(null=True, blank=True)
     margin = models.IntegerField()
     image = models.ImageField(
-        upload_to='',  blank=False, null=True)
+        upload_to='', storage=upload_storage, blank=False, null=True)
     category = models.ForeignKey(
         Categories, on_delete=models.CASCADE, blank=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -172,7 +174,7 @@ class Supplier(models.Model):
     password = models.CharField(max_length=200)
     contact = models.BigIntegerField(null=True)
     logo = models.ImageField(
-        upload_to='',   null=True, default='default.jpg')
+        upload_to='', storage=upload_storage,  null=True, default='default.jpg')
     address = models.TextField(null=True, blank=True)
     delivery_incharge = models.CharField(max_length=500, blank=True, null=True)
     company_name = models.CharField(max_length=100, blank=False, null=True)
@@ -253,7 +255,7 @@ class Products(models.Model):
     margin_unit = models.CharField(
         max_length=20, choices=DIS_ABS_PERCENT, null=True, blank=False)
     primary_image = models.ImageField(
-        upload_to='',  default='product.jpg', null=True)
+        upload_to='', storage=upload_storage, default='product.jpg', null=True)
     gs1 = models.CharField(max_length=255, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -401,7 +403,7 @@ class Invoice(models.Model):
     invoice_id = models.AutoField(primary_key=True, unique=True)
     invoice_no = models.CharField(max_length=250, null=True)
     po_name = models.CharField(max_length=250, null=True)
-    file = models.FileField(upload_to='',
+    file = models.FileField(upload_to='', storage=upload_storage,
                             null=True)
     supplier_name = models.CharField(max_length=250, null=True)
     invoice_status = (
