@@ -32,6 +32,8 @@ def payment_status(order_id):
 
 @register.filter(name='transaction_invoice')
 def transaction_invoice(order_id):
+    if order_id is None:
+        return ""
     order_transaction=OrderTransactions.objects.filter(order=order_id).first()
     return order_transaction.invoices_id
 
