@@ -92,7 +92,11 @@
 
             <div class="row">
                 <div class="col-2">
-                    <img class="rounded-1" src="/media/{{order_detail.product.primary_image}}" width="50%" height="100%" alt="" style="object-fit: cover;">
+                    {% if order_detail.product.product_image %}
+                    <img class="rounded-1" src="{{order_detail.product.primary_image.url}}" width="50%" height="100%" alt="" style="object-fit: cover;">
+                    {% else %}
+                    <img class="rounded-1" src="" width="50%" height="100%" alt="no image" style="object-fit: cover;">
+                    {% endif %}
                 </div>
                 <div class="col-4">
                     <h6 class="mb-0">{{order_detail.product_name}}</h6>
