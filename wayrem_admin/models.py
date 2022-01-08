@@ -11,6 +11,8 @@ import uuid
 from multiselectfield import MultiSelectField
 from django.template.defaultfilters import default, slugify
 from django.db.models import Sum
+from wayrem_admin.utils.constants import *
+#from models_orders import Orders,OrderDetails
 
 # Create your models here.
 roles_options = (
@@ -513,7 +515,7 @@ class InventoryType(models.Model):
 
 class Inventory(models.Model):
     order_status_choices = (('ordered', 'Ordered'),
-                            ('shipped', 'Shipped'), ('canceled', 'Canceled'))
+                            ('shipped', 'Shipped'), ('cancelled', 'Canceled'))
     id = models.BigAutoField(primary_key=True)
     inventory_type = models.ForeignKey('InventoryType', models.DO_NOTHING)
     quantity = models.IntegerField(
@@ -528,6 +530,33 @@ class Inventory(models.Model):
         max_length=30, blank=True, null=True, choices=order_status_choices)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def order_inventory_process(self,order_id):
+        # When we place order inventory process to shipping
+        from wayrem_admin.models_orders import Orders ,OrderDetails
+        orders=Orders.objects.filter(id=order_id).first()
+        order_status=orders.status.id
+        order_details=OrderDetails.objects.filter(order=order_id)
+        if (order_status == ORDER_STATUS_RECEIVED) or (order_status == ORDER_STATUS_Cancelled):
+           
+            for order_detail in order_details:
+                inventory_dict={'inventory_type_id':3,'quantity':order_detail.quantity,'product_id':order_detail.product.id,'warehouse_id':order_detail.product.warehouse.id,'po_id':None,'supplier_id':None,'order_id':order_id,'order_status':order_status}
+                
+                if (order_status == ORDER_STATUS_RECEIVED):
+                    inventory_dict['inventory_type_id']=3
+                    inventory_dict['order_status']=INVENTORY_ORDER_STATUS_ORDERED
+                else:
+                    inventory_dict['inventory_type_id']=4
+                    inventory_dict['order_status']=INVENTORY_ORDER_STATUS_CANCELLED
+                self.insert_inventory(inventory_dict)
+        else:
+            # update inventory table
+            if (order_status == ORDER_STATUS_DELIVERING):
+                inventory_lists=Inventory.objects.filter(order_id=order_id,inventory_type_id=3,order_status=INVENTORY_ORDER_STATUS_ORDERED)
+                for inv_list in inventory_lists:
+                    inv_id=inv_list.id
+                    Inventory.objects.filter(id=inv_id).update(order_status=INVENTORY_ORDER_STATUS_SHIPPED)
+        return 1
 
     def insert_inventory(self, inventory_dict):
         try:

@@ -10,6 +10,7 @@ from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from wayrem_admin.export import generate_excel
 from wayrem_admin.models_orders import Orders,OrderDetails,StatusMaster,OrderDeliveryLogs,OrderTransactions
+from wayrem_admin.models import Inventory
 from wayrem_admin.models import Settings
 from django.views.generic.edit import CreateView,UpdateView
 from django.views.generic import ListView,DetailView
@@ -90,6 +91,7 @@ class OrdersList(ListView):
     def get_context_data(self, **kwargs):
         context = super(OrdersList,self).get_context_data(**kwargs)
         context['filter_form'] = OrderAdvanceFilterForm(self.request.GET)
+        Inventory().order_inventory_process(1)
         return context
 
 class OrderStatusUpdated(UpdateView):
