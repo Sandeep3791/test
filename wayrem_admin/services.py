@@ -85,3 +85,8 @@ def inst_SupplierProduct(value):
 
 def inst_Unit(value):
     return Unit.objects.get(id=value)
+
+
+def inst_Warehouse(value):
+    return Warehouse.objects.get(id=value)
+

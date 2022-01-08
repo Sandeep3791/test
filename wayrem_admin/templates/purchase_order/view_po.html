@@ -209,7 +209,7 @@
             <div class="bg-white table_shadow rounded p-3 w-100 mt-3">
                 <span>Download Supplier Invoice</span>
                 <div class="d-flex justify-content-between my-2">
-                    <button class="btn btn-info w-100" type="button">Download</button>
+                    <a href="{% url 'wayrem_admin:downloadinvoicepo' %}?poName={{po.0.po_name}}" class="btn btn-info w-100" type="button">Download</a>
                 </div>
             </div>
             {% else %}

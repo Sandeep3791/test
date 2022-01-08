@@ -52,12 +52,14 @@ UNIT = (
     ('%', '%'),
 )
 
-upload_storage = FileSystemStorage(
-    location='/opt/app/wayrem-admin-backend/media/common_folder')
+# upload_storage = FileSystemStorage(
+#     location='/opt/app/wayrem-admin-backend/media/common_folder')
 # /opt/app/wayrem-admin-backend/media/common_folder
 # local storage = /home/fealty/Desktop/wayrem_kapil
 #
 # server storage =  /home/ubuntu/docker_setup/database
+upload_storage = FileSystemStorage(
+    location='/home/fealty')
 
 
 class Roles(models.Model):
@@ -224,6 +226,22 @@ class Unit(models.Model):
         db_table = 'unit_master'
 
 
+
+class Warehouse(models.Model):
+    code_name = models.CharField(max_length=255)
+    address = models.TextField()
+    status = models.CharField(max_length=100, choices=status, default='Active')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.code_name
+
+    class Meta:
+        db_table = 'warehouse'
+
+
+
 class Products(models.Model):
     id = models.IntegerField(primary_key=True, unique=True)
     name = models.CharField(max_length=255, null=True, blank=False)
@@ -240,7 +258,7 @@ class Products(models.Model):
     dis_abs_percent = models.CharField(
         max_length=20, choices=DIS_ABS_PERCENT, null=True, blank=False)
     description = models.TextField()
-    warehouse = models.ForeignKey('Warehouse', models.DO_NOTHING, null=True)
+    warehouse = models.ForeignKey(Warehouse, models.DO_NOTHING, null=True)
     quantity = models.CharField(max_length=100, null=True, default=1)
     quantity_unit = models.ForeignKey(
         Unit, on_delete=models.CASCADE, null=True, blank=True, related_name='%(class)s_quantity_unit')
@@ -486,19 +504,6 @@ class PO_log(models.Model):
     class Meta:
         db_table = 'po_logs'
 
-
-class Warehouse(models.Model):
-    code_name = models.CharField(max_length=255)
-    address = models.TextField()
-    status = models.CharField(max_length=100, choices=status, default='Active')
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.code_name
-
-    class Meta:
-        db_table = 'warehouse'
 
 
 class InventoryType(models.Model):

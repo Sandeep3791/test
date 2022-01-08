@@ -232,10 +232,13 @@ def product_images(request):
             obj.package_count = request.session.get("package_count", None)
             obj.wayrem_margin = request.session.get("wayrem_margin", None)
             obj.margin_unit = request.session.get("margin_unit", None)
+            obj.warehouse = inst_Warehouse(request.session.get("warehouse", None))
             obj.primary_image = primary_image
             obj.save()
             obj.category.set(category)
             obj.supplier.set(supplier)
+            inventory_dict={'inventory_type_id':1,'quantity':request.session.get("quantity", None),'product_id':obj.id,'warehouse_id':request.session.get("warehouse", None),'po_id':None,'supplier_id':None,'order_id':None,'order_status':None}
+            Inventory().insert_inventory(inventory_dict)
             images = request.FILES.getlist('images')
             for image in images:
                 img_obj = Images()

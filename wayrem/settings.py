@@ -89,10 +89,10 @@ WSGI_APPLICATION = 'wayrem.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'wayrem_v9',
-        'USER': 'root',
+        'NAME': 'wayrem_v1',
+        'USER': 'wayremdb_adminuser',
         'PASSWORD': 'r2wXJfUs78NczMFWRXcV',
-        'HOST': '157.175.165.173',
+        'HOST': '15.185.103.226',
         'PORT': '3306',
         'OPTIONS': {
             "init_command": "SET foreign_key_checks = 0;",
@@ -195,13 +195,14 @@ AUTH_USER_MODEL = 'wayrem_admin.User'
 MESSAGE_TAGS = {messages_s.ERROR: 'danger'}
 
 
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # MEDIA_ROOT = os.path.join('/home/fealty/Desktop/wayrem_kapil/backup/')
 # MEDIA_ROOT = os.path.join('common_folder')
-MEDIA_ROOT = os.path.dirname(
-    "/opt/app/wayrem-admin-backend/media/common_folder/")
-MEDIA_URL = '/media/common_folder/'
+# MEDIA_ROOT = os.path.dirname(
+#     "/opt/app/wayrem-admin-backend/media/common_folder/")
+# MEDIA_URL = '/media/common_folder/'
+MEDIA_URL = '/media/'
 
 ####################################
 ##  CKEDITOR CONFIGURATION ##
