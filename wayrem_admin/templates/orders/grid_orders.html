@@ -20,7 +20,7 @@
         {% if orders %}
         {% for order in orders %}
            <tr>
-                <td>{{order.id|transaction_invoice}}</td>
+                <td>{{order.id|transaction_invoice}}</td> 
                 <td>{{order.ref_number}}</td>
                 <td>{{order.order_date|date:"M d, Y"}}</td>
                 <td>{{order.customer.first_name}} {{order.customer.last_name|default_if_none:""}}</td>
