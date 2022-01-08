@@ -201,7 +201,7 @@
             <div class="bg-white table_shadow rounded p-3 w-100  mt-3">
                 <span>Order Delivery Confirmation</span>
                 <div class="d-flex justify-content-between my-2">
-                    <button class="btn btn-success w-100" type="button">Confirm order Delivery</button>
+                    <a href="{% url 'wayrem_admin:confirm_delivery' po.0.po_id %}" class="btn btn-success w-100" type="button">Confirm order Delivery</a>
                 </div>
             </div>
             {% endif %}

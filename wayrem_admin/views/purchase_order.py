@@ -378,11 +378,16 @@ def po_pdf(request):
     # return response
 
 
-def confirm_delivery(request):
-    pass
-
 
 def load_supplier_products(request):
     supplier = request.GET.get('supplier')
     products = SupplierProducts.objects.filter(supplier_id=supplier)
     return render(request, 'po_supplier_products.html', {'products': products})
+
+
+def confirm_delivery(request,id=None):
+    po = PurchaseOrder.objects.filter(po_id=id,available=True)
+    po_name = po[0].po_name
+    po_log = PO_log(po=po_name,status="confirm delivered")
+    po_log.save()
+    return redirect('wayrem_admin:polist')
