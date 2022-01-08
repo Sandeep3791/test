@@ -91,7 +91,6 @@ class OrdersList(ListView):
     def get_context_data(self, **kwargs):
         context = super(OrdersList,self).get_context_data(**kwargs)
         context['filter_form'] = OrderAdvanceFilterForm(self.request.GET)
-        Inventory().order_inventory_process(1)
         return context
 
 class OrderStatusUpdated(UpdateView):

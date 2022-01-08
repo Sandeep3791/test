@@ -531,6 +531,13 @@ class Inventory(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def po_inventory_process(self,po_id):
+        po_details=PurchaseOrder.objects.filter(po_id=po_id)
+        for po_detail in po_details:
+            po_detail_dict={'inventory_type_id':2,'quantity':po_detail.product_qty,'product_id':po_detail.product.id,'warehouse_id':po_detail.product.warehouse.id,'po_id':po_detail.id,'supplier_id':po_detail.supplier_product.supplier_id.id,'order_id':None,'order_status':None}
+            self.insert_inventory(po_detail_dict)
+        return 1
+
     def order_inventory_process(self,order_id):
         # When we place order inventory process to shipping
         from wayrem_admin.models_orders import Orders ,OrderDetails
