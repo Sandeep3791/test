@@ -54,14 +54,14 @@ UNIT = (
     ('%', '%'),
 )
 
-# upload_storage = FileSystemStorage(
-#     location='/opt/app/wayrem-admin-backend/media/common_folder')
+upload_storage = FileSystemStorage(
+    location='/opt/app/wayrem-admin-backend/media/common_folder')
 # /opt/app/wayrem-admin-backend/media/common_folder
 # local storage = /home/fealty/Desktop/wayrem_kapil
 #
 # server storage =  /home/ubuntu/docker_setup/database
-upload_storage = FileSystemStorage(
-    location='/home/fealty')
+# upload_storage = FileSystemStorage(
+#     location='/home/fealty')
 
 
 class Roles(models.Model):
@@ -535,6 +535,14 @@ class Inventory(models.Model):
         max_length=30, blank=True, null=True, choices=order_status_choices)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def po_inventory_process(self,po_id):
+        po_details=PurchaseOrder.objects.filter(po_id=po_id, available=True)
+        for po_detail in po_details:
+            po_detail_dict={'inventory_type_id':2,'quantity':po_detail.product_qty,'product_id':po_detail.product_name.id,'warehouse_id':po_detail.product_name.warehouse.id,'po_id':po_detail.id,'supplier_id':po_detail.supplier_product.supplier_id.id,'order_id':None,'order_status':None}
+            # print(po_detail_dict)
+            self.insert_inventory(po_detail_dict)
+        return 1
 
     def order_inventory_process(self,order_id):
         # When we place order inventory process to shipping

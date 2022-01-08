@@ -10,7 +10,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views import View
-from wayrem_admin.models import EmailTemplateModel, Notification, PO_log, PurchaseOrder, Products, Settings, Supplier, SupplierProducts
+from wayrem_admin.models import EmailTemplateModel, Notification, PO_log, PurchaseOrder, Products, Settings, Supplier, SupplierProducts, Inventory
 from wayrem_admin.forms import POForm, POEditForm, POSearchFilter, POFormOne
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -387,6 +387,7 @@ def load_supplier_products(request):
 
 def confirm_delivery(request,id=None):
     po = PurchaseOrder.objects.filter(po_id=id,available=True)
+    Inventory().po_inventory_process(id)
     po_name = po[0].po_name
     po_log = PO_log(po=po_name,status="confirm delivered")
     po_log.save()
