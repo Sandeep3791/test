@@ -30,8 +30,10 @@ roles_options = (
         'Purchase Order Delete', 'Purchase Order Delete'), ('Purchase Order View', 'Purchase Order View'),
     ('Customer Profile Add', 'Customer Profile Add'), ('Customer Profile Edit', 'Customer Profile Edit'), (
         'Customer Profile Delete', 'Customer Profile Delete'), ('Customer Profile View', 'Customer Profile View'),
+   
     ('Customer Order Add', 'Customer Order Add'), ('Customer Order Edit', 'Customer Order Edit'), (
-        'Customer Order Delete', 'Customer Order Delete'), ('Customer Order View', 'Customer Order View'),
+        'Customer Order Delete', 'Customer Order Delete'), ('Customer Order View', 'Customer Order View'),('Customer Invoice Order', 'Customer Invoice Order'),
+   
     ('Finance Add', 'Finance Add'), ('Finance Edit', 'Finance Edit'), ('Finance Delete',
                                                                        'Finance Delete'), ('Finance View', 'Finance View'),
     ('Reports Add', 'Reports Add'), ('Reports Edit', 'Reports Edit'), ('Reports Delete',
@@ -42,9 +44,6 @@ roles_options = (
         'Warehouse Delete', 'Warehouse Delete'), ('Warehouse View', 'Warehouse View'),
     ('Inventory Add', 'Inventory Add'), ('Inventory Edit', 'Inventory Edit'), ('Inventory Delete',
                                                                                'Inventory Delete'), ('Inventory View', 'Inventory View'),
-    ('Order Add', 'Order Add'), ('Order Edit', 'Order Edit'), ('Order View',
-                                                               'Order View'), ('Invoice Order', 'Invoice Order'),
-
 )
 
 status = (("Active", "Active"), ("Inactive", "Inactive"))
