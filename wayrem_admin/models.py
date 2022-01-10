@@ -67,7 +67,7 @@ class Roles(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
     role = models.CharField(max_length=50, unique=True)
     permission = MultiSelectField(
-        choices=roles_options, max_length=800, default="Stats")
+        choices=roles_options, max_length=1500, default="Stats")
     content = models.TextField(blank=True, null=True)
     status = models.CharField(max_length=10, choices=status, default='Active')
     created_at = models.DateTimeField(auto_now_add=True)
