@@ -79,7 +79,7 @@ class WarehouseView(UpdateView):
     pk_url_kwarg = 'warehouse_pk'
     
     @method_decorator(login_required(login_url='wayrem_admin:root'))
-    @method_decorator(role_required('Warehouse View'))
+    @method_decorator(role_required('Warehouse Edit'))
     def dispatch(self, *args, **kwargs):
         return super(WarehouseView, self).dispatch(*args, **kwargs)
         

@@ -81,7 +81,7 @@ class InventoryView(UpdateView):
     pk_url_kwarg = 'inventory_pk'
     
     @method_decorator(login_required(login_url='wayrem_admin:root'))
-    @method_decorator(role_required('Inventory View'))
+    @method_decorator(role_required('Inventory Edit'))
     def dispatch(self, *args, **kwargs):
         return super(InventoryView, self).dispatch(*args, **kwargs)
         
