@@ -2,12 +2,22 @@
     <div class="d-block mb-4 mb-md-0"></div>
     <div class="btn-toolbar mb-2 mb-md-0">
                 <div class="btn-group">
-                    <button class="button button1 export_file dropdown-toggle btn btn-sm btn-outline-primary" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                    <button class="btn btn-sm btn-outline-primary" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                         Export
+                    </button>
+                    <button class="btn btn-sm btn-outline-primary" type="button" id="dropdownMenuButton2" onclick="document.getElementById('myFileInput').click()">
+                        Import
                     </button>
                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                         <li>
-                            <a class="dropdown-item exportorders" href="/orders/excel_export/"> Export Orders </a>
+                            <a class="dropdown-item" href="{% url 'wayrem_admin:excelproduct' %}"> Export Products </a>
+                        </li>
+                        <li>
+                            
+                            <form action="{% url 'wayrem_admin:importproducts' %}" method="POST" enctype="multipart/form-data" >
+                                {% csrf_token %}
+                                <input type="file" class="d-none" name="myFileInput" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onchange="form.submit()" id="myFileInput" />
+                            </form>
                         </li>
                     </ul>
                 </div>

@@ -1,3 +1,7 @@
+from sqlalchemy import create_engine
+import pandas as pd
+from pymysql import connect
+from wayrem.settings import DATABASES
 from wayrem_admin.utils.constants import *
 from wayrem_admin.filters.product_filters import ProductFilter
 from django.views.generic import ListView
@@ -232,12 +236,14 @@ def product_images(request):
             obj.package_count = request.session.get("package_count", None)
             obj.wayrem_margin = request.session.get("wayrem_margin", None)
             obj.margin_unit = request.session.get("margin_unit", None)
-            obj.warehouse = inst_Warehouse(request.session.get("warehouse", None))
+            obj.warehouse = inst_Warehouse(
+                request.session.get("warehouse", None))
             obj.primary_image = primary_image
             obj.save()
             obj.category.set(category)
             obj.supplier.set(supplier)
-            inventory_dict={'inventory_type_id':1,'quantity':request.session.get("quantity", None),'product_id':obj.id,'warehouse_id':request.session.get("warehouse", None),'po_id':None,'supplier_id':None,'order_id':None,'order_status':None}
+            inventory_dict = {'inventory_type_id': 1, 'quantity': request.session.get("quantity", None), 'product_id': obj.id, 'warehouse_id': request.session.get(
+                "warehouse", None), 'po_id': None, 'supplier_id': None, 'order_id': None, 'order_status': None}
             Inventory().insert_inventory(inventory_dict)
             images = request.FILES.getlist('images')
             for image in images:
@@ -411,3 +417,49 @@ def delete_product_images(request):
     obj = Images.objects.get(id=product_id)
     obj.delete()
     return HttpResponse("Image Delete Successfully!!")
+
+
+def import_products(request):
+    if request.method == "POST":
+        try:
+            file = request.FILES["myFileInput"]
+            engine = create_engine(
+                f"mysql+pymysql://{DATABASES['default']['USER']}:{DATABASES['default']['PASSWORD']}@{DATABASES['default']['HOST']}/{DATABASES['default']['NAME']}?charset=utf8")
+            # engine = create_engine(
+            #     "mysql+pymysql://admin:Merlin007#@wayrem.c08qmktlafbu.us-east-1.rds.amazonaws.com/wayrem_8.2?charset=utf8")
+            # df = pd.read_excel('files/ingredients.xlsx')
+            con = connect(user=DATABASES['default']['USER'], password=DATABASES['default']['PASSWORD'],
+                          host=DATABASES['default']['HOST'], database=DATABASES['default']['NAME'])
+            # con = connect(user="admin", password="Merlin007#",
+            #               host="wayrem.c08qmktlafbu.us-east-1.rds.amazonaws.com", database="wayrem_8.2")
+
+            df_products = pd.read_sql(
+                'select * from products_master', con)
+            df = pd.read_excel(file)
+            # df.columns = df.iloc[0]
+            # df = df.drop(0)
+            df = df[df.columns.dropna()]
+            df = df.fillna(0)
+            df3 = df.merge(df_products, how='outer',
+                           indicator=True).loc[lambda x: x['_merge'] == 'left_only']
+
+            ids = []
+            # uuids = []
+
+            for id_counter in range(0, len(df3.index)):
+                # ids.append(str(uuid.uuid4()))
+                df3['ingredients_status'] = 'Active'
+            # for i in ids:
+            #     uuids.append((uuid.UUID(i)).hex)
+            # df3['id'] = uuids
+            df3['created_at'] = datetime.now()
+            df3['updated_at'] = datetime.now()
+            df3 = df3.drop('_merge', axis=1)
+
+            df3.to_sql('products_master', engine,
+                       if_exists='append', index=False)
+            messages.success(request, "Ingredients imported successfully!")
+            return redirect('wayrem_admin:productlist')
+        except:
+            messages.error(request, "Please select a valid file!")
+    return redirect('wayrem_admin:productlist')
