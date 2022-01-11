@@ -58,7 +58,7 @@ endcomment %}
     $(document).ready(function () {
         oTable = $('#filtertable').DataTable({
             dom: 'rt',
-            'columnDefs': [{ 'orderable': false, 'targets': 3 }],
+            'columnDefs': [{ 'orderable': false, 'targets': [4] }],
             "oLanguage": {
                 "oPaginate": {
                     "sNext": '<i class="fas fa-arrow-circle-right text-primary"></i>',
