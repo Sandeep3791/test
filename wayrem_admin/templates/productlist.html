@@ -434,6 +434,7 @@
     $(document).ready(function () {
         oTable = $('#filtertable').DataTable({
             dom: 'rt',
+            pageLength : 25,
             'columnDefs': [{ 'orderable': false, 'targets': [5, 6] }],
             "oLanguage": {
                 "oPaginate": {

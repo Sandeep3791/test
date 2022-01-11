@@ -31,6 +31,7 @@
             $('#id_quantity_unit').select2({
             placeholder: 'Select Category',
             })
+            
      });
     </script>
     <script type="text/javascript">
@@ -324,6 +325,24 @@
                             Stock Management
                         </h2>
                         <div class="col-lg-6">
+
+                            <div class="form-group mb-4">
+                                <label for="name">Warehouse <span class="text-danger">*</span><span class="text-danger"><em> {{form.quantity.errors | striptags}}
+                                </em>
+                                </span></label>
+                                <div class="input-group">   
+                                    <div class="w-75 px-2">{{form.warehouse}}</div>
+                                    <div class="input-group error_field_msg" id= "warehouse_error_message" style="color: #d12525;"></div>
+                                </div>
+                                <div class="input-group">
+                                    <span class="text-danger"><em> 
+                                        </em></span>
+                                </div>
+                                <span class="text-error"></span>
+                            </div>
+
+
+
                             <div class="form-group mb-4">
                                 <label for="name">Product Quantity <span class="text-danger">*</span><span class="text-danger"><em> {{form.quantity.errors | striptags}}
                                 </em>
@@ -721,7 +740,7 @@
 </script>
 
 <script>
-    $("#id_product_category").change(function () {
+    $("#id_category").change(function () {
         const url = $("#product1").attr("data-supplier-url");  // get the url of the load_cities view
         const supplierId = $(this).val();  // get the selected supplier ID from the HTML input
 
@@ -731,7 +750,7 @@
                 'category_product': supplierId       // add the country id to the GET parameters
             },
             success: function (data) {   // data is the return of the load_cities view function
-                $("#id_supplier_name").html(data);  // replace the contents of the city input with the data that came from the server
+                $("#id_supplier").html(data);  // replace the contents of the city input with the data that came from the server
                 
             }
         });

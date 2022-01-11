@@ -1,15 +1,18 @@
-import uuid
 from django.shortcuts import render, redirect
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.views import View
+
 from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views import View
+
 from wayrem_admin.models import Settings
 from wayrem_admin.forms import SettingsForm
 from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from wayrem_admin.export import generate_excel
-from wayrem_admin.models_orders import Orders,OrderDetails,OrderStatus,OrderDeliveryLogs,OrderTransactions,PaymentStatus
+from wayrem_admin.models_orders import Orders,OrderDetails,StatusMaster,OrderDeliveryLogs,OrderTransactions
+from wayrem_admin.models import Inventory
 from wayrem_admin.models import Settings
 from django.views.generic.edit import CreateView,UpdateView
 from django.views.generic import ListView,DetailView
@@ -27,12 +30,15 @@ import io
 # pdf export
 from django.template.loader import render_to_string
 from weasyprint import HTML
-import tempfile
 from django.db.models.functions import Cast
 from django.db.models.fields import DateField
-from wayrem_admin.utils.constants import *
+
 
 class OrderExportView(View):
+    
+    @method_decorator(login_required(login_url='wayrem_admin:root'))
+    @method_decorator(role_required('Customer Order View'))
+
     def get(self, request,**kwargs):
         qs = Orders.objects.annotate(OrderReference=F('ref_number'),OrderDate=F('order_date'),Customer=F('customer__first_name'),Mobile=F('order_phone'),Status=F('status__name'),Items=Value('', output_field=CharField()),Total=F('grand_total')).values('id','OrderReference','OrderDate','Customer','Mobile','Status','Items','Total')
         filtered_list = OrderFilter(self.request.GET, queryset=qs)
@@ -75,15 +81,20 @@ class OrderExportView(View):
 
 
 
-class OrdersList(ListView):
+class OrdersList(LoginRequiredMixin,ListView):
+    login_url  ='wayrem_admin:root'
     model=Orders
     template_name = "orders/list.html"
     context_object_name = 'orders'
     paginate_by = RECORDS_PER_PAGE
     success_url = reverse_lazy('wayrem_admin:orderlist')
 
+    @method_decorator(role_required('Customer Order View'))
+    def dispatch(self, *args, **kwargs):
+        return super(OrdersList, self).dispatch(*args, **kwargs)
+
     def get_queryset(self):
-        qs=Orders.objects.filter()
+        qs=Orders.objects.filter().order_by("-id")
         filtered_list = OrderFilter(self.request.GET, queryset=qs)
         return filtered_list.qs
 
@@ -92,11 +103,16 @@ class OrdersList(ListView):
         context['filter_form'] = OrderAdvanceFilterForm(self.request.GET)
         return context
 
-class OrderStatusUpdated(UpdateView):
+class OrderStatusUpdated(LoginRequiredMixin,UpdateView):
+    login_url  ='wayrem_admin:root'
     model = Orders
     form_class = OrderStatusUpdatedForm
     template_name = "orders/update_order_status.html"        
     pk_url_kwarg = 'id'
+
+    @method_decorator(role_required('Customer Order Edit'))
+    def dispatch(self, *args, **kwargs):
+        return super(OrderStatusUpdated, self).dispatch(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -108,37 +124,51 @@ class OrderStatusUpdated(UpdateView):
         # This method is called when valid form data has been POSTed. 
         obj = form.save(commit=False) 
         status_id=int(self.request.POST.get('status'))
-        obj.status = OrderStatus.objects.get(id=status_id)
+        obj.status = StatusMaster.objects.get(id=status_id)
         obj.save()
         return HttpResponse(True)
 
     def post(self,request, *args, **kwargs):
         get_id = self.get_object().id
+        exist_status_id=self.get_object().status.id
         status_id=int(self.request.POST.get('status'))
-        obj_stat_instance = OrderStatus.objects.get(id=status_id)
-        Orders.objects.filter(id=get_id).update(status=obj_stat_instance)
-        #messages.success(self.request, 'Order status Updated!')
-        return HttpResponse(obj_stat_instance.name)
+        if exist_status_id != status_id:
+            obj_stat_instance = StatusMaster.objects.get(id=status_id)
+            Orders.objects.filter(id=get_id).update(status=obj_stat_instance)
+            now = datetime.datetime.now()
+            odl=OrderDeliveryLogs(order_id=get_id,order_status=obj_stat_instance,order_status_details="status change",log_date=now,user_id=1)
+            odl.save()
+        else:
+            obj_stat_instance = StatusMaster.objects.get(id=status_id)
+        check='<span class="badge bg-primary" style="padding: 3px 8px;line-height: 11px;background-color:'+obj_stat_instance.status_color+' !important">'+obj_stat_instance.name+'</span>'
+        return HttpResponse(check)
 
-class OrderPaymentStatusUpdated(UpdateView):
+class OrderPaymentStatusUpdated(LoginRequiredMixin,UpdateView):
+    login_url  ='wayrem_admin:root'
     model = OrderTransactions
     form_class = OrderUpdatedPaymentStatusForm
     template_name = "orders/update_order_status.html"
     pk_url_kwarg = 'id'
-
+    
+    @method_decorator(role_required('Customer Order Edit'))
+    def dispatch(self, *args, **kwargs):
+        return super(OrderPaymentStatusUpdated, self).dispatch(*args, **kwargs)
+    
     def post(self,request, *args, **kwargs):
         get_id = self.get_object().id
         status_id=int(self.request.POST.get('payment_status'))
-        obj_stat_instance = PaymentStatus.objects.get(id=status_id)
+        obj_stat_instance = StatusMaster.objects.get(id=status_id)
         OrderTransactions.objects.filter(id=get_id).update(payment_status=obj_stat_instance)
         return HttpResponse(obj_stat_instance.name)
 
 
-class OrderInvoiceView(View):
+class OrderInvoiceView(LoginRequiredMixin,View):
+    login_url  ='wayrem_admin:root'
     model = Orders
     template_name = "orders/order_invoice.html"
-    KEY='tax_vat'
-
+    KEY='setting_vat'
+    WAYREM_VAT='wayrem_vat'
+    @method_decorator(role_required('Customer Order View'))
     def get(self, request, id):
         context={}
         context['currency']=CURRENCY
@@ -146,6 +176,7 @@ class OrderInvoiceView(View):
         filename=str(order_id)+".pdf"
         context['order'] =Orders.objects.filter(id=order_id).first()
         context['tax_vat'] =Settings.objects.filter(key=self.KEY).first()
+        context['wayrem_vat'] =Settings.objects.filter(key=self.WAYREM_VAT).first()
         context['order_details'] =OrderDetails.objects.filter(order=order_id)
         context['order_transaction']=OrderTransactions.objects.filter(order=order_id).first()
         html_template =render_to_string(self.template_name, context)
@@ -156,18 +187,23 @@ class OrderInvoiceView(View):
         return response
         #return render(request, self.template_name,context)
 
-class OrderUpdateView(DetailView):
+class OrderUpdateView(LoginRequiredMixin,DetailView):
+    login_url  ='wayrem_admin:root'
     model = Orders
     template_name = "orders/order_page.html"        
     context_object_name = 'order'
     KEY='tax_vat'
+    
+    @method_decorator(role_required('Customer Order Edit'))
+    def dispatch(self, *args, **kwargs):
+        return super(OrderUpdateView, self).dispatch(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         order_id=self.get_object().id
         context['order_details'] =OrderDetails.objects.filter(order=order_id)
         context['tax_vat'] =Settings.objects.filter(key=self.KEY).first()
-        context['order_timeline']=OrderDeliveryLogs.objects.filter(order=order_id).order_by('-id')
+        context['order_timeline']=OrderDeliveryLogs.objects.filter(order=order_id).order_by('id')
         context['order_transaction']=OrderTransactions.objects.filter(order=order_id).first()
         duplicaterequest=[]
         duplicaterequest=self.request.GET.copy()
@@ -176,4 +212,6 @@ class OrderUpdateView(DetailView):
         context['status_form']=OrderStatusDetailForm(duplicaterequest)
         context['payment_status_form']=OrderUpdatedPaymentStatusForm(duplicaterequest)
         context['currency']=CURRENCY
+        context['PAYMENT_STATUS_CONFIRM']=PAYMENT_STATUS_CONFIRM
+        context['PAYMENT_STATUS_DECLINED']=PAYMENT_STATUS_DECLINED
         return context

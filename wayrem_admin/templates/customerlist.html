@@ -141,8 +141,8 @@ endcomment %}
                                 </button>
                                 <div class="dropdown-menu">
                                     <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#customerModal{{user.id}}"><span class="fas fa-eye mr-2"></span>View Details</a>
-                                    <a class="dropdown-item" href=""><span class="fas fa-edit mr-2"></span>Edit</a>
-                                    <a class="dropdown-item text-danger"  data-bs-toggle="modal" data-bs-target="#deleteModal{{suppl.id}}" href="#"> <span class="fas fa-trash-alt mr-2"></span>Remove</a>
+                                    {% comment %} <a class="dropdown-item" href=""><span class="fas fa-edit mr-2"></span>Edit</a> {% endcomment %}
+                                    {% comment %} <a class="dropdown-item text-danger"  data-bs-toggle="modal" data-bs-target="#deleteModal{{suppl.id}}" href="#"> <span class="fas fa-trash-alt mr-2"></span>Remove</a> {% endcomment %}
                                 </div>
                             </div>
 
@@ -227,7 +227,8 @@ endcomment %}
     $(document).ready(function () {
         oTable = $('#filtertable').DataTable({
             dom: 'rt',
-            'columnDefs': [{ 'orderable': false, 'targets': 3 }],
+            pageLength : 25,
+            'columnDefs': [{ 'orderable': false, 'targets': [3,]}],
             "oLanguage": {
                 "oPaginate": {
                     "sNext": '<i class="fas fa-arrow-circle-right text-primary"></i>',

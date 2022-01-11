@@ -68,12 +68,25 @@ def inst_Category(value):
 
 
 def inst_Ingridient(value):
-    return Ingredients.objects.get(id=value)
+    return Ingredients.objects.filter(id=value).first()
 
 
 def inst_Product(value):
-    return Products.objects.get(id=value)
+    return Products.objects.filter(id=value).first()
+
+
+def inst_Product_SKU(value):
+    return Products.objects.filter(SKU=value).first()
+
+
+def inst_SupplierProduct(value):
+    return SupplierProducts.objects.filter(id=value).first()
 
 
 def inst_Unit(value):
     return Unit.objects.get(id=value)
+
+
+def inst_Warehouse(value):
+    return Warehouse.objects.get(id=value)
+

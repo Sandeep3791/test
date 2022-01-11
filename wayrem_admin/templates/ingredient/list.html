@@ -58,6 +58,7 @@
     $(document).ready(function () {
         oTable = $('#filtertable').DataTable({
             dom: 'rt',
+            pageLength : 25,
             'columnDefs': [{ 'orderable': false, 'targets': [2] }],
             "oLanguage": {
                 "oPaginate": {

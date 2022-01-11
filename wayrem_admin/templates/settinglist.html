@@ -169,7 +169,8 @@
     $(document).ready(function () {
         oTable = $('#filtertable').DataTable({
             dom: 'rt',
-            'columnDefs': [{ 'orderable': false, 'targets': [3] }],
+            pageLength : 25,
+            'columnDefs': [{ 'orderable': false, 'targets': [2, 3] }],
             "oLanguage": {
                 "oPaginate": {
                     "sNext": '<i class="fas fa-arrow-circle-right text-primary"></i>',

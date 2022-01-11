@@ -1,5 +1,5 @@
 import json
-from wayrem_admin.models import Notification, User, Supplier, Products
+from wayrem_admin.models import Notification, User, Supplier, Products, PurchaseOrder
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.views.generic import RedirectView
@@ -40,5 +40,9 @@ def dashboard(request):
 
 def notification_delete(request, id):
     notify = Notification.objects.filter(id=id).first()
+    a = notify.message
+    po_no = list(filter(lambda word: word[0:3]=='PO/', a.split()))[0]
+    po = PurchaseOrder.objects.filter(po_name=po_no).first()
+    po_id = po.po_id
     notify.delete()
-    return redirect('wayrem_admin:polist')
+    return redirect('wayrem_admin:viewpo',po_id)

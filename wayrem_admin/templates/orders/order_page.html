@@ -63,7 +63,7 @@
 {% endblock head %} {% block content %}
 
 <div class="topbar_pages dashboard_content_inner">
-    <h4 class="text-title">Order Details</h4>
+    <h4 class="text-title">Orders</h4>
     <div class="breadcrumb-section">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb padding-left-0">
@@ -74,35 +74,39 @@
         </nav>
     </div>
 </div>
-<div class="d-flex justify-content-between w-100 flex-wrap my-4 dashboard_content_inner">
-    <div class="mb-3 mb-lg-0">
+<div class="row d-flex justify-content-between w-100 flex-wrap my-4 dashboard_content_inner">
+    <div class="mb-3 mb-lg-0 col-xl-6 col-lg-6 col-md-6 col-6">
         <h1 class="h4">#{{order.ref_number}}</h1>
         <p class="mb-0">{{order.order_date|date:"d M Y "}} at {{order.order_date|date:"H:i"}} from Online Store</p>
     </div>
 
 </div>
-<div class="alert-container"></div>
+
 <!--============================================-->
 <div class="row dashboard_content_inner">
     <div class="col-12 col-xl-8">
         <div class="card card-body bg-white border-light shadow-sm mb-4">
-            <h2 class="h5 mb-4"> <span><img src="/static/assets/img/paid.svg" alt=""></span> Full filled (1)</h2>
+            <h2 class="h5 mb-4"> <span><img src="/static/assets/img/paid.svg" alt=""></span> Product</h2>
 
             {% for order_detail in order_details %}
 
             <div class="row">
                 <div class="col-2">
-                    <img class="rounded-1" src="/media/{{order_detail.product.primary_image}}" width="50%" height="100%" alt="" style="object-fit: cover;">
+                    {% if order_detail.product.product_image %}
+                    <img class="rounded-1" src="{{order_detail.product.primary_image.url}}" width="50%" height="100%" alt="" style="object-fit: cover;">
+                    {% else %}
+                    <img class="rounded-1" src="" width="50%" height="100%" alt="no image" style="object-fit: cover;">
+                    {% endif %}
                 </div>
                 <div class="col-4">
                     <h6 class="mb-0">{{order_detail.product_name}}</h6>
                     <h6 class="text-muted">SKU: {{order_detail.sku}}</h6>
                 </div>
                 <div class="col-3 d-flex justify-content-end">
-                    <h6>SAR {{order_detail.price|add_product_items:order_detail.item_margin}} x {{order_detail.quantity}}</h6>
+                    <h6>{{currency}} {{order_detail.price|add_product_items:order_detail.item_margin}} x {{order_detail.quantity}}</h6>
                 </div>
                 <div class="col-3 d-flex justify-content-end">
-                    <h6>SAR {% widthratio order_detail.price|add_product_items:order_detail.item_margin 1 order_detail.quantity %}</h6>
+                    <h6>{{currency}} {% widthratio order_detail.price|add_product_items:order_detail.item_margin 1 order_detail.quantity %}</h6>
                 </div>
             </div>
             {% endfor %}
@@ -139,6 +143,7 @@
         </div>
     </div>
 </div>
+<!--============================================-->
 
 {% endblock content %}
 
@@ -166,20 +171,40 @@ $(".orderstatus").on("click",".order_submit_success",function(e){
 
     })
 
+$(".orderpayment").on("click",".modelpaymentstatus",function(e){
+    e.preventDefault();
+    pst=$(this).data("id");
+    $("#id_payment_status").val(pst);
+    $('#modal-default').modal('show');
+})
+
+
+function orderformsubmit(){
+    url = $(".orderpayment .oderform").attr("action")
+        type_form=$(".orderpayment .oderform").attr("method")
+        data_ser=$(".orderpayment .oderform").serialize()
+    $.ajax({
+            type: type_form,
+            url: url,
+            data: data_ser,
+            cache: false,
+            success: function (data) {
+                    location.reload();
+            }
+        })
+}
+
+$(".orderpaymentupdate").click(function() {
+    orderformsubmit();
+});
+
+
 $(".orderpayment").on("click",".order_submit_success",function(e){
-        url = $(".orderpayment .oderform").attr("action")
+         url = $(".orderpayment .oderform").attr("action")
 		 type_form=$(".orderpayment .oderform").attr("method")
 	   	 data_ser=$(".orderpayment .oderform").serialize()
          order_status_id=$(this).data("id");
-         $.ajax({
-	            type: type_form,
-	            url: url,
-	            data: data_ser,
-	            cache: false,
-	            success: function (data) {
-                        location.reload();
-                }
-         })
+         
     })
 
 

@@ -119,6 +119,7 @@ def product_view_one(request):
         'supplier': request.session.get("supplier", None),
         'dis_abs_percent': request.session.get("dis_abs_percent", None),
         'description': request.session.get("description", None),
+        'warehouse': request.session.get("warehouse", None),
         'quantity': request.session.get("quantity", None),
         'weight': request.session.get("weight", None),
         'weight_unit': request.session.get("weight_unit", None),
@@ -159,6 +160,7 @@ def product_view_one(request):
                 "dis_abs_percent")
             request.session["description"] = form.cleaned_data.get(
                 "description")
+            request.session["warehouse"] = form.cleaned_data.get("warehouse")
             request.session["quantity"] = form.cleaned_data.get("quantity")
             request.session["quantity_unit"] = form.cleaned_data.get(
                 "quantity_unit")
@@ -230,10 +232,13 @@ def product_images(request):
             obj.package_count = request.session.get("package_count", None)
             obj.wayrem_margin = request.session.get("wayrem_margin", None)
             obj.margin_unit = request.session.get("margin_unit", None)
+            obj.warehouse = inst_Warehouse(request.session.get("warehouse", None))
             obj.primary_image = primary_image
             obj.save()
             obj.category.set(category)
             obj.supplier.set(supplier)
+            inventory_dict={'inventory_type_id':1,'quantity':request.session.get("quantity", None),'product_id':obj.id,'warehouse_id':request.session.get("warehouse", None),'po_id':None,'supplier_id':None,'order_id':None,'order_status':None}
+            Inventory().insert_inventory(inventory_dict)
             images = request.FILES.getlist('images')
             for image in images:
                 img_obj = Images()
@@ -263,6 +268,7 @@ class ProductList(ListView):
         return filtered_list.qs
 
     def get_context_data(self, **kwargs):
+        delSession(self.request)
         context = super(ProductList, self).get_context_data(**kwargs)
         context['filter_form'] = ProductAdvanceFilterForm(self.request.GET)
         return context

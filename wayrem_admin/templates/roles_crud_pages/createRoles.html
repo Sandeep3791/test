@@ -30,7 +30,7 @@
               <h2 class="h5 mb-4 add-role-title">Add Role</h2>            
           {% endif %}
             <!-- <h1 class="h3 mb-4">Create Roles</h1> -->
-                <form method="post" enctype="multipart/form-data" class="role-permission" novalidate>
+                <form method="post" enctype="multipart/form-data" class="role-permission" >
                   {% csrf_token %}
                   <div class="row">
                     {% for field in form %}
@@ -624,7 +624,115 @@
                                           </div>
                                         </div>
                                       </div>
-      
+
+                                       <div class="col-md-12">
+                                                        <div class="role-block ml-3">
+                                                          <div class="row">
+                                                            <div class="col-md-2">
+                                                                <h5>Inventory </h5>
+                                                              </div>
+                                                              
+                                                              <div class="col-md-2">
+                                                                <div class="form-group">
+   
+                                                                  <input class="form-check-input" type="checkbox" id="inventoriesCheck" name="permission" value="Inventory Add"   {% if 'Inventory Add' in form.permission.value %}{% if 'Inventory Edit' in form.permission.value %}{% if 'Inventory Delete' in form.permission.value %}{% if 'Inventory View' in form.permission.value %}checked{% endif %}{% endif %}{% endif %}{% endif %} >
+
+                                                                  <label class="bmd-label-floating" >
+                                                                    All
+                                                                  </label>
+                                                                </div>
+                                                              </div>
+                                                              
+                                                            <div class="col-md-2">
+                                                              <div class="form-group">
+                                                                <input class="form-check-input inventory" type="checkbox" name="permission" value="Inventory Add" class="reportsone" id="flexCheckRolesAdd" {% if 'Inventory Add' in form.permission.value %}checked{% endif %}>
+                                                                <a>
+                                                                  <i class="mx-1 text-info fas fa-plus-circle" style="color: rgb(44, 178, 255); font-size:16px;"></i>
+                                                                </a>
+                                                              </div>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                              <div class="form-group">
+                                                                <input class="form-check-input inventory" type="checkbox" name="permission" value="Inventory Edit" id="flexCheckRolesEdit" {% if 'Inventory Edit' in form.permission.value %}checked{% endif %}>
+                                                                <a>
+                                                                  <i class="mx-1 fas fa-pen" style="color:#192d4d; font-size:15px;"></i>
+                                                                </a>
+                                                              </div>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                              <div class="form-group">
+                                                                <input class="form-check-input inventory" type="checkbox" name="permission" value="Inventory Delete" id="flexCheckRolesDelete" {% if 'Inventory Delete' in form.permission.value %}checked{% endif %}>
+                                                                <a>
+                                                                  <i class="mx-1 fas fa-trash text-danger" style="font-size:15px;"></i>
+                                                                </a>
+                                                              </div>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                              <div class="form-group">
+                                                                <input class="form-check-input inventory" type="checkbox" name="permission" value="Inventory View" id="flexCheckRolesView" {% if 'Inventory View' in form.permission.value %}checked{% endif %}>
+                                                               <a>
+                                                                  <i class="mx-1 fas fa-eye text-success" style="font-size:15px;"></i>
+                                                                </a>
+                                                              </div>
+                                                            </div>
+                                                            
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                      <div class="col-md-12">
+                                                        <div class="role-block ml-3">
+                                                          <div class="row">
+                                                            <div class="col-md-2">
+                                                                <h5>Warehouses </h5>
+                                                              </div>
+                                                              
+                                                              <div class="col-md-2">
+                                                                <div class="form-group">
+   
+                                                                  <input class="form-check-input" type="checkbox" id="warehousesCheck" name="permission" value="Warehouse Add"  {% if 'Warehouse Add' in form.permission.value %}{% if 'Warehouse Edit' in form.permission.value %}{% if 'Warehouse Delete' in form.permission.value %}{% if 'Warehouse View' in form.permission.value %}checked{% endif %}{% endif %}{% endif %}{% endif %} >
+
+                                                                  <label class="bmd-label-floating" >
+                                                                    All
+                                                                  </label>
+                                                                </div>
+                                                              </div>
+                                                              
+                                                            <div class="col-md-2">
+                                                              <div class="form-group">
+                                                                <input class="form-check-input warehouse" type="checkbox" name="permission" value="Warehouse Add" class="reportsone" id="flexCheckRolesAdd" {% if 'Warehouse Add' in form.permission.value %}checked{% endif %}>
+                                                                <a>
+                                                                  <i class="mx-1 text-info fas fa-plus-circle" style="color: rgb(44, 178, 255); font-size:16px;"></i>
+                                                                </a>
+                                                              </div>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                              <div class="form-group">
+                                                                <input class="form-check-input warehouse" type="checkbox" name="permission" value="Warehouse Edit" id="flexCheckRolesEdit" {% if 'Warehouse Edit' in form.permission.value %}checked{% endif %}>
+                                                                <a>
+                                                                  <i class="mx-1 fas fa-pen" style="color:#192d4d; font-size:15px;"></i>
+                                                                </a>
+                                                              </div>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                              <div class="form-group">
+                                                                <input class="form-check-input warehouse" type="checkbox" name="permission" value="Warehouse Delete" id="flexCheckRolesDelete" {% if 'Warehouse Delete' in form.permission.value %}checked{% endif %}>
+                                                                <a>
+                                                                  <i class="mx-1 fas fa-trash text-danger" style="font-size:15px;"></i>
+                                                                </a>
+                                                              </div>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                              <div class="form-group">
+                                                                <input class="form-check-input warehouse" type="checkbox" name="permission" value="Warehouse View" id="flexCheckRolesView" {% if 'Warehouse View' in form.permission.value %}checked{% endif %}>
+                                                               <a>
+                                                                  <i class="mx-1 fas fa-eye text-success" style="font-size:15px;"></i>
+                                                                </a>
+                                                              </div>
+                                                            </div>
+                                                            
+                                                          </div>
+                                                        </div>
+                                                      </div>
                                     
       
                                   </div>
@@ -896,6 +1004,51 @@
       $("#reportscheck").prop("checked", false);
     }
   });
+
+$(".inventory").click(function(){
+    if($(".inventory").length == $(".inventory:checked").length) {
+      $("#inventoriesCheck").prop("checked", true);
+    } else {
+      $("#inventoriesCheck").prop("checked", false);
+    }
+})
+
+ $("#inventoriesCheck").change(function(){
+     var checked = $(this).is(':checked');
+     if(checked){
+       $(".inventory").each(function(){
+         $(this).prop("checked",true);
+       });
+     }else{
+       $(".inventory").each(function(){
+         $(this).prop("checked",false);
+       });
+     }
+   });
+
+$(".warehouse").click(function(){
+    if($(".warehouse").length == $(".warehouse:checked").length) {
+      $("#warehousesCheck").prop("checked", true);
+    } else {
+      $("#warehousesCheck").prop("checked", false);
+    }
+})
+
+ $("#warehousesCheck").change(function(){
+     var checked = $(this).is(':checked');
+     if(checked){
+       $(".warehouse").each(function(){
+         $(this).prop("checked",true);
+       });
+     }else{
+       $(".warehouse").each(function(){
+         $(this).prop("checked",false);
+       });
+     }
+   });
+
+
+  
 });
 </script>
 

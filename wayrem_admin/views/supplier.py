@@ -23,7 +23,7 @@ from django.db import connection
 import uuid
 import datetime
 from wayrem_admin.models import PurchaseOrder, EmailTemplateModel
-from wayrem_admin.services import inst_Product, inst_Supplier
+from wayrem_admin.services import inst_Product, inst_Supplier, inst_SupplierProduct
 
 from wayrem_admin.views.product import product
 
@@ -182,8 +182,8 @@ def supplier_products_po(request):
         for prod in products:
             product_id = prod
             product_qty = 1
-            name = inst_Product(product_id)
-            x = (product_id, name.name, product_qty)
+            name = inst_SupplierProduct(product_id)
+            x = (product_id, name.product_name, name.price, product_qty)
             request.session['products'].append(x)
             po = request.session['products']
         request.session['supplier_company'] = supplier

@@ -1,0 +1,42 @@
+from django.forms import Textarea,ModelChoiceField
+from django import forms
+from django.forms import widgets
+from wayrem_admin.models import Inventory
+from wayrem_admin.models import Products
+
+
+def get_products():
+    obj = Products.objects.all()
+    choice = [(r.id, r.SKU) for r in obj]
+    return choice
+
+
+choices_products = get_products
+
+class InventoryForm(forms.ModelForm):
+    product = forms.ChoiceField(choices=choices_products, widget=forms.Select(attrs={'class': 'form-select'}))
+    class Meta:
+        model = Inventory
+        fields = ("product", "quantity",'inventory_type')
+        widgets = {
+            'quantity': forms.NumberInput(attrs={'min':'0', 'step':'1', 'class': 'form-control'}),
+
+        }
+
+class InventoryViewForm(forms.ModelForm):
+    product = forms.ChoiceField(choices=choices_products, widget=forms.Select(attrs={'class': 'form-select', 'readonly': 'true'}))
+
+    get_inventory_type_dict = {0: 'Starting', 1: 'Received', 2: 'Shipped'}
+    inventory_type_choices = list(get_inventory_type_dict.items())
+    inventory_type = forms.ChoiceField(choices=inventory_type_choices, widget=forms.Select(attrs={'class':'form-select'}))
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        self.fields['inventory_type'].widget.attrs['readonly'] = True
+    class Meta:
+        model = Inventory
+        fields = ( "product","quantity", 'inventory_type')
+        readonly_fields = ["product"]
+        widgets = {
+            'quantity': forms.NumberInput(attrs={'min':'0', 'step':'1', 'class': 'form-control'}),
+        }

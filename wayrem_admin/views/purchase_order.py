@@ -1,3 +1,4 @@
+import datetime
 from django.urls import reverse_lazy
 from django.views.generic import ListView
 from wayrem_admin.filters.po_filters import *
@@ -9,11 +10,11 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.views import View
-from wayrem_admin.models import EmailTemplateModel, Notification, PurchaseOrder, Products, Settings, Supplier
-from wayrem_admin.forms import POForm, POEditForm, POSearchFilter
+from wayrem_admin.models import EmailTemplateModel, Notification, PO_log, PurchaseOrder, Products, Settings, Supplier, SupplierProducts, Inventory
+from wayrem_admin.forms import POForm, POEditForm, POSearchFilter, POFormOne
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from wayrem_admin.services import inst_Product, inst_Supplier, delSession, send_email
+from wayrem_admin.services import inst_Product, inst_Supplier, inst_SupplierProduct, inst_Product_SKU, delSession, send_email
 from wayrem_admin.export import generate_excel
 from wayrem_admin.decorators import role_required
 import datetime
@@ -35,18 +36,21 @@ def po_excel(request):
 @role_required('Purchase Order Add')
 def create_purchase_order(request):
     if request.method == "POST":
-        form = POForm(request.POST or None, request.FILES or None)
+        form = POFormOne(request.POST or None, request.FILES or None)
         if 'addMore' in request.POST:
             if request.POST['product_name'] == "":
                 messages.error(request, "Please select a Product!")
                 return redirect("wayrem_admin:create_po")
             product_id = request.POST['product_name']
             product_qty = request.POST['product_qty']
-            name = inst_Product(product_id)
-            if any(e[0] == product_id for e in request.session.get('products')):
-                messages.error(request, "Product already added!")
-                return redirect("wayrem_admin:create_po")
-            x = (product_id, name.name, product_qty)
+            name = inst_SupplierProduct(product_id)
+            try:
+                if any(e[0] == product_id for e in request.session.get('products')):
+                    messages.error(request, "Product already added!")
+                    return redirect("wayrem_admin:create_po")
+            except:
+                pass
+            x = (product_id, name.product_name, name.price, product_qty)
             request.session['products'].append(x)
             po = request.session['products']
             request.session['supplier_company'] = request.POST['supplier_name']
@@ -97,18 +101,23 @@ def create_purchase_order(request):
             print("Invalid")
     else:
         if request.GET.get('supplier'):
-            form = POForm(
+            form = POFormOne(
                 initial={"supplier_name": request.GET.get('supplier')})
         elif request.GET.get('product'):
-            form = POForm(
-                initial={"product_name": request.GET.get('product')})
+            prod = request.GET.get('product')
+            try:
+                p = SupplierProducts.objects.filter(SKU=prod).first().id
+            except:
+                p = 1
+            form = POFormOne(
+                initial={"product_name": p})
         elif request.GET.get('suprod'):
             x = request.GET.get('suprod').split('?')
-            product = Products.objects.get(SKU=x[1])
-            form = POForm(
+            product = SupplierProducts.objects.filter(SKU=x[1]).first()
+            form = POFormOne(
                 initial={"product_name": product, "supplier_name": x[0]})
         else:
-            form = POForm(
+            form = POFormOne(
                 initial={'supplier_name': request.session.get('supplier_company', None)})
     po = request.session.get('products', None)
     return render(request, "po_step1.html", {'form': form, "po": po})
@@ -146,13 +155,15 @@ def create_po_step2(request):
             for product, quantity in zip(products, quantities):
                 supp_po_id = uuid.uuid4()
                 print(product)
-                product_instance = inst_Product(product)
+                supplier_product_instance = inst_SupplierProduct(product)
+                product_instance = inst_Product_SKU(
+                    supplier_product_instance.SKU)
                 product_qty = quantity
                 with connection.cursor() as cursor:
                     cursor.execute(
                         f"INSERT INTO {supplier_name.username}_purchase_order(`id`,`po_id`,`po_name`,`product_qty`,`product_name_id`,`supplier_name_id`) VALUES('{supp_po_id}','{po_id}','{po_name}','{quantity}','{product_instance.id}','{x.replace('-','')}');")
-                    product_order = PurchaseOrder(
-                        po_id=po_id, po_name=po_name, product_name=product_instance, product_qty=product_qty, supplier_name=supplier_name)
+                product_order = PurchaseOrder(
+                    po_id=po_id, po_name=po_name, product_name=product_instance, supplier_product=supplier_product_instance, product_qty=product_qty, supplier_name=supplier_name)
                 product_order.save()
             # sending notification
             setting = Settings.objects.filter(
@@ -202,6 +213,8 @@ class POList(ListView):
         return filtered_list.qs
 
     def get_context_data(self, **kwargs):
+        delSession(self.request)
+        self.request.session['products'] = []
         context = super(POList, self).get_context_data(**kwargs)
         context['filter_form'] = POSearchFilter(self.request.GET)
         return context
@@ -254,7 +267,13 @@ class DeletePO(View):
 @role_required('Purchase Order View')
 def viewpo(request, id=None):
     po = PurchaseOrder.objects.filter(po_id=id).all()
-    return render(request, 'purchase_order/view_po.html', {"po": po})
+    poname = po[0].po_name
+    po_log = PO_log.objects.filter(po=poname).order_by('id')
+    context = {
+        "po": po,
+        "po_logs": po_log
+    }
+    return render(request, 'purchase_order/view_po.html', context)
 
 
 @role_required('Purchase Order Edit')
@@ -311,20 +330,25 @@ def po_pdf(request):
     # response['Content-Disposition'] = 'inline; attachment; filename=po' + \
     #     str(datetime.datetime.now())+'.pdf'
     # response['Content-Transfer-Encoding'] = 'binary'
-    po = PurchaseOrder.objects.filter(po_id=id).all()
+    wayrem_vat = Settings.objects.filter(key="wayrem_vat").first()
+    wayrem_vat = wayrem_vat.value
+    po = PurchaseOrder.objects.filter(po_id=id, available=True).all()
     vat = Settings.objects.filter(key="setting_vat").first()
     vat = vat.value
     net_value = []
     vat_amt = []
     net_amt = []
     for item in po:
-        total_amt = float(item.product_name.price)*float(item.product_qty)
-        vat_float = (total_amt/100) * float(vat[:-1])
+        total_amt = float(item.supplier_product.price)*float(item.product_qty)
+        vat_float = (total_amt/100) * float(vat)
         net = total_amt+vat_float
         net_value.append(total_amt)
         vat_amt.append(vat_float)
         net_amt.append(net)
+    delivery_date = (po[0].created_at + datetime.timedelta(days=5))
     context = {
+        'wayrem_vat': wayrem_vat,
+        'delivery_on': delivery_date,
         'data': po,
         'vat': vat,
         'total_items': len(po),
@@ -354,5 +378,17 @@ def po_pdf(request):
     # return response
 
 
-def confirm_delivery(request):
-    pass
+
+def load_supplier_products(request):
+    supplier = request.GET.get('supplier')
+    products = SupplierProducts.objects.filter(supplier_id=supplier)
+    return render(request, 'po_supplier_products.html', {'products': products})
+
+
+def confirm_delivery(request,id=None):
+    po = PurchaseOrder.objects.filter(po_id=id,available=True)
+    Inventory().po_inventory_process(id)
+    po_name = po[0].po_name
+    po_log = PO_log(po=po_name,status="confirm delivered")
+    po_log.save()
+    return redirect('wayrem_admin:polist')
