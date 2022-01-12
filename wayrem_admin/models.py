@@ -246,6 +246,8 @@ class Products(models.Model):
     name = models.CharField(max_length=255, null=True, blank=False)
     SKU = models.CharField(max_length=255, null=True, blank=False, unique=True)
     category = models.ManyToManyField('Categories', null=True)
+    master_category = models.CharField(max_length=100, null=True, blank=True)
+
     # product_code = models.CharField(max_length=255, null=True)
     meta_key = models.TextField()
     feature_product = models.BooleanField(default=True)

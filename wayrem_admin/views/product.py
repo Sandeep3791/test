@@ -422,43 +422,79 @@ def delete_product_images(request):
 def import_products(request):
     if request.method == "POST":
         try:
+            last_id = Products.objects.last().id
             file = request.FILES["myFileInput"]
             engine = create_engine(
                 f"mysql+pymysql://{DATABASES['default']['USER']}:{DATABASES['default']['PASSWORD']}@{DATABASES['default']['HOST']}/{DATABASES['default']['NAME']}?charset=utf8")
-            # engine = create_engine(
-            #     "mysql+pymysql://admin:Merlin007#@wayrem.c08qmktlafbu.us-east-1.rds.amazonaws.com/wayrem_8.2?charset=utf8")
-            # df = pd.read_excel('files/ingredients.xlsx')
             con = connect(user=DATABASES['default']['USER'], password=DATABASES['default']['PASSWORD'],
                           host=DATABASES['default']['HOST'], database=DATABASES['default']['NAME'])
-            # con = connect(user="admin", password="Merlin007#",
-            #               host="wayrem.c08qmktlafbu.us-east-1.rds.amazonaws.com", database="wayrem_8.2")
 
             df_products = pd.read_sql(
                 'select * from products_master', con)
+            df_products['SKU'] = df_products['SKU'].astype(int)
+            df_units = pd.read_sql('select * from unit_master', con)
+            del df_units['is_active']
             df = pd.read_excel(file)
-            # df.columns = df.iloc[0]
-            # df = df.drop(0)
+            count_df = len(df)
+            ids = [i for i in range(last_id+1, last_id+count_df+1)]
+            dict = {'sku': 'SKU',
+                    'product name': 'name',
+                    'manufacturer name': 'mfr_name',
+                    'manufacture date': 'date_of_mfg',
+                    'expiry date': 'date_of_exp',
+                    'weight unit': 'weight_unit',
+                    'quantity unit': 'quantity_unit',
+                    'discount unit': 'dis_abs_percent',
+                    'wayrem margin': 'wayrem_margin',
+                    'margin unit': 'margin_unit',
+                    'meta tags': 'meta_key',
+                    'feature product': 'feature_product',
+                    'package count': 'package_count',
+                    'category': 'master_category'}
+            df.rename(columns=dict, inplace=True)
+            df['created_at'] = datetime.now()
+            df['updated_at'] = datetime.now()
+            df['warehouse_id'] = 1
+            df['gs1'] = ""
+            df['primary_image'] = ""
+            df['inventory_starting'] = 0
+            df['inventory_shipped'] = 0
+            df['inventory_cancelled'] = 0
+            df['inventory_onhand'] = 0
+            df['inventory_received'] = df['quantity']
+            df['id'] = ids
+            weight_unit = pd.merge(
+                df, df_units, left_on='weight_unit', right_on='unit_name')
+            weight_unit_id = weight_unit['id_y']
+            quantity_unit = pd.merge(
+                df, df_units, left_on='quantity_unit', right_on='unit_name')
+            quantity_unit_id = quantity_unit['id_y']
+            del df['weight_unit']
+            del df['quantity_unit']
+            df['weight_unit_id'] = weight_unit_id
+            df['quantity_unit_id'] = quantity_unit_id
+
             df = df[df.columns.dropna()]
             df = df.fillna(0)
             df3 = df.merge(df_products, how='outer',
                            indicator=True).loc[lambda x: x['_merge'] == 'left_only']
 
-            ids = []
-            # uuids = []
+            # ids = []
+            # # uuids = []
 
-            for id_counter in range(0, len(df3.index)):
-                # ids.append(str(uuid.uuid4()))
-                df3['ingredients_status'] = 'Active'
-            # for i in ids:
-            #     uuids.append((uuid.UUID(i)).hex)
-            # df3['id'] = uuids
-            df3['created_at'] = datetime.now()
-            df3['updated_at'] = datetime.now()
-            df3 = df3.drop('_merge', axis=1)
+            # for id_counter in range(0, len(df3.index)):
+            #     # ids.append(str(uuid.uuid4()))
+            #     df3['ingredients_status'] = 'Active'
+            # # for i in ids:
+            # #     uuids.append((uuid.UUID(i)).hex)
+            # # df3['id'] = uuids
+            # df3['created_at'] = datetime.now()
+            # df3['updated_at'] = datetime.now()
+            # df3 = df3.drop('_merge', axis=1)
 
-            df3.to_sql('products_master', engine,
-                       if_exists='append', index=False)
-            messages.success(request, "Ingredients imported successfully!")
+            df.to_sql('products_master', engine,
+                      if_exists='append', index=False)
+            messages.success(request, "Products imported successfully!")
             return redirect('wayrem_admin:productlist')
         except:
             messages.error(request, "Please select a valid file!")
