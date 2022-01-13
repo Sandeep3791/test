@@ -473,11 +473,17 @@ def import_products(request):
             del df['quantity_unit']
             df['weight_unit_id'] = weight_unit_id
             df['quantity_unit_id'] = quantity_unit_id
-
-            df = df[df.columns.dropna()]
-            df = df.fillna(0)
-            df3 = df.merge(df_products, how='outer',
-                           indicator=True).loc[lambda x: x['_merge'] == 'left_only']
+            num_rows = len(df)
+            for i in range(num_rows):
+                try:
+                    df.iloc[i:i+1].to_sql(name="products_master",
+                                          con=engine, if_exists='append', index=False)
+                except:
+                    pass
+            # df = df[df.columns.dropna()]
+            # df = df.fillna(0)
+            # df3 = df.merge(df_products, how='outer',
+            #                indicator=True).loc[lambda x: x['_merge'] == 'left_only']
 
             # ids = []
             # # uuids = []
@@ -492,8 +498,8 @@ def import_products(request):
             # df3['updated_at'] = datetime.now()
             # df3 = df3.drop('_merge', axis=1)
 
-            df.to_sql('products_master', engine,
-                      if_exists='append', index=False)
+            # df.to_sql('products_master', engine,
+            #           if_exists='append', index=False)
             messages.success(request, "Products imported successfully!")
             return redirect('wayrem_admin:productlist')
         except:

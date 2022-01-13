@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'wayrem_admin',
     'widget_tweaks',
+    'maintenance_mode',
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -39,6 +40,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'wayrem_admin.middlewares.notification_middleware.NotificationMiddleWare',
+    'maintenance_mode.middleware.MaintenanceModeMiddleware',
 ]
 ROOT_URLCONF = 'wayrem.urls'
 TEMPLATES = [
@@ -181,3 +183,5 @@ CKEDITOR_CONFIGS = {
         'extraPlugins': 'image2,uploadimage'
     },
 }
+# MAINTENANCE_MODE = True
+MAINTENANCE_MODE_IGNORE_IP_ADDRESSES = ("49.36.40.132")

@@ -1,0 +1,104 @@
+{% load static %}
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Wayrem Maintenance</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+</head>
+<style>
+    .container {
+        width: 100%;
+        height: 90vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* overflow: hidden; */
+    }
+    
+    .sub_container {
+        width: 70%;
+    }
+    
+    .maintain_img img {
+        margin: 1rem auto;
+        max-width: 400px;
+    }
+    
+    .maintain_img,
+    .logo,
+    .info_text {
+        text-align: center;
+    }
+    
+    .info_text {
+        width: 50%;
+        margin: auto;
+        font-family: sans-serif;
+    }
+    
+    .info_text p {
+        color: #B2B2B2;
+    }
+    /* Media Query for Mobile Devices */
+    
+    @media (max-width: 480px) {
+        .sub_container {
+            width: 100%;
+        }
+        .info_text {
+            width: 80%;
+            margin: auto;
+            font-family: sans-serif;
+        }
+    }
+    /* Media Query for Mobile Devices */
+    
+    @media (max-width: 480px) {
+        .maintain_img img {
+            margin: 1rem auto;
+            max-width: 240px;
+        }
+    }
+    /* Media Query for low resolution  Tablets, Ipads */
+    
+    @media (min-width: 481px) and (max-width: 767px) {
+        .sub_container {
+            width: 100%;
+        }
+    }
+    /* Media Query for Tablets Ipads portrait mode */
+    
+    @media (min-width: 768px) and (max-width: 1024px) {
+        .container {
+            height: 100vh;
+        }
+        .sub_container {
+            width: 100%;
+        }
+    }
+</style>
+
+<body>
+    <div class="container">
+        <div class="sub_container">
+            <div class="logo"><img src=" {% static 'assets/img/logo/logo.png' %}" alt="wayrem"></div>
+            <div class="maintain_img"><img src="{% static 'assets/img/wayrem_maint.png' %}" alt="wayrem"></div>
+            <div class="info_text">
+                <h2>Under Maintenance</h2>
+                <p>Lorem ipsum dolor, sit amet consectetur adipisicing elit. Esse magni veniam tenetur? Quasi officiis, ad velit quisquam, eius, pariatur nostrum modi est delectus sapiente dolor corporis repellendus quod provident illum.</p>
+            </div>
+        </div>
+    </div>
+    <script src="" async defer></script>
+</body>
+
+</html>
