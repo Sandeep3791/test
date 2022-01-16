@@ -2,24 +2,20 @@
     <div class="d-block mb-4 mb-md-0"></div>
     <div class="btn-toolbar mb-2 mb-md-0">
                 <div class="btn-group">
-                    <button class="btn btn-sm btn-outline-primary" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a class="btn btn-sm btn-outline-primary" type="button" href="{% url 'wayrem_admin:excelproduct' %}">
                         Export
-                    </button>
-                    <button class="btn btn-sm btn-outline-primary" type="button" id="dropdownMenuButton2" onclick="document.getElementById('myFileInput').click()">
+                    </a>
+                    <a href="{% url 'wayrem_admin:import_excel' %}" class="btn btn-sm btn-outline-primary" type="button">
                         Import
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    </a>
+                     {% comment %} <button class="btn btn-sm btn-outline-primary" type="button" id="dropdownMenuButton2" onclick="document.getElementById('myFileInput').click()">
+                        Import
+                    </button> {% endcomment %}
+                    {% comment %} <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                         <li>
                             <a class="dropdown-item" href="{% url 'wayrem_admin:excelproduct' %}"> Export Products </a>
                         </li>
-                        <li>
-                            
-                            <form action="{% url 'wayrem_admin:importproducts' %}" method="POST" enctype="multipart/form-data" >
-                                {% csrf_token %}
-                                <input type="file" class="d-none" name="myFileInput" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onchange="form.submit()" id="myFileInput" />
-                            </form>
-                        </li>
-                    </ul>
+                    </ul>  {% endcomment %}
                 </div>
             </div>
 </div>        

@@ -26,6 +26,7 @@ urlpatterns = [
          views.lowest_deliverytime_supplier, name='lowest_time'),
     path('delete_prodimg/', views.delete_product_images,
          name='delete_product_images'),
+    path('import-excel/', views.import_excel, name="import_excel"),
     path('import-products/', views.import_products, name="importproducts"),
 
 

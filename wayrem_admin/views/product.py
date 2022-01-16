@@ -1,3 +1,4 @@
+from django.core.files.storage import default_storage
 from sqlalchemy import create_engine
 import pandas as pd
 from pymysql import connect
@@ -419,89 +420,106 @@ def delete_product_images(request):
     return HttpResponse("Image Delete Successfully!!")
 
 
-def import_products(request):
+def import_excel(request):
     if request.method == "POST":
-        try:
-            last_id = Products.objects.last().id
-            file = request.FILES["myFileInput"]
-            engine = create_engine(
-                f"mysql+pymysql://{DATABASES['default']['USER']}:{DATABASES['default']['PASSWORD']}@{DATABASES['default']['HOST']}/{DATABASES['default']['NAME']}?charset=utf8")
-            con = connect(user=DATABASES['default']['USER'], password=DATABASES['default']['PASSWORD'],
-                          host=DATABASES['default']['HOST'], database=DATABASES['default']['NAME'])
+        file = request.FILES["myFileInput"]
+        required_cols = ['sku*', 'product name*', 'manufacture date*', 'expiry date*', 'manufacturer name*', 'description', 'weight*', 'weight unit*', 'quantity*',
+                         'quantity unit*', 'price*', 'discount', 'discount unit', 'wayrem_margin', 'margin_unit', 'meta tags', 'feature_product', 'publish', 'package_count']
+        df = pd.read_excel(file)
+        excel_cols = list(df.columns)
+        missing_cols = list(set(required_cols) - set(excel_cols))
+        unwanted_cols = list(set(excel_cols) - set(required_cols))
+        if len(excel_cols) == 19 and required_cols == excel_cols:
+            duplicate_entries = len(df[df.duplicated('sku*')])
+            context = {
+                "duplicate_entries": duplicate_entries
+            }
+            file_name = default_storage.save(file.name, file)
+            request.session['excel_product'] = file_name
+            return render(request, "product/import_product.html", context)
+        else:
+            context = {
+                "missing_columns": missing_cols,
+                "unwanted_columns": unwanted_cols
+            }
+            return render(request, "product/import_product.html", context)
+    delSession(request)
+    return render(request, 'product/import_product.html')
 
-            df_products = pd.read_sql(
-                'select * from products_master', con)
-            df_products['SKU'] = df_products['SKU'].astype(int)
-            df_units = pd.read_sql('select * from unit_master', con)
-            del df_units['is_active']
-            df = pd.read_excel(file)
-            count_df = len(df)
-            ids = [i for i in range(last_id+1, last_id+count_df+1)]
-            dict = {'sku': 'SKU',
-                    'product name': 'name',
-                    'manufacturer name': 'mfr_name',
-                    'manufacture date': 'date_of_mfg',
-                    'expiry date': 'date_of_exp',
-                    'weight unit': 'weight_unit',
-                    'quantity unit': 'quantity_unit',
-                    'discount unit': 'dis_abs_percent',
-                    'wayrem margin': 'wayrem_margin',
-                    'margin unit': 'margin_unit',
-                    'meta tags': 'meta_key',
-                    'feature product': 'feature_product',
-                    'package count': 'package_count',
-                    'category': 'master_category'}
-            df.rename(columns=dict, inplace=True)
-            df['created_at'] = datetime.now()
-            df['updated_at'] = datetime.now()
-            df['warehouse_id'] = 1
-            df['gs1'] = ""
-            df['primary_image'] = ""
-            df['inventory_starting'] = 0
-            df['inventory_shipped'] = 0
-            df['inventory_cancelled'] = 0
-            df['inventory_onhand'] = 0
-            df['inventory_received'] = df['quantity']
-            df['id'] = ids
-            weight_unit = pd.merge(
-                df, df_units, left_on='weight_unit', right_on='unit_name')
-            weight_unit_id = weight_unit['id_y']
-            quantity_unit = pd.merge(
-                df, df_units, left_on='quantity_unit', right_on='unit_name')
-            quantity_unit_id = quantity_unit['id_y']
-            del df['weight_unit']
-            del df['quantity_unit']
-            df['weight_unit_id'] = weight_unit_id
-            df['quantity_unit_id'] = quantity_unit_id
-            num_rows = len(df)
-            for i in range(num_rows):
-                try:
-                    df.iloc[i:i+1].to_sql(name="products_master",
-                                          con=engine, if_exists='append', index=False)
-                except:
-                    pass
-            # df = df[df.columns.dropna()]
-            # df = df.fillna(0)
-            # df3 = df.merge(df_products, how='outer',
-            #                indicator=True).loc[lambda x: x['_merge'] == 'left_only']
 
-            # ids = []
-            # # uuids = []
+def import_products(request):
+    try:
+        file_name = request.session.get('excel_product', None)
+        if file_name is None:
+            messages.error(request, "File is missing. Upload Again!")
+            return redirect('wayrem_admin:import_excel')
+        last_id = Products.objects.last()
+        if last_id:
+            last_id = last_id.id
+        else:
+            last_id = 0
+        # file = request.FILES["myFileInput"]
+        file = default_storage.open(file_name)
+        engine = create_engine(
+            f"mysql+pymysql://{DATABASES['default']['USER']}:{DATABASES['default']['PASSWORD']}@{DATABASES['default']['HOST']}/{DATABASES['default']['NAME']}?charset=utf8")
+        con = connect(user=DATABASES['default']['USER'], password=DATABASES['default']['PASSWORD'],
+                      host=DATABASES['default']['HOST'], database=DATABASES['default']['NAME'])
 
-            # for id_counter in range(0, len(df3.index)):
-            #     # ids.append(str(uuid.uuid4()))
-            #     df3['ingredients_status'] = 'Active'
-            # # for i in ids:
-            # #     uuids.append((uuid.UUID(i)).hex)
-            # # df3['id'] = uuids
-            # df3['created_at'] = datetime.now()
-            # df3['updated_at'] = datetime.now()
-            # df3 = df3.drop('_merge', axis=1)
-
-            # df.to_sql('products_master', engine,
-            #           if_exists='append', index=False)
-            messages.success(request, "Products imported successfully!")
-            return redirect('wayrem_admin:productlist')
-        except:
-            messages.error(request, "Please select a valid file!")
-    return redirect('wayrem_admin:productlist')
+        df_products = pd.read_sql(
+            'select * from products_master', con)
+        df_products['SKU'] = df_products['SKU'].astype(int)
+        df_units = pd.read_sql('select * from unit_master', con)
+        del df_units['is_active']
+        df = pd.read_excel(file)
+        df = df.drop_duplicates(subset="sku*", keep='first', inplace=False)
+        count_df = len(df)
+        ids = [i for i in range(last_id+1, last_id+count_df+1)]
+        dict = {'sku*': 'SKU',
+                'product name*': 'name',
+                'manufacturer name*': 'mfr_name',
+                'manufacture date*': 'date_of_mfg',
+                'expiry date*': 'date_of_exp',
+                'weight unit*': 'weight_unit',
+                'weight*': 'weight',
+                'quantity unit*': 'quantity_unit',
+                'quantity*': 'quantity',
+                'price*': 'price',
+                'discount unit': 'dis_abs_percent',
+                'wayrem margin': 'wayrem_margin',
+                'margin unit': 'margin_unit',
+                'meta tags': 'meta_key',
+                'feature product': 'feature_product',
+                'package count': 'package_count',
+                }
+        df.rename(columns=dict, inplace=True)
+        df['created_at'] = datetime.now()
+        df['updated_at'] = datetime.now()
+        df['warehouse_id'] = 1
+        df['gs1'] = ""
+        df['primary_image'] = ""
+        df['inventory_starting'] = 0
+        df['inventory_shipped'] = 0
+        df['inventory_cancelled'] = 0
+        df['inventory_onhand'] = 0
+        df['inventory_received'] = df['quantity']
+        df['id'] = ids
+        weight_unit = pd.merge(
+            df, df_units, left_on='weight_unit', right_on='unit_name')
+        weight_unit_id = weight_unit['id_y']
+        quantity_unit = pd.merge(
+            df, df_units, left_on='quantity_unit', right_on='unit_name')
+        quantity_unit_id = quantity_unit['id_y']
+        del df['weight_unit']
+        del df['quantity_unit']
+        df['weight_unit_id'] = weight_unit_id
+        df['quantity_unit_id'] = quantity_unit_id
+        df7 = df[~df.SKU.isin(df_products.SKU)]
+        df7.to_sql('products_master', engine,
+                   if_exists='append', index=False)
+        default_storage.delete(file_name)
+        delSession(request)
+        messages.success(request, "Products imported successfully!")
+        return redirect('wayrem_admin:productlist')
+    except:
+        messages.error(request, "Please select a valid file!")
+        return redirect('wayrem_admin:import_excel')

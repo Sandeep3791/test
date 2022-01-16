@@ -69,7 +69,7 @@ WSGI_APPLICATION = 'wayrem.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'wayrem_v2',
+        'NAME': 'prod_test',
         'USER': 'wayremdb_adminuser',
         'PASSWORD': 'r2wXJfUs78NczMFWRXcV',
         'HOST': '15.185.103.226',
@@ -138,6 +138,9 @@ MESSAGE_TAGS = {messages_s.ERROR: 'danger'}
 MEDIA_ROOT = os.path.dirname(
     "/opt/app/wayrem-admin-backend/media/common_folder/")
 MEDIA_URL = '/media/common_folder/'
+# MEDIA_ROOT = os.path.dirname(
+#     "/home/suryaaa/Music/excels/")
+# MEDIA_URL = '/media/'
 ####################################
 ##  CKEDITOR CONFIGURATION ##
 ####################################
