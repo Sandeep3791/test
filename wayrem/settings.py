@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'wayrem_admin',
     'widget_tweaks',
+    'maintenance_mode',
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -40,6 +41,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'wayrem_admin.middlewares.notification_middleware.NotificationMiddleWare',
+    'maintenance_mode.middleware.MaintenanceModeMiddleware',
 ]
 ROOT_URLCONF = 'wayrem.urls'
 TEMPLATES = [
@@ -65,33 +67,33 @@ WSGI_APPLICATION = 'wayrem.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'wayrem_v2',
-#         'USER': 'wayremdb_adminuser',
-#         'PASSWORD': 'r2wXJfUs78NczMFWRXcV',
-#         'HOST': '15.185.103.226',
-#         'PORT': '3306',
-#         'OPTIONS': {
-#             "init_command": "SET foreign_key_checks = 0;",
-#         },
-#     }
-# }
-
 DATABASES = {
-     'default': {
-         'ENGINE': 'django.db.backends.mysql',
-         'NAME': 'wayrem_v1',
-         'USER': 'root',
-         'PASSWORD': '',
-         'HOST': 'localhost',
-         'PORT': '3306',
-         'OPTIONS': {
-             "init_command": "SET foreign_key_checks = 0;",
-         },
-     }
- }
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'prod_test',
+        'USER': 'wayremdb_adminuser',
+        'PASSWORD': 'r2wXJfUs78NczMFWRXcV',
+        'HOST': '15.185.103.226',
+        'PORT': '3306',
+        'OPTIONS': {
+            "init_command": "SET foreign_key_checks = 0;",
+        },
+    }
+}
+
+# DATABASES = {
+#      'default': {
+#          'ENGINE': 'django.db.backends.mysql',
+#          'NAME': 'wayrem_v1',
+#          'USER': 'root',
+#          'PASSWORD': '',
+#          'HOST': 'localhost',
+#          'PORT': '3306',
+#          'OPTIONS': {
+#              "init_command": "SET foreign_key_checks = 0;",
+#          },
+#      }
+#  }
 
 # DATABASES = {
 #     'default': {
@@ -137,6 +139,9 @@ MESSAGE_TAGS = {messages_s.ERROR: 'danger'}
 MEDIA_ROOT = os.path.dirname(
     "/opt/app/wayrem-admin-backend/media/common_folder/")
 MEDIA_URL = '/media/common_folder/'
+# MEDIA_ROOT = os.path.dirname(
+#     "/home/suryaaa/Music/excels/")
+# MEDIA_URL = '/media/'
 ####################################
 ##  CKEDITOR CONFIGURATION ##
 ####################################
@@ -182,3 +187,5 @@ CKEDITOR_CONFIGS = {
         'extraPlugins': 'image2,uploadimage'
     },
 }
+# MAINTENANCE_MODE = True
+# MAINTENANCE_MODE_IGNORE_IP_ADDRESSES = ("49.36.40.132")

@@ -30,10 +30,10 @@ roles_options = (
         'Purchase Order Delete', 'Purchase Order Delete'), ('Purchase Order View', 'Purchase Order View'),
     ('Customer Profile Add', 'Customer Profile Add'), ('Customer Profile Edit', 'Customer Profile Edit'), (
         'Customer Profile Delete', 'Customer Profile Delete'), ('Customer Profile View', 'Customer Profile View'),
-   
+
     ('Customer Order Add', 'Customer Order Add'), ('Customer Order Edit', 'Customer Order Edit'), (
-        'Customer Order Delete', 'Customer Order Delete'), ('Customer Order View', 'Customer Order View'),('Customer Invoice Order', 'Customer Invoice Order'),
-   
+        'Customer Order Delete', 'Customer Order Delete'), ('Customer Order View', 'Customer Order View'), ('Customer Invoice Order', 'Customer Invoice Order'),
+
     ('Finance Add', 'Finance Add'), ('Finance Edit', 'Finance Edit'), ('Finance Delete',
                                                                        'Finance Delete'), ('Finance View', 'Finance View'),
     ('Reports Add', 'Reports Add'), ('Reports Edit', 'Reports Edit'), ('Reports Delete',
@@ -67,7 +67,7 @@ class Roles(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
     role = models.CharField(max_length=50, unique=True)
     permission = MultiSelectField(
-        choices=roles_options, max_length=800, default="Stats")
+        choices=roles_options, max_length=1500, default="Stats")
     content = models.TextField(blank=True, null=True)
     status = models.CharField(max_length=10, choices=status, default='Active')
     created_at = models.DateTimeField(auto_now_add=True)
@@ -227,7 +227,6 @@ class Unit(models.Model):
         db_table = 'unit_master'
 
 
-
 class Warehouse(models.Model):
     code_name = models.CharField(max_length=255)
     address = models.TextField()
@@ -240,7 +239,6 @@ class Warehouse(models.Model):
 
     class Meta:
         db_table = 'warehouse'
-
 
 
 class Products(models.Model):
@@ -395,9 +393,9 @@ class Customer(models.Model):
     email = models.EmailField(blank=False, unique=True, null=True)
     password = models.CharField(max_length=255, null=True)
     contact = models.CharField(max_length=12, null=True, unique=True)
-    city = models.CharField(max_length=500, null=True)
-    country = models.CharField(max_length=500, null=True)
-    address = models.TextField(null=True)
+    # city = models.CharField(max_length=500, null=True)
+    # country = models.CharField(max_length=500, null=True)
+    # address = models.TextField(null=True)
     profile_pic = models.CharField(max_length=500, null=True)
     about = models.TextField(null=True)
     status = models.BooleanField(default=True)
@@ -405,17 +403,27 @@ class Customer(models.Model):
     tax_number = models.BigIntegerField(null=True)
     registration_docs_path = models.CharField(max_length=255, null=True)
     tax_docs_path = models.CharField(max_length=255, null=True)
-    billing_name = models.CharField(max_length=255, null=True)
-    billing_address = models.TextField(null=True)
+    # billing_name = models.CharField(max_length=255, null=True)
+    # billing_address = models.TextField(null=True)
+    delivery_house_no_building_name = models.CharField(
+        max_length=255, null=True)
+    delivery_road_name_Area = models.CharField(max_length=255, null=True)
+    delivery_landmark = models.CharField(max_length=255, null=True)
+    delivery_country = models.CharField(max_length=255, null=True)
+    delivery_region = models.CharField(max_length=255, null=True)
+    delivery_town_city = models.CharField(max_length=255, null=True)
+    billing_house_no_building_name = models.CharField(
+        max_length=255, null=True)
+    billing_road_name_Area = models.CharField(max_length=255, null=True)
+    billing_landmark = models.CharField(max_length=255, null=True)
+    billing_country = models.CharField(max_length=255, null=True)
+    billing_region = models.CharField(max_length=255, null=True)
+    billing_town_city = models.CharField(max_length=255, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'customers_master'
-
-# 6281073150012
-# 6281035000034
-# 69321494000400
 
 
 class Invoice(models.Model):
@@ -506,7 +514,6 @@ class PO_log(models.Model):
         db_table = 'po_logs'
 
 
-
 class InventoryType(models.Model):
     id = models.SmallAutoField(primary_key=True)
     type_name = models.CharField(
@@ -535,39 +542,43 @@ class Inventory(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def po_inventory_process(self,po_id):
-        po_details=PurchaseOrder.objects.filter(po_id=po_id, available=True)
+    def po_inventory_process(self, po_id):
+        po_details = PurchaseOrder.objects.filter(po_id=po_id, available=True)
         for po_detail in po_details:
-            po_detail_dict={'inventory_type_id':2,'quantity':po_detail.product_qty,'product_id':po_detail.product_name.id,'warehouse_id':po_detail.product_name.warehouse.id,'po_id':po_detail.id,'supplier_id':po_detail.supplier_product.supplier_id.id,'order_id':None,'order_status':None}
+            po_detail_dict = {'inventory_type_id': 2, 'quantity': po_detail.product_qty, 'product_id': po_detail.product_name.id, 'warehouse_id': po_detail.product_name.warehouse.id,
+                              'po_id': po_detail.id, 'supplier_id': po_detail.supplier_product.supplier_id.id, 'order_id': None, 'order_status': None}
             # print(po_detail_dict)
             self.insert_inventory(po_detail_dict)
         return 1
 
-    def order_inventory_process(self,order_id):
+    def order_inventory_process(self, order_id):
         # When we place order inventory process to shipping
-        from wayrem_admin.models_orders import Orders ,OrderDetails
-        orders=Orders.objects.filter(id=order_id).first()
-        order_status=orders.status.id
-        order_details=OrderDetails.objects.filter(order=order_id)
+        from wayrem_admin.models_orders import Orders, OrderDetails
+        orders = Orders.objects.filter(id=order_id).first()
+        order_status = orders.status.id
+        order_details = OrderDetails.objects.filter(order=order_id)
         if (order_status == ORDER_STATUS_RECEIVED) or (order_status == ORDER_STATUS_Cancelled):
-           
+
             for order_detail in order_details:
-                inventory_dict={'inventory_type_id':3,'quantity':order_detail.quantity,'product_id':order_detail.product.id,'warehouse_id':order_detail.product.warehouse.id,'po_id':None,'supplier_id':None,'order_id':order_id,'order_status':order_status}
-                
+                inventory_dict = {'inventory_type_id': 3, 'quantity': order_detail.quantity, 'product_id': order_detail.product.id,
+                                  'warehouse_id': order_detail.product.warehouse.id, 'po_id': None, 'supplier_id': None, 'order_id': order_id, 'order_status': order_status}
+
                 if (order_status == ORDER_STATUS_RECEIVED):
-                    inventory_dict['inventory_type_id']=3
-                    inventory_dict['order_status']=INVENTORY_ORDER_STATUS_ORDERED
+                    inventory_dict['inventory_type_id'] = 3
+                    inventory_dict['order_status'] = INVENTORY_ORDER_STATUS_ORDERED
                 else:
-                    inventory_dict['inventory_type_id']=4
-                    inventory_dict['order_status']=INVENTORY_ORDER_STATUS_CANCELLED
+                    inventory_dict['inventory_type_id'] = 4
+                    inventory_dict['order_status'] = INVENTORY_ORDER_STATUS_CANCELLED
                 self.insert_inventory(inventory_dict)
         else:
             # update inventory table
             if (order_status == ORDER_STATUS_DELIVERING):
-                inventory_lists=Inventory.objects.filter(order_id=order_id,inventory_type_id=3,order_status=INVENTORY_ORDER_STATUS_ORDERED)
+                inventory_lists = Inventory.objects.filter(
+                    order_id=order_id, inventory_type_id=3, order_status=INVENTORY_ORDER_STATUS_ORDERED)
                 for inv_list in inventory_lists:
-                    inv_id=inv_list.id
-                    Inventory.objects.filter(id=inv_id).update(order_status=INVENTORY_ORDER_STATUS_SHIPPED)
+                    inv_id = inv_list.id
+                    Inventory.objects.filter(id=inv_id).update(
+                        order_status=INVENTORY_ORDER_STATUS_SHIPPED)
         return 1
 
     def insert_inventory(self, inventory_dict):

@@ -84,7 +84,9 @@
                                     <!-- Form -->
                                     <div class="col-lg-6">
                                         <div class="form-group mb-4 form-file">
-                                            <label for="description">Product Primary Image<span class="text-danger"></span> </label>
+                                            <label for="description">Product Primary Image <span class="text-danger">*</span>  <span class="text-danger"> <em> {{form.primary_image.errors | striptags}}
+                                            </em>
+                                        </span></label>
                                             {{form.primary_image}}
                                             <label class="form-file-label" for="id_primary_image">
                                                     <span class="form-file-text">Choose file...</span>
@@ -99,7 +101,9 @@
                                      <!-- Form -->
                                     <div class="col-lg-6">
                                         <div class="form-group mb-4 form-file multiple">
-                                            <label for="description">Product Image <span class="text-danger"></span> 
+                                            <label for="description">Product Image <span class="text-danger">*</span>  <span class="text-danger"> <em> {{form.primary_image.errors | striptags}}
+                                            </em>
+                                        </span></span> 
                                             </label>
                                             {{form.images}} 
                                             <label class="form-file-label" for="customFile">

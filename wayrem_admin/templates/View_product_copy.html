@@ -598,8 +598,9 @@
                                         </em>
                                     </span></label>
                                     <div class="input-group">
-                                        
+                                        {% if image %}
                                         <img src="{{image.url}}" style="height:200px" class='me-5'>
+                                        {% endif %}
 
                                         <div class="input-group" id="metaKey_error_message" style="color: #d12525;"></div>
                                     </div>

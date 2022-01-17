@@ -2,14 +2,20 @@
     <div class="d-block mb-4 mb-md-0"></div>
     <div class="btn-toolbar mb-2 mb-md-0">
                 <div class="btn-group">
-                    <button class="button button1 export_file dropdown-toggle btn btn-sm btn-outline-primary" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a class="btn btn-sm btn-outline-primary" type="button" href="{% url 'wayrem_admin:excelproduct' %}">
                         Export
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    </a>
+                    <a href="{% url 'wayrem_admin:import_excel' %}" class="btn btn-sm btn-outline-primary" type="button">
+                        Import
+                    </a>
+                     {% comment %} <button class="btn btn-sm btn-outline-primary" type="button" id="dropdownMenuButton2" onclick="document.getElementById('myFileInput').click()">
+                        Import
+                    </button> {% endcomment %}
+                    {% comment %} <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
                         <li>
-                            <a class="dropdown-item exportorders" href="/orders/excel_export/"> Export Orders </a>
+                            <a class="dropdown-item" href="{% url 'wayrem_admin:excelproduct' %}"> Export Products </a>
                         </li>
-                    </ul>
+                    </ul>  {% endcomment %}
                 </div>
             </div>
 </div>        

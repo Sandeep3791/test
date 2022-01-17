@@ -60,6 +60,7 @@ class StatusMaster(models.Model):
         app_label = "wayrem_admin"
         db_table = 'status_master'
 
+
 class OrderDetails(models.Model):
     order = models.ForeignKey('Orders', models.DO_NOTHING)
     sku = models.CharField(max_length=100)

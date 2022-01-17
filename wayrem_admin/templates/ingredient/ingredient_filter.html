@@ -7,7 +7,7 @@
                 </button>
                 <form action="{% url 'wayrem_admin:importingredients' %}" method="POST" enctype="multipart/form-data" >
                     {% csrf_token %}
-                    <input type="file" name="myFileInput" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onchange="form.submit()" id="myFileInput" />
+                    <input type="file" class="d-none" name="myFileInput" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" onchange="form.submit()" id="myFileInput" />
                 </form>
             </div>
             </div>

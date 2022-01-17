@@ -30,18 +30,18 @@
               <h2 class="h5 mb-4 add-role-title">Add Role</h2>            
           {% endif %}
             <!-- <h1 class="h3 mb-4">Create Roles</h1> -->
-                <form method="post" enctype="multipart/form-data" class="role-permission" novalidate>
+                <form method="post" enctype="multipart/form-data" class="role-permission" >
                   {% csrf_token %}
                   <div class="row">
                     {% for field in form %}
                       <div class="{% if field.name == 'status' or field.name == 'role' %}col-md-6 mt-2{% else %}col-md-12 mt-2{% endif %}">
                       {% comment %} <span class="text-danger"><em>{{ field.errors }}</em></span> {% endcomment %}
                         <div class="{% if field.name == 'permission' %}permission-clss{% else %}form-group{% endif %}">
-                              
+                          <label class="mt-4">{{ field.label_tag }}</label>  
                             {% if field.name == 'permission'%} 
                             <span class="text-danger"><em>{{ field.errors|striptags }}</em></span> 
                           
-                                <label class="mt-4">{{ field.label_tag }}</label>
+                                
                                   <div class="row">
 
                                     {% comment %} {% for permission in field %}
@@ -58,7 +58,7 @@
                                             </div>
 
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="All">
 
                                                 <input class="form-check-input" type="checkbox" id="usercheck" name="permission" value="User Add" id="flexCheckReportAdd" {% if 'User Add' in form.permission.value %}{% if 'User Edit' in form.permission.value %}{% if 'User Delete' in form.permission.value %}{% if 'User View' in form.permission.value %}checked{% endif %}{% endif %}{% endif %}{% endif %}>
 
@@ -69,7 +69,7 @@
                                             </div>
 
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="Add">
 
                                                 <input class="User form-check-input" type="checkbox" name= "permission" value="User Add" id="flexCheckuserAdd" {% if 'User Add' in form.permission.value %}checked{% endif %}>
 
@@ -80,7 +80,7 @@
                                               </div>
                                             </div>
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="edit">
 
                                                 <input class="User form-check-input" type="checkbox" name= "permission" value="User Edit" id="flexCheckuserEdit" {% if 'User Edit' in form.permission.value %}checked{% endif %}>
 
@@ -92,7 +92,7 @@
                                               </div>
                                             </div>
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="Delete">
 
                                                 
 
@@ -106,7 +106,7 @@
                                               </div>
                                             </div>
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="View">
 
                                                 <input class="User form-check-input" type="checkbox" name= "permission" value="User View" id="flexCheckuserView" {% if 'User View' in form.permission.value %}checked{% endif %}>
 
@@ -134,7 +134,7 @@
                                               </div>
 
                                               <div class="col-md-2">
-                                                <div class="form-group">
+                                                <div class="form-group" title="All">
 
                                                 <input class="form-check-input" type="checkbox" id="rolescheck" name="permission" value="Roles Add" id="flexCheckReportAdd" {% if 'Roles Add' in form.permission.value %}{% if 'Roles Edit' in form.permission.value %}{% if 'Roles Delete' in form.permission.value %}{% if 'Roles View' in form.permission.value %}checked{% endif %}{% endif %}{% endif %}{% endif %}>
 
@@ -146,7 +146,7 @@
                                               </div>
 
                                               <div class="col-md-2">
-                                                <div class="form-group">
+                                                <div class="form-group"  title="Add">
                                                   <input class="Roles form-check-input" type="checkbox" name= "permission" value="Roles Add" id="flexCheckBranchEdit" {% if 'Roles Add' in form.permission.value %}checked{% endif %}>
                                                   <a>
                                                   <i class="mx-1 text-info fas fa-plus-circle" style="color: rgb(44, 178, 255); font-size:16px;"></i>
@@ -154,7 +154,7 @@
                                                 </div>
                                               </div>
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="edit">
                                                 <input class="Roles form-check-input" type="checkbox" name= "permission" value="Roles Edit" id="flexCheckBranchEdit" {% if 'Roles Edit' in form.permission.value %}checked{% endif %}>
                                                 <a>
                                                   <i class="mx-1 text-primary fas fa-pen" style="color:#192d4d; font-size:15px;"></i>
@@ -162,7 +162,7 @@
                                               </div>
                                             </div>
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="Delete">
                                                 <input class="Roles form-check-input" type="checkbox" name= "permission" value="Roles Delete" id="flexCheckBranchDelete" {% if 'Roles Delete' in form.permission.value %}checked{% endif %}>
                                                 <a>
                                                   <i class="mx-1 fas fa-trash text-danger" style="font-size:15px;"></i>
@@ -170,7 +170,7 @@
                                               </div>
                                             </div>
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="View">
                                                 <input class="Roles form-check-input" type="checkbox" name="permission" value="Roles View" id="flexCheckBranchView" {% if 'Roles View' in form.permission.value %}checked{% endif %}>
                                                 <a>
                                                   <i class="mx-1 fas fa-eye text-success" style="font-size:15px;"></i>
@@ -192,7 +192,7 @@
                                               </div>
                                               
                                               <div class="col-md-2">
-                                                <div class="form-group">
+                                                <div class="form-group" title="All">
 
                                                   <input class="form-check-input" type="checkbox" id="categorycheck" name="permission" value="Categories Add" id="flexCheckReportAdd" {% if 'Categories Add' in form.permission.value %}{% if 'Categories Edit' in form.permission.value %}{% if 'Categories Delete' in form.permission.value %}{% if 'Categories View' in form.permission.value %}checked{% endif %}{% endif %}{% endif %}{% endif %}>
 
@@ -204,7 +204,7 @@
                                               </div>
                                               
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="Add">
                                                 <input class="Category form-check-input" type="checkbox" name="permission" value="Categories Add" id="flexCheckAppointmentAdd" {% if 'Categories Add' in form.permission.value %}checked{% endif %}>
                                                 <a>
                                                   <i class="mx-1 text-info fas fa-plus-circle" style="color: rgb(44, 178, 255); font-size:16px;"></i>
@@ -212,7 +212,7 @@
                                               </div>
                                             </div>
                                             <div class="col-md-2">
-                                              <div class="form-group"> 
+                                              <div class="form-group" title="edit"> 
                                                 <input class="Category form-check-input" type="checkbox" name="permission" value="Categories Edit" id="flexCheckAppointmentEdit" {% if 'Categories Edit' in form.permission.value %}checked{% endif %}>
                                                 <a>
                                                   <i class="mx-1 text-primary fas fa-pen" style="color:#192d4d; font-size:15px;"></i>
@@ -220,7 +220,7 @@
                                               </div>
                                             </div>
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="Delete">
                                                 <input class="Category form-check-input" type="checkbox" name="permission" value="Categories Delete" id="flexCheckAppointmentDelete" {% if 'Categories Delete' in form.permission.value %}checked{% endif %}>
                                                 <a>
                                                   <i class="mx-1 fas fa-trash text-danger" style="font-size:15px;"></i>
@@ -228,7 +228,7 @@
                                               </div>
                                             </div>
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="View">
                                                 <input class="Category form-check-input" type="checkbox" name="permission" value="Categories View" id="flexCheckAppointmentView" {% if 'Categories View' in form.permission.value %}checked{% endif %}>
                                                 <a>
                                                   <i class="mx-1 fas fa-eye text-success" style="font-size:15px;"></i>
@@ -248,7 +248,7 @@
                                               </div>
                                               
                                               <div class="col-md-2">
-                                                <div class="form-group">
+                                                <div class="form-group" title="All">
 
                                                   <input class="form-check-input" type="checkbox" id='productcheck' name="permission" value="Products Add" id="flexCheckReportAdd" {% if 'Products Add' in form.permission.value %}{% if 'Products Edit' in form.permission.value %}{% if 'Products Delete' in form.permission.value %}{% if 'Products View' in form.permission.value %}checked{% endif %}{% endif %}{% endif %}{% endif %}>
 
@@ -259,7 +259,7 @@
                                               </div>
                                               
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="Add">
                                                 <input class="Product form-check-input" type="checkbox" name="permission" value="Products Add" id="flexCheckReportAdd" {% if 'Products Add' in form.permission.value %}checked{% endif %}>
                                                 <a>
                                                   <i class="mx-1 text-info fas fa-plus-circle" style="color: rgb(44, 178, 255); font-size:16px;"></i>
@@ -267,7 +267,7 @@
                                               </div>
                                             </div>
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="edit">
                                                 <input class="Product form-check-input" type="checkbox" name="permission" value="Products Edit" id="flexCheckReportEdit" {% if 'Products Edit' in form.permission.value %}checked{% endif %}>
                                                 <a>
                                                   <i class="mx-1 text-primary fas fa-pen" style="color:#192d4d; font-size:15px;"></i>
@@ -275,7 +275,7 @@
                                               </div>
                                             </div>
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="Delete">
                                                 <input class="Product form-check-input" type="checkbox" name="permission" value="Products Delete" id="flexCheckReportDelete" {% if 'Products Delete' in form.permission.value %}checked{% endif %}>
                                                 <a>
                                                   <i class="mx-1 fas fa-trash text-danger" style="font-size:15px;"></i>
@@ -283,7 +283,7 @@
                                               </div>
                                             </div>
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="View">
                                                 <input class="Product form-check-input" type="checkbox" name="permission" value="Products View" id="flexCheckReportView" {% if 'Products View' in form.permission.value %}checked{% endif %}>
                                                 <a>
                                                   <i class="mx-1 fas fa-eye text-success" style="font-size:15px;"></i>
@@ -302,7 +302,7 @@
                                               </div>
                                               
                                               <div class="col-md-2">
-                                                <div class="form-group">
+                                                <div class="form-group" title="All">
 
                                                   <input class="form-check-input" type="checkbox" id="suppliercheck" name="permission" value="Supplier Add" id="flexCheckReportAdd" {% if 'Supplier Add' in form.permission.value %}{% if 'Supplier Edit' in form.permission.value %}{% if 'Supplier Delete' in form.permission.value %}{% if 'Supplier View' in form.permission.value %}checked{% endif %}{% endif %}{% endif %}{% endif %} >
 
@@ -313,7 +313,7 @@
                                               </div>
                                               
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="Add">
                                                 <input class="Supplier form-check-input" type="checkbox" name="permission" value="Supplier Add" id="flexCheckPatientAdd" {% if 'Supplier Add' in form.permission.value %}checked{% endif %}>
                                                 <a>
                                                   <i class="mx-1 text-info fas fa-plus-circle" style="color: rgb(44, 178, 255); font-size:16px;"></i>
@@ -321,7 +321,7 @@
                                               </div>
                                             </div>
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="edit">
                                                 <input class="Supplier form-check-input" type="checkbox" name="permission" value="Supplier Edit" id="flexCheckPatientEdit" {% if 'Supplier Edit' in form.permission.value %}checked{% endif %}>
                                                 <a>
                                                   <i class="mx-1 text-primary fas fa-pen" style="color:#192d4d; font-size:15px;"></i>
@@ -329,7 +329,7 @@
                                               </div>
                                             </div>
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="Delete">
                                                 <input class="Supplier form-check-input" type="checkbox" name="permission" value="Supplier Delete" id="flexCheckPatientDelete" {% if 'Supplier Delete' in form.permission.value %}checked{% endif %}>
                                                 <a>
                                                   <i class="mx-1 fas fa-trash text-danger" style="font-size:15px;"></i>
@@ -337,7 +337,7 @@
                                               </div>
                                             </div>
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="View">
                                                 <input class="Supplier form-check-input" type="checkbox" name="permission" value="Supplier View" id="flexCheckPatientView" {% if 'Supplier View' in form.permission.value %}checked{% endif %}>
                                                 <a>
                                                   <i class="mx-1 fas fa-eye text-success" style="font-size:15px;"></i>
@@ -357,7 +357,7 @@
                                               </div>
                                             
                                               <div class="col-md-2">
-                                                <div class="form-group">
+                                                <div class="form-group" title="All">
 
                                                   <input class="form-check-input" type="checkbox" id="purchasecheck" name="permission" value="Purchase Order Add" id="flexCheckReportAdd" {% if 'Purchase Order Add' in form.permission.value %}{% if 'Purchase Order Edit' in form.permission.value %}{% if 'Purchase Order Delete' in form.permission.value %}{% if 'Purchase Order View' in form.permission.value %}checked{% endif %}{% endif %}{% endif %}{% endif %} >
 
@@ -368,7 +368,7 @@
                                               </div>
                                               
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="Add">
                                                 <input class="Purchase form-check-input" type="checkbox" name="permission" value="Purchase Order Add" id="flexCheckRolesAdd" {% if 'Purchase Order Add' in form.permission.value %}checked{% endif %}>
                                                 <a>
                                                   <i class="mx-1 text-info fas fa-plus-circle" style="color: rgb(44, 178, 255); font-size:16px;"></i>
@@ -376,7 +376,7 @@
                                               </div>
                                             </div>
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="edit">
                                                 <input class="Purchase form-check-input" type="checkbox" name="permission" value="Purchase Order Edit" id="flexCheckRolesEdit" {% if 'Purchase Order Edit' in form.permission.value %}checked{% endif %}>
                                                 <a>
                                                   <i class="mx-1 text-primary fas fa-pen" style="color:#192d4d; font-size:15px;"></i>
@@ -384,7 +384,7 @@
                                               </div>
                                             </div>
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="Delete">
                                                 <input class="Purchase form-check-input" type="checkbox" name="permission" value="Purchase Order Delete" id="flexCheckRolesDelete" {% if 'Purchase Order Delete' in form.permission.value %}checked{% endif %}>
                                                 <a>
                                                   <i class="mx-1 fas fa-trash text-danger" style="font-size:15px;"></i>
@@ -392,7 +392,7 @@
                                               </div>
                                             </div>
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="View">
                                                 <input class="Purchase form-check-input" type="checkbox" name="permission" value="Purchase Order View" id="flexCheckRolesView" {% if 'Purchase Order View' in form.permission.value %}checked{% endif %}>
                                                 <a>
                                                   <i class="mx-1 fas fa-eye text-success" style="font-size:15px;"></i>
@@ -412,7 +412,7 @@
                                               </div>
                                               
                                               <div class="col-md-2">
-                                                <div class="form-group">
+                                                <div class="form-group" title="All">
 
                                                   <input class="form-check-input" type="checkbox" id="customercheck" name="permission" value="Customer Profile Add" id="flexCheckReportAdd" {% if 'Customer Profile Add' in form.permission.value %}{% if 'Customer Profile Edit' in form.permission.value %}{% if 'Customer Profile Delete' in form.permission.value %}{% if 'Customer Profile View' in form.permission.value %}checked{% endif %}{% endif %}{% endif %}{% endif %} >
 
@@ -423,7 +423,7 @@
                                               </div>
                                               
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="Add">
                                                 <input class="Customer form-check-input" type="checkbox" name="permission" value="Customer Profile Add" id="flexCheckRolesAdd" {% if 'Customer Profile Add' in form.permission.value %}checked{% endif %}>
                                                 <a>
                                                   <i class="mx-1 text-info fas fa-plus-circle" style="color: rgb(44, 178, 255); font-size:16px;"></i>
@@ -431,7 +431,7 @@
                                               </div>
                                             </div>
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="edit">
                                                 <input class="Customer form-check-input" type="checkbox" name="permission" value="Customer Profile Edit" id="flexCheckRolesEdit" {% if 'Customer Profile Edit' in form.permission.value %}checked{% endif %}>
                                                 <a>
                                                   <i class="mx-1 text-primary fas fa-pen" style="color:#192d4d; font-size:15px;"></i>
@@ -439,7 +439,7 @@
                                               </div>
                                             </div>
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="Delete">
                                                 <input class="Customer form-check-input" type="checkbox" name="permission" value="Customer Profile Delete" id="flexCheckRolesDelete" {% if 'Customer Profile Delete' in form.permission.value %}checked{% endif %}>
                                                 <a>
                                                   <i class="mx-1 fas fa-trash text-danger" style="font-size:15px;"></i>
@@ -447,7 +447,7 @@
                                               </div>
                                             </div>
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="View">
                                                 <input class="Customer form-check-input" type="checkbox" name="permission" value="Customer Profile View" id="flexCheckRolesView" {% if 'Customer Profile View' in form.permission.value %}checked{% endif %}>
                                                 <a>
                                                   <i class="mx-1 fas fa-eye text-success" style="font-size:15px;"></i>
@@ -467,7 +467,7 @@
                                               </div>
                                             
                                               <div class="col-md-2">
-                                                <div class="form-group">
+                                                <div class="form-group" title="All">
                                             
                                                   <input class="form-check-input" type="checkbox" id="ordercheck" name="permission" value="Customer Order Add" id="flexCheckReportAdd" {% if 'Customer Order Add' in form.permission.value %}{% if 'Customer Order Edit' in form.permission.value %}{% if 'Customer Order Delete' in form.permission.value %}{% if 'Customer Order View' in form.permission.value %}checked{% endif %}{% endif %}{% endif %}{% endif %} >
                                           
@@ -479,7 +479,7 @@
                                               </div>
                                               
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="Add">
                                                 <input class="Order form-check-input" type="checkbox" name="permission" value="Customer Order Add" id="flexCheckRolesAdd" {% if 'Customer Order Add' in form.permission.value %}checked{% endif %}>
                                                 <a>
                                                   <i class="mx-1 text-info fas fa-plus-circle" style="color: rgb(44, 178, 255); font-size:16px;"></i>
@@ -487,7 +487,7 @@
                                               </div>
                                             </div>
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="edit">
                                                 <input class="Order form-check-input" type="checkbox" name="permission" value="Customer Order Edit" id="flexCheckRolesEdit" {% if 'Customer Order Edit' in form.permission.value %}checked{% endif %}>
                                                 <a>
                                                   <i class="mx-1 fas fa-pen" style="color:#192d4d; font-size:15px;"></i>
@@ -495,7 +495,7 @@
                                               </div>
                                             </div>
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="Delete">
                                                 <input class="Order form-check-input" type="checkbox" name="permission" value="Customer Order Delete" id="flexCheckRolesDelete" {% if 'Customer Order Delete' in form.permission.value %}checked{% endif %}>
                                                 <a>
                                                   <i class="mx-1 fas fa-trash text-danger" style="font-size:15px;"></i>
@@ -503,7 +503,7 @@
                                               </div>
                                             </div>
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="View">
                                                 <input class="Order form-check-input" type="checkbox" name="permission" value="Customer Order View" id="flexCheckRolesView" {% if 'Customer Order View' in form.permission.value %}checked{% endif %}>
                                                 <a>
                                                   <i class="mx-1 fas fa-eye text-success" style="font-size:15px;"></i>
@@ -523,7 +523,7 @@
                                               </div>
                                               
                                               <div class="col-md-2">
-                                                <div class="form-group">
+                                                <div class="form-group" title="All">
 
                                                   <input class="form-check-input" type="checkbox" id="financecheck" name="permission" value="Finance Add" id="flexCheckReportAdd" {% if 'Finance Add' in form.permission.value %}{% if 'Finance Edit' in form.permission.value %}{% if 'Finance Delete' in form.permission.value %}{% if 'Finance View' in form.permission.value %}checked{% endif %}{% endif %}{% endif %}{% endif %}  >
 
@@ -534,7 +534,7 @@
                                               </div>
                                               
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="Add">
                                                 <input class="Finance form-check-input" type="checkbox" name="permission" value="Finance Add" id="flexCheckRolesAdd" {% if 'Finance Add' in form.permission.value %}checked{% endif %}>
                                                 <a>
                                                   <i class="mx-1 text-info fas fa-plus-circle" style="color: rgb(44, 178, 255); font-size:16px;"></i>
@@ -542,7 +542,7 @@
                                               </div>
                                             </div>
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="edit">
                                                 <input class="Finance form-check-input" type="checkbox" name="permission" value="Finance Edit" id="flexCheckRolesEdit" {% if 'Finance Edit' in form.permission.value %}checked{% endif %}>
                                                 <a>
                                                   <i class="mx-1 fas fa-pen" style="color:#192d4d; font-size:15px;"></i>
@@ -550,7 +550,7 @@
                                               </div>
                                             </div>
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="Delete">
                                                 <input class="Finance form-check-input" type="checkbox" name="permission" value="Finance Delete" id="flexCheckRolesDelete" {% if 'Finance Delete' in form.permission.value %}checked{% endif %}>
                                                 <a>
                                                   <i class="mx-1 fas fa-trash text-danger" style="font-size:15px;"></i>
@@ -558,7 +558,7 @@
                                               </div>
                                             </div>
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="View">
                                                 <input class="Finance form-check-input" type="checkbox" name="permission" value="Finance View" id="flexCheckRolesView" {% if 'Finance View' in form.permission.value %}checked{% endif %}>
                                                 <a>
                                                   <i class="mx-1 fas fa-eye text-success" style="font-size:15px;"></i>
@@ -578,7 +578,7 @@
                                               </div>
                                               
                                               <div class="col-md-2">
-                                                <div class="form-group">
+                                                <div class="form-group" title="All">
 
                                                   <input class="form-check-input" type="checkbox" id="reportscheck" name="permission" value="Reports Add" id="flexCheckReportAdd"  {% if 'Reports Add' in form.permission.value %}{% if 'Reports Edit' in form.permission.value %}{% if 'Reports Delete' in form.permission.value %}{% if 'Reports View' in form.permission.value %}checked{% endif %}{% endif %}{% endif %}{% endif %} >
 
@@ -589,7 +589,7 @@
                                               </div>
                                               
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="Add">
                                                 <input class="Reports form-check-input" type="checkbox" name="permission" value="Reports Add" class="reportsone" id="flexCheckRolesAdd" {% if 'Reports Add' in form.permission.value %}checked{% endif %}>
                                                 <a>
                                                   <i class="mx-1 text-info fas fa-plus-circle" style="color: rgb(44, 178, 255); font-size:16px;"></i>
@@ -597,7 +597,7 @@
                                               </div>
                                             </div>
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="edit">
                                                 <input class="Reports form-check-input" type="checkbox" name="permission" value="Reports Edit" id="flexCheckRolesEdit" {% if 'Reports Edit' in form.permission.value %}checked{% endif %}>
                                                 <a>
                                                   <i class="mx-1 text-primary fas fa-pen" style="color:#192d4d; font-size:15px;"></i>
@@ -605,7 +605,7 @@
                                               </div>
                                             </div>
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="Delete">
                                                 <input class="Reports form-check-input" type="checkbox" name="permission" value="Reports Delete" id="flexCheckRolesDelete" {% if 'Reports Delete' in form.permission.value %}checked{% endif %}>
                                                 <a>
                                                   <i class="mx-1 fas fa-trash text-danger" style="font-size:15px;"></i>
@@ -613,7 +613,7 @@
                                               </div>
                                             </div>
                                             <div class="col-md-2">
-                                              <div class="form-group">
+                                              <div class="form-group" title="View">
                                                 <input class="Reports form-check-input" type="checkbox" name="permission" value="Reports View" id="flexCheckRolesView" {% if 'Reports View' in form.permission.value %}checked{% endif %}>
                                               <a>
                                                   <i class="mx-1 fas fa-eye text-success" style="font-size:15px;"></i>
