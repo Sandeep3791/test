@@ -431,7 +431,9 @@ def import_excel(request):
         unwanted_cols = list(set(excel_cols) - set(required_cols))
         if len(excel_cols) == 19 and required_cols == excel_cols:
             duplicate_entries = len(df[df.duplicated('sku*')])
+            total_entries = len(df)
             context = {
+                "total_entries": total_entries,
                 "duplicate_entries": duplicate_entries
             }
             file_name = default_storage.save(file.name, file)

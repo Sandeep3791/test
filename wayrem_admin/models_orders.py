@@ -2,6 +2,7 @@ from django.db import models
 from .models import *
 import random
 
+
 def create_new_ref_number():
     not_unique = True
     while not_unique:
@@ -10,10 +11,12 @@ def create_new_ref_number():
             not_unique = False
     return str(unique_ref)
 
+
 class Orders(models.Model):
-    ref_number = models.CharField(unique=True, max_length=100,editable=False)
+    ref_number = models.CharField(unique=True, max_length=100, editable=False)
     customer = models.ForeignKey('wayrem_admin.Customer', models.DO_NOTHING)
-    status = models.ForeignKey('StatusMaster', models.DO_NOTHING, db_column='status')
+    status = models.ForeignKey(
+        'StatusMaster', models.DO_NOTHING, db_column='status')
     sub_total = models.FloatField()
     item_discount = models.FloatField()
     item_margin = models.FloatField()
@@ -34,7 +37,8 @@ class Orders(models.Model):
     order_email = models.CharField(max_length=100)
     order_date = models.DateTimeField()
     order_shipped = models.IntegerField()
-    order_tracking_number = models.CharField(max_length=80, blank=True, null=True)
+    order_tracking_number = models.CharField(
+        max_length=80, blank=True, null=True)
     content = models.TextField(blank=True, null=True)
 
     def __str__(self):
@@ -97,8 +101,10 @@ class OrderTransactions(models.Model):
     invoices_id = models.IntegerField(blank=True, null=True)
     code = models.CharField(max_length=100)
     order_type = models.SmallIntegerField()
-    payment_mode = models.ForeignKey('StatusMaster', models.DO_NOTHING,db_column='payment_mode_id',related_name='ae_payment_mode')
-    payment_status = models.ForeignKey('StatusMaster', models.DO_NOTHING,db_column='payment_status_id',related_name='ae_payment_status')
+    payment_mode = models.ForeignKey(
+        'StatusMaster', models.DO_NOTHING, db_column='payment_mode_id', related_name='ae_payment_mode')
+    payment_status = models.ForeignKey(
+        'StatusMaster', models.DO_NOTHING, db_column='payment_status_id', related_name='ae_payment_status')
     created_at = models.DateTimeField()
     updated_at = models.DateTimeField(blank=True, null=True)
     content = models.TextField(blank=True, null=True)
@@ -107,99 +113,116 @@ class OrderTransactions(models.Model):
         app_label = "wayrem_admin"
         db_table = 'order_transactions'
 
+
 class ShippingLoginextNotification(models.Model):
     id = models.BigAutoField(primary_key=True)
     notification_type = models.CharField(max_length=255, blank=True, null=True)
     reference_id = models.CharField(max_length=255, blank=True, null=True)
-    shipment_request_no = models.CharField(max_length=255, blank=True, null=True)
-    shipment_request_dispatch_date = models.CharField(max_length=255, blank=True, null=True)
-    shipment_request_type = models.CharField(max_length=255, blank=True, null=True)
+    shipment_request_no = models.CharField(
+        max_length=255, blank=True, null=True)
+    shipment_request_dispatch_date = models.CharField(
+        max_length=255, blank=True, null=True)
+    shipment_request_type = models.CharField(
+        max_length=255, blank=True, null=True)
     service_type = models.CharField(max_length=255, blank=True, null=True)
-    pickup_account_code = models.CharField(max_length=255, blank=True, null=True)
+    pickup_account_code = models.CharField(
+        max_length=255, blank=True, null=True)
     pickup_address_id = models.CharField(max_length=255, blank=True, null=True)
-    deliver_account_code = models.CharField(max_length=255, blank=True, null=True)
-    deliver_address_id = models.CharField(max_length=255, blank=True, null=True)
-    return_account_code = models.CharField(max_length=255, blank=True, null=True)
+    deliver_account_code = models.CharField(
+        max_length=255, blank=True, null=True)
+    deliver_address_id = models.CharField(
+        max_length=255, blank=True, null=True)
+    return_account_code = models.CharField(
+        max_length=255, blank=True, null=True)
     return_address_id = models.CharField(max_length=255, blank=True, null=True)
     client_code = models.CharField(max_length=255, blank=True, null=True)
     orderrequest_timestamp = models.DateTimeField(blank=True, null=True)
-    order_no=models.CharField(max_length=255, blank=True, null=True)
-    awb_number=models.CharField(max_length=255, blank=True, null=True)
-    order_state=models.CharField(max_length=255, blank=True, null=True)
-    order_leg=models.CharField(max_length=255, blank=True, null=True)
+    order_no = models.CharField(max_length=255, blank=True, null=True)
+    awb_number = models.CharField(max_length=255, blank=True, null=True)
+    order_state = models.CharField(max_length=255, blank=True, null=True)
+    order_leg = models.CharField(max_length=255, blank=True, null=True)
 
-    scan_status=models.CharField(max_length=255, blank=True, null=True)
-    branch_name=models.CharField(max_length=255, blank=True, null=True)
+    scan_status = models.CharField(max_length=255, blank=True, null=True)
+    branch_name = models.CharField(max_length=255, blank=True, null=True)
     scan_time = models.DateTimeField(blank=True, null=True)
 
-    delivery_medium_name=models.CharField(max_length=255, blank=True, null=True)
-    delivery_medium_user_name=models.CharField(max_length=255, blank=True, null=True)
-    carrier_name=models.CharField(max_length=255, blank=True, null=True)
-    carrier_branch_name=models.CharField(max_length=255, blank=True, null=True)
-    phone_number=models.CharField(max_length=255, blank=True, null=True)
-    trip_name=models.CharField(max_length=255, blank=True, null=True)
-    acceptedorder_timestamp=models.DateTimeField(blank=True, null=True)
-    track_url=models.CharField(max_length=255, blank=True, null=True)
-    pickup_end_date=models.DateTimeField(blank=True, null=True)
-    delivery_end_date=models.DateTimeField(blank=True, null=True)
-    reason_of_rejection=models.CharField(max_length=500, blank=True, null=True)
-    rejectedorder_timestamp=models.DateTimeField(blank=True, null=True)
+    delivery_medium_name = models.CharField(
+        max_length=255, blank=True, null=True)
+    delivery_medium_user_name = models.CharField(
+        max_length=255, blank=True, null=True)
+    carrier_name = models.CharField(max_length=255, blank=True, null=True)
+    carrier_branch_name = models.CharField(
+        max_length=255, blank=True, null=True)
+    phone_number = models.CharField(max_length=255, blank=True, null=True)
+    trip_name = models.CharField(max_length=255, blank=True, null=True)
+    acceptedorder_timestamp = models.DateTimeField(blank=True, null=True)
+    track_url = models.CharField(max_length=255, blank=True, null=True)
+    pickup_end_date = models.DateTimeField(blank=True, null=True)
+    delivery_end_date = models.DateTimeField(blank=True, null=True)
+    reason_of_rejection = models.CharField(
+        max_length=100, blank=True, null=True)
+    rejectedorder_timestamp = models.DateTimeField(blank=True, null=True)
 
+    cancellation_time = models.DateTimeField(blank=True, null=True)
+    customer_code = models.CharField(max_length=100, blank=True, null=True)
+    customer_name = models.CharField(max_length=100, blank=True, null=True)
+    reason = models.CharField(max_length=100, blank=True, null=True)
+    reason_cd = models.CharField(max_length=100, blank=True, null=True)
+    cancelled_by = models.CharField(max_length=100, blank=True, null=True)
+    is_cancel_occur_after_pickup_fl = models.IntegerField(
+        blank=True, null=True)
+    delivery_medium_reference_id = models.CharField(
+        max_length=100, blank=True, null=True)
+    location_type = models.CharField(max_length=100, blank=True, null=True)
+    check_in_time = models.CharField(max_length=100, blank=True, null=True)
+    checkin_latitude = models.CharField(max_length=100, blank=True, null=True)
+    checkin_longitude = models.CharField(max_length=100, blank=True, null=True)
+    parent_order_no = models.CharField(max_length=100, blank=True, null=True)
 
-    cancellation_time=models.DateTimeField(blank=True, null=True)
-    customer_code=models.CharField(max_length=500, blank=True, null=True)
-    customer_name=models.CharField(max_length=500, blank=True, null=True)
-    reason=models.CharField(max_length=500, blank=True, null=True)
-    reason_cd=models.CharField(max_length=500, blank=True, null=True)
-    cancelled_by=models.CharField(max_length=500, blank=True, null=True)
-    is_cancel_occur_after_pickup_fl=models.IntegerField(blank=True, null=True)
-    delivery_medium_reference_id=models.CharField(max_length=500, blank=True, null=True)
-    location_type=models.CharField(max_length=500, blank=True, null=True)
-    check_in_time=models.CharField(max_length=500, blank=True, null=True)
-    checkin_latitude=models.CharField(max_length=500, blank=True, null=True)
-    checkin_longitude=models.CharField(max_length=500, blank=True, null=True)
-    parent_order_no=models.CharField(max_length=500, blank=True, null=True)
+    latitude = models.CharField(max_length=100, blank=True, null=True)
+    longitude = models.CharField(max_length=100, blank=True, null=True)
+    order_status = models.CharField(max_length=100, blank=True, null=True)
+    customer_comment = models.CharField(max_length=100, blank=True, null=True)
+    customer_rating = models.CharField(max_length=100, blank=True, null=True)
+    delivery_time = models.CharField(max_length=100, blank=True, null=True)
+    cash_amount = models.CharField(max_length=100, blank=True, null=True)
+    delivery_location_type = models.CharField(
+        max_length=100, blank=True, null=True)
+    transaction_id = models.CharField(max_length=100, blank=True, null=True)
+    actual_cash_amount = models.CharField(
+        max_length=100, blank=True, null=True)
+    payment_mode = models.CharField(max_length=100, blank=True, null=True)
+    recipient_name = models.CharField(max_length=100, blank=True, null=True)
+    payment_sub_type = models.CharField(max_length=100, blank=True, null=True)
+    client_id = models.CharField(max_length=100, blank=True, null=True)
+    recipient_name = models.CharField(max_length=100, blank=True, null=True)
 
-    latitude=models.CharField(max_length=500, blank=True, null=True)
-    longitude=models.CharField(max_length=500, blank=True, null=True)
-    order_status=models.CharField(max_length=100, blank=True, null=True)
-    customer_comment=models.CharField(max_length=500, blank=True, null=True)
-    customer_rating=models.CharField(max_length=500, blank=True, null=True)
-    delivery_time=models.CharField(max_length=500, blank=True, null=True)
-    cash_amount=models.CharField(max_length=500, blank=True, null=True)
-    delivery_location_type=models.CharField(max_length=500, blank=True, null=True)
-    transaction_id=models.CharField(max_length=500, blank=True, null=True)
-    actual_cash_amount=models.CharField(max_length=500, blank=True, null=True)
-    payment_mode=models.CharField(max_length=500, blank=True, null=True)
-    recipient_name=models.CharField(max_length=500, blank=True, null=True)
-    payment_sub_type=models.CharField(max_length=500, blank=True, null=True)
-    client_id=models.CharField(max_length=500, blank=True, null=True)
-    recipient_name=models.CharField(max_length=500, blank=True, null=True)
+    vehicle_number = models.CharField(max_length=200, blank=True, null=True)
+    trip_reference_id = models.CharField(max_length=200, blank=True, null=True)
+    number_of_items = models.CharField(max_length=200, blank=True, null=True)
+    package_weight = models.CharField(max_length=200, blank=True, null=True)
+    package_volume = models.CharField(max_length=200, blank=True, null=True)
+    origin_addr = models.CharField(max_length=200, blank=True, null=True)
+    destination_addr = models.CharField(max_length=200, blank=True, null=True)
+    shipment_order_type_cd = models.CharField(
+        max_length=200, blank=True, null=True)
+    client_node_name = models.CharField(max_length=200, blank=True, null=True)
+    client_node_cd = models.CharField(max_length=200, blank=True, null=True)
+    address = models.CharField(max_length=200, blank=True, null=True)
+    delivery_type = models.CharField(max_length=200, blank=True, null=True)
+    shipment_notes = models.CharField(max_length=200, blank=True, null=True)
+    assignment_method = models.CharField(max_length=200, blank=True, null=True)
 
-    vehicle_number=models.CharField(max_length=200, blank=True, null=True)
-    trip_reference_id=models.CharField(max_length=200, blank=True, null=True)
-    number_of_items=models.CharField(max_length=200, blank=True, null=True)
-    package_weight=models.CharField(max_length=200, blank=True, null=True)
-    package_volume=models.CharField(max_length=200, blank=True, null=True)
-    origin_addr=models.CharField(max_length=200, blank=True, null=True)
-    destination_addr=models.CharField(max_length=200, blank=True, null=True)
-    shipment_order_type_cd=models.CharField(max_length=200, blank=True, null=True)
-    client_node_name=models.CharField(max_length=200, blank=True, null=True)
-    client_node_cd=models.CharField(max_length=200, blank=True, null=True)
-    address=models.CharField(max_length=200, blank=True, null=True)
-    delivery_type=models.CharField(max_length=200, blank=True, null=True)
-    shipment_notes=models.CharField(max_length=200, blank=True, null=True)
-    assignment_method=models.CharField(max_length=200, blank=True, null=True)
-    
-    start_time_window=models.DateTimeField(blank=True, null=True)
-    end_time_window=models.DateTimeField(blank=True, null=True)
-    calculated_start_dt=models.DateTimeField(blank=True, null=True)
-    calculated_end_dt=models.DateTimeField(blank=True, null=True)
+    start_time_window = models.DateTimeField(blank=True, null=True)
+    end_time_window = models.DateTimeField(blank=True, null=True)
+    calculated_start_dt = models.DateTimeField(blank=True, null=True)
+    calculated_end_dt = models.DateTimeField(blank=True, null=True)
     shipment_crate_mapping = models.TextField(blank=True, null=True)
     ordercreate_timestamp = models.DateTimeField(blank=True, null=True)
     ordercreate_timestamp = models.DateTimeField(blank=True, null=True)
     created_at = models.DateTimeField(blank=True, null=True)
     updated_at = models.DateTimeField(blank=True, null=True)
+
     class Meta:
         app_label = "wayrem_admin"
         db_table = 'shipping_loginext_notification'
