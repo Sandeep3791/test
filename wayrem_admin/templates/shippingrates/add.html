@@ -1,0 +1,120 @@
+{% extends "layouts/base.html" %}
+{% block title %} Add Shipping Rates {% endblock %} 
+{% block content %}
+
+<div class="dashboard_content_inner">
+    
+    <div class="topbar_pages">
+        <h4 class="text-title">Add Shipping Rates</h2>
+        <div class="breadcrumb-section">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb padding-left-0">
+                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:emailtemplates' %}"><span class="sidebar-icon"><span class="fas fa-grip-horizontal"></span></span> Email Template</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Add Shipping Rate</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+
+    <div class="justify-content-center form-bg-image mt-5">
+            <div class="col-12 d-flex align-items-center justify-content-center">
+                <div class="mb-4 mb-lg-0 bg-white shadow-sm rounded p-4 p-lg-4 w-100">
+                    <form action="{% url 'wayrem_admin:shippingratesadd' %}" method="POST" enctype="multipart/form-data" validate>
+                {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6 mb-2">
+                            <div>
+                                <label for="name">From Destination (KM)  <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.name.errors | striptags}}</em></span></label>
+                                {{form.from_dest}}
+                                <div class="input-group" id="name_error_message" style="color: #d12525;"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-2">
+                            <div>
+                                <label for="key">To Destination (KM)  <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.key.errors | striptags}}</em></span></label>
+                                {{form.to_dest}}
+                                <div class="input-group" id="key_error_message" style="color: #d12525;"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-2">
+                            <div>
+                                <label for="from_email">Price <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.from_email.errors | striptags}}</em></span></label>
+                                {{form.price}}
+                                <div class="input-group" id="from_email_error_message" style="color: #d12525;"></div>
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                        <a href="{% url 'wayrem_admin:shippingrates' %}"
+                                        class="btn  btn-danger btn-block">Cancel</a>
+                        <button type="submit" class="btn  btn-dark">Save</button>
+                    </div>
+                    </div>
+
+                    
+                            
+                
+                </form>
+                </div>    
+            </div>
+    </div>
+</div>
+{% endblock content %}
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<script>
+     $(function () {
+            var error_n = false;
+            var error_d = false;
+    
+            $("#id_name").focusout(function () {
+                check_name();
+            });
+            $("#id_key").focusout(function () {
+                id_key();
+            });
+
+             $("#id_from_email").focusout(function () {
+                id_from_email();
+            });
+
+            
+
+            function check_name() {
+                var name = $("#id_name").val();
+                if (name !== '') {
+                    $("#name_error_message").hide();
+                    // $("#id_name").css("border-bottom", "2px solid #34F458");
+                } else {
+                    $("#name_error_message").html("Please Enter Name ");
+                    $("#name_error_message").show();
+                    error_n = true;
+                }
+            }
+    
+            function id_key() {
+                var description = $("#id_key").val();
+                if (description !== '') {
+                    $("#key_error_message").hide();
+                    // $("#id_description").css("border-bottom", "2px solid #34F458");
+                } else {
+                    $("#key_error_message").html("Please Enter Key");
+                    $("#key_error_message").show();
+                    error_d = true;
+                }
+            }
+            
+            
+
+   
+
+            
+
+
+    
+        });
+    
+    </script>
+{% endblock javascripts %}

@@ -21,5 +21,7 @@ urlpatterns = [
     path('warehouses/', include('wayrem_admin.urls.warehouse')),
     path('inventories/', include('wayrem_admin.urls.inventory')),
     path('orders/', include('wayrem_admin.urls.order')),
+    path('shipping-rates/', include('wayrem_admin.urls.shippingrates')),
+    path('loginext/', include('wayrem_admin.loginext.urls')),
     path('', views.RootUrlView.as_view(), name='root')
 ]

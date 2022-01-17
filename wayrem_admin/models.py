@@ -636,3 +636,11 @@ class Inventory(models.Model):
 
     class Meta:
         db_table = 'inventory'
+
+class ShippingRates(models.Model):
+    from_dest = models.FloatField()
+    to_dest = models.FloatField()
+    price = models.FloatField()
+
+    class Meta:
+        db_table = 'shipping_rates'
