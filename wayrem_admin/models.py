@@ -419,6 +419,10 @@ class Customer(models.Model):
     billing_country = models.CharField(max_length=255, null=True)
     billing_region = models.CharField(max_length=255, null=True)
     billing_town_city = models.CharField(max_length=255, null=True)
+    deliveryAddress_latitude = models.CharField(max_length=255, null=True)
+    deliveryAddress_longitude = models.CharField(max_length=255, null=True)
+    billlingAddress_Latitude = models.CharField(max_length=255, null=True)
+    billingAddress_longitude = models.CharField(max_length=255, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -647,6 +651,7 @@ class Inventory(models.Model):
 
     class Meta:
         db_table = 'inventory'
+
 
 class ShippingRates(models.Model):
     from_dest = models.FloatField()

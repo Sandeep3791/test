@@ -422,6 +422,7 @@ def delete_product_images(request):
 
 def import_excel(request):
     if request.method == "POST":
+        delSession(request)
         file = request.FILES["myFileInput"]
         required_cols = ['sku*', 'product name*', 'manufacture date*', 'expiry date*', 'manufacturer name*', 'description', 'weight*', 'weight unit*', 'quantity*',
                          'quantity unit*', 'price*', 'discount', 'discount unit', 'wayrem_margin', 'margin_unit', 'meta tags', 'feature_product', 'publish', 'package_count']
@@ -473,6 +474,7 @@ def import_products(request):
         df_units = pd.read_sql('select * from unit_master', con)
         del df_units['is_active']
         df = pd.read_excel(file)
+        duplicate_excel_records = len(df[df.duplicated('sku*')])
         df = df.drop_duplicates(subset="sku*", keep='first', inplace=False)
         count_df = len(df)
         ids = [i for i in range(last_id+1, last_id+count_df+1)]
@@ -516,12 +518,28 @@ def import_products(request):
         df['weight_unit_id'] = weight_unit_id
         df['quantity_unit_id'] = quantity_unit_id
         df7 = df[~df.SKU.isin(df_products.SKU)]
+        total_excel_records = len(df)
+
+        inserted_records = len(df7)
         df7.to_sql('products_master', engine,
                    if_exists='append', index=False)
         default_storage.delete(file_name)
         delSession(request)
-        messages.success(request, "Products imported successfully!")
-        return redirect('wayrem_admin:productlist')
+        context = {
+            "total_excel_records": total_excel_records,
+            "duplicate_excel_records": duplicate_excel_records,
+            "inserted_records": inserted_records
+        }
+        if inserted_records == 0:
+            messages.error(request, "Products already exists!")
+        else:
+            messages.success(request, "Products Imported Successfully!")
+        return render(request, "product/import_results.html", context)
     except:
         messages.error(request, "Please select a valid file!")
         return redirect('wayrem_admin:import_excel')
+
+
+def import_result(request):
+    messages.success(request, "Hello world!!!")
+    return render(request, "product/import_results.html")
