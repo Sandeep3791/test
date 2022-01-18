@@ -253,7 +253,7 @@ class Products(models.Model):
     date_of_mfg = models.DateField(null=True)
     date_of_exp = models.DateField(null=True)
     mfr_name = models.CharField(max_length=100, null=True, blank=False)
-    supplier = models.ManyToManyField('Supplier', null=True)
+    supplier = models.ManyToManyField('Supplier', null=True, blank=True)
     dis_abs_percent = models.CharField(
         max_length=20, choices=DIS_ABS_PERCENT, null=True, blank=False)
     description = models.TextField()

@@ -627,7 +627,7 @@
                             {% endif %}
                             <div class="col-lg-12">
                                 <div class="form-group col-lg-6 mb-4 form-file">
-                                    <label for="description">Primary image  <span class="text-danger">*</span> </label>
+                                    <label for="description">Primary image  <span class="text-danger">* <em>{{ form.primary_image.errors|striptags}}</em></span> </label>
                                     {{ form.primary_image}}
                                     <label class="form-file-label ps-2 pe-2" for="customFile">
                                         <span class="form-file-text">Choose file...</span>
