@@ -142,6 +142,12 @@ MEDIA_URL = '/media/common_folder/'
 # MEDIA_ROOT = os.path.dirname(
 #     "/home/suryaaa/Music/excels/")
 # MEDIA_URL = '/media/'
+
+# MEDIA_ROOT = os.path.dirname(
+#     "/home/suryaaa/Music/database/")
+# MEDIA_URL = '/media/'
+# /home/suryaaa/Music/database/
+
 ####################################
 ##  CKEDITOR CONFIGURATION ##
 ####################################

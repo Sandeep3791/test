@@ -1,5 +1,7 @@
 # from typing_extensions import Required
 # from models_orders import Orders
+import random
+import os
 from django.core.validators import MinValueValidator
 from django.core.files.storage import FileSystemStorage
 from django.db import models
@@ -57,10 +59,10 @@ upload_storage = FileSystemStorage(
     location='/opt/app/wayrem-admin-backend/media/common_folder')
 # /opt/app/wayrem-admin-backend/media/common_folder
 # local storage = /home/fealty/Desktop/wayrem_kapil
-#
+# /home/suryaaa/Music/database
 # server storage =  /home/ubuntu/docker_setup/database
 # upload_storage = FileSystemStorage(
-#     location='/home/fealty')
+#     location='/home/suryaaa/Music/database')
 
 
 class Roles(models.Model):
@@ -116,11 +118,14 @@ class Otp(models.Model):
         db_table = 'otp'
 
 
+# import to specific folder
+
+
 class Categories(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
     name = models.CharField(max_length=35, unique=True)
     image = models.ImageField(
-        upload_to='',  default='category.jpg', storage=upload_storage, blank=False, null=True)
+        upload_to="category/",  default='category/category.jpg', storage=upload_storage, blank=False, null=True)
     tag = models.TextField(null=True, blank=True)
     parent = models.CharField(max_length=35,  null=True)
     margin = models.IntegerField()
@@ -241,6 +246,20 @@ class Warehouse(models.Model):
         db_table = 'warehouse'
 
 
+def get_file_path(obj, fname):
+    fname = fname.split('.')[-1]
+    num = random.randint(111, 999)
+    if obj.SKU:
+        fname = '{}_{}.{}'.format(obj.SKU, num, fname)
+    else:
+        pass
+    return os.path.join(
+        'products',
+        obj.SKU,
+        fname,
+    )
+
+
 class Products(models.Model):
     id = models.IntegerField(primary_key=True, unique=True)
     name = models.CharField(max_length=255, null=True, blank=False)
@@ -272,7 +291,7 @@ class Products(models.Model):
     margin_unit = models.CharField(
         max_length=20, choices=DIS_ABS_PERCENT, null=True, blank=False)
     primary_image = models.ImageField(
-        upload_to='', storage=upload_storage, default='product.jpg', null=True)
+        upload_to=get_file_path, storage=upload_storage, default='product.jpg', null=True)
     gs1 = models.CharField(max_length=255, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -289,6 +308,20 @@ class Products(models.Model):
         db_table = 'products_master'
 
 
+def get_product_images_path(obj, fname):
+    fname = fname.split('.')[-1]
+    num = random.randint(111, 999)
+    if obj.product.SKU:
+        fname = '{}_{}.{}'.format(obj.product.SKU, num, fname)
+    else:
+        pass
+    return os.path.join(
+        'products',
+        obj.product.SKU,
+        fname,
+    )
+
+
 def get_image_filename(instance, filename):
     title = instance.products.name
     slug = slugify(title)
@@ -300,7 +333,7 @@ class Images(models.Model):
     product = models.ForeignKey(
         Products, on_delete=models.CASCADE, default=None)
     image = models.FileField(
-        upload_to="", storage=upload_storage, verbose_name='product_mage')
+        upload_to=get_product_images_path, storage=upload_storage, verbose_name='product_mage')
 
     class Meta:
         db_table = 'product_images'
