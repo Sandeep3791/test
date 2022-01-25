@@ -26,6 +26,13 @@ class Orders(models.Model):
     grand_total = models.FloatField()
     order_ship_name = models.CharField(max_length=100)
     order_ship_address = models.CharField(max_length=100)
+
+    order_ship_building_name=models.CharField(max_length=100)
+    order_ship_landmark=models.CharField(max_length=100)
+    order_ship_region=models.CharField(max_length=100)
+    order_ship_latitude=models.CharField(max_length=100)
+    order_ship_longitude=models.CharField(max_length=100)
+
     order_billing_name = models.CharField(max_length=100)
     order_billing_address = models.CharField(max_length=100)
     order_city = models.CharField(max_length=50)
@@ -44,6 +51,14 @@ class Orders(models.Model):
         app_label = "wayrem_admin"
         db_table = 'orders'
 
+class StateCode(models.Model): 
+    state = models.CharField(max_length=255, blank=True, null=True)
+    loginext_code = models.CharField(max_length=255, blank=True, null=True)
+    status = models.IntegerField(default=1)
+
+    class Meta:
+        managed = False
+        db_table = 'state_code'
 
 class StatusMaster(models.Model):
     id = models.SmallAutoField(primary_key=True)
