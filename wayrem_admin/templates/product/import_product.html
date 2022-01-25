@@ -1,7 +1,7 @@
 {% extends "layouts/base.html" %}
 {% load static %}
 
-{% block title %} Input Barcode {% endblock %}
+{% block title %} Import Products {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
@@ -9,7 +9,7 @@
 {% block content %}
     <div class="dashboard_content_inner">
     <div class="topbar_pages">
-        <h4 class="text-title">Add Product </h2>
+        <h4 class="text-title">Import Product </h2>
         <div class="breadcrumb-section">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb padding-left-0">
@@ -46,8 +46,8 @@
                     <div class="form-group">
                         <label for="code">Import Products</label>
                         <form action="{% url 'wayrem_admin:import_excel' %}" method="POST" enctype="multipart/form-data" >
-                        <div class="input-group">
-                            {% csrf_token %}
+                        {% csrf_token %}
+                        <div class="form-file">
                                 <input type="file" class="form-file-input" name="myFileInput" required accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" id="myFileInput" />
                                 <label class="form-file-label" for="myFileInput">
                                     <span class="form-file-text">Choose file...</span>
@@ -64,7 +64,8 @@
                 
                 <div class="table-data my-2">
                     {% if request.session.excel_product %}
-                    <h4>Duplicate Entries:  <b>{{duplicate_entries}}</b></h4>
+                    <h4>Total Entries:  <b>{{total_entries}}</b></h4>
+                    <h4>Duplicate Entries (in excel):  <b>{{duplicate_entries}}</b></h4>
                     <h6>Are you sure you want to import?</h6>
                     <div class="text-right">
                         <a href="{% url 'wayrem_admin:productlist' %}" class="btn btn-danger">Cancel</a>
@@ -75,7 +76,7 @@
                     <div class="row">
                         {% if missing_columns %}
                         <div class="col">
-                            <h4>Missing Columns </h4>
+                            <h4 class="text-danger">Missing columns </h4>
                             <p>{% for column in missing_columns %}
                                 <b> {{column}}</b>,  
                                 {% endfor %}</p>
@@ -84,7 +85,7 @@
                         {% endif %}
                         {% if unwanted_columns %}
                         <div class="col">
-                            <h4>Unwanted Columns </h4>
+                            <h4 class="text-danger">Unwanted columns </h4>
                             <p>{% for column in unwanted_columns %}
                                 <b>{{column}}</b>, 
                                 {% endfor %}</p>

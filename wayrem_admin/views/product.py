@@ -367,10 +367,11 @@ def update_product(request, id=None, *args, **kwargs):
                 img_obj.product_id = id
                 img_obj.save()
             return redirect('wayrem_admin:productlist')
-    form = ProductFormImageView(instance=prod)
-    form1 = ProductIngredientFormset1(queryset=ingrd)
-    # form2 = ProductImageFormset(queryset=product_images)
-    form3 = ProductImgUpdateForm()
+    else:
+        form = ProductFormImageView(instance=prod)
+        form1 = ProductIngredientFormset1(queryset=ingrd)
+        # form2 = ProductImageFormset(queryset=product_images)
+        form3 = ProductImgUpdateForm()
     return render(request, 'product_update_latest.html', {'form': form, 'formset': form1, 'form3': form3, 'image': prod.primary_image, 'product_images': product_images, 'id': prod.id})
 
 
@@ -422,16 +423,19 @@ def delete_product_images(request):
 
 def import_excel(request):
     if request.method == "POST":
+        delSession(request)
         file = request.FILES["myFileInput"]
         required_cols = ['sku*', 'product name*', 'manufacture date*', 'expiry date*', 'manufacturer name*', 'description', 'weight*', 'weight unit*', 'quantity*',
-                         'quantity unit*', 'price*', 'discount', 'discount unit', 'wayrem_margin', 'margin_unit', 'meta tags', 'feature_product', 'publish', 'package_count']
+                         'quantity unit*', 'price*', 'discount', 'discount unit', 'wayrem_margin', 'margin_unit', 'meta tags', 'feature_product', 'publish', 'package_count', 'category']
         df = pd.read_excel(file)
         excel_cols = list(df.columns)
         missing_cols = list(set(required_cols) - set(excel_cols))
         unwanted_cols = list(set(excel_cols) - set(required_cols))
-        if len(excel_cols) == 19 and required_cols == excel_cols:
+        if len(excel_cols) == 20 and required_cols == excel_cols:
             duplicate_entries = len(df[df.duplicated('sku*')])
+            total_entries = len(df)
             context = {
+                "total_entries": total_entries,
                 "duplicate_entries": duplicate_entries
             }
             file_name = default_storage.save(file.name, file)
@@ -460,20 +464,27 @@ def import_products(request):
             last_id = 0
         # file = request.FILES["myFileInput"]
         file = default_storage.open(file_name)
+        df = pd.read_excel(file)
+        total_excel_records = len(df)
         engine = create_engine(
             f"mysql+pymysql://{DATABASES['default']['USER']}:{DATABASES['default']['PASSWORD']}@{DATABASES['default']['HOST']}/{DATABASES['default']['NAME']}?charset=utf8")
         con = connect(user=DATABASES['default']['USER'], password=DATABASES['default']['PASSWORD'],
                       host=DATABASES['default']['HOST'], database=DATABASES['default']['NAME'])
-
         df_products = pd.read_sql(
             'select * from products_master', con)
         df_products['SKU'] = df_products['SKU'].astype(int)
+        df_category = pd.read_sql('select * from categories_master', con)
+        product_ingredients = pd.read_sql(
+            'select * from product_ingredients', con)
+
+        df_category["name"] = df_category["name"].str.lower()
+        df["category"] = df["category"].str.lower()
         df_units = pd.read_sql('select * from unit_master', con)
         del df_units['is_active']
-        df = pd.read_excel(file)
+        duplicate_excel_records = len(df[df.duplicated('sku*')])
         df = df.drop_duplicates(subset="sku*", keep='first', inplace=False)
-        count_df = len(df)
-        ids = [i for i in range(last_id+1, last_id+count_df+1)]
+
+        # df["first_column"] = df["first_column"].str.lower()
         dict = {'sku*': 'SKU',
                 'product name*': 'name',
                 'manufacturer name*': 'mfr_name',
@@ -502,24 +513,59 @@ def import_products(request):
         df['inventory_cancelled'] = 0
         df['inventory_onhand'] = 0
         df['inventory_received'] = df['quantity']
-        df['id'] = ids
         weight_unit = pd.merge(
             df, df_units, left_on='weight_unit', right_on='unit_name')
-        weight_unit_id = weight_unit['id_y']
+        weight_unit_id = weight_unit['id']
         quantity_unit = pd.merge(
             df, df_units, left_on='quantity_unit', right_on='unit_name')
-        quantity_unit_id = quantity_unit['id_y']
+        quantity_unit_id = quantity_unit['id']
         del df['weight_unit']
         del df['quantity_unit']
         df['weight_unit_id'] = weight_unit_id
         df['quantity_unit_id'] = quantity_unit_id
         df7 = df[~df.SKU.isin(df_products.SKU)]
+        count_df = len(df7)
+        ids = [i for i in range(last_id+1, last_id+count_df+1)]
+        df7['id'] = ids
+        categories_products = pd.DataFrame(
+            df7.category.str.split(',').tolist(), index=df7.id).stack()
+        categories_products = categories_products.reset_index()[[0, 'id']]
+        categories_products.columns = ['categories', 'products_id']
+        df_prod_cat = pd.merge(
+            categories_products, df_category, left_on='categories', right_on='name')
+        df_products_categories = pd.DataFrame()
+        df_products_categories['products_id'] = df_prod_cat['products_id']
+        df_products_categories['categories_id'] = df_prod_cat['id']
+        del df7['category']
+        inserted_records = len(df7)
         df7.to_sql('products_master', engine,
                    if_exists='append', index=False)
+        df_products_categories.to_sql(
+            'products_master_category', engine, if_exists='append', index=False)
+        ingredients = pd.DataFrame()
+        ingredients['product'] = ids
+        ingredients['quantity'] = 1
+        ingredients['ingredient_id'] = None
+        ingredients['unit_id'] = None
+        ingredients.to_sql('product_ingredients', engine,
+                           if_exists='append', index=False)
         default_storage.delete(file_name)
         delSession(request)
-        messages.success(request, "Products imported successfully!")
-        return redirect('wayrem_admin:productlist')
+        context = {
+            "total_excel_records": total_excel_records,
+            "duplicate_excel_records": duplicate_excel_records,
+            "inserted_records": inserted_records
+        }
+        if inserted_records == 0:
+            messages.error(request, "Products already exists!")
+        else:
+            messages.success(request, "Products Imported Successfully!")
+        return render(request, "product/import_results.html", context)
     except:
         messages.error(request, "Please select a valid file!")
         return redirect('wayrem_admin:import_excel')
+
+
+def import_result(request):
+    messages.success(request, "Hello world!!!")
+    return render(request, "product/import_results.html")
