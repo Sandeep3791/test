@@ -577,11 +577,11 @@ def import_result(request):
 
 def check_import_status(request):
     # client_dir = '/home/suryaaa/Music/image_testing/client-images'
-    client_dir = '/opt/sftp/wayrem-product-images'
+    client_dir = '/opt/app/wayrem-admin-backend/media/wayrem-product-images'
     sku_folders = [f for f in os.listdir(
         client_dir) if os.path.isdir(os.path.join(client_dir, f))]
     # failed_dir = f"/home/suryaaa/Music/image_testing/failed"
-    failed_dir = f"/home/ubuntu/wayrem/failed"
+    failed_dir = f"/opt/app/wayrem-admin-backend/media/wayrem-product-images"
     failed_sku_folders = [f for f in os.listdir(
         failed_dir) if os.path.isdir(os.path.join(failed_dir, f))]
     img = Images.objects.values('product_id').distinct().count()
