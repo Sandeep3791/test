@@ -32,7 +32,7 @@ from django.template.loader import render_to_string
 from weasyprint import HTML
 from django.db.models.functions import Cast
 from django.db.models.fields import DateField
-
+from wayrem_admin.loginext.loginext_liberary import LoginextOrderCreate
 
 class OrderExportView(View):
     
@@ -109,6 +109,7 @@ class OrderStatusUpdated(LoginRequiredMixin,UpdateView):
     form_class = OrderStatusUpdatedForm
     template_name = "orders/update_order_status.html"        
     pk_url_kwarg = 'id'
+    
 
     @method_decorator(role_required('Customer Order Edit'))
     def dispatch(self, *args, **kwargs):
@@ -120,6 +121,11 @@ class OrderStatusUpdated(LoginRequiredMixin,UpdateView):
         context['id_pk'] =id_pk
         return context
 
+    def loginext_api(self,order_id,status_id):
+        if status_id == 2:
+            ordercreate=LoginextOrderCreate()
+            ordercreate.ordercreate(order_id)
+        return 1
     def form_valid(self,form):
         # This method is called when valid form data has been POSTed. 
         obj = form.save(commit=False) 
@@ -138,6 +144,7 @@ class OrderStatusUpdated(LoginRequiredMixin,UpdateView):
             now = datetime.datetime.now()
             odl=OrderDeliveryLogs(order_id=get_id,order_status=obj_stat_instance,order_status_details="status change",log_date=now,user_id=1)
             odl.save()
+            self.loginext_api(get_id,status_id)
         else:
             obj_stat_instance = StatusMaster.objects.get(id=status_id)
         check='<span class="badge bg-primary" style="padding: 3px 8px;line-height: 11px;background-color:'+obj_stat_instance.status_color+' !important">'+obj_stat_instance.name+'</span>'

@@ -26,8 +26,7 @@ class Order(ApiBase):
         get_authenticate=self.get_authenticate_key()
         headers={'WWW-Authenticate':get_authenticate}
         response=ApiBase.send_request(self,method,path,create_order_list,headers,"json")
-        return 1
-        return create_order_list
+        return response
 
     def converttoutcdatetime(self,order_date):
         local = pytz.timezone("Asia/Riyadh")
@@ -44,15 +43,16 @@ class Order(ApiBase):
 
     def get_branch_name(self):
         get_branch_dic=Warehouse.objects.filter().first()
-        branch_name=get_branch_dic['branch_name']
+        branch_name=get_branch_dic.branch_name
         return branch_name
 
     def get_time(self):
-        delivery_time =Settings.objects.filter(key=self.DELIVERY_TIME).first()
+        delivery_time =Settings.objects.values('value').filter(key=self.DELIVERY_TIME).first()
         if delivery_time is None:
             total_time=48
         else:
             total_time=delivery_time['value']
+            total_time=int(total_time)
         return total_time
 
     def create_order_details(self,orderdetail):
