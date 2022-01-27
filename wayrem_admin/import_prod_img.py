@@ -9,7 +9,7 @@ from wayrem_admin.models import Images, Products
 
 def import_image():
     # path = '/home/suryaaa/Music/image_testing/client-images'
-    path = '/opt/sftp/wayrem-product-images'
+    path = '/opt/app/wayrem-admin-backend/media/wayrem-product-images'
 
     items = [f for f in os.listdir(
         path) if os.path.isdir(os.path.join(path, f))]
@@ -51,7 +51,7 @@ def import_image():
         else:
             src_dir = f"{path}/{i}"
             # dst_dir = f"/home/suryaaa/Music/image_testing/failed"
-            dst_dir = f"/home/ubuntu/wayrem/failed"
+            dst_dir = f"/opt/app/wayrem-admin-backend/media/common_folder/failed"
             shutil.copytree(src_dir, dst_dir, dirs_exist_ok=True)
             shutil.rmtree(src_dir)
             print("failed!!")
