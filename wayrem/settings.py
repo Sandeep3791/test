@@ -30,7 +30,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'wayrem_admin',
     'widget_tweaks',
-   
+
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -41,7 +41,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'wayrem_admin.middlewares.notification_middleware.NotificationMiddleWare',
-  
+
 ]
 ROOT_URLCONF = 'wayrem.urls'
 TEMPLATES = [
@@ -66,11 +66,11 @@ WSGI_APPLICATION = 'wayrem.wsgi.application'
 # WSGI_APPLICATION = 'wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-'''
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'wayrem_test',
+        'NAME': 'wayrem_test_v1',
         'USER': 'wayremdb_adminuser',
         'PASSWORD': 'r2wXJfUs78NczMFWRXcV',
         'HOST': '15.185.103.226',
@@ -80,20 +80,20 @@ DATABASES = {
         },
     }
 }
-'''
-DATABASES = {
-     'default': {
-         'ENGINE': 'django.db.backends.mysql',
-         'NAME': 'wayrem_v2',
-         'USER': 'root',
-         'PASSWORD': '',
-         'HOST': 'localhost',
-         'PORT': '3306',
-         'OPTIONS': {
-             "init_command": "SET foreign_key_checks = 0;",
-         },
-     }
- }
+
+# DATABASES = {
+#      'default': {
+#          'ENGINE': 'django.db.backends.mysql',
+#          'NAME': 'wayrem_v2',
+#          'USER': 'root',
+#          'PASSWORD': '',
+#          'HOST': 'localhost',
+#          'PORT': '3306',
+#          'OPTIONS': {
+#              "init_command": "SET foreign_key_checks = 0;",
+#          },
+#      }
+#  }
 
 # DATABASES = {
 #     'default': {
