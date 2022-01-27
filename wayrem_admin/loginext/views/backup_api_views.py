@@ -17,14 +17,20 @@ from rest_framework.status import (
     HTTP_200_OK,
     HTTP_401_UNAUTHORIZED,HTTP_403_FORBIDDEN
 )
-from wayrem_admin.loginext.loginext_liberary import LoginextOrderCreate
-class LogiNextAPI(viewsets.ViewSet):
-    ordercreate=LoginextOrderCreate()
+from wayrem_admin.loginext.api_base import ApiBase
+
+
+class LogiNextAPI(ApiBase,viewsets.ViewSet):
     def test(self,request,survey_id=None):
         status=HTTP_200_OK
-        self.ordercreate.ordercreate(1)
         result={'message':"all ready exist"}
         result_build=Response(result,status=status)
         return result_build
+    
+    def authenticate(self,request):
+          
+        get_secret_key=ApiBase.authenticate_secret_key(self)
+        print(get_secret_key)
+        return HttpResponse("kapil")
     
     

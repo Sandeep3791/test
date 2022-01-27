@@ -234,6 +234,7 @@ class Unit(models.Model):
 
 class Warehouse(models.Model):
     code_name = models.CharField(max_length=255)
+    branch_name = models.CharField(max_length=255)
     address = models.TextField()
     status = models.CharField(max_length=100, choices=status, default='Active')
     created_at = models.DateTimeField(auto_now_add=True)
@@ -431,7 +432,7 @@ class Customer(models.Model):
     # address = models.TextField(null=True)
     profile_pic = models.CharField(max_length=500, null=True)
     about = models.TextField(null=True)
-    status = models.BooleanField(default=True)
+    status = models.BooleanField(default=False)
     registration_number = models.BigIntegerField(null=True)
     tax_number = models.BigIntegerField(null=True)
     registration_docs_path = models.CharField(max_length=255, null=True)
