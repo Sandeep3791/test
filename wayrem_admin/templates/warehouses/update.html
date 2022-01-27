@@ -37,6 +37,13 @@
                         </div>
                     </div>
 
+                    <div class="col-md-12 mb-2">
+                            <div>
+                                <label for="name">Branch Name<span class="text-danger">*</span>  <span class="text-danger"><em>{{form.branch_name.errors | striptags}}</em></span></label>
+                                {{form.branch_name}}
+                                <div class="input-group" id="branch_name_error_message" style="color: #d12525;"></div>
+                            </div>
+                        </div>
 
                     <div class="col-md-12 mb-2">
                         <div>

@@ -17,7 +17,7 @@ from rest_framework.status import (
     HTTP_200_OK,
     HTTP_401_UNAUTHORIZED,HTTP_403_FORBIDDEN
 )
-from wayrem_admin.loginext.api_base import ApiBase
+from wayrem_admin.loginext.liberary.api_base import ApiBase
 from wayrem_admin.loginext.webhook_liberary import WebHookLiberary
 
 class LogiNextWeebHookOrderAPI(ApiBase,WebHookLiberary,viewsets.ViewSet):
@@ -47,9 +47,7 @@ class LogiNextWeebHookOrderAPI(ApiBase,WebHookLiberary,viewsets.ViewSet):
         create=request.data
         create_order_dic=self.webhook.updateorder(create)
         order_reference_id=self.webhook.get_order(create_order_dic)
-        print(create_order_dic)
         self.webhook.saveorderrequest(create_order_dic,order_reference_id)
-
         status=HTTP_200_OK
         # pending
         result={'message':"update order"}

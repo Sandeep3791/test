@@ -42,7 +42,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'wayrem_admin.middlewares.notification_middleware.NotificationMiddleWare',
-    'maintenance_mode.middleware.MaintenanceModeMiddleware',
+
 ]
 ROOT_URLCONF = 'wayrem.urls'
 TEMPLATES = [
@@ -71,7 +71,7 @@ WSGI_APPLICATION = 'wayrem.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'wayrem_test',
+        'NAME': 'wayrem_test_v1',
         'USER': 'wayremdb_adminuser',
         'PASSWORD': 'r2wXJfUs78NczMFWRXcV',
         'HOST': '15.185.103.226',
@@ -85,7 +85,7 @@ DATABASES = {
 # DATABASES = {
 #      'default': {
 #          'ENGINE': 'django.db.backends.mysql',
-#          'NAME': 'wayrem_v1',
+#          'NAME': 'wayrem_v2',
 #          'USER': 'root',
 #          'PASSWORD': '',
 #          'HOST': 'localhost',
