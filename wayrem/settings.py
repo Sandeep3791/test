@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     'wayrem_admin',
     'widget_tweaks',
     'maintenance_mode',
+    'django_celery_beat',
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -195,3 +196,18 @@ CKEDITOR_CONFIGS = {
 }
 # MAINTENANCE_MODE = True
 # MAINTENANCE_MODE_IGNORE_IP_ADDRESSES = ("49.36.40.132")
+
+
+# celery
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'json'
+
+# redis server
+# redis-server
+# celery server
+#  celery -A wayrem.celery worker --loglevel=info
+# celery beat server
+# celery -A wayrem beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
