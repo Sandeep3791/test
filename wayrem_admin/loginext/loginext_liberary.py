@@ -1,6 +1,6 @@
 from wayrem_admin.loginext.liberary.api_base import ApiBase
 from wayrem_admin.loginext.liberary.order import Order
-from wayrem_admin.models_orders import Orders
+from wayrem_admin.models_orders import Orders,ShippingLoginextNotification
 
 
 class LoginextOrderCreate(Order):
@@ -26,8 +26,17 @@ class LoginextOrderCreate(Order):
         order_tracking_number=self.get_reference(response)
         if order_tracking_number:
             order_tracking_number=self.update_order(order_id,order_tracking_number)
+            self.insert_shipping_loginext_notification(order_tracking_number)
         return order_id
 
+    def insert_shipping_loginext_notification(self,reference_id):
+        s_notifaction=ShippingLoginextNotification.objects.filter(reference_id=reference_id).count()
+        if s_notifaction == 0:
+            shippingnotification = ShippingLoginextNotification(reference_id=reference_id)
+            shippingnotification.save()
+        else:
+            print("already created")
+        return 1
     def get_reference(self,response):
         reference_id=None
         if int(response['status']) == 200:
