@@ -581,7 +581,7 @@ def check_import_status(request):
     sku_folders = [f for f in os.listdir(
         client_dir) if os.path.isdir(os.path.join(client_dir, f))]
     # failed_dir = f"/home/suryaaa/Music/image_testing/failed"
-    failed_dir = f"/opt/app/wayrem-admin-backend/media/wayrem-product-images"
+    failed_dir = f"/home/ubuntu/dev_docker_setup/common_folder/failed"
     failed_sku_folders = [f for f in os.listdir(
         failed_dir) if os.path.isdir(os.path.join(failed_dir, f))]
     img = Images.objects.values('product_id').distinct().count()
