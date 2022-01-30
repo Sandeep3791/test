@@ -1,3 +1,7 @@
+from django.db import connection
+from django.http import response
+from httplib2 import Response
+from wayrem_admin.import_prod_img import *
 from django.core.files.storage import default_storage
 from sqlalchemy import create_engine
 import pandas as pd
@@ -569,3 +573,29 @@ def import_products(request):
 def import_result(request):
     messages.success(request, "Hello world!!!")
     return render(request, "product/import_results.html")
+
+
+def check_import_status(request):
+    # client_dir = '/home/suryaaa/Music/image_testing/client-images'
+    client_dir = '/opt/app/wayrem-admin-backend/media/wayrem-product-images'
+    sku_folders = [f for f in os.listdir(
+        client_dir) if os.path.isdir(os.path.join(client_dir, f))]
+    # failed_dir = f"/home/suryaaa/Music/image_testing/failed"
+    failed_dir = f"/opt/app/wayrem-admin-backend/media/common_folder/failed"
+    failed_sku_folders = [f for f in os.listdir(
+        failed_dir) if os.path.isdir(os.path.join(failed_dir, f))]
+    img = Images.objects.values('product_id').distinct().count()
+    prod = Products.objects.all().count()
+    query = "SELECT * FROM   products_master WHERE  NOT EXISTS  (SELECT * FROM   product_images WHERE  product_images.product_id = products_master.id)"
+    with connection.cursor() as cursor:
+        no_image_sku = cursor.execute(query)
+    context = {
+        "available_folders": len(sku_folders),
+        "failed_folders": len(failed_sku_folders),
+        "no_image_products": no_image_sku,
+        "total_product_images": prod,
+        "product_with_imgs": img
+    }
+    response = HttpResponse(json.dumps(context))
+    return response
+    # return render(request, "product/img_status.html", context)

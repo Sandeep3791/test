@@ -32,3 +32,15 @@ def net_vat_amt(unit_price, qty, *args, **kwargs):
     vat_amt = (total_amt/100)*vat
     net = total_amt+vat_amt
     return "{:.2f}".format(net)
+
+
+
+@register.simple_tag()
+def image_tag(value, *args, **kwargs):
+    if value:
+        return value.split("/")[-1]
+    else:
+        x = "user_profile-1.jpeg"
+        return x
+     
+

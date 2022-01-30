@@ -30588,3 +30588,7 @@ nav#topbar_content {
 .btn-small{
     margin: 0px !important;
 }
+.padding-right-2 {padding-right: 0.5rem !important;}
+.padding-left-2 {padding-left: 0.5rem !important;}
+.padding-right-0 {padding-right: 0 !important;}
+.padding-left-0 {padding-left: 0 !important;}

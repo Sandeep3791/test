@@ -182,7 +182,7 @@ class Supplier(models.Model):
     password = models.CharField(max_length=200)
     contact = models.BigIntegerField(null=True)
     logo = models.ImageField(
-        upload_to='', storage=upload_storage,  null=True, default='default.jpg')
+        upload_to='supplier/', storage=upload_storage,  null=True, default='supplier/default.jpg')
     address = models.TextField(null=True, blank=True)
     delivery_incharge = models.CharField(max_length=500, blank=True, null=True)
     company_name = models.CharField(max_length=100, blank=False, null=True)
@@ -234,7 +234,7 @@ class Unit(models.Model):
 
 class Warehouse(models.Model):
     code_name = models.CharField(max_length=255)
-    branch_name=models.CharField(max_length=255)
+    branch_name = models.CharField(max_length=255)
     address = models.TextField()
     status = models.CharField(max_length=100, choices=status, default='Active')
     created_at = models.DateTimeField(auto_now_add=True)
@@ -432,7 +432,7 @@ class Customer(models.Model):
     # address = models.TextField(null=True)
     profile_pic = models.CharField(max_length=500, null=True)
     about = models.TextField(null=True)
-    status = models.BooleanField(default=True)
+    status = models.BooleanField(default=False)
     registration_number = models.BigIntegerField(null=True)
     tax_number = models.BigIntegerField(null=True)
     registration_docs_path = models.CharField(max_length=255, null=True)
@@ -468,7 +468,7 @@ class Invoice(models.Model):
     invoice_id = models.AutoField(primary_key=True, unique=True)
     invoice_no = models.CharField(max_length=250, null=True)
     po_name = models.CharField(max_length=250, null=True)
-    file = models.FileField(upload_to='', storage=upload_storage,
+    file = models.FileField(upload_to='invoices/', storage=upload_storage,
                             null=True)
     supplier_name = models.CharField(max_length=250, null=True)
     invoice_status = (
