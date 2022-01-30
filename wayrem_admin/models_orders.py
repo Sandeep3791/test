@@ -227,6 +227,15 @@ class ShippingLoginextNotification(models.Model):
     delivery_type = models.CharField(max_length=200, blank=True, null=True)
     shipment_notes = models.CharField(max_length=200, blank=True, null=True)
     assignment_method = models.CharField(max_length=200, blank=True, null=True)
+    
+    apartment = models.CharField(max_length=50, blank=True, null=True)
+    street_name = models.CharField(max_length=50, blank=True, null=True)
+    city = models.CharField(max_length=50, blank=True, null=True)
+    state = models.CharField(max_length=50, blank=True, null=True)
+    country = models.CharField(max_length=50, blank=True, null=True)
+    pincode = models.CharField(max_length=50, blank=True, null=True)
+    customer_email_address = models.CharField(max_length=50, blank=True, null=True)
+    customer_phone_number = models.CharField(max_length=50, blank=True, null=True)
 
     start_time_window = models.DateTimeField(blank=True, null=True)
     end_time_window = models.DateTimeField(blank=True, null=True)
@@ -235,6 +244,7 @@ class ShippingLoginextNotification(models.Model):
     shipment_crate_mapping = models.TextField(blank=True, null=True)
     ordercreate_timestamp = models.DateTimeField(blank=True, null=True)
     ordercreate_timestamp = models.DateTimeField(blank=True, null=True)
+    picked_up_time=models.DateTimeField(blank=True, null=True)
     created_at = models.DateTimeField(blank=True, null=True)
     updated_at = models.DateTimeField(blank=True, null=True)
 

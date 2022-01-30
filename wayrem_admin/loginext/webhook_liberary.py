@@ -1,6 +1,6 @@
 import requests
 import json,re
-from wayrem_admin.models_orders import ShippingLoginextNotification
+from wayrem_admin.models_orders import Orders,ShippingLoginextNotification
 from datetime import datetime
 
 class WebHookLiberary():
@@ -11,9 +11,16 @@ class WebHookLiberary():
 
     def get_order(self,order_dic):
         try:
-            reference_id=order_dic['reference_id']
-            p_id=ShippingLoginextNotification.objects.get(reference_id=reference_id)
-            return p_id.id
+            if 'reference_id' in order_dic:
+                reference_id=order_dic['reference_id']
+                p_id=ShippingLoginextNotification.objects.get(reference_id=reference_id)
+                return p_id.id
+            else:
+                order_no=order_dic['order_no']
+                order_ref_dic=Orders.objects.values('order_tracking_number').filter(ref_number=order_no).first()
+                reference_id=order_ref_dic['order_tracking_number']
+                p_id=ShippingLoginextNotification.objects.get(reference_id=reference_id)
+                return p_id.id
         except:
             return 0
 
@@ -248,7 +255,75 @@ class WebHookLiberary():
         order_dic=self.create_dictonary(order_dic,createorderrequest,'orderState')
         order_dic=self.create_dictonary(order_dic,createorderrequest,'reasonCd')
         order_dic=self.create_dictonary(order_dic,createorderrequest,'reason')
-        order_dic=self.create_dictonary(order_dic,createorderrequest,'deliveryTime''date_time')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'deliveryTime','date_time')
         order_dic=self.create_dictonary(order_dic,createorderrequest,'deliveryLocationType')
         order_dic=self.create_dictonary(order_dic,createorderrequest,'recipientName')
+        return order_dic
+
+    def pickeduporder(self,createorderrequest):
+        order_dic={}
+        createorderrequest['referenceId']=createorderrequest['orderReferenceId']
+        createorderrequest['orderStatus']=createorderrequest['status']
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'referenceId')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'notificationType')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'orderNo')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'awbNumber')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'orderLeg')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'deliveryMediumName')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'branchName')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'customerComment')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'customerRating')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'orderState')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'phoneNumber')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'orderStatus')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'latitude')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'longitude')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'pickedUpTime')
+        return order_dic
+    
+    def orderattemptedpickuporder(self,createorderrequest):
+        order_dic={}
+        createorderrequest['referenceId']=createorderrequest['orderReferenceId']
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'referenceId')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'notificationType')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'orderNo')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'awbNumber')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'orderLeg')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'customerComment')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'customerRating')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'deliveryMediumName')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'phoneNumber')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'orderState')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'customerName')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'reasonCd')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'reason')
+        return order_dic
+    
+    def partiallydeliveredorder(self,createorderrequest):
+        order_dic={}
+        createorderrequest['shipmentCrateMapping']=createorderrequest['shipmentCrateMappingList']
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'orderNo')
+        createorderrequest['orderStatus']=createorderrequest['statusCd']
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'notificationType')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'orderLeg')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'awbNumber')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'customerComment')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'customerRating')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'deliveryMediumName')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'phoneNumber')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'orderState')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'customerName')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'reasonCd')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'reason')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'orderStatus')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'deliveryTime','date_time')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'cashAmount')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'deliveryLocationType')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'branchName')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'transactionId')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'paymentMode')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'recipientName')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'actualCashAmount')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'paymentSubType')
+        order_dic=self.create_dictonary(order_dic,createorderrequest,'shipmentCrateMapping')
         return order_dic

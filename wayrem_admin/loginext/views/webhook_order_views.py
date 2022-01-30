@@ -124,4 +124,32 @@ class LogiNextWeebHookOrderAPI(ApiBase,WebHookLiberary,viewsets.ViewSet):
         result_build=Response(result,status=status)
         return result_build
 
+    def partiallydeliveredorder(self,request):
+        create=request.data
+        create_order_dic=self.webhook.partiallydeliveredorder(create)
+        order_reference_id=self.webhook.get_order(create_order_dic)
+        self.webhook.saveorderrequest(create_order_dic,order_reference_id)
+        status=HTTP_200_OK
+        result={'message':"partially delivered order"}
+        result_build=Response(result,status=status)
+        return result_build
 
+    def pickeduporder(self,request):
+        create=request.data
+        create_order_dic=self.webhook.pickeduporder(create)
+        order_reference_id=self.webhook.get_order(create_order_dic)
+        self.webhook.saveorderrequest(create_order_dic,order_reference_id)
+        status=HTTP_200_OK
+        result={'message':"picked up order"}
+        result_build=Response(result,status=status)
+        return result_build
+    
+    def orderattemptedpickuporder(self,request):
+        create=request.data
+        create_order_dic=self.webhook.orderattemptedpickuporder(create)
+        order_reference_id=self.webhook.get_order(create_order_dic)
+        self.webhook.saveorderrequest(create_order_dic,order_reference_id)
+        status=HTTP_200_OK
+        result={'message':"order attempted pickup order"}
+        result_build=Response(result,status=status)
+        return result_build

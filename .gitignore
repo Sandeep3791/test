@@ -4,3 +4,4 @@ wayrem_env
 media
 pipfile
 pipfile.lock
+.vscode
