@@ -45,8 +45,6 @@ def createRoles(request):
 def cupdateRoles(request):
     context = {}
     role = get_object_or_404(Roles, id=request.GET.get('id'))
-    form = RoleForm(instance=role, label_suffix='')
-    context['form'] = form
     if request.method == 'POST':
         form = RoleForm(request.POST, instance=role)
         if form.is_valid():
@@ -55,6 +53,11 @@ def cupdateRoles(request):
             form.save_m2m()
             messages.success(request, "Role Updated")
             return redirect('wayrem_admin:roles_list')
+        else:
+            context['form'] = form
+    else:
+        form = RoleForm(instance=role, label_suffix='')
+        context['form'] = form
     return render(request, 'roles_crud_pages/createRoles.html', context)
 
 

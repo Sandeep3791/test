@@ -35,7 +35,7 @@ class LoginView(View):
         user = User.objects.filter(username=username).first(
         )
         if user is None:
-            messages.error(request, "User not found!")
+            messages.error(request, "Invalid credentials. Please try again!")
             return redirect('wayrem_admin:login')
         if not check_password(password, user.password):
             messages.error(request, "Invalid credentials. Please try again!")
