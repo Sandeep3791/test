@@ -343,23 +343,42 @@
                                     </div>                                            
                                 </div>
                             </div>
-                            <div class="row"> 
-                                <div class="col-md-6">
-                                    <label class="" for="email">Registration Docs:</label>
-                                    <a href="#">registration doc link</a>
-                                </div> 
-                                <div class="col-md-6">
-                                    <label class="" for="email">Tax Docs Path:</label>
-                                    <a href="#">tax doc path</a>
-                                </div> 
+                        </div> 
+                    </div>
+                </div>                                                        
+            </div>
+        </div>
+    </div>
+    <div class="justify-content-center form-bg-image mt-5">
+        <div class="col-12 col-xl-12">
+            <div class="card card-body card_shadow mb-4">
+                <div class="card-body pb-5">                            
+                    <div class="container-fluid">
+                        <h5 class="mb-4">Registration Docs</h5>
+                        <div class="row">   
+                            <div class="col-md-6">
+                                <div class="form-group mb-4 text-left">
+                                    <label class="" for="email">Registration Document</label>
+                                    <div class="input-group"> 
+                                        <a href="http://15.185.103.226/media/common_folder/{% image_tag user.registration_docs_path %}">View</a>                                                                                                                                          
+                                    </div>                                            
+                                </div>  
+                            </div> 
+                            <div class="col-md-6">
+                                <div class="form-group mb-4 text-left">
+                                    <label class="" for="email">Tax document:</label>
+                                    <div class="input-group">                                                 
+                                        <a href="http://15.185.103.226/media/common_folder/{% image_tag user.tax_docs_path %}">View</a>
+                                    </div>                                            
+                                </div>
                             </div> 
                         </div> 
-                        <a href="#" class="btn btn-success">Approve</a>
-                       </div>
-                       
-                     
-            
+                        <div class="mt-4">
+                            <a href="{% url 'wayrem_admin:customerslist' %}" class="btn btn-block btn-primary">Cancel</a>
+                            <a href="#" class="btn btn-block btn-success">Approve</a>
+                        </div>
                     </div>                                                        
+                </div>
             </div>
         </div>
     </div>
@@ -369,70 +388,4 @@
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
-{% block javascripts %}
-
-<script>
- 
-    $("input[type='file']").on("change", function () {
-    
-    var extension = $(this).val().split('.').pop().toLowerCase();
-    var validFileExtensions = ['jpeg', 'jpg', 'png', 'gif', 'bmp'];
-    if(this.files[0].size > 2000000) {
-    // alert("Sorry!! Max allowed file size is 2 MB");
-    $("#error").text("Sorry!! Max allowed file size is 2 MB").show();
-    $(this).val('');
-    }
-    else if ($.inArray(extension, validFileExtensions) == -1) {
-        $("#error").text("Sorry!! Upload only jpg, jpeg, png, gif, bmp file").show();
-                $(this).replaceWith($(this).val('').clone(true));
-                // $('#submit').prop('disabled', true);
-        }
-    else {
-        $("#error").text('').hide();
-    // $('#submit').prop('disabled', false);
-    
-    }
-    });
-    
-        $(function () {
-    
-            var error_n = false;
-            var error_d = false;
-    
-            $("#id_name").focusout(function () {
-                check_name();
-            });
-            $("#id_description").focusout(function () {
-                check_description();
-            });
-    
-    
-            function check_name() {
-                var name = $("#id_name").val();
-                if (name !== '') {
-                    $("#name_error_message").hide();
-                    // $("#id_name").css("border-bottom", "2px solid #34F458");
-                } else {
-                    $("#name_error_message").html("Please Enter Category Name ");
-                    $("#name_error_message").show();
-                    error_n = true;
-                }
-            }
-    
-            function check_description() {
-                var description = $("#id_description").val();
-                if (description !== '') {
-                    $("#description_error_message").hide();
-                    // $("#id_description").css("border-bottom", "2px solid #34F458");
-                } else {
-                    $("#description_error_message").html("Please Enter description");
-                    $("#description_error_message").show();
-                    error_d = true;
-                }
-            }
-    
-        });
-    
-    </script>
-
-{% endblock javascripts %}
+{% block javascripts %}{% endblock javascripts %}
