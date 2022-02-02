@@ -61,7 +61,7 @@ class StateCode(models.Model):
     status = models.IntegerField(default=1)
 
     class Meta:
-        managed = False
+        app_label = "wayrem_admin"
         db_table = 'state_code'
 
 class StatusMaster(models.Model):

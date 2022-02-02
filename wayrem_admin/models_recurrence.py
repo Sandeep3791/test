@@ -1,6 +1,6 @@
 from django.db import models
 from .models import *
-import random
+
 
 class RecurrentType(models.Model):
     name = models.CharField(max_length=255)
@@ -37,7 +37,7 @@ class GroceryMaster(models.Model):
 
 class GroceryProducts(models.Model):
     grocery_id = models.IntegerField()
-    product_id = models.IntegerField()
+    product = models.ForeignKey('wayrem_admin.Products', models.DO_NOTHING)
     product_qty = models.SmallIntegerField()
     recurrence_nextdate = models.DateField()
 
@@ -61,8 +61,8 @@ class ForecastProduct(models.Model):
     stock = models.SmallIntegerField()
     forecast_quantity = models.SmallIntegerField()
     needed_stock_purchase = models.SmallIntegerField()
-    created_at = models.DateTimeField()
-    updated_at = models.DateTimeField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    
 
     class Meta:
         app_label = "wayrem_admin"

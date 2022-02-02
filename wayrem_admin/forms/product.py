@@ -156,7 +156,7 @@ class ProductFormImageView(forms.ModelForm):
     class Meta:
         model = Products
         fields = ("name", "SKU", "category", "meta_key", "feature_product", "publish", "date_of_mfg", "date_of_exp", "mfr_name", "supplier",
-                  "dis_abs_percent", "description", "warehouse", "quantity", "inventory_starting", "inventory_received", "inventory_shipped", "inventory_cancelled", "quantity_unit", "weight", "weight_unit", "price", "discount", "package_count", "wayrem_margin", "margin_unit", "primary_image")
+                  "dis_abs_percent", "description", "warehouse", "quantity", "inventory_starting", "inventory_received", "inventory_shipped", "inventory_cancelled","outofstock_threshold", "quantity_unit", "weight", "weight_unit", "price", "discount", "package_count", "wayrem_margin", "margin_unit", "primary_image")
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
@@ -176,6 +176,7 @@ class ProductFormImageView(forms.ModelForm):
             'inventory_received': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'True'}),
             'inventory_shipped': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'True'}),
             'inventory_cancelled': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'True'}),
+            'outofstock_threshold': forms.NumberInput(attrs={'class': "form-control"}),
             'quantity_unit': forms.Select(attrs={'class': 'form-select'}),
             'weight': forms.NumberInput(attrs={'class': 'form-control'}),
             'weight_unit': forms.Select(attrs={'class': 'form-select'}),
@@ -299,7 +300,9 @@ class ProductFormOne(forms.Form):
         widget=forms.NumberInput(attrs={'class': "form-control"}), min_value=0)
     quantity_unit = forms.ChoiceField(choices=choices_unit, widget=forms.Select(
         attrs={'class': 'form-select'}))
-
+    outofstock_threshold=forms.IntegerField(
+        widget=forms.NumberInput(attrs={'class': "form-control", 'min': 0}), min_value=0)
+        
     def clean_date_of_exp(self):
         cleaned_data = super(ProductFormOne, self).clean()
 
