@@ -18,11 +18,14 @@ from rest_framework.status import (
     HTTP_401_UNAUTHORIZED,HTTP_403_FORBIDDEN
 )
 from wayrem_admin.loginext.loginext_liberary import LoginextOrderCreate
+from wayrem_admin.forecasts.product_forecast_liberary import ProductForecastLiberary
+
 class LogiNextAPI(viewsets.ViewSet):
     ordercreate=LoginextOrderCreate()
     def test(self,request,survey_id=None):
         status=HTTP_200_OK
-        self.ordercreate.ordercreate(1)
+        #self.ordercreate.ordercreate(1)
+        ProductForecastLiberary().process_forecast_product()
         result={'message':"all ready exist"}
         result_build=Response(result,status=status)
         return result_build

@@ -30,7 +30,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'wayrem_admin',
     'widget_tweaks',
-    'maintenance_mode',
+#    'maintenance_mode',
     'django_celery_beat',
 ]
 MIDDLEWARE = [
@@ -68,6 +68,7 @@ WSGI_APPLICATION = 'wayrem.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+'''
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -81,20 +82,20 @@ DATABASES = {
         },
     }
 }
-
-# DATABASES = {
-#      'default': {
-#          'ENGINE': 'django.db.backends.mysql',
-#          'NAME': 'wayrem_v2',
-#          'USER': 'root',
-#          'PASSWORD': '',
-#          'HOST': 'localhost',
-#          'PORT': '3306',
-#          'OPTIONS': {
-#              "init_command": "SET foreign_key_checks = 0;",
-#          },
-#      }
-#  }
+'''
+DATABASES = {
+     'default': {
+         'ENGINE': 'django.db.backends.mysql',
+         'NAME': 'wayrem_v3',
+         'USER': 'root',
+         'PASSWORD': '',
+         'HOST': 'localhost',
+         'PORT': '3306',
+         'OPTIONS': {
+             "init_command": "SET foreign_key_checks = 0;",
+         },
+     }
+ }
 
 # DATABASES = {
 #     'default': {
@@ -199,6 +200,7 @@ CKEDITOR_CONFIGS = {
 
 
 # celery
+
 CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
 CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']

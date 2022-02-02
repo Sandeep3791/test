@@ -325,6 +325,8 @@
                             Stock Management
                         </h2>
                         <div class="col-lg-6">
+                            
+                            
 
                             <div class="form-group mb-4">
                                 <label for="name">Warehouse <span class="text-danger">*</span><span class="text-danger"><em> {{form.quantity.errors | striptags}}
@@ -360,6 +362,23 @@
                                 <span class="text-error"></span>
                             </div>
                         </div>
+                        <div class="col-lg-6">
+                        <div class="form-group mb-4">
+                                <label for="name">Out of Stock Threashold <span class="text-danger">*</span><span class="text-danger"><em> {{form.quantity.errors | striptags}}
+                                </em>
+                                </span></label>
+                                <div class="input-group">   
+                                    <div class="w-75 px-2">{{form.outofstock_threshold}}</div>
+                                    <div class="input-group error_field_msg" id= "outofstock_threshold_error_message" style="color: #d12525;"></div>
+                                </div>
+                                <div class="input-group">
+                                    <span class="text-danger"><em> 
+                                        </em></span>
+                                </div>
+                                <span class="text-error"></span>
+                            </div>
+                            </div>
+
                         <!-- Form -->
                         <div class="col-lg-6">
                             <div class="form-group mb-4">
@@ -776,6 +795,9 @@
             check_validation_text("id_date_of_exp","doe_error_message","Date of Expiry");
             check_validation_text("id_discount","discount_error_message","Discount");
             check_validation_text("id_quantity","quantity_error_message","Quantity");
+            
+            check_validation_text("id_outofstock_threshold","outofstock_threshold_error_message","Out of stock");
+
             check_validation_text("id_wayrem_margin","margin_error_message","Margin");
             check_validation_text("id_meta_key","metaKey_error_message","Meta Key");
         });
@@ -786,6 +808,7 @@
             check_validation_text("id_date_of_exp","doe_error_message","Date of Expiry");
             check_validation_text("id_discount","discount_error_message","Discount");
             check_validation_text("id_quantity","quantity_error_message","Quantity");
+            check_validation_text("id_outofstock_threshold","outofstock_threshold_error_message","Out of stock");
             check_validation_text("id_wayrem_margin","margin_error_message","Margin");
             check_validation_text("id_meta_key","metaKey_error_message","Meta Key");
         });

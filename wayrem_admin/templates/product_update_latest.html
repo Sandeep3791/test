@@ -373,6 +373,22 @@
                             <span class="text-error"></span>
                         </div>
                     </div>
+                    <div class="col-lg-12">
+                            <div class="form-group mb-4">
+                                <label for="name">Out of Stock Threshold <span class="text-danger">*</span><span class="text-danger"><em> {{form.outofstock_threshold.errors | striptags}}
+                                </em>
+                                </span></label>
+                                <div class="input-group">   
+                                    <div class="w-50 px-2">{{form.outofstock_threshold}}</div>
+                                    <div class="input-group error_field_msg" id= "outofstock_threshold_error_message" style="color: #d12525;"></div>
+                                </div>
+                                <div class="input-group">
+                                    <span class="text-danger"><em> 
+                                        </em></span>
+                                </div>
+                                <span class="text-error"></span>
+                            </div>
+                    </div>
 
                     <!-- Form -->
                     <div class="col-lg-12">
@@ -975,7 +991,9 @@
    $("#id_doe").focusout(function() {
        check_doe();
    });
-   
+   $("#id_outofstock_threshold").focusout(function() {
+       check_outofstock();
+   });
    
    
    
@@ -1051,6 +1069,17 @@
       }
    }
    
+   function check_outofstock(){
+       var mfr = $("#id_outofstock_threshold").val()
+      if ( mfr !== '') {
+         $("#outofstock_threshold_error_message").hide();
+         $("#id_outofstock_threshold").css("border-bottom","2px solid #34F458");
+      } else {
+         $("#outofstock_threshold_error_message").html("Please Enter Valid Out of Stock threshold");
+         $("#outofstock_threshold_error_message").show();
+         error_data = true;
+      }
+   }
    
    
    });

@@ -21,12 +21,14 @@ class LoginextOrderCreate(Order):
             Orderrequest create
             orderrequest
         '''
+
         order_details=self.get_order(order_id)
-        response=self.create_order(order_details)
-        order_tracking_number=self.get_reference(response)
-        if order_tracking_number:
-            order_tracking_number=self.update_order(order_id,order_tracking_number)
-            self.insert_shipping_loginext_notification(order_tracking_number)
+        if order_details.order_tracking_number is None or order_details.order_tracking_number == "": 
+            response=self.create_order(order_details) # hit the loginext api
+            order_tracking_number=self.get_reference(response)
+            if order_tracking_number:
+                order_tracking_number=self.update_order(order_id,order_tracking_number)
+                self.insert_shipping_loginext_notification(order_tracking_number)
         return order_id
 
     def insert_shipping_loginext_notification(self,reference_id):

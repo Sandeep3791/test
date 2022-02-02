@@ -138,6 +138,7 @@ def product_view_one(request):
         'package_count': request.session.get("package_count", None),
         'wayrem_margin': request.session.get("wayrem_margin", None),
         'margin_unit': request.session.get("margin_unit", None),
+        'outofstock_threshold':request.session.get("outofstock_threshold", None),
     }
     context = {}
     # form = ProductForm(request.POST, initial=initial)
@@ -184,6 +185,9 @@ def product_view_one(request):
                 "wayrem_margin")
             request.session["margin_unit"] = form.cleaned_data.get(
                 "margin_unit")
+            request.session["outofstock_threshold"] = form.cleaned_data.get(
+                "outofstock_threshold")
+            
             try:
                 product_id = Products.objects.last().id
             except:

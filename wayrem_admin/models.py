@@ -301,7 +301,7 @@ class Products(models.Model):
     inventory_shipped = models.SmallIntegerField(default=0)
     inventory_cancelled = models.SmallIntegerField(default=0)
     inventory_onhand = models.SmallIntegerField(default=0)
-
+    outofstock_threshold=models.SmallIntegerField(default=0,null=True, blank=True,)
     def __str__(self):
         return self.name + " (SKU: " + self.SKU + ")"
 

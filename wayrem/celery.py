@@ -29,6 +29,11 @@ app.conf.beat_schedule = {
         'schedule': crontab(minute='*/5'),
         # 'args': (9),
     },
+    'forecasting_product_24hrs': {
+        'task': 'wayrem_admin.tasks.forecasts_product',
+        'schedule': crontab(hour='*/24'),
+        # 'args': (9),
+    },
 }
 # @app.on_after_configure.connect
 # def setup_periodic_tasks(sender, **kwargs):
