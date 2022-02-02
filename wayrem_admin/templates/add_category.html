@@ -80,7 +80,7 @@
                         </div>    
                    </div>
                    <div class="col-md-12 mb-3">
-                            <label for="description">Tag <span class="text-danger"></span>  <span class="text-danger"><em>{{form.tag.errors | striptags}}</em></span></label>
+                            <label for="description">Tags <span class="text-danger"></span>  <span class="text-danger"><em>{{form.tag.errors | striptags}}</em></span></label>
                               {{form.tag}}
                               <div class="input-group" id="description_error_message" style="color: #d12525;"></div>
                         </div>    
@@ -123,45 +123,6 @@
     
     }
     });
-    
-        $(function () {
-    
-            var error_n = false;
-            var error_d = false;
-    
-            $("#id_name").focusout(function () {
-                check_name();
-            });
-            $("#id_description").focusout(function () {
-                check_description();
-            });
-    
-    
-            function check_name() {
-                var name = $("#id_name").val();
-                if (name !== '') {
-                    $("#name_error_message").hide();
-                    // $("#id_name").css("border-bottom", "2px solid #34F458");
-                } else {
-                    $("#name_error_message").html("Please Enter Category Name ");
-                    $("#name_error_message").show();
-                    error_n = true;
-                }
-            }
-    
-            function check_description() {
-                var description = $("#id_description").val();
-                if (description !== '') {
-                    $("#description_error_message").hide();
-                    // $("#id_description").css("border-bottom", "2px solid #34F458");
-                } else {
-                    $("#description_error_message").html("Please Enter description");
-                    $("#description_error_message").show();
-                    error_d = true;
-                }
-            }
-    
-        });
     
     </script>
 
