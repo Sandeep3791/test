@@ -189,6 +189,19 @@ class ProductFormImageView(forms.ModelForm):
             'supplier': forms.SelectMultiple(attrs={'class': 'form-control'}),
         }
 
+    def clean_date_of_exp(self):
+        cleaned_data = super(ProductFormImageView, self).clean()
+
+        dom = cleaned_data.get("date_of_mfg")
+        doe = cleaned_data.get("date_of_exp")
+
+        if dom >= doe:
+            raise forms.ValidationError(
+                f"Date of expiry must be greater than {dom}"
+            )
+        else:
+            return doe
+
 
 ProductImageFormset = modelformset_factory(
     Images,

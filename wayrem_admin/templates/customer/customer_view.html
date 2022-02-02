@@ -17,7 +17,7 @@
                 <ol class="breadcrumb padding-left-0">
                     <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
                     <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:customerslist' %}"><span class="sidebar-icon"><span class="fas fa-users"></span></span> Customers</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">View Email Template</li>
+                    <li class="breadcrumb-item active" aria-current="page">View Customer Template</li>
                 </ol>
             </nav>
         </div> 
@@ -221,6 +221,27 @@
                                         </div>
                                     </div> 
                                 </div> 
+
+                                <div class="row">   
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-4 text-left">
+                                            <label class="" for="email">Delivery Address Latitude</label>
+                                            <div class="input-group"> 
+                                                <input type="text" value="{{user.deliveryAddress_latitude}}" disabled class="form-control" 
+                                                 aria-describedby="emailHelp">                                                                                                                                          
+                                            </div>                                            
+                                        </div>  
+                                    </div> 
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-4 text-left">
+                                            <label class="" for="email">Delivery Address Longitude</label>
+                                            <div class="input-group">                                                 
+                                                <input type="text" value="{{user.deliveryAddress_longitude}}" disabled class="form-control" 
+                                                 aria-describedby="emailHelp">                                                                                                                                             
+                                            </div>                                            
+                                        </div>
+                                    </div> 
+                                </div> 
                             </div> 
 
                             <div>
@@ -301,28 +322,7 @@
                                     </div>                                            
                                 </div>
                             </div> 
-                        </div> 
-
-                        <div class="row">   
-                            <div class="col-md-6">
-                                <div class="form-group mb-4 text-left">
-                                    <label class="" for="email">Delivery Address Latitude</label>
-                                    <div class="input-group"> 
-                                        <input type="text" value="{{user.deliveryAddress_latitude}}" disabled class="form-control" 
-                                         aria-describedby="emailHelp">                                                                                                                                          
-                                    </div>                                            
-                                </div>  
-                            </div> 
-                            <div class="col-md-6">
-                                <div class="form-group mb-4 text-left">
-                                    <label class="" for="email">Delivery Address Longitude</label>
-                                    <div class="input-group">                                                 
-                                        <input type="text" value="{{user.deliveryAddress_longitude}}" disabled class="form-control" 
-                                         aria-describedby="emailHelp">                                                                                                                                             
-                                    </div>                                            
-                                </div>
-                            </div> 
-                        </div> 
+                        </div>                        
 
                         <div class="row">   
                             <div class="col-md-6">
@@ -358,7 +358,7 @@
                        </div>
                        
                      
-                        
+            
                     </div>                                                        
             </div>
         </div>
