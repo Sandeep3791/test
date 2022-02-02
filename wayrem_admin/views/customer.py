@@ -74,4 +74,4 @@ class Active_BlockCustomer(View):
 @role_required('Customer Profile View')
 def customer_details(request, id=None):
     user = Customer.objects.filter(id=id).first()
-    return render(request, 'customer_view.html', {'userdata': user})
+    return render(request, 'customer/customer_view.html', {'user': user})

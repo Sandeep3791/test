@@ -35,38 +35,45 @@
             </nav>
         </div>
     </div>
-    <div class="row rounded shadow-sm mt-5 bg-white">
-        <div class="col-xl-4 col-lg-4   other_info view_border">
-            <div class="">
-                <div class="row">
-                    <div class="col-12 text_value">
-                        <label for="">Name</label>
-                        <span class="">{{userdata.username}}</span>
+    <div class="rounded shadow-sm mt-5 bg-white w-50 mx-auto">
+        <div class="col-xl-12 col-lg-12   other_info ">
+                    <div class="row">
+                        <div class="col-6 text_value">
+                            <label for=""><h5 class="mb-0">Name:</h5></label>
+                            <span class="">{{userdata.username}}</span>
+                        </div>
+                        <div class="col-6 text_value">
+                            <label for=""><h5 class="mb-0">Email id:</h5></label>
+                            <span class="">{{userdata.email}}</span>
+                        </div>
                     </div>
-                    <div class="col-12 text_value">
-                        <label for="">Email id</label>
-                        <span class="">{{userdata.email}}</span>
-                    </div>
-                    <div class="col-12 text_value">
-                        <label for="">Contact No
-                    </label>
-                        <span class="">{{userdata.contact}}</span>
+                    <div class="row">
+                        <div class="col-6 text_value">
+                            <label for=""><h5 class="mb-0">Contact No:</h5></label>
+                            <span class="">{{userdata.contact}}</span>
+                        </div>
+                        <div class="col-6 text_value">
+                            <label for=""><h5 class="mb-0">Role:</h5></label>
+                            <span class="">{{userdata.role}}</span>
+                        </div>
                     </div>
                     {% comment %} <div class="col-6 text_value">
                         <button class="btn bg-primary text-white ki_btn">Edit</button>
                     </div> {% endcomment %}
-                    <div class="col-6 text_value">
-                        <a href="{% url 'wayrem_admin:userlist' %}"  class="btn bg-danger text-white ki_btn">Back</a>
-                    </div>
+                    
+                        <div class="row col-3 mt-3">
+                            <a href="{% url 'wayrem_admin:userlist' %}"  class="btn bg-danger text-white ki_btn">Back</a>
+                        </div>
+                   
+                    
                     <!-- <div class="col-12 text_value">
                         <label for="">Role</label>
 
                     </div> -->
                 </div>
-            </div>
         </div>
         <!-- <div class="col-xl-1 p-0"></div> -->
-        <div class="col-xl-8 col-lg-8 d-flex other_info">
+        <!-- <div class="col-xl-8 col-lg-8 d-flex other_info">
             <div class="row">
                 <div class="col-xl-6 text_value">
                     <label for="">Role
@@ -92,7 +99,7 @@
                     <span class="">{{userdata.zip_code}}</span>
                 </div>
             </div>
-        </div>
+        </div> -->
     </div>
 </div>
 
