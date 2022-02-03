@@ -301,7 +301,9 @@ class Products(models.Model):
     inventory_shipped = models.SmallIntegerField(default=0)
     inventory_cancelled = models.SmallIntegerField(default=0)
     inventory_onhand = models.SmallIntegerField(default=0)
-    outofstock_threshold=models.SmallIntegerField(default=0,null=True, blank=True,)
+    outofstock_threshold = models.SmallIntegerField(
+        default=0, null=True, blank=True,)
+
     def __str__(self):
         return self.name + " (SKU: " + self.SKU + ")"
 
@@ -418,6 +420,13 @@ class OtpDetails(models.Model):
         db_table = 'supplier_otp'
 
 
+customer_status = (
+    ('waiting for approval', 'Waiting for Approval'),
+    ('active', 'Active'),
+    ('inactive', 'Inactive')
+)
+
+
 class Customer(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
     first_name = models.CharField(max_length=255, null=True)
@@ -433,6 +442,8 @@ class Customer(models.Model):
     profile_pic = models.CharField(max_length=500, null=True)
     about = models.TextField(null=True)
     status = models.BooleanField(default=False)
+    verification_status = models.CharField(
+        max_length=100, choices=customer_status, null=True, default='waiting for approval')
     registration_number = models.BigIntegerField(null=True)
     tax_number = models.BigIntegerField(null=True)
     registration_docs_path = models.CharField(max_length=255, null=True)

@@ -86,8 +86,8 @@
                                     <div class="form-group mb-4 text-left">
                                         <label class="" for="email">Status</label>
                                         <div class="input-group">   
-                                            {% if user.status %}                                              
-                                                <input type="text" value="Active" disabled class="form-control" aria-describedby="emailHelp">  
+                                            {% if user.verification_status %}                                              
+                                                <input type="text" value="{{user.verification_status|title}}" disabled class="form-control" aria-describedby="emailHelp">  
                                             {% else %}
                                                 <input type="text" value="Waiting For Approval" disabled class="form-control"  aria-describedby="emailHelp">  
                                             {% endif %}                                                                                                                                       
@@ -375,7 +375,9 @@
                         </div> 
                         <div class="mt-4">
                             <a href="{% url 'wayrem_admin:customerslist' %}" class="btn btn-block btn-primary">Cancel</a>
-                            <a href="#" class="btn btn-block btn-success">Approve</a>
+                            {% if user.verification_status == "waiting for approval" %} 
+                            <a href="{% url 'wayrem_admin:customer_verification' user.id %}?status=active" class="btn btn-block btn-success">Approve</a>
+                            {% endif %}
                         </div>
                     </div>                                                        
                 </div>
