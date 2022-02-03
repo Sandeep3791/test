@@ -49,10 +49,17 @@ def import_image():
                         print('copied', file_name)
             shutil.rmtree(src_dir)
         else:
-            src_dir = f"{path}/{i}"
+            src_dir = f"{path}/{i}/"
             # dst_dir = f"/home/suryaaa/Music/image_testing/failed"
-            dst_dir = f"/opt/app/wayrem-admin-backend/media/common_folder/failed"
-            shutil.copytree(src_dir, dst_dir, dirs_exist_ok=True)
+            dst_dir = f"/opt/app/wayrem-admin-backend/media/common_folder/failed/{i}/"
+            isExist = os.path.exists(dst_dir)
+            if not isExist:
+                os.makedirs(dst_dir)
+            for file_name in os.listdir(src_dir):
+                source = src_dir + file_name
+                destination = dst_dir + file_name
+                shutil.copy(source, destination)
+                print('copied', file_name)
             shutil.rmtree(src_dir)
             print("failed!!")
     print("done")
