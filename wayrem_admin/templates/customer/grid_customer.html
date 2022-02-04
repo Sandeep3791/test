@@ -26,10 +26,13 @@
             <td>{{user.contact}}</td>
             <td>
                 {% if 'User Edit' in request.user.role.permission or request.user.is_superuser %}
-                {% if user.status %} <a href="{% url 'wayrem_admin:customerstatus' user.id %}"
+                {% if user.verification_status == "waiting for approval" %}
+                waiting for approval
+                {% elif user.verification_status == "active" %}
+                 <a href="{% url 'wayrem_admin:customer_verification' user.id %}?status=inactive"
                     class="btn-sm text-success"><i class="fas fa-toggle-on text-success"> Active</i></a> 
                     {% else %}
-                     <a href="{% url 'wayrem_admin:customerstatus' user.id %}" class="btn-sm text-danger"><i
+                     <a href="{% url 'wayrem_admin:customer_verification' user.id %}?status=active" class="btn-sm text-danger"><i
                         class="fas fa-toggle-off"> Inactive</i></a>
 
                 {% endif %}

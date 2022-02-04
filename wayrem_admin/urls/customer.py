@@ -8,5 +8,7 @@ urlpatterns = [
          views.Active_BlockCustomer.as_view(), name='customerstatus'),
     path('customer-details/<str:id>/',
          views.customer_details, name='customerdetails'),
+    path('customer-verify/<str:id>/',
+         views.customer_verification, name='customer_verification'),
 
 ]

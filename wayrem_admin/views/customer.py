@@ -75,3 +75,16 @@ class Active_BlockCustomer(View):
 def customer_details(request, id=None):
     user = Customer.objects.filter(id=id).first()
     return render(request, 'customer/customer_view.html', {'user': user})
+
+
+@role_required('Customer Profile View')
+def customer_verification(request, id=None):
+    status = request.GET.get('status')
+    user = Customer.objects.filter(id=id).first()
+    user.verification_status = status
+    user.save()
+    if status == "active":
+        messages.success(request, f"{user.first_name} is now Active")
+    else:
+        messages.error(request, f"{user.first_name} is now Inactive")
+    return redirect('wayrem_admin:customerslist')
