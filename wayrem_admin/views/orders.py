@@ -33,6 +33,7 @@ from weasyprint import HTML
 from django.db.models.functions import Cast
 from django.db.models.fields import DateField
 from wayrem_admin.loginext.loginext_liberary import LoginextOrderCreate
+import json
 
 class OrderExportView(View):
     
@@ -122,10 +123,11 @@ class OrderStatusUpdated(LoginRequiredMixin,UpdateView):
         return context
 
     def loginext_api(self,order_id,status_id):
-        if status_id == 2:
+        loginext_status=None
+        if status_id == ORDER_APPROVED:
             ordercreate=LoginextOrderCreate()
-            ordercreate.ordercreate(order_id)
-        return 1
+            loginext_status=ordercreate.ordercreate(order_id)
+        return loginext_status
     def form_valid(self,form):
         # This method is called when valid form data has been POSTed. 
         obj = form.save(commit=False) 
@@ -138,17 +140,53 @@ class OrderStatusUpdated(LoginRequiredMixin,UpdateView):
         get_id = self.get_object().id
         exist_status_id=self.get_object().status.id
         status_id=int(self.request.POST.get('status'))
+        data_dic={}
+        data_dic['status']=0
+        data_dic['loginext_success']=None
+        data_dic['order_status']=None
+        data_dic['delivery_status']=None
+        data_dic['message']=''
+
         if exist_status_id != status_id:
+            log_status=self.loginext_api(get_id,status_id)
+            data_dic['status']=1
+            
+            if status_id == ORDER_APPROVED:
+                delivery_status = ORDER_STATUS_PREPARING
+            if status_id == ORDER_CANCELLED:
+                delivery_status = ORDER_STATUS_CANCELLED
+                
             obj_stat_instance = StatusMaster.objects.get(id=status_id)
-            Orders.objects.filter(id=get_id).update(status=obj_stat_instance)
+            deliv_obj_stat_instance=StatusMaster.objects.get(id=delivery_status)
             now = datetime.datetime.now()
-            odl=OrderDeliveryLogs(order_id=get_id,order_status=obj_stat_instance,order_status_details="status change",log_date=now,user_id=1)
-            odl.save()
-            self.loginext_api(get_id,status_id)
+            if log_status:
+                data_dic['loginext_success']=1
+                if log_status == 2:
+                    data_dic['message']="Reference Id already created. We update the status"
+                else:
+                    data_dic['message']="Reference Id is created. We update the status"
+                Orders.objects.filter(id=get_id).update(status=obj_stat_instance,delivery_status=deliv_obj_stat_instance)
+                odl=OrderDeliveryLogs(order_id=get_id,order_status=deliv_obj_stat_instance,order_status_details="status change",log_date=now,user_id=1)
+                odl.save()
+                data_dic['order_status']='<span class="badge bg-primary" style="padding: 3px 8px;line-height: 11px;background-color:'+obj_stat_instance.status_color+' !important">'+obj_stat_instance.name+'</span>'
+                data_dic['delivery_status']='<span class="badge bg-primary" style="padding: 3px 8px;line-height: 11px;background-color:'+deliv_obj_stat_instance.status_color+' !important">'+deliv_obj_stat_instance.name+'</span>'
+            else:
+                data_dic['loginext_success']=0
+                data_dic['message']="Reference Id is not created. Please check the order."
+
+            if log_status is None:
+                data_dic['loginext_success']=None
+                Orders.objects.filter(id=get_id).update(status=obj_stat_instance,delivery_status=deliv_obj_stat_instance)
+                odl=OrderDeliveryLogs(order_id=get_id,order_status=deliv_obj_stat_instance,order_status_details="status change",log_date=now,user_id=1)
+                odl.save()
+                data_dic['message']="Status Updated"
+                data_dic['order_status']='<span class="badge bg-primary" style="padding: 3px 8px;line-height: 11px;background-color:'+obj_stat_instance.status_color+' !important">'+obj_stat_instance.name+'</span>'
+                data_dic['delivery_status']='<span class="badge bg-primary" style="padding: 3px 8px;line-height: 11px;background-color:'+deliv_obj_stat_instance.status_color+' !important">'+deliv_obj_stat_instance.name+'</span>'
         else:
-            obj_stat_instance = StatusMaster.objects.get(id=status_id)
-        check='<span class="badge bg-primary" style="padding: 3px 8px;line-height: 11px;background-color:'+obj_stat_instance.status_color+' !important">'+obj_stat_instance.name+'</span>'
-        return HttpResponse(check)
+            data_dic['message']='Same status not updated.'
+
+        data_dic_json=json.dumps(data_dic)
+        return HttpResponse(data_dic_json)
 
 class OrderPaymentStatusUpdated(LoginRequiredMixin,UpdateView):
     login_url  ='wayrem_admin:root'

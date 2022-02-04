@@ -10,6 +10,6 @@ class OrderFilter(django_filters.FilterSet):
     customer_name=django_filters.Filter(field_name='customer__first_name',lookup_expr='icontains')
     class Meta:
         model = Orders
-        fields = ['order_ref','start_date','end_date','customer','contact','status','customer_name','orderrefer']
+        fields = ['order_ref','start_date','end_date','customer','contact','delivery_status','customer_name','orderrefer']
 
 

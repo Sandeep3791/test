@@ -1,5 +1,5 @@
 INSERT INTO `status_master` (`id`, `name`, `status_color`, `status_type`, `sort_order`, `status`) VALUES
-(1, 'Received order', '#2361ce', 1, 1, 1),
+(1, 'Order Received', '#2361ce', 1, 1, 1),
 (2, 'Preparing order', '#f0bc74', 1, 2, 1),
 (3, 'Order pickup', '#10B981', 1, 3, 1),
 (4, 'Delivering order', '#E11D48', 1, 4, 1),
@@ -13,8 +13,10 @@ INSERT INTO `status_master` (`id`, `name`, `status_color`, `status_type`, `sort_
 (12, 'Draft', '#ffffff', 3, 4, 0),
 (13, 'Wired', '#ffffff', 3, 5, 0),
 (14, 'Online', '#ffffff', 3, 6, 1),
-(15, 'Order Cancelled', '#000000', 1, 5, 1);
-
+(15, 'Order Cancelled', '#000000', 1, 5, 1),
+(16, 'Pending for Approved', '#2361ce', 4, 1, 1),
+(17, 'Approved', '#2361ce', 4, 1, 1),
+(18, 'Order cancelled', '#2361ce', 4, 1, 1);
 ------------------------------------
 
 INSERT INTO `forecast_jobtype` (`id`, `no_of_days`, `status`) VALUES

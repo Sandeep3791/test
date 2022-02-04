@@ -15,8 +15,10 @@ def create_new_ref_number():
 class Orders(models.Model):
     ref_number = models.CharField(unique=True, max_length=100, editable=False)
     customer = models.ForeignKey('wayrem_admin.Customer', models.DO_NOTHING)
+    delivery_status = models.ForeignKey(
+        'StatusMaster', models.DO_NOTHING, db_column='delivery_status',related_name='delivery_status_id')
     status = models.ForeignKey(
-        'StatusMaster', models.DO_NOTHING, db_column='status')
+        'StatusMaster', models.DO_NOTHING, db_column='status',related_name='status_id')
     sub_total = models.FloatField()
     item_discount = models.FloatField()
     item_margin = models.FloatField()
@@ -47,7 +49,7 @@ class Orders(models.Model):
     order_tracking_number = models.CharField(
         max_length=80, blank=True, null=True)
     content = models.TextField(blank=True, null=True)
-
+    order_shipping_response = models.TextField(blank=True, null=True)
     def __str__(self):
         return self.ref_number
 

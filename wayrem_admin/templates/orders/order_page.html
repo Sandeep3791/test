@@ -61,7 +61,7 @@
 </style>
 
 {% endblock head %} {% block content %}
-
+<div class="alert-container"></div>
 <div class="topbar_pages dashboard_content_inner">
     <h4 class="text-title">Orders</h4>
     <div class="breadcrumb-section">
@@ -161,11 +161,43 @@ $(".orderstatus").on("click",".order_submit_success",function(e){
 	            data: data_ser,
 	            cache: false,
 	            success: function (data) {
-                    $(".alert-container").show();
-                     $(".status_"+order_status_id).html(data);
-                     var alert_message='<div class="alert-container alert alert-success alert-dismissible fade show" role="alert" ><strong> Order status Updated!!</strong><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
-                     $(".alert-container").html(alert_message);   
-                     $(".alert-container").fadeOut(2500);
+                    var obj = jQuery.parseJSON(data);
+                    message=obj.message
+                    order_status=obj.order_status
+                    loginext_success=obj.loginext_success
+                    status=parseInt(obj.status)
+                    delivery_status=obj.delivery_status
+                    $('#orderpopup').modal('hide');
+                    // $(".status_"+order_status_id).html(data);
+                    $(".alert-container").fadeIn(1);
+                    if (status == 0){
+                        var alert_message='<div class="alert-container alert alert-danger alert-dismissible fade show" role="alert" ><strong>'+message+'</strong><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
+                        $(".alert-container").html(alert_message);   
+                    }else{
+                        if (loginext_success == null){
+                             var alert_message='<div class="alert-container alert alert-success alert-dismissible fade show" role="alert" ><strong>'+message+'</strong><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
+                            $(".alert-container").html(alert_message);
+                             $(".status_"+order_status_id).html(order_status);
+                             $(".delivery_status_"+order_status_id).html(delivery_status);
+                        }
+
+                        if (loginext_success == 0){
+                            
+                            var alert_message='<div class="alert-container alert alert-danger alert-dismissible fade show" role="alert" ><strong>'+message+'</strong><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
+                            $(".alert-container").html(alert_message);
+                        }
+
+                        if (loginext_success == 1){
+                           
+                            var alert_message='<div class="alert-container alert alert-success alert-dismissible fade show" role="alert" ><strong>'+message+'</strong><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
+                            $(".alert-container").html(alert_message);
+                             $(".status_"+order_status_id).html(order_status);
+                             $(".delivery_status_"+order_status_id).html(delivery_status);
+                        }
+                    }
+
+                    
+                    $(".alert-container").fadeOut(3000);
                 }
          })
 
