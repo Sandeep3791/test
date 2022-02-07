@@ -19,6 +19,7 @@ from rest_framework.status import (
 )
 from wayrem_admin.loginext.liberary.api_base import ApiBase
 from wayrem_admin.loginext.webhook_liberary import WebHookLiberary
+from wayrem_admin.utils.constants import *
 
 class LogiNextWeebHookOrderAPI(ApiBase,WebHookLiberary,viewsets.ViewSet):
     webhook=WebHookLiberary()
@@ -89,6 +90,7 @@ class LogiNextWeebHookOrderAPI(ApiBase,WebHookLiberary,viewsets.ViewSet):
         create_order_dic=self.webhook.cancelorder(create)
         order_reference_id=self.webhook.get_order(create_order_dic)
         self.webhook.saveorderrequest(create_order_dic,order_reference_id)
+        self.webhook.status_update_order(create_order_dic,ORDER_DELIVERY_CANCELLED)
         status=HTTP_200_OK
         result={'message':"Cancel order"}
         result_build=Response(result,status=status)
@@ -109,6 +111,7 @@ class LogiNextWeebHookOrderAPI(ApiBase,WebHookLiberary,viewsets.ViewSet):
         create_order_dic=self.webhook.deliveredorder(create)
         order_reference_id=self.webhook.get_order(create_order_dic)
         self.webhook.saveorderrequest(create_order_dic,order_reference_id)
+        self.webhook.status_update_order(create_order_dic,ORDER_DELIVERY_DELIVERED)
         status=HTTP_200_OK
         result={'message':"delivered order"}
         result_build=Response(result,status=status)
@@ -119,6 +122,7 @@ class LogiNextWeebHookOrderAPI(ApiBase,WebHookLiberary,viewsets.ViewSet):
         create_order_dic=self.webhook.attempteddeliveryorder(create)
         order_reference_id=self.webhook.get_order(create_order_dic)
         self.webhook.saveorderrequest(create_order_dic,order_reference_id)
+        self.webhook.status_update_order(create_order_dic,ORDER_DELIVERY_ATTEMPTED_DELIVERED)
         status=HTTP_200_OK
         result={'message':"attempted delivery order"}
         result_build=Response(result,status=status)
@@ -129,6 +133,7 @@ class LogiNextWeebHookOrderAPI(ApiBase,WebHookLiberary,viewsets.ViewSet):
         create_order_dic=self.webhook.partiallydeliveredorder(create)
         order_reference_id=self.webhook.get_order(create_order_dic)
         self.webhook.saveorderrequest(create_order_dic,order_reference_id)
+        self.webhook.status_update_order(create_order_dic,ORDER_DELIVERY_PARTIALLY_DELIVERED)
         status=HTTP_200_OK
         result={'message':"partially delivered order"}
         result_build=Response(result,status=status)
@@ -139,6 +144,7 @@ class LogiNextWeebHookOrderAPI(ApiBase,WebHookLiberary,viewsets.ViewSet):
         create_order_dic=self.webhook.pickeduporder(create)
         order_reference_id=self.webhook.get_order(create_order_dic)
         self.webhook.saveorderrequest(create_order_dic,order_reference_id)
+        self.webhook.status_update_order(create_order_dic,ORDER_DELIVERY_PICKUP)
         status=HTTP_200_OK
         result={'message':"picked up order"}
         result_build=Response(result,status=status)
@@ -149,6 +155,7 @@ class LogiNextWeebHookOrderAPI(ApiBase,WebHookLiberary,viewsets.ViewSet):
         create_order_dic=self.webhook.orderattemptedpickuporder(create)
         order_reference_id=self.webhook.get_order(create_order_dic)
         self.webhook.saveorderrequest(create_order_dic,order_reference_id)
+        self.webhook.status_update_order(create_order_dic,ORDER_DELIVERY_ATTEMPTED_PICKUP)
         status=HTTP_200_OK
         result={'message':"order attempted pickup order"}
         result_build=Response(result,status=status)

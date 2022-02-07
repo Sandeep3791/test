@@ -1,6 +1,6 @@
 import requests
 import json,re
-from wayrem_admin.models_orders import Orders,ShippingLoginextNotification
+from wayrem_admin.models_orders import Orders,ShippingLoginextNotification,StatusMaster,OrderDeliveryLogs
 from datetime import datetime
 
 class WebHookLiberary():
@@ -331,3 +331,28 @@ class WebHookLiberary():
         order_dic=self.create_dictonary(order_dic,createorderrequest,'paymentSubType')
         order_dic=self.create_dictonary(order_dic,createorderrequest,'shipmentCrateMapping')
         return order_dic
+
+
+    def get_order_id(self,order_dic):
+        try:
+            if 'reference_id' in order_dic:
+                reference_id=order_dic['reference_id']
+                p_id=Orders.objects.filter(order_tracking_number=reference_id).first()
+                return p_id
+            else:
+                order_no=order_dic['order_no']
+                order_ref_dic=Orders.objects.filter(ref_number=order_no).first()
+                p_id=Orders.objects.filter(order_tracking_number=reference_id).first()
+                return p_id
+        except:
+            return 0
+    def status_update_order(self,reference_dic,delivery_status):
+        order_reference_det=self.get_order_id(reference_dic)
+        if order_reference_det is not None:
+            order_id=order_reference_det.id
+            deliv_obj_stat_instance=StatusMaster.objects.get(id=delivery_status)
+            order_update=Orders.objects.filter(id=order_id).update(delivery_status=deliv_obj_stat_instance)
+            now = datetime.now()
+            odl=OrderDeliveryLogs(order_id=order_id,order_status=deliv_obj_stat_instance,order_status_details="status change",log_date=now,user_id=1)
+            odl.save()
+

@@ -1,14 +1,26 @@
 from abc import ABC, abstractmethod
 import requests
 import json
+from wayrem_admin.models import Settings
+from wayrem_admin.utils.constants import *
 
 class ApiBase(ABC):
 
     def get_credentials(self):
         credentials={}
+        username=Settings.objects.filter(key=LOGINEXT_USERNAME).first()
+        password=Settings.objects.filter(key=LOGINEXT_PASSWORD).first()
+        base_path=Settings.objects.filter(key=LOGINEXT_BASEPATH).first()
+        
+        '''
         credentials['userName']="raghad.baeshen@rahal.mynaghi.com"
         credentials['password']="Rb123456"
         credentials['base_path']="https://api.loginextsolutions.com/"
+        '''
+        credentials['userName']=username.value
+        credentials['password']=password.value
+        credentials['base_path']=base_path.value+"/"
+        
         return credentials
 
     def send_request(self, method, path, params,headers={},data_type="json"):   

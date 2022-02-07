@@ -16,7 +16,11 @@ INSERT INTO `status_master` (`id`, `name`, `status_color`, `status_type`, `sort_
 (15, 'Order Cancelled', '#000000', 1, 5, 1),
 (16, 'Pending for Approved', '#2361ce', 4, 1, 1),
 (17, 'Approved', '#2361ce', 4, 1, 1),
-(18, 'Order cancelled', '#2361ce', 4, 1, 1);
+(18, 'Order cancelled', '#2361ce', 4, 1, 1),
+(19, 'Attempted Pickup', '#000000', 1, 5, 1),
+(20, 'Order Partially Delivered', '#000000', 1, 5, 1),
+(21, 'Order Attempted Delivery', '#000000', 1, 5, 1);
+
 ------------------------------------
 
 INSERT INTO `forecast_jobtype` (`id`, `no_of_days`, `status`) VALUES
@@ -29,7 +33,12 @@ INSERT INTO `forecast_jobtype` (`id`, `no_of_days`, `status`) VALUES
 
 INSERT INTO `settings` (`id`, `key`, `display_name`, `value`, `details`, `type`, `order`) VALUES
 (1, 'forecast_delivery_span_per_day', 'forecast delivery span per day', '3', '', 'text', 1),
-(2, 'forecast_product_threshold', 'Min qty must be available in  inventory', '1', '', 'text', 1);
+(2, 'forecast_product_threshold', 'Min qty must be available in  inventory', '1', '', 'text', 1),
+(5, 'wayrem_vat', 'VAT NO', '984632244224244', '', 'text', 1),
+(4, 'setting_vat', 'VAT', '15', '', 'text', 1),
+(6, 'loginext_username', 'UserName', 'raghad.baeshen@rahal.mynaghi.com', '', 'text', 1),
+(7, 'loginext_password', 'LogiNext Password', 'Rb123456', '', 'text', 1),
+(8, 'loginext_basepath', 'Loginext URL', 'https://api.loginextsolutions.com', '', 'text', 1);
 
 -------------------------------------
 
