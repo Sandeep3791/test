@@ -1,9 +1,10 @@
 from wayrem_admin.loginext.liberary.api_base import ApiBase
 from wayrem_admin.loginext.liberary.order import Order
+from wayrem_admin.loginext.liberary.customer import CustomerLib
 from wayrem_admin.models_orders import Orders,ShippingLoginextNotification
 
 
-class LoginextOrderCreate(Order):
+class LoginextOrderCreate(Order,CustomerLib):
     #customerlib=Customer()
     
     def get_order(self,order_id):
@@ -14,6 +15,7 @@ class LoginextOrderCreate(Order):
         finally:
             return order_det
 
+    
     def ordercreate(self,order_id):
         '''
             Customer Create 
@@ -21,9 +23,12 @@ class LoginextOrderCreate(Order):
             Orderrequest create
             orderrequest
         '''
+        
         order_details=self.get_order(order_id)
         if order_details.order_tracking_number is None or order_details.order_tracking_number == "": 
-            response=self.create_order(order_details) # hit the loginext api
+            account_code=self.process_customer(order_details)
+            response=self.create_order(order_details,account_code) # hit the loginext api
+            print(response)
             self.storing_response(order_id,response)
             order_tracking_number=self.get_reference(response)
             if order_tracking_number:

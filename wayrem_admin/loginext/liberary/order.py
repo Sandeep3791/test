@@ -16,8 +16,8 @@ class Order(ApiBase):
         self.AUTHENTICATE_KEY=ApiBase.authenticate_secret_key(self)
         return self.AUTHENTICATE_KEY
     
-    def create_order(self,order_details):
-        create_order_dic=self.create_order_details(order_details)
+    def create_order(self,order_details,account_code):
+        create_order_dic=self.create_order_details(order_details,account_code)
         create_order_dic['shipmentCrateMappings']=self.shipping_box(order_details.id)
         create_order_list=[create_order_dic]
         method="POST"
@@ -55,13 +55,13 @@ class Order(ApiBase):
             total_time=int(total_time)
         return total_time
 
-    def create_order_details(self,orderdetail):
+    def create_order_details(self,orderdetail,account_code):
         shipmentOrderDt=orderdetail.order_date # this in utc shipmentOrderDt
         shipmentOrderDt=self.converttoutcdatetime(shipmentOrderDt)
         #shipmentOrderDt=utc_dt
         branch_name=self.get_branch_name()
-        distributionCenter="TEST"
-        deliverBranch="TEST"
+        distributionCenter=branch_name
+        deliverBranch=branch_name
 
         priority='PRIORITY1'
         preparationTime=20
@@ -71,16 +71,12 @@ class Order(ApiBase):
         start_time=datetime.now()
         deliver_start_window=self.converttoutcdatetime(start_time)
         deliverStartTimeWindow=deliver_start_window
-
         total_time=self.get_time()
         order_end_time=self.addtimeorder(total_time)
         deliver_end_window=self.converttoutcdatetime(order_end_time)
-        
         deliverEndTimeWindow=deliver_end_window
-        
-
         deliveryLocationType="Home"
-        deliverAccountCode=str(orderdetail.customer.id)
+        deliverAccountCode=account_code
         deliverAddressId="Home"
         deliverAccountName=orderdetail.order_ship_name
         deliverEmail=orderdetail.order_email
@@ -97,7 +93,7 @@ class Order(ApiBase):
         deliverPinCode="NA"
         deliverLatitude=orderdetail.order_ship_latitude
         deliverLongitude=orderdetail.order_ship_longitude
-        returnBranch="TEST"
+        returnBranch=branch_name
 
         deliveryLocationType=''
         create_order_dic={

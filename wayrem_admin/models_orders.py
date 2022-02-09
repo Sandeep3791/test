@@ -253,3 +253,13 @@ class ShippingLoginextNotification(models.Model):
     class Meta:
         app_label = "wayrem_admin"
         db_table = 'shipping_loginext_notification'
+
+class OrderLoginextShipment(models.Model):
+    customer = models.ForeignKey('wayrem_admin.Customer', models.DO_NOTHING)
+    customer_account_code = models.CharField(max_length=255, blank=True, null=True)
+    customer_reference_id = models.CharField(max_length=255, blank=True, null=True)
+    create_customer_response = models.TextField(blank=True, null=True)
+    
+    class Meta:
+        app_label = "wayrem_admin"
+        db_table = 'order_loginext_shipment'
