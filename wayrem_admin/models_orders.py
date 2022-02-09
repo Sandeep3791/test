@@ -16,9 +16,9 @@ class Orders(models.Model):
     ref_number = models.CharField(unique=True, max_length=100, editable=False)
     customer = models.ForeignKey('wayrem_admin.Customer', models.DO_NOTHING)
     delivery_status = models.ForeignKey(
-        'StatusMaster', models.DO_NOTHING, db_column='delivery_status',related_name='delivery_status_id')
+        'StatusMaster', models.DO_NOTHING, db_column='delivery_status', related_name='delivery_status_id')
     status = models.ForeignKey(
-        'StatusMaster', models.DO_NOTHING, db_column='status',related_name='status_id')
+        'StatusMaster', models.DO_NOTHING, db_column='status', related_name='status_id')
     sub_total = models.FloatField()
     item_discount = models.FloatField()
     item_margin = models.FloatField()
@@ -32,11 +32,11 @@ class Orders(models.Model):
     order_ship_name = models.CharField(max_length=100)
     order_ship_address = models.CharField(max_length=100)
 
-    order_ship_building_name=models.CharField(max_length=100)
-    order_ship_landmark=models.CharField(max_length=100)
-    order_ship_region=models.CharField(max_length=100)
-    order_ship_latitude=models.CharField(max_length=100)
-    order_ship_longitude=models.CharField(max_length=100)
+    order_ship_building_name = models.CharField(max_length=100)
+    order_ship_landmark = models.CharField(max_length=100)
+    order_ship_region = models.CharField(max_length=100)
+    order_ship_latitude = models.CharField(max_length=100)
+    order_ship_longitude = models.CharField(max_length=100)
 
     order_billing_name = models.CharField(max_length=100)
     order_billing_address = models.CharField(max_length=100)
@@ -50,6 +50,8 @@ class Orders(models.Model):
         max_length=80, blank=True, null=True)
     content = models.TextField(blank=True, null=True)
     order_shipping_response = models.TextField(blank=True, null=True)
+    order_type = models.CharField(max_length=100, null=True)
+
     def __str__(self):
         return self.ref_number
 
@@ -57,7 +59,8 @@ class Orders(models.Model):
         app_label = "wayrem_admin"
         db_table = 'orders'
 
-class StateCode(models.Model): 
+
+class StateCode(models.Model):
     state = models.CharField(max_length=255, blank=True, null=True)
     loginext_code = models.CharField(max_length=255, blank=True, null=True)
     status = models.IntegerField(default=1)
@@ -65,6 +68,7 @@ class StateCode(models.Model):
     class Meta:
         app_label = "wayrem_admin"
         db_table = 'state_code'
+
 
 class StatusMaster(models.Model):
     id = models.SmallAutoField(primary_key=True)
@@ -229,15 +233,17 @@ class ShippingLoginextNotification(models.Model):
     delivery_type = models.CharField(max_length=200, blank=True, null=True)
     shipment_notes = models.CharField(max_length=200, blank=True, null=True)
     assignment_method = models.CharField(max_length=200, blank=True, null=True)
-    
+
     apartment = models.CharField(max_length=50, blank=True, null=True)
     street_name = models.CharField(max_length=50, blank=True, null=True)
     city = models.CharField(max_length=50, blank=True, null=True)
     state = models.CharField(max_length=50, blank=True, null=True)
     country = models.CharField(max_length=50, blank=True, null=True)
     pincode = models.CharField(max_length=50, blank=True, null=True)
-    customer_email_address = models.CharField(max_length=50, blank=True, null=True)
-    customer_phone_number = models.CharField(max_length=50, blank=True, null=True)
+    customer_email_address = models.CharField(
+        max_length=50, blank=True, null=True)
+    customer_phone_number = models.CharField(
+        max_length=50, blank=True, null=True)
 
     start_time_window = models.DateTimeField(blank=True, null=True)
     end_time_window = models.DateTimeField(blank=True, null=True)
@@ -246,7 +252,7 @@ class ShippingLoginextNotification(models.Model):
     shipment_crate_mapping = models.TextField(blank=True, null=True)
     ordercreate_timestamp = models.DateTimeField(blank=True, null=True)
     ordercreate_timestamp = models.DateTimeField(blank=True, null=True)
-    picked_up_time=models.DateTimeField(blank=True, null=True)
+    picked_up_time = models.DateTimeField(blank=True, null=True)
     created_at = models.DateTimeField(blank=True, null=True)
     updated_at = models.DateTimeField(blank=True, null=True)
 
