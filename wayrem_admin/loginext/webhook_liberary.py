@@ -353,6 +353,6 @@ class WebHookLiberary():
             deliv_obj_stat_instance=StatusMaster.objects.get(id=delivery_status)
             order_update=Orders.objects.filter(id=order_id).update(delivery_status=deliv_obj_stat_instance)
             now = datetime.now()
-            odl=OrderDeliveryLogs(order_id=order_id,order_status=deliv_obj_stat_instance,order_status_details="status change",log_date=now,user_id=1)
+            odl=OrderDeliveryLogs(order_id=order_id,order_status=deliv_obj_stat_instance,order_status_details="status change",log_date=now,user_id=1,customer_view=deliv_obj_stat_instance.customer_view)
             odl.save()
 

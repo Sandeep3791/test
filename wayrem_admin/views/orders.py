@@ -166,7 +166,7 @@ class OrderStatusUpdated(LoginRequiredMixin,UpdateView):
                 else:
                     data_dic['message']="Reference Id is created. We update the status"
                 Orders.objects.filter(id=get_id).update(status=obj_stat_instance,delivery_status=deliv_obj_stat_instance)
-                odl=OrderDeliveryLogs(order_id=get_id,order_status=deliv_obj_stat_instance,order_status_details="status change",log_date=now,user_id=1)
+                odl=OrderDeliveryLogs(order_id=get_id,order_status=deliv_obj_stat_instance,order_status_details="status change",log_date=now,user_id=1,customer_view=deliv_obj_stat_instance.customer_view)
                 odl.save()
                 data_dic['order_status']='<span class="badge bg-primary" style="padding: 3px 8px;line-height: 11px;background-color:'+obj_stat_instance.status_color+' !important">'+obj_stat_instance.name+'</span>'
                 data_dic['delivery_status']='<span class="badge bg-primary" style="padding: 3px 8px;line-height: 11px;background-color:'+deliv_obj_stat_instance.status_color+' !important">'+deliv_obj_stat_instance.name+'</span>'
@@ -177,7 +177,7 @@ class OrderStatusUpdated(LoginRequiredMixin,UpdateView):
             if log_status is None:
                 data_dic['loginext_success']=None
                 Orders.objects.filter(id=get_id).update(status=obj_stat_instance,delivery_status=deliv_obj_stat_instance)
-                odl=OrderDeliveryLogs(order_id=get_id,order_status=deliv_obj_stat_instance,order_status_details="status change",log_date=now,user_id=1)
+                odl=OrderDeliveryLogs(order_id=get_id,order_status=deliv_obj_stat_instance,order_status_details="status change",log_date=now,user_id=1,customer_view=deliv_obj_stat_instance.customer_view)
                 odl.save()
                 data_dic['message']="Status Updated"
                 data_dic['order_status']='<span class="badge bg-primary" style="padding: 3px 8px;line-height: 11px;background-color:'+obj_stat_instance.status_color+' !important">'+obj_stat_instance.name+'</span>'

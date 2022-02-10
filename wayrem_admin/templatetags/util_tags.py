@@ -4,6 +4,7 @@ from django import template
 from django.template import Context
 from datetime import date, datetime
 from wayrem_admin.models_orders import OrderDetails, OrderTransactions, OrderDetails
+from wayrem_admin.models_recurrence import ForecastProduct
 from django.db.models import Sum
 register = template.Library()
 
@@ -57,3 +58,11 @@ def unit_product_total(ord_detail_id):
     total_amount = ((float(ord_det_id.price) + float(ord_det_id.item_margin))
                     * float(ord_det_id.quantity))-float(ord_det_id.discount)
     return total_amount
+@register.filter(name='forecast_quantity')
+def forecast_quantity(no_of_day,product_id):
+    get_forecast_quantity=ForecastProduct.objects.values("forecast_quantity").filter(forecast_jobtype_id=no_of_day,product_id=product_id,created_at__gte=date.today()).order_by("-id").first()
+    if get_forecast_quantity is None:
+        return 0
+    else:
+        return get_forecast_quantity['forecast_quantity']
+    return product_id
