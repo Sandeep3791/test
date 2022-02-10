@@ -178,8 +178,8 @@
                     <span> #{{po.0.po_name}} was approved by <span class="text-dark font-weight-bold"> {{po.0.supplier_name.company_name|title}}</span></span>
                 </div>
                 <div class="d-flex justify-content-between flex-row py-3">
-                    <span class="font-weight-bold text-dark"><i class="fa fa-calendar text-gray-500 px-2" aria-hidden="true"></i> 01 Jan 2022</span> at
-                    <span class="font-weight-bold text-dark"><i class="far fa-clock text-gray-500 px-2"></i>01:11 PM</span>
+                    <span class="font-weight-bold text-dark"><i class="fa fa-calendar text-gray-500 px-2" aria-hidden="true"></i> {{po_logs.0.created_at|date:"d M Y"}}</span> at
+                    <span class="font-weight-bold text-dark"><i class="far fa-clock text-gray-500 px-2"></i>{{po_logs.0.created_at|time:"h:i a"}}</span>
                 </div>
             </div>
             {% elif po.0.status == "declined" %}

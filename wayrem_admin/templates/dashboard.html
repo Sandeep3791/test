@@ -3,7 +3,13 @@
 {% block title %} Dashboard {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
-{% block stylesheets %}{% endblock stylesheets %}
+{% block stylesheets %}
+<!--Chart js-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" integrity="sha256-Uv9BNBucvCPipKQ2NS9wYpJmi8DTOEfTA/nH2aoJALw=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css" integrity="sha256-aa0xaJgmK/X74WM224KMQeNQC2xYKwlAt08oZqjeF0E=" crossorigin="anonymous" />
+<!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+{% endblock stylesheets %}
 
 {% block content %}
 <div class="dashboard_content_inner">
@@ -134,20 +140,45 @@
                             <div class="icon icon-shape icon-md icon-shape-primary rounded me-4 me-sm-0"><span
                                     class="fas fa-chart-line"></span></div>
                             <div class="d-sm-none">
-                                <h2 class="h5">Customers</h2>
-                                <h3 class="mb-1">{{customers}}</h3>
+                                <h2 class="h5">New Customers</h2>
+                                <h3 class="mb-1">{{customers_month}}</h3>
                             </div>
                         </div>
                         <div class="col-12 col-xl-7 px-xl-0">
                             <div class="d-none d-sm-block">
-                                <h2 class="h5">Customers</h2>
-                                <h3 class="mb-1">{{customers}}</h3>
+                                <h2 class="h5">New Customers</h2>
+                                <h3 class="mb-1">{{customers_month}}</h3>
                             </div>
-                            <small>{{present_month}} 1 - {{next_month}} 1, <span class="icon icon-small"><span
-                                        class="fas fa-globe-europe"></span></span> WorldWide</small>
+                            <small>{{present_month}} 1 - {{next_month}} 1 <span class="icon icon-small"></span> </small>
                             <div class="small mt-2">
-                                <span class="fas fa-angle-up text-success"></span>
-                                <span class="text-success fw-bold">18.2%</span> Since last month
+                                <span class="text-success fw-bold">{{customers_day}}</span> <a href="{% url 'wayrem_admin:customerslist' %}"> Since today </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-12 col-sm-6 col-xl-4 mb-4">
+            <div class="card border-light shadow-sm">
+                <div class="card-body">
+                    <div class="row d-block d-xl-flex align-items-center">
+                        <div
+                            class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
+                            <div class="icon icon-shape icon-md icon-shape-primary rounded me-4 me-sm-0"><span
+                                    class="fas fa-chart-line"></span></div>
+                            <div class="d-sm-none">
+                                <h2 class="h5">Orders</h2>
+                                <h3 class="mb-1">{{orders_month}}</h3>
+                            </div>
+                        </div>
+                        <div class="col-12 col-xl-7 px-xl-0">
+                            <div class="d-none d-sm-block">
+                                <h2 class="h5">Orders</h2>
+                                <h3 class="mb-1">{{orders_month}}</h3>
+                            </div>
+                            <small>{{present_month}} 1 - {{next_month}} 1 <span class="icon icon-small"></span> </small>
+                            <div class="small mt-2">
+                                <span class="text-success fw-bold">{{orders_day}}</span> Since today
                             </div>
                         </div>
                     </div>
@@ -170,12 +201,10 @@
                         <div class="col-12 col-xl-7 px-xl-0">
                             <div class="d-none d-sm-block">
                                 <h2 class="h5">Transactions</h2>
-                                <h3 class="mb-1">SAR {{total_transaction_amount}}</h3>
+                                <h3 class="mb-1">SAR {{total_transaction_amount|floatformat:2}}</h3>
                             </div>
-                            <small>{{present_month}} 1 - {{next_month}} 1, <span class="icon icon-small"><span
-                                        class="fas fa-globe-europe"></span></span> Worldwide</small>
+                            <small>{{present_month}} 1 - {{next_month}} 1 <span class="icon icon-small"></span> </small>
                             <div class="small mt-2">
-                                <span class="fas fa-angle-up text-success"></span>
                                 <span class="text-success fw-bold">{{transactions}}</span> Since last month
                             </div>
                         </div>
@@ -188,18 +217,18 @@
                 <div class="card-body">
                     <div class="row d-block d-xl-flex align-items-center">
                         <div
-                            class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
+                            class="col-12 col-xl-12 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
                             <div class="ct-chart-traffic-share ct-golden-section ct-series-a"></div>
                         </div>
-                        <div class="col-12 col-xl-7 px-xl-0">
+                        <div class="col-12 col-xl-12 px-xl-0">
                             <h2 class="h5 mb-3">Purchase Order</h2>
                             <h6 class="fw-normal text-gray"><span class="icon w-20 icon-xs icon-secondary me-1"><span
-                                        class="fas fa-desktop"></span></span> Active <a href="#" class="h6">{{active_po}}</a></h6>
+                                        class="fas fa-desktop"></span></span> Active: <a href="#" class="h6">{{active_po}}</a></h6>
                             <h6 class="fw-normal text-gray"><span class="icon w-20 icon-xs icon-primary me-1"><span
-                                        class="fas fa-mobile-alt"></span></span> Completed <a href="#" class="h6">{{completed_po}}</a>
+                                        class="fas fa-mobile-alt"></span></span> Completed: <a href="#" class="h6">{{completed_po}}</a>
                             </h6>
                             <h6 class="fw-normal text-gray"><span class="icon w-20 icon-xs icon-tertiary me-1"><span
-                                        class="fas fa-tablet-alt"></span></span> Total Amount <a href="#" class="h6">{{sum_completed_po}}</a>
+                                        class="fas fa-tablet-alt"></span></span> Total Amount (in SAR): <a href="#" class="h6">{{sum_completed_po}}</a>
                             </h6>
                         </div>
                     </div>
@@ -506,7 +535,44 @@
 
 
 
-
+<canvas id="myChart" width="200" height="200"></canvas>
+<script>
+const ctx = document.getElementById('myChart').getContext('2d');
+const myChart = new Chart(ctx, {
+    type: 'line',
+    data: {
+        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        datasets: [{
+            label: '# of Votes',
+            data: [12, 19, 3, 5, 2, 3],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+</script>
 
 {% endblock content %}
 

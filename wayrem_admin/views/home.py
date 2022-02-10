@@ -22,24 +22,24 @@ class RootUrlView(RedirectView):
 
 @ login_required(login_url='wayrem_admin:root')
 def dashboard(request):
-    # notifications = list(notifications.values())
-    # for dicts in notifications:
-    #     for keys in dicts:
-    #         if keys == 'supplier_id':
-    #             dicts[keys] = str(inst_Supplier(dicts[keys]))
-    #         dicts[keys] = str(dicts[keys])
-    # request.session['notifications'] = notifications
-    # request.session['notifications'] = list(
-    #     notifications.values_list('id', 'message', 'status'))
     subadmins = User.objects.exclude(is_superuser=True).count()
     suppliers = Supplier.objects.count()
     products = Products.objects.count()
-    active_po = PurchaseOrder.objects.exclude(status="accept").count()
+    active_po = PurchaseOrder.objects.filter(status="accept").values(
+        'po_name', 'supplier_name__company_name', 'po_id', 'status').distinct().count()
+    completed_po_count = PurchaseOrder.objects.filter(status="delivered").values(
+        'po_name', 'supplier_name__company_name', 'po_id', 'status').distinct().count()
     completed_po = PurchaseOrder.objects.filter(status="delivered")
     sum_completed_po = sum([int(item.supplier_product.price)
                            for item in completed_po])
-    customers = Customer.objects.count()
     this_month = datetime.datetime.now().month
+    this_day = datetime.datetime.now().day
+    customers_day = Customer.objects.filter(created_at__day=this_day).count()
+    customers_month = Customer.objects.filter(
+        created_at__month=this_month).count()
+    orders_day = Orders.objects.filter(order_date__day=this_day).count()
+    orders_month = Orders.objects.filter(
+        order_date__month=this_month).count()
     present_month = datetime.datetime.now()
     try:
         next_month = present_month.replace(month=present_month.month+1)
@@ -66,9 +66,12 @@ def dashboard(request):
         'subadmins': subadmins,
         'suppliers': suppliers,
         'products': products,
-        'customers': customers,
+        'orders_day': orders_day,
+        'orders_month': orders_month,
+        'customers_day': customers_day,
+        'customers_month': customers_month,
         'active_po': active_po,
-        'completed_po': len(completed_po),
+        'completed_po': completed_po_count,
         'sum_completed_po': sum_completed_po,
         'transactions': len(transactions),
         'total_transaction_amount': total_transaction_amount,
