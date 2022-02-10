@@ -24,8 +24,8 @@ class LogiNextAPI(viewsets.ViewSet):
     ordercreate=LoginextOrderCreate()
     def test(self,request,survey_id=None):
         status=HTTP_200_OK
-        #self.ordercreate.ordercreate(1)
-        ProductForecastLiberary().process_forecast_product()
+        self.ordercreate.ordercreate(1)
+        #ProductForecastLiberary().process_forecast_product()
         result={'message':"all ready exist"}
         result_build=Response(result,status=status)
         return result_build

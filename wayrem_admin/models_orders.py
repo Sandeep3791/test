@@ -73,9 +73,11 @@ class StateCode(models.Model):
 class StatusMaster(models.Model):
     id = models.SmallAutoField(primary_key=True)
     name = models.CharField(max_length=255, db_collation='utf8mb4_unicode_ci')
+    description = models.CharField(max_length=255, blank=True, null=True)
     status_color = models.CharField(max_length=50)
     status_type = models.SmallIntegerField()
     sort_order = models.SmallIntegerField()
+    customer_view = models.IntegerField(blank=True, null=True)
     status = models.IntegerField()
 
     def __str__(self):
@@ -110,7 +112,7 @@ class OrderDeliveryLogs(models.Model):
     order_status_details = models.TextField(blank=True, null=True)
     log_date = models.DateTimeField()
     user = models.ForeignKey('wayrem_admin.User', models.DO_NOTHING)
-
+    customer_view = models.IntegerField(blank=True, null=True)
     class Meta:
         app_label = "wayrem_admin"
         db_table = 'order_delivery_logs'
@@ -259,3 +261,13 @@ class ShippingLoginextNotification(models.Model):
     class Meta:
         app_label = "wayrem_admin"
         db_table = 'shipping_loginext_notification'
+
+class OrderLoginextShipment(models.Model):
+    customer = models.ForeignKey('wayrem_admin.Customer', models.DO_NOTHING)
+    customer_account_code = models.CharField(max_length=255, blank=True, null=True)
+    customer_reference_id = models.CharField(max_length=255, blank=True, null=True)
+    create_customer_response = models.TextField(blank=True, null=True)
+    
+    class Meta:
+        app_label = "wayrem_admin"
+        db_table = 'order_loginext_shipment'

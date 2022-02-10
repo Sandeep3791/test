@@ -123,6 +123,7 @@ class LogiNextWeebHookOrderAPI(ApiBase,WebHookLiberary,viewsets.ViewSet):
         order_reference_id=self.webhook.get_order(create_order_dic)
         self.webhook.saveorderrequest(create_order_dic,order_reference_id)
         self.webhook.status_update_order(create_order_dic,ORDER_DELIVERY_ATTEMPTED_DELIVERED)
+        self.webhook.status_update_order(create_order_dic,ORDER_RETURNED_WAREHOUSE) 
         status=HTTP_200_OK
         result={'message':"attempted delivery order"}
         result_build=Response(result,status=status)
