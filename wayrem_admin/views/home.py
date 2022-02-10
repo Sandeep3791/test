@@ -60,6 +60,10 @@ def dashboard(request):
             "order__grand_total__sum")
     else:
         total_transaction_amount = 0
+    today = datetime.date.today()
+    week_ago = today - datetime.timedelta(days=7)
+    x = Orders.objects.filter(order_date__gte=week_ago).annotate(
+        day=TruncDay('order_date')).values('day').annotate(total=Count('id'))
     # x = Orders.objects.annotate(week=TruncWeek('order_date'),day=TruncDay('order_date')).values('week','day').annotate(total=Count('id'))
     #  x = Orders.objects.annotate(week=TruncWeek('order_date')).values('week').annotate(total=Count('id'))
     context = {
