@@ -8,7 +8,7 @@ from django.urls import reverse
 import datetime
 from django.db.models import Sum
 from django.db.models.functions import (
-    TruncDate, TruncDay, TruncHour, TruncMinute, TruncSecond, TruncWeek)
+    TruncDate, TruncDay, TruncHour, TruncMinute, TruncSecond, TruncWeek, TruncMonth)
 from django.db.models import Count
 
 
@@ -64,8 +64,17 @@ def dashboard(request):
     week_ago = today - datetime.timedelta(days=7)
     x = Orders.objects.filter(order_date__gte=week_ago).annotate(
         day=TruncDay('order_date')).values('day').annotate(total=Count('id'))
+    order_days = [i.get('day').strftime("%a") for i in x]
+    total_orders_day = [i.get('total') for i in x]
+    q = Orders.objects.filter(order_date__lte=datetime.datetime.today(), order_date__gt=datetime.datetime.today()-datetime.timedelta(
+        days=30)).annotate(month=TruncMonth('order_date'), day=TruncDay('order_date')).values('month', 'day').annotate(total=Count('id'))
+    # q = Orders.objects.annotate(month=TruncMonth('order_date'), day=TruncDay(
+    #     'order_date')).values('month', 'day').annotate(total=Count('id'))
     # x = Orders.objects.annotate(week=TruncWeek('order_date'),day=TruncDay('order_date')).values('week','day').annotate(total=Count('id'))
     #  x = Orders.objects.annotate(week=TruncWeek('order_date')).values('week').annotate(total=Count('id'))
+    month_ago = today.replace(month=this_month-1)
+    q = Orders.objects.filter(order_date__gt=month_ago).annotate(month=TruncMonth(
+        'order_date'), day=TruncDay('order_date')).values('month', 'day').annotate(total=Count('id'))
     context = {
         'subadmins': subadmins,
         'suppliers': suppliers,
@@ -80,7 +89,10 @@ def dashboard(request):
         'transactions': len(transactions),
         'total_transaction_amount': total_transaction_amount,
         'present_month': present_month.strftime("%b"),
-        'next_month': next_month.strftime("%b")
+        'next_month': next_month.strftime("%b"),
+        'order_days': order_days,
+        'total_orders_day': total_orders_day,
+        'q': q
     }
     return render(request, 'dashboard.html', context)
 

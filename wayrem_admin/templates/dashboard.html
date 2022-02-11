@@ -151,7 +151,7 @@
                             </div>
                             <small>{{present_month}} 1 - {{next_month}} 1 <span class="icon icon-small"></span> </small>
                             <div class="small mt-2">
-                                <span class="text-success fw-bold">{{customers_day}}</span> <a href="{% url 'wayrem_admin:customerslist' %}"> Since today </a>
+                                <span class="text-success fw-bold">{{customers_day}}</span> <a href="{% url 'wayrem_admin:customerslist' %}"> {% if customers_day > 1 %} Customers {% else %}Customer {% endif %} today </a>
                             </div>
                         </div>
                     </div>
@@ -178,7 +178,7 @@
                             </div>
                             <small>{{present_month}} 1 - {{next_month}} 1 <span class="icon icon-small"></span> </small>
                             <div class="small mt-2">
-                                <span class="text-success fw-bold">{{orders_day}}</span> Since today
+                                <span class="text-success fw-bold">{{orders_day}}</span> <a href="{% url 'wayrem_admin:orderlist' %}">{% if customers_day > 1 %} Orders {% else %} Order {% endif %} today</a>
                             </div>
                         </div>
                     </div>
@@ -223,12 +223,12 @@
                         <div class="col-12 col-xl-12 px-xl-0">
                             <h2 class="h5 mb-3">Purchase Order</h2>
                             <h6 class="fw-normal text-gray"><span class="icon w-20 icon-xs icon-secondary me-1"><span
-                                        class="fas fa-desktop"></span></span> Active: <a href="#" class="h6">{{active_po}}</a></h6>
+                                        class="fas fa-desktop"></span></span> Active PO's: <a href="#" class="h6">{{active_po}}</a></h6>
                             <h6 class="fw-normal text-gray"><span class="icon w-20 icon-xs icon-primary me-1"><span
-                                        class="fas fa-mobile-alt"></span></span> Completed: <a href="#" class="h6">{{completed_po}}</a>
+                                        class="fas fa-mobile-alt"></span></span> Completed PO's: <a href="#" class="h6">{{completed_po}}</a>
                             </h6>
                             <h6 class="fw-normal text-gray"><span class="icon w-20 icon-xs icon-tertiary me-1"><span
-                                        class="fas fa-tablet-alt"></span></span> Total Amount (in SAR): <a href="#" class="h6">{{sum_completed_po}}</a>
+                                        class="fas fa-tablet-alt"></span></span> Total Amount: <a href="#" class="h6">SAR {{sum_completed_po}}</a>
                             </h6>
                         </div>
                     </div>
@@ -535,16 +535,16 @@
 
 
 
-<canvas id="myChart" width="200" height="200"></canvas>
+<canvas id="myChart" width="200px" height="200px"></canvas>
 <script>
 const ctx = document.getElementById('myChart').getContext('2d');
 const myChart = new Chart(ctx, {
     type: 'line',
     data: {
-        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        labels: [{%for data in q%}'{{data.day|date:"d"}}',{%endfor%}],
         datasets: [{
-            label: '# of Votes',
-            data: [12, 29, 3, 5, 2, 3],
+            label: 'Orders',
+            data: [{%for data in q%}{{data.total}},{%endfor%}],
             backgroundColor: [
                 'rgba(255, 99, 132, 0.2)',
                 'rgba(54, 162, 235, 0.2)',
@@ -566,9 +566,12 @@ const myChart = new Chart(ctx, {
     },
     options: {
         scales: {
-            y: {
-                beginAtZero: true
-            }
+            yAxes: [{
+                ticks: {
+                    beginAtZero: true,
+                    stepSize: 1
+                    }
+                }]
         }
     }
 });
