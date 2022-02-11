@@ -541,7 +541,7 @@ const ctx = document.getElementById('myChart').getContext('2d');
 const myChart = new Chart(ctx, {
     type: 'line',
     data: {
-        labels: [{%for data in q%}'{{data.day|date:"d"}}',{%endfor%}],
+        labels: [{%for data in q%}'{{data.day|date:"d M"}}',{%endfor%}],
         datasets: [{
             label: 'Orders',
             data: [{%for data in q%}{{data.total}},{%endfor%}],
