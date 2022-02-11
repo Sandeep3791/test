@@ -27,7 +27,7 @@ from django.http import HttpResponse
 from django.template.loader import render_to_string
 from weasyprint import HTML
 import tempfile
-
+from wayrem_admin.models_recurrence import ForecastJobtype
 
 def po_excel(request):
     return generate_excel("po_master", "purchase_order")
@@ -120,7 +120,8 @@ def create_purchase_order(request):
             form = POFormOne(
                 initial={'supplier_name': request.session.get('supplier_company', None)})
     po = request.session.get('products', None)
-    return render(request, "po_step1.html", {'form': form, "po": po})
+    forecast_day=ForecastJobtype.objects.filter(status=1)
+    return render(request, "po_step1.html", {'form': form, "po": po,'forecast_day':forecast_day})
 
 
 def create_po_step2(request):
