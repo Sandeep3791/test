@@ -110,7 +110,11 @@
     <!-- User's Count End  -->
     <div class="row justify-content-md-center">
         <div class="col-12 mb-4">
-            <div class="card bg-secondary-alt shadow-sm">
+            <div style="background:#fff;" class="p-2">
+                <h5 class="text-center text-primary" >Monthly Orders Chart</h5>
+                <canvas id="myChart" height="30vh" width="80vw"></canvas>
+            </div>
+            <!-- <div class="card bg-secondary-alt shadow-sm">
                 <div class="card-header d-sm-flex flex-row align-items-center flex-0">
                     <div class="d-block mb-3 mb-sm-0">
                         <div class="h5 fw-normal mb-2">Sales Value</div>
@@ -129,16 +133,16 @@
                 <div class="card-body p-2">
                     <div class="ct-chart-sales-value ct-double-octave ct-series-g"></div>
                 </div>
-            </div>
+            </div> -->
         </div>
-        <div class="col-12 col-sm-6 col-xl-4 mb-4">
+        <div class="col-12 col-sm-6 col-xl-4 mb-4 box-set-3">
             <div class="card border-light shadow-sm">
                 <div class="card-body">
                     <div class="row d-block d-xl-flex align-items-center">
                         <div
                             class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
                             <div class="icon icon-shape icon-md icon-shape-primary rounded me-4 me-sm-0"><span
-                                    class="fas fa-chart-line"></span></div>
+                                    class="fas fa-users"></span></div>
                             <div class="d-sm-none">
                                 <h2 class="h5">New Customers</h2>
                                 <h3 class="mb-1">{{customers_month}}</h3>
@@ -158,14 +162,14 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 col-sm-6 col-xl-4 mb-4">
+        <div class="col-12 col-sm-6 col-xl-4 mb-4 box-set-3">
             <div class="card border-light shadow-sm">
                 <div class="card-body">
                     <div class="row d-block d-xl-flex align-items-center">
                         <div
                             class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
-                            <div class="icon icon-shape icon-md icon-shape-primary rounded me-4 me-sm-0"><span
-                                    class="fas fa-chart-line"></span></div>
+                            <div class="icon icon-shape icon-md icon-shape-primary rounded me-4 me-sm-0">
+                                <span class="fas fa-cart-arrow-down"></span></div>
                             <div class="d-sm-none">
                                 <h2 class="h5">Orders</h2>
                                 <h3 class="mb-1">{{orders_month}}</h3>
@@ -178,21 +182,21 @@
                             </div>
                             <small>{{present_month}} 1 - {{next_month}} 1 <span class="icon icon-small"></span> </small>
                             <div class="small mt-2">
-                                <span class="text-success fw-bold">{{orders_day}}</span> <a href="{% url 'wayrem_admin:orderlist' %}">{% if customers_day > 1 %} Orders {% else %} Order {% endif %} today</a>
+                                <span class="text-success fw-bold">{{orders_day}}</span> <a href="{% url 'wayrem_admin:orderlist' %}">{% if orders_day > 1 %} Orders {% else %} Order {% endif %} today</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-12 col-sm-6 col-xl-4 mb-4">
+        <div class="col-12 col-sm-6 col-xl-4 mb-4 box-set-3">
             <div class="card border-light shadow-sm">
                 <div class="card-body">
                     <div class="row d-block d-xl-flex align-items-center">
                         <div
                             class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
                             <div class="icon icon-shape icon-md icon-shape-secondary rounded me-4"><span
-                                    class="fas fa-cash-register"></span></div>
+                                    class="fas fa-file-invoice-dollar"></span></div>
                             <div class="d-sm-none">
                                 <h2 class="h5">Transactions</h2>
                                 <h3 class="mb-1">SAR {{total_transaction_amount}}</h3>
@@ -201,7 +205,7 @@
                         <div class="col-12 col-xl-7 px-xl-0">
                             <div class="d-none d-sm-block">
                                 <h2 class="h5">Transactions</h2>
-                                <h3 class="mb-1">SAR {{total_transaction_amount|floatformat:2}}</h3>
+                                <h3 class="mb-1" style=" font-size: 17px; font-weight: bold; ">SAR {{total_transaction_amount|floatformat:2}}</h3>
                             </div>
                             <small>{{present_month}} 1 - {{next_month}} 1 <span class="icon icon-small"></span> </small>
                             <div class="small mt-2">
@@ -212,32 +216,95 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 col-sm-6 col-xl-4 mb-4">
-            <div class="card border-light shadow-sm">
+        <div class="col-12 col-sm-6 col-xl-6 mb-4">
+            <div class="card border-light shadow-sm icon-smallsize">
                 <div class="card-body">
                     <div class="row d-block d-xl-flex align-items-center">
-                        <div
+                        <!-- <div
                             class="col-12 col-xl-12 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
                             <div class="ct-chart-traffic-share ct-golden-section ct-series-a"></div>
-                        </div>
+                        </div> -->
                         <div class="col-12 col-xl-12 px-xl-0">
-                            <h2 class="h5 mb-3">Purchase Order</h2>
+                            <div class="card-header border-bottom border-light">
+                                <h2 class="h5 mb-0">Purchase Order</h2>
+                            </div>
                             <h6 class="fw-normal text-gray"><span class="icon w-20 icon-xs icon-secondary me-1"><span
-                                        class="fas fa-desktop"></span></span> Active PO's: <a href="#" class="h6">{{active_po}}</a></h6>
+                                        class="fas fa-cart-arrow-down"></span></span> Active PO's: <a href="#" class="h5">{{active_po}}</a></h6>
                             <h6 class="fw-normal text-gray"><span class="icon w-20 icon-xs icon-primary me-1"><span
-                                        class="fas fa-mobile-alt"></span></span> Completed PO's: <a href="#" class="h6">{{completed_po}}</a>
+                                        class="fas fa-clipboard-check"></span></span> Completed PO's: <a href="#" class="h5">{{completed_po}}</a>
                             </h6>
                             <h6 class="fw-normal text-gray"><span class="icon w-20 icon-xs icon-tertiary me-1"><span
-                                        class="fas fa-tablet-alt"></span></span> Total Amount: <a href="#" class="h6">SAR {{sum_completed_po}}</a>
+                                        class="fas fa-file-invoice-dollar"></span></span> Total Amount: <a href="#" class="h5">SAR {{sum_completed_po}}</a>
                             </h6>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="col-12 col-sm-6 col-xl-6 mb-4">
+            <div class="card border-light shadow-sm">
+                <div class="card-header border-bottom border-light">
+                    <h2 class="h5 mb-0">Progress track</h2>
+                </div>
+                <div class="card-body">
+                    <div class="row align-items-center mb-4">
+                        <div class="col-auto">
+                            <span class="icon icon-md text-purple"><span class="fab fa-bootstrap"></span></span>
+                        </div>
+                        <div class="col">
+                            <div class="progress-wrapper">
+                                <div class="progress-info">
+                                    <div class="h6 mb-0">Rocket - SaaS Template</div>
+                                    <div class="small fw-bold text-dark"><span>34 %</span></div>
+                                </div>
+                                <div class="progress mb-0">
+                                    <div class="progress-bar bg-purple" role="progressbar" aria-valuenow="34"
+                                        aria-valuemin="0" aria-valuemax="100" style="width: 34%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row align-items-center mb-4">
+                        <div class="col-auto">
+                            <span class="icon icon-md text-danger"><span class="fab fa-angular"></span></span>
+                        </div>
+                        <div class="col">
+                            <div class="progress-wrapper">
+                                <div class="progress-info">
+                                    <div class="h6 mb-0">Pixel - Design System</div>
+                                    <div class="small fw-bold text-dark"><span>60 %</span></div>
+                                </div>
+                                <div class="progress mb-0">
+                                    <div class="progress-bar bg-danger" role="progressbar" aria-valuenow="60"
+                                        aria-valuemin="0" aria-valuemax="100" style="width: 60%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row align-items-center mb-4">
+                        <div class="col-auto">
+                            <span class="icon icon-md text-success"><span class="fab fa-vuejs"></span></span>
+                        </div>
+                        <div class="col">
+                            <div class="progress-wrapper">
+                                <div class="progress-info">
+                                    <div class="h6 mb-0">Spaces - Listings Template</div>
+                                    <div class="small fw-bold text-dark"><span>45 %</span></div>
+                                </div>
+                                <div class="progress mb-0">
+                                    <div class="progress-bar bg-tertiary" role="progressbar" aria-valuenow="45"
+                                        aria-valuemin="0" aria-valuemax="100" style="width: 45%;"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                   
+                </div>
+            </div>
+        </div>
     </div>
     
-<div class="row">
+<!-- <div class="row">
     <div class="col-12 col-xl-8 mb-4">
         <div class="row">
             <div class="col-12 mb-4">
@@ -528,16 +595,18 @@
             </div>
         </div>
     </div>
+</div> -->
 </div>
-</div>
 
 
 
 
 
-<canvas id="myChart" width="200px" height="200px"></canvas>
+
 <script>
 const ctx = document.getElementById('myChart').getContext('2d');
+// ctx.canvas.parentNode.style.height = '400px';
+// // ctx.canvas.parentNode.style.width = '128px';
 const myChart = new Chart(ctx, {
     type: 'line',
     data: {
@@ -545,23 +614,10 @@ const myChart = new Chart(ctx, {
         datasets: [{
             label: 'Orders',
             data: [{%for data in q%}{{data.total}},{%endfor%}],
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)'
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)'
-            ],
-            borderWidth: 1
+            pointBackgroundColor: "#1f2937",
+            backgroundColor: "#f2e600",
+            borderColor: "#1f2937",
+            borderWidth: 2
         }]
     },
     options: {
@@ -576,7 +632,25 @@ const myChart = new Chart(ctx, {
     }
 });
 </script>
-
+<style>
+    #myChart {background: #fff;}
+    .box-set-3 .card-body {height: 200px;}
+    .icon-smallsize .fas {    font-size: 1.175rem;} 
+    .icon-smallsize h6.fw-normal.text-gray {
+        float: left;
+    width: 100%;
+    margin: 26px -28px 20px 16px;
+    font-size: 20px;
+    font-weight: bold !important;
+    }
+    .icon-smallsize span.icon {
+        float: left;
+        margin: -4px 20px 0px 20px !important;
+    }
+    .icon-smallsize span.icon a {font-size: 30px;}
+    .icon-smallsize span.icon .fas {font-size: 30px;}
+    .icon-smallsize .card-body {padding: 0px;}
+</style>
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->

@@ -15,6 +15,9 @@ def role_required(allowed_roles=[]):
                     messages.error(request, "Permission Denied")
                     return redirect('wayrem_admin:root')
                     # return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
+            else:
+                messages.error(request, "Login required!")
+                return redirect('wayrem_admin:root')
         return wrap
     return decorator
 
