@@ -1,22 +1,22 @@
 from django.db import models
 from .models import *
 
-
 class RecurrentType(models.Model):
-    name = models.CharField(max_length=255)
-    value = models.CharField(max_length=255)
-    status = models.IntegerField()
+    name = models.CharField(max_length=255, blank=True, null=True)
+    value = models.SmallIntegerField(blank=True, null=True)
+    status = models.IntegerField(blank=True, null=True)
 
     class Meta:
         app_label = "wayrem_admin"
         db_table = 'recurrent_type'
 
 class RecurrenceGrocery(models.Model):
-    grocery_id = models.IntegerField()
-    recurrenttype = models.CharField(max_length=255)
-    recurrence_startdate = models.DateField()
-    recurrence_nextdate = models.DateField(blank=True, null=True)
-    status = models.IntegerField()
+    customer_id = models.IntegerField(blank=True, null=True)
+    grocery = models.ForeignKey('GroceryMaster', models.DO_NOTHING, blank=True, null=True)
+    recurrenttype = models.ForeignKey('RecurrentType', models.DO_NOTHING, db_column='recurrenttype', blank=True, null=True)
+    recurrence_startdate = models.CharField(max_length=255)
+    recurrence_nextdate = models.CharField(max_length=255)
+    status = models.IntegerField(blank=True, null=True)
     created_at = models.DateTimeField()
     updated_at = models.DateTimeField()
 
@@ -24,10 +24,12 @@ class RecurrenceGrocery(models.Model):
         app_label = "wayrem_admin"
         db_table = 'recurrence_grocery'
 
+
 class GroceryMaster(models.Model):
-    grocery_name = models.CharField(max_length=255)
-    description = models.CharField(max_length=1000)
-    customer_id = models.IntegerField()
+    grocery_name = models.CharField(max_length=255, blank=True, null=True)
+    description = models.CharField(max_length=1000, blank=True, null=True)
+    customer = models.ForeignKey('wayrem_admin.Customer', models.DO_NOTHING, blank=True, null=True)
+    address = models.ForeignKey('wayrem_admin.CustomerAddresses', models.DO_NOTHING, blank=True, null=True)
     created_at = models.DateTimeField()
     updated_at = models.DateTimeField()
 
@@ -36,10 +38,10 @@ class GroceryMaster(models.Model):
         db_table = 'grocery_master'
 
 class GroceryProducts(models.Model):
-    grocery_id = models.IntegerField()
+    grocery = models.ForeignKey('GroceryMaster', models.DO_NOTHING, blank=True, null=True)
     product = models.ForeignKey('wayrem_admin.Products', models.DO_NOTHING)
-    product_qty = models.SmallIntegerField()
-    recurrence_nextdate = models.DateField()
+    product_qty = models.IntegerField(blank=True, null=True)
+    recurrence_nextdate = models.CharField(max_length=255, blank=True, null=True)
 
     class Meta:
         app_label = "wayrem_admin"
