@@ -145,13 +145,13 @@
                                     class="fas fa-users"></span></div>
                             <div class="d-sm-none">
                                 <h2 class="h5">New Customers</h2>
-                                <h3 class="mb-1">{{customers_month}}</h3>
+                                <h3 class="mb-1"><span class="text-success">{{customers_month}}</span></h3>
                             </div>
                         </div>
                         <div class="col-12 col-xl-7 px-xl-0">
                             <div class="d-none d-sm-block">
                                 <h2 class="h5">New Customers</h2>
-                                <h3 class="mb-1">{{customers_month}}</h3>
+                                <h3 class="mb-1"><span class="text-success">{{customers_month}}</span></h3>
                             </div>
                             <small>{{present_month}} 1 - {{next_month}} 1 <span class="icon icon-small"></span> </small>
                             <div class="small mt-2">
@@ -172,13 +172,13 @@
                                 <span class="fas fa-cart-arrow-down"></span></div>
                             <div class="d-sm-none">
                                 <h2 class="h5">Orders</h2>
-                                <h3 class="mb-1">{{orders_month}}</h3>
+                                <h3 class="mb-1"><span class="text-success">{{orders_month}}</span></h3>
                             </div>
                         </div>
                         <div class="col-12 col-xl-7 px-xl-0">
                             <div class="d-none d-sm-block">
                                 <h2 class="h5">Orders</h2>
-                                <h3 class="mb-1">{{orders_month}}</h3>
+                                <h3 class="mb-1"><span class="text-success">{{orders_month}}</span></h3>
                             </div>
                             <small>{{present_month}} 1 - {{next_month}} 1 <span class="icon icon-small"></span> </small>
                             <div class="small mt-2">
@@ -199,18 +199,21 @@
                                     class="fas fa-file-invoice-dollar"></span></div>
                             <div class="d-sm-none">
                                 <h2 class="h5">Transactions</h2>
-                                <h3 class="mb-1">SAR {{total_transaction_amount}}</h3>
+                                <h5 class="mb-1"> Amount</h5>
+                                <h3 class="mb-1"><small>SAR <span class="text-success">{{total_transaction_amount|floatformat:2}}</span></small></h3>
                             </div>
                         </div>
                         <div class="col-12 col-xl-7 px-xl-0">
                             <div class="d-none d-sm-block">
                                 <h2 class="h5">Transactions</h2>
-                                <h3 class="mb-1" style=" font-size: 17px; font-weight: bold; ">SAR {{total_transaction_amount|floatformat:2}}</h3>
+                                <h5 class="mb-1"> Amount</h5>
+                                <h3 class="mb-1" style=" font-size: 17px; font-weight: bold; "><small>SAR <span class="text-success">{{total_transaction_amount|floatformat:2}}</span></small></h3>
+                                {% comment %} <h3 class="mb-1" style=" font-size: 17px; font-weight: bold; ">SAR {{total_transaction_amount|floatformat:2}}</h3> {% endcomment %}
                             </div>
                             <small>{{present_month}} 1 - {{next_month}} 1 <span class="icon icon-small"></span> </small>
-                            <div class="small mt-2">
+                            {% comment %} <div class="small mt-2">
                                 <span class="text-success fw-bold">{{transactions}}</span> Since last month
-                            </div>
+                            </div> {% endcomment %}
                         </div>
                     </div>
                 </div>
@@ -242,7 +245,7 @@
             </div>
         </div>
         <div class="col-12 col-sm-6 col-xl-6 mb-4">
-            <div class="card border-light shadow-sm">
+            {% comment %} <div class="card border-light shadow-sm">
                 <div class="card-header border-bottom border-light">
                     <h2 class="h5 mb-0">Progress track</h2>
                 </div>
@@ -300,7 +303,7 @@
                     </div>
                    
                 </div>
-            </div>
+            </div> {% endcomment %}
         </div>
     </div>
     
