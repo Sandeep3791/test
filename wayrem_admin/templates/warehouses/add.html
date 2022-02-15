@@ -28,13 +28,29 @@
                     <div class="row">
                     <div class="col-md-12 mb-2">
                             <div>
-                                <label for="name">Name<span class="text-danger">*</span>  <span class="text-danger"><em>{{form.code_name.errors | striptags}}</em></span></label>
+                                <label for="name">Name <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.code_name.errors | striptags}}</em></span></label>
                                 {{form.code_name}}
                                 <div class="input-group" id="name_error_message" style="color: #d12525;"></div>
                             </div>
                         </div>
 
-                    <div class="col-md-12 mb-2">
+                        <div class="col-md-12 mb-2">
+                            <div>
+                                <label for="name">Latitude <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.latitude.errors | striptags}}</em></span></label>
+                                {{form.latitude}}
+                                <div class="input-group" id="branch_name_error_message" style="color: #d12525;"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 mb-2">
+                            <div>
+                                <label for="name">Longitude <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.longitude.errors | striptags}}</em></span></label>
+                                {{form.longitude}}
+                                <div class="input-group" id="branch_name_error_message" style="color: #d12525;"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 mb-2">
                             <div>
                                 <label for="name">Branch Name<span class="text-danger">*</span>  <span class="text-danger"><em>{{form.branch_name.errors | striptags}}</em></span></label>
                                 {{form.branch_name}}
