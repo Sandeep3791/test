@@ -22,6 +22,9 @@ class WebHookLiberary():
                 p_id=ShippingLoginextNotification.objects.get(reference_id=reference_id)
                 return p_id.id
         except:
+            reference_id=order_dic['reference_id']
+            print(ShippingLoginextNotification.objects.filter(reference_id=reference_id).query)
+                
             return 0
 
     def saveorderrequest(self,create_order_dic,order_reference_id):

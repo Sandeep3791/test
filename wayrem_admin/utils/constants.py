@@ -41,3 +41,6 @@ FORECAST_PREVIOUS_RECORD_DELETE=15
 LOGINEXT_USERNAME='loginext_username'
 LOGINEXT_PASSWORD='loginext_password'
 LOGINEXT_BASEPATH='loginext_basepath'
+
+DELIVERY_ORDER_PER_DAY='delivery_order_per_day'
+CUSTOMER_APPROVAL_PER_DAY='customer_approved_per_day'

@@ -476,6 +476,22 @@ class Customer(models.Model):
     class Meta:
         db_table = 'customers_master'
 
+class CustomerAddresses(models.Model):
+    customer = models.ForeignKey('Customer', models.DO_NOTHING, blank=True, null=True)
+    full_name = models.CharField(max_length=255, blank=True, null=True)
+    contact = models.BigIntegerField(blank=True, null=True)
+    house_no_building_name = models.CharField(max_length=255, blank=True, null=True)
+    road_name_area = models.CharField(db_column='road_name_Area', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    landmark = models.CharField(max_length=255, blank=True, null=True)
+    country = models.CharField(max_length=255, blank=True, null=True)
+    region = models.CharField(max_length=255, blank=True, null=True)
+    town_city = models.CharField(max_length=255, blank=True, null=True)
+    deliveryaddress_latitude = models.CharField(db_column='deliveryAddress_latitude', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    deliveryaddress_longitude = models.CharField(db_column='deliveryAddress_longitude', max_length=255, blank=True, null=True)  # Field name made lowercase.
+    is_default = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'customer_addresses'
 
 class Invoice(models.Model):
     invoice_id = models.AutoField(primary_key=True, unique=True)
