@@ -87,6 +87,12 @@
 		}, {});
     } 
     $(document).ready(function(){
+
+        $(".search_filter_order select").change(function() {
+            window.location ="?status="+$(this).val();
+        });
+
+
         $(".exportorders").on('click', function (e) {
 		    e.preventDefault();
             var qs = location.search,message;

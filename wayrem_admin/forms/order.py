@@ -37,7 +37,7 @@ class OrderStatusUpdatedForm(ModelForm):
             exclude_status=[ORDER_PENDING_APPROVED]
         else:
             exclude_status=[OREDER_PENDING_RECURENCE,ORDER_PENDING_APPROVED]
-        order_choices = [(get_users_options.pk, get_users_options.name)
+        order_choices = [(get_users_options.pk, get_users_options.description)
                          for get_users_options in StatusMaster.objects.filter(status_type=ORDER_STATUS,status=1).exclude(id__in=exclude_status)]
         self.fields['status'].choices = order_choices
      
@@ -70,7 +70,7 @@ class OrderStatusFilter(ModelForm):
         super().__init__(*args, **kwargs)
         order_choices = [(get_users_options.pk, get_users_options.name)
                          for get_users_options in StatusMaster.objects.filter(status_type=ORDER_STATUS,status=1)]
-        order_choices.insert(0,('','Select Status'))
+        order_choices.insert(0,('','All order status'))
         self.fields['status'].choices = order_choices
     class Meta:
         model = Orders
@@ -89,7 +89,7 @@ class OrderStatusDetailForm(ModelForm):
         else:
             exclude_status=[OREDER_PENDING_RECURENCE,ORDER_PENDING_APPROVED]
 
-        order_choices = [(get_users_options.pk, get_users_options.name)
+        order_choices = [(get_users_options.pk, get_users_options.description)
                          for get_users_options in StatusMaster.objects.filter(status_type=ORDER_STATUS,status=1).exclude(id__in=exclude_status)]
         self.fields['status'].choices = order_choices
     class Meta:
