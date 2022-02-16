@@ -51,6 +51,7 @@ class Orders(models.Model):
     content = models.TextField(blank=True, null=True)
     order_shipping_response = models.TextField(blank=True, null=True)
     order_type = models.ForeignKey('StatusMaster', models.DO_NOTHING, db_column='order_type', blank=True, null=True)
+    delivery_charge = models.CharField(max_length=100, null=True)
 
     def __str__(self):
         return self.ref_number
@@ -113,6 +114,7 @@ class OrderDeliveryLogs(models.Model):
     log_date = models.DateTimeField()
     user = models.ForeignKey('wayrem_admin.User', models.DO_NOTHING)
     customer_view = models.IntegerField(blank=True, null=True)
+
     class Meta:
         app_label = "wayrem_admin"
         db_table = 'order_delivery_logs'
@@ -262,12 +264,15 @@ class ShippingLoginextNotification(models.Model):
         app_label = "wayrem_admin"
         db_table = 'shipping_loginext_notification'
 
+
 class OrderLoginextShipment(models.Model):
     customer = models.ForeignKey('wayrem_admin.Customer', models.DO_NOTHING)
-    customer_account_code = models.CharField(max_length=255, blank=True, null=True)
-    customer_reference_id = models.CharField(max_length=255, blank=True, null=True)
+    customer_account_code = models.CharField(
+        max_length=255, blank=True, null=True)
+    customer_reference_id = models.CharField(
+        max_length=255, blank=True, null=True)
     create_customer_response = models.TextField(blank=True, null=True)
-    
+
     class Meta:
         app_label = "wayrem_admin"
         db_table = 'order_loginext_shipment'
