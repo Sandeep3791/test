@@ -50,7 +50,7 @@ class Orders(models.Model):
         max_length=80, blank=True, null=True)
     content = models.TextField(blank=True, null=True)
     order_shipping_response = models.TextField(blank=True, null=True)
-    order_type = models.CharField(max_length=100, null=True)
+    order_type = models.ForeignKey('StatusMaster', models.DO_NOTHING, db_column='order_type', blank=True, null=True)
 
     def __str__(self):
         return self.ref_number

@@ -39,6 +39,15 @@ def payment_status(order_id):
     else:
         return ""
 
+@register.filter(name='payment_type')
+def payment_type(order_id):
+    # return order_id
+    order_transaction = OrderTransactions.objects.filter(
+        order=order_id).first()
+    if order_transaction:
+        return order_transaction.payment_mode
+    else:
+        return ""
 
 @register.filter(name='transaction_invoice')
 def transaction_invoice(order_id):

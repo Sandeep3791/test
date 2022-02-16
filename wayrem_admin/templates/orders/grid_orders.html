@@ -8,6 +8,7 @@
                 <th scope="col">Date</th>
                 <th scope="col">Customer</th>
                 <th scope="col">Mobile</th>
+                <th scope="col">Order Type</th>
                 <th scope="col">Order Status</th>
                 <th scope="col">Delivery Status</th>
                 <th scope="col">Payment Status</th>
@@ -26,9 +27,10 @@
                 <td>{{order.order_date|date:"M d, Y"}}</td>
                 <td>{{order.customer.first_name}} {{order.customer.last_name|default_if_none:""}}</td>
                 <td>{{order.order_phone|default_if_none:""}}</td>
+                <td>{{order.order_type|default_if_none:""}}</td>
                 <td class="status_{{order.id}}"><span class="badge bg-primary" style="padding: 3px 8px;line-height: 11px;background-color:{{order.status.status_color}} !important">{{order.status.name}}</span></td>
                 <td class="delivery_status_{{order.id}}"><span class="badge bg-primary" style="padding: 3px 8px;line-height: 11px;background-color:{{order.delivery_status.status_color}} !important">{{order.delivery_status.name}}</span></td>
-                <td>{{order.id|payment_status}}</td> 
+                <td>{{order.id|payment_type}}<br/>{{order.id|payment_status}}</td> 
                 <td>{{order.id|total_items}}</td>
                 <td>{{order.grand_total}}</td>
                 <td>
@@ -41,7 +43,7 @@
                         </button>
                                     <div class="dropdown-menu">
                                         {% comment %} <a class="dropdown-item " href="{% url 'wayrem_admin:invoiceorder' order.id %}"  target="__blank"><span class="fas fa-eye mr-2"></span>Invoice</a> {% endcomment %}
-                                        <a class="dropdown-item" href="{% url 'wayrem_admin:orderupdate' order.id %}"><span class="fas fa-edit mr-2"></span>Edit</a>
+                                        <a class="dropdown-item" href="{% url 'wayrem_admin:orderupdate' order.id %}"><span class="fas fa-edit mr-2"></span>View order</a>
                                         <a class="dropdown-item orderstatus" data-id="{{order.id}}" href="#"><span class="fas fa-edit mr-2"></span>Change Status</a>
                                     </div>
                                 </div>
@@ -51,7 +53,7 @@
            <tr></tr>
            {% endfor %}
            {% else %}
-                <tr class="odd"><td valign="top" colspan="8" class="dataTables_empty">No data available in table</td></tr>
+                <tr class="odd"><td valign="top" colspan="11" class="dataTables_empty">No data available in table</td></tr>
 
            {% endif %}
         </tbody>

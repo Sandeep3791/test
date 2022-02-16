@@ -16,7 +16,7 @@ from wayrem_admin.models import Inventory
 from wayrem_admin.models import Settings
 from django.views.generic.edit import CreateView,UpdateView
 from django.views.generic import ListView,DetailView
-from wayrem_admin.forms import OrderStatusUpdatedForm,OrderAdvanceFilterForm,OrderStatusDetailForm,OrderUpdatedPaymentStatusForm
+from wayrem_admin.forms import OrderStatusUpdatedForm,OrderAdvanceFilterForm,OrderStatusDetailForm,OrderUpdatedPaymentStatusForm,OrderStatusFilter
 from django.http import HttpResponse,HttpResponseRedirect
 from django.urls import reverse_lazy
 from wayrem_admin.decorators import role_required
@@ -102,6 +102,7 @@ class OrdersList(LoginRequiredMixin,ListView):
     def get_context_data(self, **kwargs):
         context = super(OrdersList,self).get_context_data(**kwargs)
         context['filter_form'] = OrderAdvanceFilterForm(self.request.GET)
+        context['status_filter_form']=OrderStatusFilter(self.request.GET)
         return context
 
 class OrderStatusUpdated(LoginRequiredMixin,UpdateView):
@@ -254,7 +255,7 @@ class OrderUpdateView(LoginRequiredMixin,DetailView):
         duplicaterequest=self.request.GET.copy()
         duplicaterequest['status']=self.get_object().status.id
         duplicaterequest['payment_status']=context['order_transaction'].payment_status.id
-        context['status_form']=OrderStatusDetailForm(duplicaterequest)
+        context['status_form']=OrderStatusDetailForm(self.get_object().status.id,duplicaterequest)
         context['payment_status_form']=OrderUpdatedPaymentStatusForm(duplicaterequest)
         context['currency']=CURRENCY
         context['PAYMENT_STATUS_CONFIRM']=PAYMENT_STATUS_CONFIRM
