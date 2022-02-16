@@ -1,8 +1,8 @@
 <div class="card card-body bg-white border-light shadow-sm mb-4">
-                    <h2 class="h5 mb-3">Cutomer</h2>
+                    <h2 class="h5 mb-3">Customer details</h2>
                     <div>
                        {{order.customer.first_name|default_if_none:""}} {{order.customer.last_name|default_if_none:""}}
-                        <h6>{{order_details.count}} {% if order_details.count == 1 %} Order {% else %} Orders{% endif %}</h6>
+                        <!-- <h6>{{order_details.count}} {% if order_details.count == 1 %} Order {% else %} Orders{% endif %}</h6> -->
                     </div>
 
                     <hr>

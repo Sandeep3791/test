@@ -213,7 +213,7 @@ class OrderInvoiceView(LoginRequiredMixin,View):
     model = Orders
     template_name = "orders/order_invoice.html"
     KEY='setting_vat'
-    WAYREM_VAT='wayrem_vat'
+    WAYREM_VAT='setting_vat'
     @method_decorator(role_required('Customer Order View'))
     def get(self, request, id):
         context={}
@@ -238,7 +238,7 @@ class OrderUpdateView(LoginRequiredMixin,DetailView):
     model = Orders
     template_name = "orders/order_page.html"        
     context_object_name = 'order'
-    KEY='tax_vat'
+    KEY='setting_vat'
     
     @method_decorator(role_required('Customer Order Edit'))
     def dispatch(self, *args, **kwargs):

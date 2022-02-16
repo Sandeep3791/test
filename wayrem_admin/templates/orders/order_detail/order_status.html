@@ -21,10 +21,11 @@
     <form class="oderform" method="post" action="{%url 'wayrem_admin:updateorderstatus' order.id %}">
     {% csrf_token %}
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="h5 m-0">Status</h2><button class="btn btn-primary order_submit_success" type="button" data-id={{order.id}}>Save</button></div>
+        <h2 class="h5 m-0">Order status</h2><button class="btn btn-primary order_submit_success" type="button" data-id={{order.id}}>Save</button></div>
     <div>
         <div class="">
-            <label class="my-1 mr-2" for="country">Order status</label> {{status_form.status}}
+            <!-- <label class="my-1 mr-2" for="country">Order status</label>  -->
+            {{status_form.status}}
         </div>
     </div>
     </form>
@@ -51,7 +52,8 @@
         </div>
         <div class="d-flex justify-content-between w-100 mt-4">
             <button class="btn btn-success modelpaymentstatus" type="button" data-id="{{PAYMENT_STATUS_CONFIRM}}" >Confirm</button>
-            <button class="btn btn-danger modelpaymentstatus" type="button" data-id="{{PAYMENT_STATUS_DECLINED}}" data-bs-toggle="modal" data-bs-target="#modal-default">Decline</button></div>
+            <!-- <button class="btn btn-danger modelpaymentstatus" type="button" data-id="{{PAYMENT_STATUS_DECLINED}}" data-bs-toggle="modal" data-bs-target="#modal-default">Decline</button> -->
+        </div>
     </div>
     <div style="display:none">{{payment_status_form.payment_status}}</div>
     </form>
