@@ -491,6 +491,7 @@ class CustomerAddresses(models.Model):
     is_default = models.IntegerField(blank=True, null=True)
 
     class Meta:
+        managed=False
         db_table = 'customer_addresses'
 
 class Invoice(models.Model):

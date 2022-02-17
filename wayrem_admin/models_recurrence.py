@@ -15,7 +15,7 @@ class RecurrenceGrocery(models.Model):
     grocery = models.ForeignKey('GroceryMaster', models.DO_NOTHING, blank=True, null=True)
     recurrenttype = models.ForeignKey('RecurrentType', models.DO_NOTHING, db_column='recurrenttype', blank=True, null=True)
     recurrence_startdate = models.CharField(max_length=255)
-    recurrence_nextdate = models.CharField(max_length=255)
+    recurrence_nextdate = models.DateField(blank=True, null=True)
     status = models.IntegerField(blank=True, null=True)
     created_at = models.DateTimeField()
     updated_at = models.DateTimeField()
