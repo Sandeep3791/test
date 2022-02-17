@@ -14,6 +14,7 @@
         position: relative;
         max-width: 1200px;
     }
+    .fill_status_current .comp_status{padding-left: 9px;}
     /* The actual timeline (the vertical ruler) */
     
     .timeline::after {
@@ -198,6 +199,12 @@ $(".orderstatus").on("click",".order_submit_success",function(e){
 
                     
                     $(".alert-container").fadeOut(3000);
+                    setTimeout(function () {
+                        location.reload(true);
+                    }, 2000);
+
+
+
                 }
          })
 
