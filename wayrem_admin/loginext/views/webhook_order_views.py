@@ -20,10 +20,11 @@ from rest_framework.status import (
 from wayrem_admin.loginext.liberary.api_base import ApiBase
 from wayrem_admin.loginext.webhook_liberary import WebHookLiberary
 from wayrem_admin.utils.constants import *
+from rest_framework.permissions import AllowAny
 
 class LogiNextWeebHookOrderAPI(ApiBase,WebHookLiberary,viewsets.ViewSet):
     webhook=WebHookLiberary()
-
+    permission_classes = (AllowAny,)
     def createorderrequest(self,request):
         create=request.data
         create_order_dic=self.webhook.createorderrequest(create)    
