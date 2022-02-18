@@ -18,7 +18,7 @@ SECRET_KEY = 'django-insecure-)(85bhh^@-x_8cpzbvc7*z9&$*c8#l&3uimsl+odf2ub&h3r2&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 ALLOWED_HOSTS = ["*"]
-CORS_ORIGIN_WHITELIST = ( '52.77.99.245','13.228.17.195','18.136.241.16','3.1.127.224','52.76.48.59', )
+
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -217,7 +217,7 @@ CELERY_TASK_SERIALIZER = 'json'
 #  celery -A wayrem.celery worker --loglevel=info
 # celery beat server
 # celery -A wayrem beat -l INFO --scheduler django_celery_beat.schedulers:DatabaseScheduler
-
+CORS_ORIGIN_WHITELIST = ( '15.185.103.226','52.77.99.245','13.228.17.195','18.136.241.16','3.1.127.224','52.76.48.59', )
 REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
