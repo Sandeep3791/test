@@ -32,7 +32,8 @@ INSTALLED_APPS = [
     'wayrem_admin',
     'widget_tweaks',
     #    'maintenance_mode',
-    'django_celery_beat',
+    'django_celery_beat'
+   
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

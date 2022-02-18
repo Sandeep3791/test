@@ -21,6 +21,7 @@ from wayrem_admin.loginext.liberary.api_base import ApiBase
 from wayrem_admin.loginext.webhook_liberary import WebHookLiberary
 from wayrem_admin.utils.constants import *
 from rest_framework.permissions import AllowAny
+import sys, traceback, gc
 
 class LogiNextWeebHookOrderAPI(ApiBase,WebHookLiberary,viewsets.ViewSet):
     webhook=WebHookLiberary()
@@ -36,16 +37,24 @@ class LogiNextWeebHookOrderAPI(ApiBase,WebHookLiberary,viewsets.ViewSet):
         return result_build
 
     def createorder(self,request):
-        create=request.data
-        create_order_dic=self.webhook.createorder(create)
-        order_reference_id=self.webhook.get_order(create_order_dic)
-        
-        self.webhook.saveorderrequest(create_order_dic,order_reference_id)
-        status=HTTP_200_OK
-        result={'message':"create order"}
-        result_build=Response(result,status=status)
-        return result_build
-    
+        try:
+            create=request.data
+            create_order_dic=self.webhook.createorder(create)
+            order_reference_id=self.webhook.get_order(create_order_dic)
+            
+            self.webhook.saveorderrequest(create_order_dic,order_reference_id)
+            status=HTTP_200_OK
+            result={'message':"create order"}
+            result_build=Response(result,status=status)
+            return result_build
+        except:
+            the_page = sys.exc_info()
+            trck= traceback.format_exc()
+            print(the_page)
+            print(trck)
+            raise
+
+
     def updateorder(self,request):
         create=request.data
         create_order_dic=self.webhook.updateorder(create)
