@@ -26,6 +26,9 @@ import sys, traceback, gc
 class LogiNextWeebHookOrderAPI(ApiBase,WebHookLiberary,viewsets.ViewSet):
     webhook=WebHookLiberary()
     permission_classes = (AllowAny,)
+    
+    permission_classes_by_action = {'createorder': [AllowAny],}
+
     def createorderrequest(self,request):
         create=request.data
         create_order_dic=self.webhook.createorderrequest(create)    
@@ -36,6 +39,8 @@ class LogiNextWeebHookOrderAPI(ApiBase,WebHookLiberary,viewsets.ViewSet):
         result_build=Response(result,status=status)
         return result_build
 
+      
+    
     def createorder(self,request):
         try:
             create=request.data
