@@ -21,14 +21,15 @@ class SubAdminForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ("username", "email", "contact", "role", "po_notify")
+        fields = ("username", "email", "contact", "role", "po_notify", "order_notify")
 
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
             'contact': forms.NumberInput(attrs={'class': 'form-control', 'minlength': 10}),
             'role': forms.Select(attrs={'class': 'form-select'}),
-            'po_notify': forms.CheckboxInput(attrs={'class': 'form-check-input'})
+            'po_notify': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'order_notify': forms.CheckboxInput(attrs={'class': 'form-check-input'})
             # 'role': forms.TextInput(attrs={'class': 'form-control'}),
         }
         error_messages = {
@@ -42,14 +43,15 @@ class SubAdminUpdateForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ("username", "email", "contact", "role", "po_notify")
+        fields = ("username", "email", "contact", "role", "po_notify", "order_notify")
 
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control'}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
             'contact': forms.NumberInput(attrs={'class': 'form-control', 'minlength': 10}),
             'role': forms.Select(attrs={'class': 'form-select'}),
-            'po_notify': forms.CheckboxInput(attrs={'class': 'form-check-input'})
+            'po_notify': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'order_notify': forms.CheckboxInput(attrs={'class': 'form-check-input'})
         }
 
 

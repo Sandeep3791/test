@@ -85,6 +85,7 @@ class Roles(models.Model):
 class User(AbstractUser):
     id = models.AutoField(primary_key=True, unique=True)
     po_notify = models.BooleanField(default=False, null=True, blank=True)
+    order_notify = models.BooleanField(default=False, null=True, blank=True)
     email = models.EmailField(_('email address'), unique=True)
     contact = models.CharField(
         max_length=12, null=True, unique=True, blank=False)

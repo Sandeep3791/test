@@ -115,6 +115,22 @@
                             </div>
                         </div>
                         <!-- End of Form -->
+                        
+                         <!-- End of Form -->
+                         <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                                <div class="form-check">
+                                    {{form.order_notify}}
+                                    <label for="id_order_notify">Order Notifications </label>
+                                    <div class="invalid-feedback" id="email_error_message"></div>
+                                </div>
+                                {% comment %} <div class="input-group">
+                                    <span class="text-danger"> {{form.role.errors | striptags}} </span>
+                                </div> {% endcomment %}
+                                <span class="text-error"></span>
+                            </div>
+                        </div>
+                        <!-- End of Form -->
 
 
                         <!-- Form -->
