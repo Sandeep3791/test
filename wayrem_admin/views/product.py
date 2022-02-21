@@ -138,7 +138,7 @@ def product_view_one(request):
         'package_count': request.session.get("package_count", None),
         'wayrem_margin': request.session.get("wayrem_margin", None),
         'margin_unit': request.session.get("margin_unit", None),
-        'outofstock_threshold':request.session.get("outofstock_threshold", None),
+        'outofstock_threshold': request.session.get("outofstock_threshold", None),
     }
     context = {}
     # form = ProductForm(request.POST, initial=initial)
@@ -187,7 +187,7 @@ def product_view_one(request):
                 "margin_unit")
             request.session["outofstock_threshold"] = form.cleaned_data.get(
                 "outofstock_threshold")
-            
+
             try:
                 product_id = Products.objects.last().id
             except:
@@ -516,10 +516,10 @@ def import_products(request):
         df['warehouse_id'] = 1
         df['gs1'] = ""
         df['primary_image'] = ""
-        df['inventory_starting'] = 0
+        df['inventory_starting'] = df['quantity']
         df['inventory_shipped'] = 0
         df['inventory_cancelled'] = 0
-        df['inventory_onhand'] = 0
+        df['inventory_onhand'] = df['quantity']
         df['inventory_received'] = df['quantity']
         weight_unit = pd.merge(
             df, df_units, left_on='weight_unit', right_on='unit_name')
@@ -550,6 +550,15 @@ def import_products(request):
                    if_exists='append', index=False)
         df_products_categories.to_sql(
             'products_master_category', engine, if_exists='append', index=False)
+        inventory_df = pd.DataFrame()
+        inventory_df['product_id'] = ids
+        inventory_df['inventory_type_id'] = 1
+        inventory_df['quantity'] = df7['quantity']
+        inventory_df['warehouse_id'] = 1
+        inventory_df['created_at'] = datetime.now()
+        inventory_df['updated_at'] = datetime.now()
+        inventory_df.to_sql('inventory', engine,
+                            if_exists='append', index=False)
         ingredients = pd.DataFrame()
         ingredients['product'] = ids
         ingredients['quantity'] = 1

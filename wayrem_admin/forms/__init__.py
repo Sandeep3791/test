@@ -13,4 +13,5 @@ from wayrem_admin.forms.order import *
 from wayrem_admin.forms.inventory import *
 from wayrem_admin.forms.warehouse import *
 from wayrem_admin.forms.shippingrates import *
+from wayrem_admin.forms.static_pages import *
 from django import forms

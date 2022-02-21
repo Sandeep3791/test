@@ -567,6 +567,57 @@
                                                           </div>
                                                         </div>
                                                       </div>
+                                                      <div class="col-md-12">
+                                                        <div class="role-block ml-3">
+                                                          <div class="row">
+                                                            <div class="col-md-2">
+                                                                <h5>Static Pages </h5>
+                                                              </div>
+                                                              <div class="col-md-2">
+                                                                <div class="form-group">
+                                                                  {% comment %} <input type="checkbox" disabled onclick="toggle(this);">
+                                                                  <label class="bmd-label-floating" for="flexCheckRolesAdd">
+                                                                    All
+                                                                  </label> {% endcomment %}
+                                                                </div>
+                                                              </div>
+                                                            <div class="col-md-2">
+                                                              <div class="form-group">
+                                                                <input type="checkbox" disabled name="permission" value="Static Pages Add" class="Static Pagesone" id="flexCheckRolesAdd" {% if 'Static Pages Add' in form.permission.value %}checked disabled{% endif %}>
+                                                                <label class="bmd-label-floating" for="flexCheckRolesAdd">
+                                                                   Add
+                                                                </label>
+                                                              </div>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                              <div class="form-group">
+                                                                <input type="checkbox" disabled name="permission" value="Static Pages Edit" id="flexCheckRolesEdit" {% if 'Static Pages Edit' in form.permission.value %}checked disabled{% endif %}>
+                                                                <label class="bmd-label-floating" for="flexCheckRolesEdit">
+                                                                   Edit
+                                                                </label>
+                                                              </div>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                              <div class="form-group">
+                                                                <input type="checkbox" disabled name="permission" value="Static Pages Delete" id="flexCheckRolesDelete" {% if 'Static Pages Delete' in form.permission.value %}checked disabled{% endif %}>
+                                                                <label class="bmd-label-floating" for="flexCheckRolesDelete">
+                                                                   Delete
+                                                                </label>
+                                                              </div>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                              <div class="form-group">
+                                                                <input type="checkbox" disabled name="permission" value="Static Pages View" id="flexCheckRolesView" {% if 'Static Pages View' in form.permission.value %}checked disabled{% endif %}>
+                                                                <label class="bmd-label-floating" for="flexCheckRolesView">
+                                                                   View
+                                                                </label>
+                                                              </div>
+                                                            </div>
+                                                            
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                      
                       
                                                      
                       

@@ -46,6 +46,8 @@ roles_options = (
         'Warehouse Delete', 'Warehouse Delete'), ('Warehouse View', 'Warehouse View'),
     ('Inventory Add', 'Inventory Add'), ('Inventory Edit', 'Inventory Edit'), ('Inventory Delete',
                                                                                'Inventory Delete'), ('Inventory View', 'Inventory View'),
+    ('Static Pages Add', 'Static Pages Add'), ('Static Pages Edit', 'Static Pages Edit'), ('Static Pages Delete',
+                                                                                           'Static Pages Delete'), ('Static Pages View', 'Inventory View'),
 )
 
 status = (("Active", "Active"), ("Inactive", "Inactive"))
@@ -69,7 +71,7 @@ class Roles(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
     role = models.CharField(max_length=50, unique=True)
     permission = MultiSelectField(
-        choices=roles_options, max_length=1500, default="Stats")
+        choices=roles_options, max_length=15000, default="Stats")
     content = models.TextField(blank=True, null=True)
     status = models.CharField(max_length=10, choices=status, default='Active')
     created_at = models.DateTimeField(auto_now_add=True)
@@ -501,7 +503,7 @@ class CustomerAddresses(models.Model):
     is_default = models.BooleanField(blank=True, null=True, default=False)
 
     class Meta:
-        managed=False
+        managed = False
         db_table = 'customer_addresses'
 
 
@@ -735,3 +737,13 @@ class ShippingRates(models.Model):
 
     class Meta:
         db_table = 'shipping_rates'
+
+
+class StaticPages(models.Model):
+    page_title = models.CharField(max_length=255, null=True)
+    slug = models.SlugField(max_length=255, null=True)
+    description = models.TextField(null=True)
+    status = models.BooleanField(default=False)
+
+    class Meta:
+        db_table = 'static_pages'
