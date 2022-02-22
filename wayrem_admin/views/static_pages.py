@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.views import View
 from django.utils.decorators import method_decorator
-from grpc import Status
 from wayrem_admin.models import Settings, StaticPages
 from wayrem_admin.forms import SettingsForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
