@@ -35,6 +35,18 @@ from django.db.models.fields import DateField
 from wayrem_admin.loginext.loginext_liberary import LoginextOrderCreate
 import json
 
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
+
+@method_decorator(csrf_exempt, name='dispatch')
+class TestAPIView(View):
+    # this for testing only
+    def get(self, request, *args, **kwargs):
+        return HttpResponse('This is GET request')
+    @csrf_exempt
+    def post(self, request, *args, **kwargs):
+        return HttpResponse('This is POST request')
+
 class OrderExportView(View):
     
     @method_decorator(login_required(login_url='wayrem_admin:root'))

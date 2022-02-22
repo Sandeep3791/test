@@ -7,5 +7,7 @@ urlpatterns = [
     path('update-payment-status/<int:id>', views.OrderPaymentStatusUpdated.as_view(), name='updatepaymentstatusstatus'),
     path('invoice-order/<int:id>', views.OrderInvoiceView.as_view(), name='invoiceorder'),
     path('<pk>', views.OrderUpdateView.as_view(), name='orderupdate'),
-    path('export-order/',views.OrderExportView.as_view(),name='exportorder')
+    path('export-order/',views.OrderExportView.as_view(),name='exportorder'),
+
+    path('test-order/<int:id>',views.TestAPIView.as_view(),name='testorder'),
 ]
