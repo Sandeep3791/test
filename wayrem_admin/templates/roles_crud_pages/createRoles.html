@@ -733,6 +733,60 @@
                                                           </div>
                                                         </div>
                                                       </div>
+                                                      <div class="col-md-12">
+                                                        <div class="role-block ml-3">
+                                                          <div class="row">
+                                                            <div class="col-md-2">
+                                                                <h5>Static Pages </h5>
+                                                              </div>
+                                                              
+                                                              <div class="col-md-2">
+                                                                <div class="form-group">
+   
+                                                                  <input class="form-check-input" type="checkbox" id="staticpagesCheck" name="permission" value="Static Pages Add"  {% if 'Static Pages Add' in form.permission.value %}{% if 'Static Pages Edit' in form.permission.value %}{% if 'Static Pages Delete' in form.permission.value %}{% if 'Static Pages View' in form.permission.value %}checked{% endif %}{% endif %}{% endif %}{% endif %} >
+
+                                                                  <label class="bmd-label-floating" >
+                                                                    All
+                                                                  </label>
+                                                                </div>
+                                                              </div>
+                                                              
+                                                            <div class="col-md-2">
+                                                              <div class="form-group">
+                                                                <input class="form-check-input Static Pages" type="checkbox" name="permission" value="Static Pages Add" class="reportsone" id="flexCheckRolesAdd" {% if 'Static Pages Add' in form.permission.value %}checked{% endif %}>
+                                                                <a>
+                                                                  <i class="mx-1 text-info fas fa-plus-circle" style="color: rgb(44, 178, 255); font-size:16px;"></i>
+                                                                </a>
+                                                              </div>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                              <div class="form-group">
+                                                                <input class="form-check-input Static Pages" type="checkbox" name="permission" value="Static Pages Edit" id="flexCheckRolesEdit" {% if 'Static Pages Edit' in form.permission.value %}checked{% endif %}>
+                                                                <a>
+                                                                  <i class="mx-1 fas fa-pen" style="color:#192d4d; font-size:15px;"></i>
+                                                                </a>
+                                                              </div>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                              <div class="form-group">
+                                                                <input class="form-check-input Static Pages" type="checkbox" name="permission" value="Static Pages Delete" id="flexCheckRolesDelete" {% if 'Static Pages Delete' in form.permission.value %}checked{% endif %}>
+                                                                <a>
+                                                                  <i class="mx-1 fas fa-trash text-danger" style="font-size:15px;"></i>
+                                                                </a>
+                                                              </div>
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                              <div class="form-group">
+                                                                <input class="form-check-input Static Pages" type="checkbox" name="permission" value="Static Pages View" id="flexCheckRolesView" {% if 'Static Pages View' in form.permission.value %}checked{% endif %}>
+                                                               <a>
+                                                                  <i class="mx-1 fas fa-eye text-success" style="font-size:15px;"></i>
+                                                                </a>
+                                                              </div>
+                                                            </div>
+                                                            
+                                                          </div>
+                                                        </div>
+                                                      </div>
                                     
       
                                   </div>
@@ -1046,6 +1100,27 @@ $(".warehouse").click(function(){
        });
      }
    });
+
+   $(".Static").click(function(){
+    if($(".warehouse").length == $(".Static:checked").length) {
+      $("#staticpagesCheck").prop("checked", true);
+    } else {
+      $("#staticpagesCheck").prop("checked", false);
+    }
+    })
+
+    $("#staticpagesCheck").change(function(){
+      var checked = $(this).is(':checked');
+      if(checked){
+        $(".Static").each(function(){
+          $(this).prop("checked",true);
+        });
+      }else{
+        $(".Static").each(function(){
+          $(this).prop("checked",false);
+        });
+      }
+    });
 
 
   

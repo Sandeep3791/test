@@ -216,7 +216,15 @@
       <span class="sidebar-text">Email Templates</span>
     </a>
   </li>
-  </ul>
+</ul>
+<ul class="nav m-1">
+  <li class="nav-item w-100 {% if 'dashboard' in segment %} active {% endif %}">
+    <a href="{% url 'wayrem_admin:staticpages' %}" class="nav-link">
+      <span class="sidebar-icon"><i class="far fa-newspaper"></i></span>
+      <span class="sidebar-text">Manage Pages</span>
+    </a>
+  </li>
+</ul>
 {% endif %}
 
   
@@ -231,5 +239,19 @@
   
       <li role="separator" class="dropdown-divider mt-4 mb-3 border-black"></li>
     </ul>
+   
+      <a href="{% url 'wayrem_admin:orderlist' %}">
+        <div class="col-12   mb-3 mb-xl-0  status-icon shadow-sm">
+          <div class="icon  icon-md  me-4 me-sm-0">
+              <span class="fas fa-cart-arrow-down"></span>        
+          </div>
+          <div class="icon-content">        
+            <h3 class="mb-0"><b>{{request.order_today}} Orders</b></h3>
+            <p class="mb-0">today</p>
+          </div>
+        </div>
+      </a>
+      
+   
   </div>
 </nav>

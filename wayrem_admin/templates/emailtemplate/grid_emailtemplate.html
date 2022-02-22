@@ -1,43 +1,43 @@
 <table class="table table-hover text-center" id="filtertable">
-            <thead class=" ">
-                <tr>
-                    {% comment %} <th scope="col">S. No.</th> {% endcomment %}
-                    <th scope="col">Name</th>
-                    <th scope="col">Key</th>
-                    <th scope="col">To Email</th>
-                    <th scope="col">From Emails</th>
-                    {% comment %} <th scope="col">Created At</th> {% endcomment %}
-                    <th scope="col">Action</th>
-                </tr>
-            </thead>
-            <tbody class="bg-white">
-                {% for user in userlist %}
-                {% if user.is_superuser %}
-                {% else %}
-                <tr>
-                
-                    <td>{{user.name}}</td>
-                    <td>{{user.key}}</td>
-                    <td>{{user.to_email}}</td>
-                    <td>{{user.from_email}}</td>
-                    {% comment %} <td>{{user.created_at|date:"M d, Y" }}</td> {% endcomment %}
-                    <td>     
-                            <div class="btn-group">
-                                <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    <span class="icon icon-sm">
-                                        <span class="fas fa-ellipsis-h icon-dark"></span>
-                                    </span>
-                                    <span class="sr-only">Toggle Dropdown</span>
-                                </button>
-                                <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="{% url 'wayrem_admin:viewemailtemplates' user.id %}"><span class="fas fa-eye mr-2"></span>View Details</a>
-                                    <a class="dropdown-item" href="{% url 'wayrem_admin:updateemailtemplates' user.id %}"><span class="fas fa-edit mr-2"></span>Edit</a>
-                                    <!-- <a class="dropdown-item text-danger"  data-bs-toggle="modal" data-bs-target="#deleteModal{{prod.id}}" href="#"> <span class="fas fa-trash-alt mr-2"></span>Remove</a> -->
-                                </div>
-                            </div>          
-                    </td>    
-                </tr>
-                {% endif %}
-                {% endfor %}
-            </tbody>
-        </table>
+    <thead class=" ">
+        <tr>
+            {% comment %} <th scope="col">S. No.</th> {% endcomment %}
+            <th scope="col">Name</th>
+            <th scope="col">Key</th>
+            <th scope="col">To Email</th>
+            <th scope="col">From Emails</th>
+            {% comment %} <th scope="col">Created At</th> {% endcomment %}
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody class="bg-white">
+        {% for user in userlist %}
+        {% if user.is_superuser %}
+        {% else %}
+        <tr>
+        
+            <td>{{user.name}}</td>
+            <td>{{user.key}}</td>
+            <td>{{user.to_email}}</td>
+            <td>{{user.from_email}}</td>
+            {% comment %} <td>{{user.created_at|date:"M d, Y" }}</td> {% endcomment %}
+            <td>     
+                    <div class="btn-group">
+                        <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="icon icon-sm">
+                                <span class="fas fa-ellipsis-h icon-dark"></span>
+                            </span>
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="{% url 'wayrem_admin:viewemailtemplates' user.id %}"><span class="fas fa-eye mr-2"></span>View Details</a>
+                            <a class="dropdown-item" href="{% url 'wayrem_admin:updateemailtemplates' user.id %}"><span class="fas fa-edit mr-2"></span>Edit</a>
+                            <!-- <a class="dropdown-item text-danger"  data-bs-toggle="modal" data-bs-target="#deleteModal{{prod.id}}" href="#"> <span class="fas fa-trash-alt mr-2"></span>Remove</a> -->
+                        </div>
+                    </div>          
+            </td>    
+        </tr>
+        {% endif %}
+        {% endfor %}
+    </tbody>
+</table>
