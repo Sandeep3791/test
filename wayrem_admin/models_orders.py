@@ -6,7 +6,7 @@ import random
 def create_new_ref_number():
     not_unique = True
     while not_unique:
-        unique_ref = random.randint(1000000000, 9999999999)
+        unique_ref = random.randint(1000, 999999)
         if not Orders.objects.filter(ref_number=unique_ref):
             not_unique = False
     return str(unique_ref)

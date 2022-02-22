@@ -1,6 +1,6 @@
 from wayrem_admin.forms import warehouse
 from wayrem_admin.loginext.liberary.api_base import ApiBase
-from wayrem_admin.models_orders import Orders, ShippingLoginextNotification, OrderDetails, OrderTransactions,StatusMaster,ShippingRates
+from wayrem_admin.models_orders import Orders, ShippingLoginextNotification, OrderDetails, OrderTransactions,StatusMaster,ShippingRates,create_new_ref_number
 from wayrem_admin.models_recurrence import RecurrentType, RecurrenceGrocery, GroceryMaster, GroceryProducts
 from wayrem_admin.models import Settings,CustomerAddresses, Warehouse
 from wayrem_admin.utils.constants import *
@@ -10,6 +10,7 @@ import googlemaps
 
 class OrderLiberary:
     tax_vat=SETTING_VAT
+    invoice_default=1001
     def __init__(self):
         self.recurrence_type = self.recurrent_type()
         self.today_date = date.today()
@@ -26,7 +27,6 @@ class OrderLiberary:
     def proccess_order(self):
         get_date = self.get_filter_data()
         recurrence_grocery = self.recurrence_grocery(get_date)
-                
         if recurrence_grocery:
             self.create_recurrence_grocery_order(recurrence_grocery)
 
@@ -136,17 +136,19 @@ class OrderLiberary:
                         'order_billing_address': order_billing_address, 'order_city': order_city, 'order_country': order_country, 'order_phone': order_phone, 'order_email': order_email, 'order_date': order_date, 'order_shipped': order_shipped, 'order_tracking_number': order_tracking_number, 'content': content, 'customer_id': customer_id, 'delivery_status': delivery_status, 'status': status,
                         'order_shipping_response': order_shipping_response, 'order_type': order_type}
             
+            
             order_cr = Orders(**order_dic)
             order_cr.save()
             return order_cr.id
         
         except Exception as e:
+            print(e)
             return 0
 
     def get_shipping_value(self,customer_latitude,customer_longitude):
         gmaps = googlemaps.Client(key='AIzaSyCT93vNszQ2b8JQmHqrkDTVJnjVKmHSaTc')
         warehouse=Warehouse.objects.filter(status=1).first()
-
+        
         warehouse_latitude = warehouse.latitude
         warehouse_longitude = warehouse.longitude
 
@@ -216,7 +218,8 @@ class OrderLiberary:
         return customer_address
 
     def get_ref_number(self):
-        return 6
+        new_ref_number=create_new_ref_number()
+        return new_ref_number
 
     def get_tax_vat(self):
         get_tax_vat=Settings.objects.filter(key=self.tax_vat).first()
@@ -256,9 +259,13 @@ class OrderLiberary:
         grocery_products = GroceryProducts.objects.filter(grocery=grocery_id)
         return grocery_products
 
+    def generate_invoice(self):
+        total_rows=OrderTransactions.objects.count()
+        return total_rows + self.invoice_default
+        
     def create_order_transactions(self, order_id, order_recurrence):
         user_id = 1
-        invoices_id = "1"
+        invoices_id = self.generate_invoice()
         code = "code"
         order_type = 25
         created_at = datetime.now()
