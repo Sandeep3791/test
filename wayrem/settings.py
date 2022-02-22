@@ -87,7 +87,7 @@ DATABASES = {
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'wayrem_v01',
+#         'NAME': 'wayrem_v3',
 #         'USER': 'root',
 #         'PASSWORD': '',
 #         'HOST': 'localhost',
