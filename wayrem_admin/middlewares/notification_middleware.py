@@ -17,7 +17,7 @@ class NotificationMiddleWare(object):
                 request.notifications = notifications
                 this_day = datetime.datetime.now().day
                 request.order_today = Orders.objects.filter(
-                    order_date__day=this_day).count()
+                    order_date__day=this_day, status__id=16).count()
                 response = self.get_response(request)
         else:
             response = self.get_response(request)
