@@ -37,6 +37,7 @@ class OrderStatusUpdatedForm(ModelForm):
             exclude_status=[ORDER_PENDING_APPROVED]
         else:
             exclude_status=[OREDER_PENDING_RECURENCE,ORDER_PENDING_APPROVED]
+        
         order_choices = [(get_users_options.pk, get_users_options.description)
                          for get_users_options in StatusMaster.objects.filter(status_type=ORDER_STATUS,status=1).exclude(id__in=exclude_status)]
         self.fields['status'].choices = order_choices

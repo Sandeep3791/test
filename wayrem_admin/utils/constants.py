@@ -45,3 +45,7 @@ LOGINEXT_BASEPATH='loginext_basepath'
 
 DELIVERY_ORDER_PER_DAY='delivery_order_per_day'
 CUSTOMER_APPROVAL_PER_DAY='customer_approved_per_day'
+
+SETTING_VAT='setting_vat'
+DEFAULT_SHIPPING_AMOUNT=10
+PRODUCT_MARGIN_PERC_UNIT="%"

@@ -13,7 +13,8 @@ class RecurrentType(models.Model):
 
 
 class RecurrenceGrocery(models.Model):
-    customer_id = models.IntegerField(blank=True, null=True)
+    customer = models.ForeignKey(
+        'wayrem_admin.Customer', models.DO_NOTHING, blank=True, null=True)
     grocery = models.ForeignKey(
         'GroceryMaster', models.DO_NOTHING, blank=True, null=True)
     recurrenttype = models.ForeignKey(
