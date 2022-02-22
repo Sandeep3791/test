@@ -1,6 +1,4 @@
-import uuid
 from django.shortcuts import render, redirect
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views import View
 from django.utils.decorators import method_decorator
@@ -9,7 +7,6 @@ from wayrem_admin.forms import SettingsForm
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic.edit import CreateView, UpdateView
 from wayrem_admin.forms import StaticpagesForm, StaticpagesViewForm
-from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
 from wayrem_admin.decorators import role_required
 from wayrem_admin.utils.constants import *
@@ -88,6 +85,16 @@ class StaticpagesView(UpdateView):
         static_pages_pk = self.kwargs['static_pages_pk']
         context['static_pages_pk'] = static_pages_pk
         return context
+
+
+class DeleteStaticpages(View):
+
+    @method_decorator(role_required('Static Pages Delete'))
+    def post(self, request):
+        pageid = request.POST.get('pageid')
+        user = StaticPages.objects.get(pk=pageid)
+        user.delete()
+        return redirect('wayrem_admin:staticpages')
 
 
 def staticpages_view(request, url):
