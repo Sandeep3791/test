@@ -27,6 +27,7 @@ class OrderLiberary:
     def proccess_order(self):
         get_date = self.get_filter_data()
         recurrence_grocery = self.recurrence_grocery(get_date)
+        
         if recurrence_grocery:
             self.create_recurrence_grocery_order(recurrence_grocery)
 
@@ -54,7 +55,9 @@ class OrderLiberary:
 
     def update_recurrence_groccery(self, rg):
         no_of_days = rg.recurrenttype.value
-        re_date = rg.recurrence_nextdate + timedelta(days=no_of_days)
+        no_of_days =int(no_of_days)
+        current_date_next=datetime.strptime(rg.recurrence_nextdate, "%Y-%m-%d").date()
+        re_date = current_date_next + timedelta(days=no_of_days)
         RecurrenceGrocery.objects.filter(id=rg.id).update(recurrence_nextdate=re_date,updated_at=datetime.now())
         self.update_grocery_products(rg.grocery_id,re_date)
        
@@ -128,7 +131,8 @@ class OrderLiberary:
             content = None
             customer_id = customer_id
             delivery_status = StatusMaster(id=1)
-            status = StatusMaster(id=23)
+            #status = StatusMaster(id=23) on phase 2 this will recurrent pending for approval.
+            status = StatusMaster(id=16) 
             order_shipping_response = None
             order_type = StatusMaster(id=25)
     
