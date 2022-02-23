@@ -121,7 +121,7 @@ class ProductFormView(forms.ModelForm):
     class Meta:
         model = Products
         fields = ("name", "SKU", "category", "meta_key", "feature_product", "publish", "date_of_mfg", "date_of_exp", "mfr_name", "supplier",
-                  "dis_abs_percent", "description", "quantity", "quantity_unit", "weight", "weight_unit", "price", "discount", "package_count", "wayrem_margin", "margin_unit", "primary_image", "warehouse")
+                  "dis_abs_percent", "description", "quantity", "quantity_unit", "weight", "weight_unit", "price", "discount", "package_count", "wayrem_margin", "margin_unit", "primary_image", "warehouse", "inventory_starting", "inventory_received", "inventory_shipped", "inventory_cancelled", "inventory_onhand", "outofstock_threshold")
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
@@ -148,6 +148,11 @@ class ProductFormView(forms.ModelForm):
             'category': forms.SelectMultiple(attrs={'class': 'form-control'}),
             'supplier': forms.SelectMultiple(attrs={'class': 'form-control'}),
             'warehouse': forms.Select(attrs={'class': 'form-select'}),
+            'inventory_starting': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'True'}),
+            'inventory_received': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'True'}),
+            'inventory_shipped': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'True'}),
+            'inventory_cancelled': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'True'}),
+            'outofstock_threshold': forms.NumberInput(attrs={'class': "form-control"}),
         }
 
 

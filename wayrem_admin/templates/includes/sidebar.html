@@ -182,31 +182,31 @@
 
 
 <ul class="nav">
-<li class="nav-item w-100 {% if 'dashboard' in segment %} active {% endif %}">
-  <a href="{% url 'wayrem_admin:polist' %}" class="nav-link">
-    <span class="sidebar-icon"><i class="fas fa-file-alt"></i></span></span>
-    <span class="sidebar-text">Purchase Order</span>
-  </a>
-</li>
+  <li class="nav-item w-100 {% if 'dashboard' in segment %} active {% endif %}">
+    <a href="{% url 'wayrem_admin:polist' %}" class="nav-link">
+      <span class="sidebar-icon"><i class="fas fa-file-alt"></i></span></span>
+      <span class="sidebar-text">Purchase Order</span>
+    </a>
+  </li>
 </ul>
 
 <ul class="nav">
-<li class="nav-item w-100 {% if 'dashboard' in segment %} active {% endif %}">
-  <a href="{% url 'wayrem_admin:customerslist' %}" class="nav-link">
-    <span class="sidebar-icon"><i class="fas fa-users"></i></span></span>
-    <span class="sidebar-text">Customers</span>
-  </a>
-</li>
+  <li class="nav-item w-100 {% if 'dashboard' in segment %} active {% endif %}">
+    <a href="{% url 'wayrem_admin:customerslist' %}" class="nav-link">
+      <span class="sidebar-icon"><i class="fas fa-users"></i></span></span>
+      <span class="sidebar-text">Customers</span>
+    </a>
+  </li>
 </ul>
 
 {% if request.user.is_superuser %}
 <ul class="nav">
-<li class="nav-item w-100 {% if 'dashboard' in segment %} active {% endif %}">
-  <a href="{% url 'wayrem_admin:settings' %}" class="nav-link">
-    <span class="sidebar-icon"><i class="fas fa-cogs"></i></span>
-    <span class="sidebar-text">Settings</span>
-  </a>
-</li>
+  <li class="nav-item w-100 {% if 'dashboard' in segment %} active {% endif %}">
+    <a href="{% url 'wayrem_admin:settings' %}" class="nav-link">
+      <span class="sidebar-icon"><i class="fas fa-cogs"></i></span>
+      <span class="sidebar-text">Settings</span>
+    </a>
+  </li>
 </ul>
 
 <ul class="nav m-1">
@@ -217,41 +217,43 @@
     </a>
   </li>
 </ul>
-<ul class="nav m-1">
-  <li class="nav-item w-100 {% if 'dashboard' in segment %} active {% endif %}">
-    <a href="{% url 'wayrem_admin:staticpages' %}" class="nav-link">
-      <span class="sidebar-icon"><i class="far fa-newspaper"></i></span>
-      <span class="sidebar-text">Manage Pages</span>
-    </a>
-  </li>
-</ul>
 {% endif %}
 
   
-  <ul class="nav m-1">
-  <li class="nav-item w-100 {% if 'dashboard' in segment %} active {% endif %}">
-    <a href="{% url 'wayrem_admin:orderlist' %}" class="nav-link">
-      <span class="sidebar-icon"><i class="fas fa-download"></i></span>
-      <span class="sidebar-text">Order</span>
-    </a>
-  </li>
-  </ul>
+    <ul class="nav m-1">
+      <li class="nav-item w-100 {% if 'dashboard' in segment %} active {% endif %}">
+        <a href="{% url 'wayrem_admin:orderlist' %}" class="nav-link">
+          <span class="sidebar-icon"><i class="fas fa-download"></i></span>
+          <span class="sidebar-text">Order</span>
+        </a>
+      </li>
+    </ul>
   
       <li role="separator" class="dropdown-divider mt-4 mb-3 border-black"></li>
     </ul>
-   
-      <a href="{% url 'wayrem_admin:orderlist' %}?status=16">
+
         <div class="col-12   mb-3 mb-xl-0  status-icon shadow-sm">
-          <div class="icon  icon-md  me-4 me-sm-0">
+          <div class="icon  icon-md  me-4 me-sm-0 status-icon_main">
               <span class="fas fa-cart-arrow-down"></span>        
           </div>
-          <div class="icon-content">        
-            <h3 class="mb-0"><b>{{request.order_today}} Orders</b></h3>
-            <p class="mb-0">today</p>
+          <div class="icon-content"> 
+            <a href="{% url 'wayrem_admin:orderlist' %}?status=16">       
+              <h3 class="mb-0"><b>{{request.order_today}} Orders</b></h3>
+              <!-- <p class="mb-0">8 minutes ago</p> -->
+            </a>
           </div>
+          <span class="fas fa-times"></span>
         </div>
-      </a>
-      
-   
   </div>
 </nav>
+
+<script>
+  $('.status-icon_main').click(function(){
+    $('.status-icon').removeClass('status-icon_main_open');
+    $('.status-icon').addClass('status-icon_main_open');
+  });
+  
+  $('.status-icon span.fas.fa-times').click(function(){
+    $('.status-icon').removeClass('status-icon_main_open');
+  });
+</script>
