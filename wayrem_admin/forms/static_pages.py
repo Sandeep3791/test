@@ -6,7 +6,7 @@ from wayrem_admin.models import EmailTemplateModel, StaticPages
 
 
 class StaticpagesForm(forms.ModelForm):
-    get_status_dict = {0: 'In Active', 1: 'Active'}
+    get_status_dict = {1: 'Active', 0: 'Inactive'}
     status_choices = list(get_status_dict.items())
     #status_choices.insert(0,('','Select Status'))
     status = forms.ChoiceField(choices=status_choices, widget=forms.Select(
@@ -24,7 +24,7 @@ class StaticpagesForm(forms.ModelForm):
 
 
 class StaticpagesViewForm(forms.ModelForm):
-    get_status_dict = {0: 'InActive', 1: 'Active'}
+    get_status_dict = {0: 'Inactive', 1: 'Active'}
     status_choices = list(get_status_dict.items())
     #status_choices.insert(0,('','Select Status'))
     status = forms.ChoiceField(
