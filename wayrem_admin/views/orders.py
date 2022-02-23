@@ -47,6 +47,35 @@ class TestAPIView(View):
     def post(self, request, *args, **kwargs):
         return HttpResponse('This is POST request')
 
+@method_decorator(csrf_exempt, name='dispatch')
+class OrderReferenceExport(View):
+    model = Orders
+    template_name = "orders/order_invoice.html"
+    KEY='setting_vat'
+    WAYREM_VAT='setting_vat'
+    def get(self, request, id):
+        context={}
+        context['currency']=CURRENCY
+        order_id=Orders.objects.filter(ref_number=id).first()
+        if order_id is None:
+            return 1
+        else:
+            order_ids=order_id.id
+
+        order_id=order_ids
+        filename=str(order_id)+".pdf"
+        context['order'] =Orders.objects.filter(id=order_id).first()
+        context['tax_vat'] =Settings.objects.filter(key=self.KEY).first()
+        context['wayrem_vat'] =Settings.objects.filter(key=self.WAYREM_VAT).first()
+        context['order_details'] =OrderDetails.objects.filter(order=order_id)
+        context['order_transaction']=OrderTransactions.objects.filter(order=order_id).first()
+        html_template =render_to_string(self.template_name, context)
+        pdf_file = HTML(string=html_template, base_url=request.build_absolute_uri()).write_pdf()
+        response = HttpResponse(pdf_file, content_type='application/pdf')
+        response['Content-Transfer-Encoding'] = 'binary'
+        response['Content-Disposition'] = 'attachment;filename='+filename
+        return response
+
 class OrderExportView(View):
     
     @method_decorator(login_required(login_url='wayrem_admin:root'))

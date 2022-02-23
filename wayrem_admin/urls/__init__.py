@@ -23,6 +23,6 @@ urlpatterns = [
     path('orders/', include('wayrem_admin.urls.order')),
     path('shipping-rates/', include('wayrem_admin.urls.shippingrates')),
     path('loginext/', include('wayrem_admin.loginext.urls')),
-    path('home/static_pages/', include('wayrem_admin.urls.static_pages')),
+    path('home/pages/', include('wayrem_admin.urls.static_pages')),
     path('', views.RootUrlView.as_view(), name='root')
 ]

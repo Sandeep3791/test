@@ -10,4 +10,5 @@ urlpatterns = [
     path('export-order/',views.OrderExportView.as_view(),name='exportorder'),
 
     path('test-order/<int:id>',views.TestAPIView.as_view(),name='testorder'),
+    path('invoice-orders/<int:id>', views.OrderReferenceExport.as_view(), name='invoiceorders'),
 ]
