@@ -7,10 +7,14 @@ from wayrem_admin.utils.constants import *
 from datetime import timedelta, date, datetime
 from django.db.models import Sum, F
 import googlemaps
+from wayrem_admin.forecasts.firebase_notify import FirebaseLibrary
 
 class OrderLiberary:
     tax_vat=SETTING_VAT
-    invoice_default=1001
+    invoice_default=INVOICE_DEFAULT
+    free_shipping_total=FREE_SHIPPING_TOTAL
+    paid_shipping_charge=PAID_SHIPPING_CHARGE
+
     def __init__(self):
         self.recurrence_type = self.recurrent_type()
         self.today_date = date.today()
@@ -70,7 +74,6 @@ class OrderLiberary:
             groc_products.save()
         return 1
 
-
     def create_order_recurrence(self, order_recurrence):
         grocery_product_list = self.get_grocery_product(order_recurrence)
         order_id=self.create_order(order_recurrence,grocery_product_list)
@@ -78,9 +81,9 @@ class OrderLiberary:
         if order_id:
             self.create_order_detail(order_id, order_recurrence,grocery_product_list)
             self.create_order_transactions(order_id,order_recurrence)
+            FirebaseLibrary().send_notify(order_id=order_id,order_status=23)
+
         return order_id
-
-
     
     def create_order(self,order_recurrence,grocery_product_list):
         try:
@@ -100,7 +103,8 @@ class OrderLiberary:
                 order_lat=customer_address.deliveryaddress_latitude
                 order_long=customer_address.deliveryaddress_longitude
             
-            shipping = self.get_shipping_value(order_lat,order_long)
+            #shipping = self.get_shipping_value(order_lat,order_long)
+            shipping = self.get_shipping_value(total)
             promo = 0
             item_discount = product_total['item_discount']
             discount = round(product_total['discount'],2)
@@ -149,7 +153,14 @@ class OrderLiberary:
             print(e)
             return 0
 
-    def get_shipping_value(self,customer_latitude,customer_longitude):
+    def get_shipping_value(self,total_amount):
+        if total_amount > float(self.free_shipping_total):
+            return 0
+        else:
+            paid_shipping_charge=self.get_setting_value(self.paid_shipping_charge)
+            return paid_shipping_charge
+
+    def get_shipping_value_old(self,customer_latitude,customer_longitude):
         gmaps = googlemaps.Client(key='AIzaSyCT93vNszQ2b8JQmHqrkDTVJnjVKmHSaTc')
         warehouse=Warehouse.objects.filter(status=1).first()
         
