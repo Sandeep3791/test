@@ -1,4 +1,3 @@
-from grpc import Status
 import requests
 import json
 from wayrem_admin.models import CustomerDevice, CustomerNotification

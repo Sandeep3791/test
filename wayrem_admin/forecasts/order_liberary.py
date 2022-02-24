@@ -81,7 +81,7 @@ class OrderLiberary:
         if order_id:
             self.create_order_detail(order_id, order_recurrence,grocery_product_list)
             self.create_order_transactions(order_id,order_recurrence)
-            FirebaseLibrary().send_notify(order_id=order_id,order_status=1)
+            FirebaseLibrary().send_notify(order_id=order_id,order_status=23)
 
         return order_id
     
