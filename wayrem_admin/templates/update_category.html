@@ -64,10 +64,10 @@
                     </div>
                     <!-- End of Form -->
                     <div class="col-md-6 mb-3 form-file">
-                        <label for="description">Image <span class="text-danger"></span>  <span class="text-danger"><em>{{form.image.errors | striptags}}</em></span></label>
+                        <label for="description">Image -  <span class="text-danger"></span>  <span class="text-danger"><em>{{form.image.errors | striptags}}</em></span></label>                        
                         {{form.image}}
                         <label class="form-file-label ps-2 pe-2" for="customFile">
-                            <span class="form-file-text">Choose file...</span>
+                            <span class="form-file-text">{% if form.image.value %}{{form.image.value}}{% else %}Choose file...{% endif %}</span>
                             <span class="form-file-button">Browse</span>
                         </label>
                         <div class="input-group" id="description_error_message" style="color: #d12525;"></div>

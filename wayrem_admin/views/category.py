@@ -1,3 +1,4 @@
+import re
 from django.urls import reverse_lazy
 from django.views.generic import ListView
 from wayrem_admin.filters.category_filters import *
@@ -115,8 +116,9 @@ def update_categories(request, id=None, *args, **kwargs):
             print("Here")
             return redirect('wayrem_admin:categorieslist')
     user = Categories.objects.get(id=id)
-    form = CategoryUpdateForm(instance=user, initial={
-                              'parent_category': user.parent})
+    form = CategoryUpdateForm(instance=user, initial={                              
+                              'parent_category': user.parent                              
+                              })
     return render(request, 'update_category.html', {'form': form, 'id': user.id})
 
 
