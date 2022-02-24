@@ -338,6 +338,7 @@ def product_details(request, id=None):
     ingrd = ProductIngredients.objects.filter(product=id).all()
     prodimage = Images.objects.filter(product_id=id).all()
     form1 = ProductIngredientFormsetView(queryset=ingrd)
+    print(form1)
     form = ProductFormView(instance=prod)
     # prod = Products.objects.filter(id=id).first()
     return render(request, 'View_product_copy.html', {'form': form, 'form2': form1, 'image': prod.primary_image, 'prodimg': prodimage, 'id': prod.id})
