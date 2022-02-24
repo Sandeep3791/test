@@ -7,6 +7,7 @@ from wayrem_admin.utils.constants import *
 from datetime import timedelta, date, datetime
 from django.db.models import Sum, F
 import googlemaps
+from wayrem_admin.forecasts.firebase_notify import FirebaseLibrary
 
 class OrderLiberary:
     tax_vat=SETTING_VAT
@@ -80,6 +81,8 @@ class OrderLiberary:
         if order_id:
             self.create_order_detail(order_id, order_recurrence,grocery_product_list)
             self.create_order_transactions(order_id,order_recurrence)
+            FirebaseLibrary().send_notify(order_id=order_id,order_status=1)
+
         return order_id
     
     def create_order(self,order_recurrence,grocery_product_list):
