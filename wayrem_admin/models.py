@@ -1,5 +1,8 @@
 # from typing_extensions import Required
 # from models_orders import Orders
+from email import message
+from operator import mod
+from pyexpat import model
 import random
 import os
 from django.core.validators import MinValueValidator
@@ -638,7 +641,7 @@ class Inventory(models.Model):
         orders = Orders.objects.filter(id=order_id).first()
         order_status = orders.status.id
         order_details = OrderDetails.objects.filter(order=order_id)
-        
+
         if (order_status == ORDER_STATUS_RECEIVED) or (order_status == ORDER_STATUS_CANCELLED):
 
             for order_detail in order_details:
@@ -748,3 +751,26 @@ class StaticPages(models.Model):
 
     class Meta:
         db_table = 'static_pages'
+
+
+class CustomerDevice(models.Model):
+    id = models.AutoField(primary_key=True, unique=True)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    device_id = models.CharField(max_length=255, null=True)
+    device_type = models.CharField(max_length=255, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'customer_device'
+
+
+class CustomerNotification(models.Model):
+    id = models.AutoField(primary_key=True, unique=True)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    order = models.ForeignKey('Orders', models.CASCADE, null=True)
+    title = models.CharField(max_length=255, null=True)
+    message = models.CharField(max_length=255, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'customer_notification'
