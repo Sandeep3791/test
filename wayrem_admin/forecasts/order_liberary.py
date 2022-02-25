@@ -31,7 +31,6 @@ class OrderLiberary:
     def proccess_order(self):
         get_date = self.get_filter_data()
         recurrence_grocery = self.recurrence_grocery(get_date)
-        
         if recurrence_grocery:
             self.create_recurrence_grocery_order(recurrence_grocery)
 
@@ -55,7 +54,7 @@ class OrderLiberary:
             is_order_created = self.create_order_recurrence(rg)
             if is_order_created:
                 self.update_recurrence_groccery(rg) # update nextdate
-            
+        return 1
 
     def update_recurrence_groccery(self, rg):
         no_of_days = rg.recurrenttype.value
@@ -82,7 +81,6 @@ class OrderLiberary:
             self.create_order_detail(order_id, order_recurrence,grocery_product_list)
             self.create_order_transactions(order_id,order_recurrence)
             FirebaseLibrary().send_notify(order_id=order_id,order_status=23)
-
         return order_id
     
     def create_order(self,order_recurrence,grocery_product_list):
@@ -92,6 +90,8 @@ class OrderLiberary:
             ref_number = self.get_ref_number()
             tax_vat = self.get_tax_vat()
             product_total=self.product_total(grocery_product_list)
+            
+            
             sub_total=round(product_total['sub_total'],2)
             item_margin=round(product_total['item_margin'],2)
             total=round(product_total['total'],2)
@@ -106,7 +106,7 @@ class OrderLiberary:
             #shipping = self.get_shipping_value(order_lat,order_long)
             shipping = self.get_shipping_value(total)
             promo = 0
-            item_discount = product_total['item_discount']
+            item_discount = round(product_total['item_discount'],2)
             discount = round(product_total['discount'],2)
             grand_total,tax = self.get_grand_total(total,tax_vat,shipping)
 
@@ -143,7 +143,6 @@ class OrderLiberary:
             order_dic = {'ref_number': ref_number, 'sub_total': sub_total, 'item_discount': item_discount, 'item_margin': item_margin, 'tax': tax, 'tax_vat': tax_vat, 'shipping': shipping, 'total': total, 'promo': promo, 'discount': discount, 'grand_total': grand_total, 'order_ship_name': order_ship_name, 'order_ship_address': order_ship_address, 'order_ship_building_name': order_ship_building_name, 'order_ship_landmark': order_ship_landmark, 'order_ship_region': order_ship_region, 'order_ship_latitude': order_ship_latitude, 'order_ship_longitude': order_ship_longitude, 'order_billing_name': order_billing_name,
                         'order_billing_address': order_billing_address, 'order_city': order_city, 'order_country': order_country, 'order_phone': order_phone, 'order_email': order_email, 'order_date': order_date, 'order_shipped': order_shipped, 'order_tracking_number': order_tracking_number, 'content': content, 'customer_id': customer_id, 'delivery_status': delivery_status, 'status': status,
                         'order_shipping_response': order_shipping_response, 'order_type': order_type}
-            
             
             order_cr = Orders(**order_dic)
             order_cr.save()
@@ -191,27 +190,26 @@ class OrderLiberary:
 
     def product_total(self,grocery_product_list):
         subtotal_unit_price=0
-        product_margin=0
-        total_discount=0
         product_total={}
         total_item_discount=0
+        total_item_margin=0
         for gpl in grocery_product_list:
-            quantity=gpl.product_qty
-            subtotal_unit_price += (float(gpl.product.price) * float(quantity))
-            
-            tot_marg_amount=self.calculate_price_unit_type(gpl.product.wayrem_margin,gpl.product.price,gpl.product.margin_unit)
-            product_margin += (tot_marg_amount * float(quantity))
+            quantity=float(gpl.product_qty)
+            product_subtotal=float(gpl.product.price)
+            product_margin_amount=self.calculate_price_unit_type(gpl.product.wayrem_margin,gpl.product.price,gpl.product.margin_unit)
             if gpl.product.discount is None:
-                discount_price=0
+                product_discount_price=0
+                total_price_margin=product_subtotal+product_margin_amount
             else:
-                total_item_discount +=1
-                discount_price=gpl.product.discount            
-            total_product_discount=self.calculate_price_unit_type(discount_price,gpl.product.price,gpl.product.dis_abs_percent)
-            total_discount +=float(total_product_discount) * float(quantity)
-
-        subtotal= subtotal_unit_price +  product_margin 
-        total= (subtotal_unit_price +  product_margin) - total_discount 
-        product_total = {'sub_total':subtotal,'item_margin':product_margin,'total':total,'item_discount':total_item_discount,'discount':total_discount}
+                product_discount_price=gpl.product.discount
+                total_price_margin=product_subtotal+product_margin_amount
+            total_product_discount_price=self.calculate_price_unit_type(product_discount_price,total_price_margin,gpl.product.dis_abs_percent)
+            
+            subtotal_unit_price += (product_subtotal+product_margin_amount-total_product_discount_price) * quantity 
+            total_item_discount +=(total_product_discount_price * quantity)
+            total_item_margin += (product_margin_amount * quantity)
+        
+        product_total = {'sub_total':subtotal_unit_price,'item_margin':total_item_margin,'total':subtotal_unit_price,'item_discount':total_item_discount,'discount':0}
         return product_total
 
     def get_grand_total(self,total,tax,shipping):
@@ -255,17 +253,26 @@ class OrderLiberary:
         product_name = product.name
         price = product.price
         item_margin = product.wayrem_margin
+        
         if  product.discount is None:
             discount_price=0
         else:
-            discount_price=product.discount            
-        total_product_discount=self.calculate_price_unit_type(discount_price,product.price,product.dis_abs_percent)
+            discount_price=product.discount
+
+        if item_margin is None:
+            product_margin=0
+            total_price=product.price+0
+        else:
+            product_margin=self.calculate_price_unit_type(item_margin,product.price,product.margin_unit)
+            total_price=float(product.price)+float(product_margin)
+        total_product_discount=self.calculate_price_unit_type(discount_price,total_price,product.dis_abs_percent)
         total_discount =float(total_product_discount) * float(pro_quantity)
         discount =round(total_discount,2)
         quantity = pro_quantity
         product_id = product.id
-        order_details_dic = {'sku': sku, 'product_name': product_name, 'price': price, 'item_margin': item_margin,
+        order_details_dic = {'sku': sku, 'product_name': product_name, 'price': price, 'item_margin': product_margin,
                              'discount': discount, 'quantity': quantity, 'order_id': order_id, 'product_id': product_id}
+        
         od = OrderDetails(**order_details_dic)
         od.save()
 
