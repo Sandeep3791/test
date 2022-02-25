@@ -53,7 +53,7 @@ endcomment %}
     </div>   
 </div>
 
-<script>
+{% comment %} <script>
 
     $(document).ready(function () {
         oTable = $('#filtertable').DataTable({
@@ -82,7 +82,7 @@ endcomment %}
            oTable.search($(this).val()).draw();
         })
     });
-</script>
+</script> {% endcomment %}
 
 {% endblock content %}
 

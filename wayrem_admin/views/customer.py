@@ -28,7 +28,7 @@ class CustomersList(ListView):
     success_url = reverse_lazy('wayrem_admin:categorieslist')
 
     def get_queryset(self):
-        qs = Customer.objects.filter()
+        qs = Customer.objects.filter().order_by("-id")
         filtered_list = CustomerFilter(self.request.GET, queryset=qs)
         return filtered_list.qs
 

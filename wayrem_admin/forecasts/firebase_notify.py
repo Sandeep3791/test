@@ -1,6 +1,6 @@
 import requests
 import json
-from wayrem_admin.models import CustomerDevice, CustomerNotification
+from wayrem_admin.models import CustomerDevice, CustomerNotification, Settings
 
 from wayrem_admin.models_orders import StatusMaster, Orders
 
@@ -34,6 +34,16 @@ class FirebaseLibrary:
 
         return response
 
+    def status_to_msg(self, status_id):
+        switcher = {
+            1: "notification_app_order_received",
+            2: "notification_app_order_preparing",
+            3: "notification_app_order_pickup",
+            4: "notification_app_order_delivering",
+            5: "notification_app_order_delivered",
+        }
+        return switcher.get(status_id, None)
+
     def send_notify(self, order_id, order_status):
         try:
             status = StatusMaster.objects.get(id=order_status)
@@ -42,6 +52,13 @@ class FirebaseLibrary:
             order_data = Orders.objects.get(id=order_id)
             customer_id = order_data.customer
             devices = CustomerDevice.objects.filter(customer=customer_id)
+            setting_key = self.status_to_msg(order_status)
+            setting_msg = Settings.objects.get(key=setting_key)
+            values = {
+                'ref_no': order_data.ref_number,
+                'link to order details': f"https://api-stg.wayrem.com/v1/get/order/details?order_id={order_id}"
+            }
+            message = setting_msg.value.format(**values)
             print(devices)
             if not devices:
                 return "No device found!!"
@@ -50,7 +67,7 @@ class FirebaseLibrary:
                     device_token = device.device_id
                     notf = {
                         "title": notify_title,
-                        "message": f"Your Order {order_data.ref_number} is {notify_msg}!",
+                        "message": message,
                         "device_token": device_token
                     }
                     self.push_notification_in_firebase(notf)
