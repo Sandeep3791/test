@@ -153,7 +153,7 @@
           data-bs-target="#submenu-pages-inventory" >
           <span>
             <span class="sidebar-icon"><i class="fas fa-box-open"></i></span>
-            <span class="sidebar-text">Inventory</span>
+            <span class="sidebar-text">Inventory Warehouse</span>
           </span>
           <span class="link-arrow"><span class="fas fa-chevron-right"></span></span>
         </span>
@@ -205,6 +205,15 @@
     <a href="{% url 'wayrem_admin:settings' %}" class="nav-link">
       <span class="sidebar-icon"><i class="fas fa-cogs"></i></span>
       <span class="sidebar-text">Settings</span>
+    </a>
+  </li>
+</ul>
+
+<ul class="nav m-1">
+  <li class="nav-item w-100 {% if 'dashboard' in segment %} active {% endif %}">
+    <a href="{% url 'wayrem_admin:staticpages' %}" class="nav-link">
+      <span class="sidebar-icon"><i class="far fa-newspaper"></i></span>
+      <span class="sidebar-text">Manage Pages</span>
     </a>
   </li>
 </ul>
