@@ -487,7 +487,7 @@ class Customer(models.Model):
 
 class CustomerAddresses(models.Model):
     customer = models.ForeignKey(
-        'Customer', models.DO_NOTHING, blank=True, null=True)
+        Customer, models.DO_NOTHING, blank=True, null=True)
     full_name = models.CharField(max_length=255, blank=True, null=True)
     contact = models.BigIntegerField(blank=True, null=True)
     house_no_building_name = models.CharField(

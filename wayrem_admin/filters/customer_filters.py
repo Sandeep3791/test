@@ -14,9 +14,9 @@ class CustomerFilter(django_filters.FilterSet):
     def customer_filter(self, queryset, name, value):
         return Customer.objects.filter(
             Q(first_name__icontains=value) | Q(
-                last_name__icontains=value) | Q(country__icontains=value) | Q(
-                city__icontains=value) | Q(
+                last_name__icontains=value) | Q(
                 email__icontains=value) | Q(
                 business_name__icontains=value) | Q(
+                verification_status__icontains=value) | Q(
                 registration_number__icontains=value)
-        )
+        ).order_by("id")
