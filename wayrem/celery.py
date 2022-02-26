@@ -34,6 +34,11 @@ app.conf.beat_schedule = {
         'schedule': crontab(hour='*/24'),
         # 'args': (9),
     },
+    'product_recursion_24hrs': {
+        'task': 'wayrem_admin.tasks.product_recursion',
+        'schedule': crontab(hour='*/24'),
+        # 'args': (9),
+    },
 }
 # @app.on_after_configure.connect
 # def setup_periodic_tasks(sender, **kwargs):
