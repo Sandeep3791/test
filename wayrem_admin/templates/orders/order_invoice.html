@@ -116,11 +116,9 @@
         <tbody>
             <tr>
                 <td style="width: 14.25%; padding: 1rem .5rem; text-align: left;" valign="top" align="left">S.no&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </td>
-                <td style="width: 14.25%; padding: 1rem .5rem; text-align: left;" valign="top" align="left">SKU</td>
                 <td style="width: 14.25%; padding: 1rem .5rem; text-align: center;" valign="top" align="left">Description</td>
                 <td style="width: 14.25%; padding: 1rem .5rem; text-align: center;" valign="top" align="center">Qty</td>
                 <td style="width: 14.25%; padding: 1rem .5rem; text-align: right;" valign="top" align="right">Unit Price&nbsp; </td>
-                <td style="width: 14.25%; padding: 1rem .5rem; text-align: right;" valign="top" align="right">Discount&nbsp; </td>
                 <td style="width: 14.25%; padding: 1rem .5rem; text-align: right;" valign="top" align="right">Total</td>
                 <!-- <td style="width: 5%;" valign="top">Vat Amt.</td>
                 <td style="width: 5%;" valign="top">Net Amt.</td> -->
@@ -133,11 +131,9 @@
         {% for order_detail in order_details %}
             <tr>
                 <td style="width: 14.25%; padding: 1rem .4rem; text-align: center;" valign="top" align="left">{{ forloop.counter }}</td>
-                <td style="width: 14.25%; padding: 1rem .4rem;" valign="top" align="left">{{order_detail.sku}}</td>
-                <td style="width: 14.25%; padding: 1rem .4rem;" valign="top" align="left">{{order_detail.product_name}}</td>
+                <td style="width: 14.25%; padding: 1rem .4rem;" valign="top" align="left">{{order_detail.product_name}}<br/>SKU: {{order_detail.sku}}</td>
                 <td style="width: 14.25%; padding: 1rem .4rem; text-align: center;" valign="top" align="center">{{order_detail.quantity}}</td>
-                <td style="width: 14.25%; padding: 1rem .4rem; text-align: center;" valign="top" align="right">{{currency}} {{ order_detail.price|add_product_items:order_detail.item_margin }}</td>
-                <td style="width: 14.25%; padding: 1rem .4rem; text-align: center;" valign="top" align="right">{{ order_detail.discount }}</td>
+                <td style="width: 14.25%; padding: 1rem .4rem; text-align: center;" valign="top" align="right">{{currency}} {{ order_detail.id|unit_product_total }}</td>
                 <td style="width: 14.25%; padding: 1rem .4rem; text-align: right;" valign="top" align="right">{{currency}} {{ order_detail.id|unit_product_total }}</td>
             </tr>
         {% endfor %}
@@ -161,19 +157,20 @@
                             </tr>
                         </tbody>
                     </table>
+                    
                     <table style="width: 100%;">
                         <tbody>
                             <tr>
-                                <td style="width: 65%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" align="left">Discount</td>
-                                <td style="width: 42%;font-size: .8rem; color:#4F4F4F; text-align: right;" align="right" valign="top">{{currency}} {{order.item_discount}}</td>
+                                <td style="width: 65%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" align="left">VAT ({{order.tax_vat}}%)</td>
+                                <td style="width: 42%;font-size: .8rem; color:#4F4F4F; text-align: right;" align="right" valign="top">{{currency}} {{order.tax}}</td>
                             </tr>
                         </tbody>
                     </table>
                     <table style="width: 100%;">
                         <tbody>
                             <tr>
-                                <td style="width: 65%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" align="left">VAT ({{order.tax_vat}}%)</td>
-                                <td style="width: 42%;font-size: .8rem; color:#4F4F4F; text-align: right;" align="right" valign="top">{{currency}} {{order.tax}}</td>
+                                <td style="width: 65%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" align="left">Shipping</td>
+                                <td style="width: 42%;font-size: .8rem; color:#4F4F4F; text-align: right;" align="right" valign="top">{{currency}} {{order.shipping}}</td>
                             </tr>
                         </tbody>
                     </table>

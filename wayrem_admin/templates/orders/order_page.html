@@ -104,10 +104,10 @@
                     <h6 class="text-muted">SKU: {{order_detail.sku}}</h6>
                 </div>
                 <div class="col-3 d-flex justify-content-end">
-                    <h6>{{currency}} {{order_detail.price|add_product_items:order_detail.item_margin}} x {{order_detail.quantity}}</h6>
+                    <h6>{{currency}}  {{order_detail.id|display_discount_price}} x {{order_detail.quantity}}</h6>
                 </div>
                 <div class="col-3 d-flex justify-content-end">
-                    <h6>{{currency}} {% widthratio order_detail.price|add_product_items:order_detail.item_margin 1 order_detail.quantity %}</h6>
+                    <h6>{{currency}} {{order_detail.id|display_discount_price_qty }}</h6>
                 </div>
             </div>
             {% endfor %}

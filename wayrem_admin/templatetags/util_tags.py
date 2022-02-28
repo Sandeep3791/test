@@ -9,6 +9,18 @@ from django.db.models import Sum
 register = template.Library()
 
 
+@register.filter(name='display_discount_price')
+def display_discount_price(order_detail_id):
+    order_details=OrderDetails.objects.filter(id=order_detail_id).first()
+    total_amount=float(order_details.price) + float(order_details.item_margin) -  float(order_details.discount)
+    return round(total_amount,2)
+
+@register.filter(name='display_discount_price_qty')
+def display_discount_price_qty(order_detail_id):
+    order_details=OrderDetails.objects.filter(id=order_detail_id).first()
+    total_amount=(float(order_details.price) + float(order_details.item_margin) - float(order_details.discount))* float(order_details.quantity)
+    return round(total_amount,2)
+
 @register.filter(name='total_items')
 def total_items(order_id):
     total_items_count = OrderDetails.objects.filter(
