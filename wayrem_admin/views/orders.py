@@ -271,8 +271,8 @@ class OrderInvoiceView(LoginRequiredMixin,View):
         response = HttpResponse(pdf_file, content_type='application/pdf')
         response['Content-Transfer-Encoding'] = 'binary'
         response['Content-Disposition'] = 'attachment;filename='+filename
-        #return response
-        return render(request, self.template_name,context)
+        return response
+        #return render(request, self.template_name,context)
 
 class OrderUpdateView(LoginRequiredMixin,DetailView):
     login_url  ='wayrem_admin:root'
