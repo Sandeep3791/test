@@ -63,8 +63,9 @@ class OrderReferenceExport(View):
             order_ids=order_id.id
 
         order_id=order_ids
-        filename=str(order_id)+".pdf"
-        context['order'] =Orders.objects.filter(id=order_id).first()
+        orders_details=Orders.objects.filter(id=order_id).first()
+        filename="order-"+str(orders_details.ref_number)+".pdf"
+        context['order']=orders_details
         context['tax_vat'] =Settings.objects.filter(key=self.KEY).first()
         context['wayrem_vat'] =Settings.objects.filter(key=self.WAYREM_VAT).first()
         context['order_details'] =OrderDetails.objects.filter(order=order_id)
@@ -260,8 +261,9 @@ class OrderInvoiceView(LoginRequiredMixin,View):
         context={}
         context['currency']=CURRENCY
         order_id=id
-        filename=str(order_id)+".pdf"
-        context['order'] =Orders.objects.filter(id=order_id).first()
+        orders_details=Orders.objects.filter(id=order_id).first()
+        filename="order-"+str(orders_details.ref_number)+".pdf"
+        context['order']=orders_details 
         context['tax_vat'] =Settings.objects.filter(key=self.KEY).first()
         context['wayrem_vat'] =Settings.objects.filter(key=self.WAYREM_VAT).first()
         context['order_details'] =OrderDetails.objects.filter(order=order_id)
