@@ -30,6 +30,7 @@ class OrderLiberary:
 
     def proccess_order(self):
         get_date = self.get_filter_data()
+      
         recurrence_grocery = self.recurrence_grocery(get_date)
         if recurrence_grocery:
             self.create_recurrence_grocery_order(recurrence_grocery)
