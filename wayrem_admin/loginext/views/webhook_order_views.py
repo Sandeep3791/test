@@ -25,10 +25,13 @@ import sys, traceback, gc
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
+
 @method_decorator(csrf_exempt, name='dispatch')
 class LogiNextWeebHookOrderAPI(ApiBase,WebHookLiberary,viewsets.ViewSet):
+    permission_classes = [AllowAny]
     webhook=WebHookLiberary()
-    permission_classes = (AllowAny,)
+    
+
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
         return super(LogiNextWeebHookOrderAPI, self).dispatch(request, *args, **kwargs)
@@ -157,7 +160,7 @@ class LogiNextWeebHookOrderAPI(ApiBase,WebHookLiberary,viewsets.ViewSet):
         result_build=Response(result,status=status)
         return result_build
 
-
+    @method_decorator(csrf_exempt)
     def pickeduporder(self,request):
         create=request.data
         create_order_dic=self.webhook.pickeduporder(create)
