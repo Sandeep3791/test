@@ -163,7 +163,6 @@ class LogiNextWeebHookOrderAPI(viewsets.ViewSet,ApiBase,WebHookLiberary):
         return result_build
 
     
-    @permission_classes((AllowAny, ))
     @method_decorator(csrf_exempt)
     def pickeduporder(self,request):
         create=request.data
