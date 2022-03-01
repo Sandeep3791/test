@@ -24,15 +24,12 @@ from rest_framework.permissions import AllowAny
 import sys, traceback, gc
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework.decorators import action
+
 
 @method_decorator(csrf_exempt, name='dispatch')
 class LogiNextWeebHookOrderAPI(viewsets.ViewSet,ApiBase,WebHookLiberary):
     permission_classes = (AllowAny,)
     webhook=WebHookLiberary()
-    permission_classes_by_action = {
-        'pickeduporder': permission_classes,
-    }
 
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
@@ -162,8 +159,7 @@ class LogiNextWeebHookOrderAPI(viewsets.ViewSet,ApiBase,WebHookLiberary):
         result_build=Response(result,status=status)
         return result_build
 
-    @action(detail=True, methods=['post'],permission_classes=[AllowAny])
-    @method_decorator(csrf_exempt)
+    @csrf_exempt
     def pickeduporder(self,request):
         create=request.data
         create_order_dic=self.webhook.pickeduporder(create)
