@@ -165,7 +165,7 @@ class LogiNextWeebHookOrderAPI(ApiBase,WebHookLiberary,viewsets.ViewSet):
         self.webhook.saveorderrequest(create_order_dic,order_reference_id)
         self.webhook.status_update_order(create_order_dic,ORDER_DELIVERY_PICKUP)
         status=HTTP_200_OK
-        result={'message':"picked up order"}
+        result={'message':"picked up order."}
         result_build=Response(result,status=status)
         return result_build
     

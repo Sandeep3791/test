@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'corsheaders',
     'rest_framework',
     'ckeditor',
     'wayrem_admin',
@@ -37,6 +38,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -45,6 +47,25 @@ MIDDLEWARE = [
     'wayrem_admin.middlewares.notification_middleware.NotificationMiddleWare',
 
 ]
+CORS_ALLOWED_ORIGINS = [
+"https://52.77.99.245",
+"https://13.228.17.195",
+"https://18.136.241.16",
+"https://3.1.127.224",
+"https://52.76.48.59"
+]
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+]
+
 ROOT_URLCONF = 'wayrem.urls'
 TEMPLATES = [
     {
