@@ -28,6 +28,10 @@ from django.views.decorators.csrf import csrf_exempt
 @method_decorator(csrf_exempt, name='dispatch')
 class LogiNextWeebHookOrderAPI(ApiBase,WebHookLiberary,viewsets.ViewSet):
     webhook=WebHookLiberary()
+    permission_classes = (AllowAny,)
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super(LogiNextWeebHookOrderAPI, self).dispatch(request, *args, **kwargs)
 
     def createorderrequest(self,request):
         create=request.data
@@ -152,6 +156,7 @@ class LogiNextWeebHookOrderAPI(ApiBase,WebHookLiberary,viewsets.ViewSet):
         result={'message':"partially delivered order"}
         result_build=Response(result,status=status)
         return result_build
+
 
     def pickeduporder(self,request):
         create=request.data
