@@ -24,7 +24,10 @@ class FirebaseLibrary:
                                  'body': data.get("message")
                                  },
                 'to': data.get("device_token"),
-                'priority': 'high'
+                'priority': 'high',
+                "data": {
+                    "order_id": data.get("order_id"),
+                }
             }
             response = requests.post(
                 self.FIREBASE_URL, headers=headers, data=json.dumps(body))
@@ -55,8 +58,7 @@ class FirebaseLibrary:
             setting_key = self.status_to_msg(order_status)
             setting_msg = Settings.objects.get(key=setting_key)
             values = {
-                'ref_no': order_data.ref_number,
-                'link to order details': f"https://api-stg.wayrem.com/v1/get/order/details?order_id={order_id}"
+                'ref_no': order_data.ref_number
             }
             message = setting_msg.value.format(**values)
             print(devices)
@@ -68,7 +70,8 @@ class FirebaseLibrary:
                     notf = {
                         "title": notify_title,
                         "message": message,
-                        "device_token": device_token
+                        "device_token": device_token,
+                        "order_id": order_id
                     }
                     self.push_notification_in_firebase(notf)
                 notification_store = CustomerNotification(

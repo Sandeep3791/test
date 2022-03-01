@@ -1,3 +1,4 @@
+import re
 from django.db import connection
 from django.http import response
 from httplib2 import Response
@@ -66,18 +67,34 @@ def details_gs1(request):
     try:
         result = biip.parse(user_code)
         request.session['gs1'] = user_code
-        request.session['SKU'] = result.gs1_message.element_strings[0].value
-        request.session['price'] = str(
-            result.gs1_message.element_strings[5].decimal)
-        request.session['date_of_exp'] = str(
-            result.gs1_message.element_strings[1].date)
-        request.session['weight'] = str(
-            result.gs1_message.element_strings[4].decimal)
-        request.session['weight_unit'] = "kg"
+        request.session['SKU'] = str(result.value)
+        for item in result.gs1_message.element_strings:
+            ai = item.ai.ai
+            try:
+                obj = GS1ProductFields.objects.get(ai_code=ai)
+                if obj.product_field == "weight":
+                    request.session['weight'] = str(item.decimal)
+                    request.session['weight_unit'] = "kg"
+                if obj.product_field == "price":
+                    request.session['price'] = str(item.decimal)
+                if obj.product_field == "date_of_exp":
+                    request.session['date_of_exp'] = str(item.date)
+                if obj.product_field == "date_of_mfg":
+                    request.session['date_of_mfg'] = str(item.date)
+            except:
+                pass
+        # request.session['SKU'] = result.gs1_message.element_strings[0].value
+        # request.session['price'] = str(
+        #     result.gs1_message.element_strings[5].decimal)
+        # request.session['date_of_exp'] = str(
+        #     result.gs1_message.element_strings[1].date)
+        # request.session['weight'] = str(
+        #     result.gs1_message.element_strings[4].decimal)
+        # request.session['weight_unit'] = "kg"
     except:
         pass
     data = [request.session.get('SKU'), request.session.get(
-        'price'), request.session.get('date_of_exp'), request.session.get('weight'), request.session.get('weight_unit')]
+        'price'), request.session.get('date_of_exp'), request.session.get('weight'), request.session.get('weight_unit'), request.session.get('date_of_mfg')]
     return render(request, 'barcode_details.html', {'data': data})
 
 

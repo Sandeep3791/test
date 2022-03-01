@@ -16,6 +16,7 @@ import uuid
 from multiselectfield import MultiSelectField
 from django.template.defaultfilters import default, slugify
 from django.db.models import Sum
+from sqlalchemy import null
 from wayrem_admin.utils.constants import *
 #from models_orders import Orders,OrderDetails
 
@@ -776,3 +777,11 @@ class CustomerNotification(models.Model):
 
     class Meta:
         db_table = 'customer_notification'
+
+
+class GS1ProductFields(models.Model):
+    ai_code = models.CharField(max_length=255, null=True)
+    product_field = models.CharField(max_length=255, null=True)
+
+    class Meta:
+        db_table = 'gs1_product_fields'
