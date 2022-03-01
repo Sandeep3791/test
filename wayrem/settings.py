@@ -27,7 +27,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'corsheaders',
     'rest_framework',
     'ckeditor',
     'wayrem_admin',
@@ -38,7 +37,6 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -47,6 +45,7 @@ MIDDLEWARE = [
     'wayrem_admin.middlewares.notification_middleware.NotificationMiddleWare',
 
 ]
+
 CORS_ALLOWED_ORIGINS = [
 "https://52.77.99.245",
 "https://13.228.17.195",
