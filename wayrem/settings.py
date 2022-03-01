@@ -46,24 +46,6 @@ MIDDLEWARE = [
 
 ]
 
-CORS_ALLOWED_ORIGINS = [
-"https://52.77.99.245",
-"https://13.228.17.195",
-"https://18.136.241.16",
-"https://3.1.127.224",
-"https://52.76.48.59"
-]
-CORS_ALLOW_HEADERS = [
-    "accept",
-    "accept-encoding",
-    "authorization",
-    "content-type",
-    "dnt",
-    "origin",
-    "user-agent",
-    "x-csrftoken",
-    "x-requested-with",
-]
 
 ROOT_URLCONF = 'wayrem.urls'
 TEMPLATES = [
@@ -241,8 +223,7 @@ REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': (
         'rest_framework.renderers.JSONRenderer',
     ),
-    'DEFAULT_PERMISSION_CLASSES': (
+    'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.AllowAny',
-
-    ),
+    ]
 }
