@@ -24,7 +24,7 @@ from rest_framework.permissions import AllowAny
 import sys, traceback, gc
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework.views import APIView
+
 
 @method_decorator(csrf_exempt, name='dispatch')
 class LogiNextWeebHookOrderAPI(viewsets.ViewSet,ApiBase,WebHookLiberary):
@@ -162,7 +162,7 @@ class LogiNextWeebHookOrderAPI(viewsets.ViewSet,ApiBase,WebHookLiberary):
         result_build=Response(result,status=status)
         return result_build
 
-    @api_view('POST')
+    
     @permission_classes((AllowAny, ))
     @method_decorator(csrf_exempt)
     def pickeduporder(self,request):
