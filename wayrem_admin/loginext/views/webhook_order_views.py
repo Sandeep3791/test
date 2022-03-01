@@ -28,10 +28,7 @@ from django.views.decorators.csrf import csrf_exempt
 @method_decorator(csrf_exempt, name='dispatch')
 class LogiNextWeebHookOrderAPI(ApiBase,WebHookLiberary,viewsets.ViewSet):
     webhook=WebHookLiberary()
-    permission_classes = (AllowAny,)
-    
-    permission_classes_by_action = {'createorder': [AllowAny],}
-    @csrf_exempt
+
     def createorderrequest(self,request):
         create=request.data
         create_order_dic=self.webhook.createorderrequest(create)    
@@ -42,8 +39,6 @@ class LogiNextWeebHookOrderAPI(ApiBase,WebHookLiberary,viewsets.ViewSet):
         result_build=Response(result,status=status)
         return result_build
 
-      
-    @csrf_exempt
     def createorder(self,request):
         try:
             create=request.data
@@ -62,7 +57,6 @@ class LogiNextWeebHookOrderAPI(ApiBase,WebHookLiberary,viewsets.ViewSet):
             print(trck)
             raise
 
-    @csrf_exempt
     def updateorder(self,request):
         create=request.data
         create_order_dic=self.webhook.updateorder(create)
@@ -74,7 +68,6 @@ class LogiNextWeebHookOrderAPI(ApiBase,WebHookLiberary,viewsets.ViewSet):
         result_build=Response(result,status=status)
         return result_build
 
-    @csrf_exempt
     def orderstatusupdate(self,request):
         create=request.data
         create_order_dic=self.webhook.orderstatusupdate(create)
@@ -85,7 +78,6 @@ class LogiNextWeebHookOrderAPI(ApiBase,WebHookLiberary,viewsets.ViewSet):
         result_build=Response(result,status=status)
         return result_build
 
-    @csrf_exempt
     def acceptedorder(self,request):
         create=request.data
         create_order_dic=self.webhook.acceptedorder(create)
