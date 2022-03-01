@@ -18,7 +18,7 @@ def display_discount_price(order_detail_id):
 @register.filter(name='display_discount_price_qty')
 def display_discount_price_qty(order_detail_id):
     order_details=OrderDetails.objects.filter(id=order_detail_id).first()
-    total_amount=(float(order_details.price) + float(order_details.item_margin) - float(order_details.discount))* float(order_details.quantity)
+    total_amount=(float(order_details.price) + float(order_details.item_margin) - float(order_details.discount)) * float(order_details.quantity) 
     return round(total_amount,2)
 
 @register.filter(name='total_items')

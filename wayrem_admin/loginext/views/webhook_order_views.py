@@ -22,9 +22,10 @@ from wayrem_admin.loginext.webhook_liberary import WebHookLiberary
 from wayrem_admin.utils.constants import *
 from rest_framework.permissions import AllowAny
 import sys, traceback, gc
+from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
-
+@method_decorator(csrf_exempt, name='dispatch')
 class LogiNextWeebHookOrderAPI(ApiBase,WebHookLiberary,viewsets.ViewSet):
     webhook=WebHookLiberary()
     permission_classes = (AllowAny,)

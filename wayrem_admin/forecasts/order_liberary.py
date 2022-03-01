@@ -252,6 +252,7 @@ class OrderLiberary:
         sku = product.SKU
         product_name = product.name
         price = product.price
+
         item_margin = product.wayrem_margin
         
         if  product.discount is None:
@@ -261,12 +262,13 @@ class OrderLiberary:
 
         if item_margin is None:
             product_margin=0
-            total_price=product.price+0
+            total_price=product.price + 0
         else:
             product_margin=self.calculate_price_unit_type(item_margin,product.price,product.margin_unit)
             total_price=float(product.price)+float(product_margin)
         total_product_discount=self.calculate_price_unit_type(discount_price,total_price,product.dis_abs_percent)
-        total_discount =float(total_product_discount) * float(pro_quantity)
+        #total_discount =float(total_product_discount) * float(pro_quantity)
+        total_discount =float(total_product_discount)
         discount =round(total_discount,2)
         quantity = pro_quantity
         product_id = product.id
