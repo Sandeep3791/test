@@ -54,7 +54,8 @@ class FirebaseLibrary:
             notify_msg = status.description
             order_data = Orders.objects.get(id=order_id)
             customer_id = order_data.customer
-            devices = CustomerDevice.objects.filter(customer=customer_id)
+            devices = CustomerDevice.objects.filter(
+                customer=customer_id, is_active=True)
             setting_key = self.status_to_msg(order_status)
             setting_msg = Settings.objects.get(key=setting_key)
             values = {
