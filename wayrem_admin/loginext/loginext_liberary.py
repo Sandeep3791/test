@@ -26,9 +26,8 @@ class LoginextOrderCreate(Order,CustomerLib):
         
         order_details=self.get_order(order_id)
         if order_details.order_tracking_number is None or order_details.order_tracking_number == "": 
-            account_code=self.process_customer(order_details)
-            response=self.create_order(order_details,account_code) # hit the loginext api
-            print(response)
+            account_code=self.process_customer(order_details) # create customer detail in loginext
+            response=self.create_order(order_details,account_code) # hit the loginext api for shipping
             self.storing_response(order_id,response)
             order_tracking_number=self.get_reference(response)
             if order_tracking_number:
