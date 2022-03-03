@@ -9,7 +9,7 @@ class FirebaseLibrary:
 
     FIREBASE_URL = "https://fcm.googleapis.com/fcm/send"
 
-    FIREBASE_TEST_SERVER_TOKEN = "AAAALwoMdv8:APA91bE5_J7NSGt7fTRNW7NGh1udC_B0se-By0Z3onj1nEM_bzWf-lyUUCrc9yBb4U8H6qWHie9nM1yRlqbit33FbaKds6FWGhtC6OIsqc0g0Yk7qTNSPKrLYCAw2HiINoW4KuGi30uG"
+    FIREBASE_TEST_SERVER_TOKEN = "AAAAZrpCwE0:APA91bGdD6gOGnDqIWPd-n3kt9C3zZARqWwCQsDcP_oBYT9Y_u5t4hrOETSzpH6bR6c2aUrAvg1OH908Gv-z5FVjGeYykjyLy4QtOvH7NBTIuFFdbjWCSyQzhK5cQPe_sbc22lCf8zDW"
 
     serverToken = FIREBASE_TEST_SERVER_TOKEN
 
@@ -27,6 +27,7 @@ class FirebaseLibrary:
                 'priority': 'high',
                 "data": {
                     "order_id": data.get("order_id"),
+                    "recurrent": data.get("grocery_id")
                 }
             }
             response = requests.post(
@@ -44,10 +45,11 @@ class FirebaseLibrary:
             3: "notification_app_order_pickup",
             4: "notification_app_order_delivering",
             5: "notification_app_order_delivered",
+            23: "notification_app_recurrent_order_pending"
         }
         return switcher.get(status_id, None)
 
-    def send_notify(self, order_id, order_status):
+    def send_notify(self, order_id, order_status, grocery_id=None):
         try:
             status = StatusMaster.objects.get(id=order_status)
             notify_title = status.name
@@ -72,7 +74,8 @@ class FirebaseLibrary:
                         "title": notify_title,
                         "message": message,
                         "device_token": device_token,
-                        "order_id": order_id
+                        "order_id": order_id,
+                        "grocery_id": grocery_id
                     }
                     self.push_notification_in_firebase(notf)
                 notification_store = CustomerNotification(
