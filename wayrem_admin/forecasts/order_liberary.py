@@ -30,7 +30,6 @@ class OrderLiberary:
 
     def proccess_order(self):
         get_date = self.get_filter_data()
-      
         recurrence_grocery = self.recurrence_grocery(get_date)
         if recurrence_grocery:
             self.create_recurrence_grocery_order(recurrence_grocery)
@@ -75,6 +74,7 @@ class OrderLiberary:
         return 1
 
     def create_order_recurrence(self, order_recurrence):
+        cur_grocery_id = order_recurrence.grocery_id
         grocery_product_list = self.get_grocery_product(order_recurrence)
         order_id=self.create_order(order_recurrence,grocery_product_list)
 
@@ -82,7 +82,7 @@ class OrderLiberary:
             self.create_order_detail(order_id, order_recurrence,grocery_product_list)
             self.create_order_transactions(order_id,order_recurrence)
             Inventory().order_inventory_process(order_id)
-            FirebaseLibrary().send_notify(order_id=order_id,order_status=23)
+            FirebaseLibrary().send_notify(order_id=order_id,order_status=23, grocery_id=cur_grocery_id)
 
         return order_id
     

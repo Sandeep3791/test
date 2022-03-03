@@ -142,16 +142,20 @@
 
     $('#orderpopup').on('click', ".order_submit_success", function(){
         order_status_id=$(this).data("id");
-    
+        order_status_details=$("#orderpopup #id_status :selected").text()
+        order_status_val=$("#orderpopup #id_status :selected").val()
+        if (order_status_val == 16){
+            return false;
+        }
                                     $.confirm({
-                                        title: 'Are you sure you want Approve this order !!',
+                                        title: 'Are you sure you want '+order_status_details+"?",
                                         content: '',
                                         buttons: {
                                             confirm: function(){
                                                 updateorderstatus(order_status_id)
                                             },
                                             cancel: function(){
-                                                $.alert('You have not taken the action');
+                                               
                                             },
                                            
                                         }
