@@ -2,7 +2,7 @@ from wayrem_admin.forms import warehouse
 from wayrem_admin.loginext.liberary.api_base import ApiBase
 from wayrem_admin.models_orders import Orders, ShippingLoginextNotification, OrderDetails, OrderTransactions,StatusMaster,ShippingRates,create_new_ref_number
 from wayrem_admin.models_recurrence import RecurrentType, RecurrenceGrocery, GroceryMaster, GroceryProducts
-from wayrem_admin.models import Settings,CustomerAddresses, Warehouse
+from wayrem_admin.models import Settings,CustomerAddresses, Warehouse,Inventory
 from wayrem_admin.utils.constants import *
 from datetime import timedelta, date, datetime
 from django.db.models import Sum, F
@@ -81,7 +81,9 @@ class OrderLiberary:
         if order_id:
             self.create_order_detail(order_id, order_recurrence,grocery_product_list)
             self.create_order_transactions(order_id,order_recurrence)
+            Inventory().order_inventory_process(order_id)
             FirebaseLibrary().send_notify(order_id=order_id,order_status=23)
+
         return order_id
     
     def create_order(self,order_recurrence,grocery_product_list):
