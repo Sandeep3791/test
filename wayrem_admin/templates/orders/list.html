@@ -7,6 +7,8 @@
 {% block head %}
 <link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
 {% endblock head %}
 {% block content %}
 <div class="dashboard_content_inner">
@@ -138,11 +140,31 @@
 
     })   
 
-$("#orderpopup").on("click",".order_submit_success",function(e){
+    $('#orderpopup').on('click', ".order_submit_success", function(){
+        order_status_id=$(this).data("id");
+    
+                                    $.confirm({
+                                        title: 'Are you sure you want Approve this order !!',
+                                        content: '',
+                                        buttons: {
+                                            confirm: function(){
+                                                updateorderstatus(order_status_id)
+                                            },
+                                            cancel: function(){
+                                                $.alert('You have not taken the action');
+                                            },
+                                           
+                                        }
+                                    });
+                                });
+
+
+function updateorderstatus(order_status_id){
+    
          url = $("#orderpopup #oderform").attr("action")
 		 type_form=$("#orderpopup #oderform").attr("method")
 	   	 data_ser=$("#orderpopup #oderform").serialize()
-         order_status_id=$(this).data("id");
+         //order_status_id=$(this).data("id");
          $.ajax({
 	            type: type_form,
 	            url: url,
@@ -191,7 +213,6 @@ $("#orderpopup").on("click",".order_submit_success",function(e){
                     $(".alert-container").fadeOut(3000);
                 }
          })
-
-    })
+    }
 </script>
 {% endblock javascripts %}

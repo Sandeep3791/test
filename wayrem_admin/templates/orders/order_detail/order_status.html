@@ -21,7 +21,9 @@
     <form class="oderform" method="post" action="{%url 'wayrem_admin:updateorderstatus' order.id %}">
     {% csrf_token %}
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2 class="h5 m-0">Order status</h2><button class="btn btn-primary order_submit_success" type="button" data-id={{order.id}}>Save</button></div>
+        <h2 class="h5 m-0">Order status</h2>
+        {% if order.status.id != 18 %}<button class="btn btn-primary order_submit_success" type="button" data-id={{order.id}}>Save</button>{% endif %}
+    </div>
     <div>
         <div class="">
             <!-- <label class="my-1 mr-2" for="country">Order status</label>  -->

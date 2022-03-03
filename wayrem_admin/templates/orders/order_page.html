@@ -9,6 +9,8 @@
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
 <script src="{% static 'assets/js/datatable.js' %}"></script>
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
 <style>
     .timeline {
         position: relative;
@@ -151,7 +153,45 @@
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
 <script>
-$(".orderstatus").on("click",".order_submit_success",function(e){
+
+$(".orderpayment").on("click",".modelpaymentstatus",function(e){
+    e.preventDefault();
+    pst=$(this).data("id");
+    $("#id_payment_status").val(pst);
+    $('#modal-default').modal('show');
+})
+
+
+function orderformsubmit(){
+    url = $(".orderpayment .oderform").attr("action")
+        type_form=$(".orderpayment .oderform").attr("method")
+        data_ser=$(".orderpayment .oderform").serialize()
+    $.ajax({
+            type: type_form,
+            url: url,
+            data: data_ser,
+            cache: false,
+            success: function (data) {
+                    location.reload();
+            }
+        })
+}
+
+$(".orderpaymentupdate").click(function() {
+    orderformsubmit();
+});
+
+
+$(".orderpayment").on("click",".order_submit_success",function(e){
+         url = $(".orderpayment .oderform").attr("action")
+		 type_form=$(".orderpayment .oderform").attr("method")
+	   	 data_ser=$(".orderpayment .oderform").serialize()
+         order_status_id=$(this).data("id");
+         
+    })
+
+    function orderstatus(){
+    
         url = $(".orderstatus .oderform").attr("action")
 		 type_form=$(".orderstatus .oderform").attr("method")
 	   	 data_ser=$(".orderstatus .oderform").serialize()
@@ -198,7 +238,7 @@ $(".orderstatus").on("click",".order_submit_success",function(e){
                     }
 
                     
-                    $(".alert-container").fadeOut(3000);
+                 //   $(".alert-container").fadeOut(3000);
                     setTimeout(function () {
                         location.reload(true);
                     }, 2000);
@@ -208,44 +248,24 @@ $(".orderstatus").on("click",".order_submit_success",function(e){
                 }
          })
 
-    })
+    }
 
-$(".orderpayment").on("click",".modelpaymentstatus",function(e){
-    e.preventDefault();
-    pst=$(this).data("id");
-    $("#id_payment_status").val(pst);
-    $('#modal-default').modal('show');
-})
-
-
-function orderformsubmit(){
-    url = $(".orderpayment .oderform").attr("action")
-        type_form=$(".orderpayment .oderform").attr("method")
-        data_ser=$(".orderpayment .oderform").serialize()
-    $.ajax({
-            type: type_form,
-            url: url,
-            data: data_ser,
-            cache: false,
-            success: function (data) {
-                    location.reload();
-            }
-        })
-}
-
-$(".orderpaymentupdate").click(function() {
-    orderformsubmit();
-});
-
-
-$(".orderpayment").on("click",".order_submit_success",function(e){
-         url = $(".orderpayment .oderform").attr("action")
-		 type_form=$(".orderpayment .oderform").attr("method")
-	   	 data_ser=$(".orderpayment .oderform").serialize()
-         order_status_id=$(this).data("id");
-         
-    })
-
+    $('.orderstatus .order_submit_success').on('click', function(){
+                                    $.confirm({
+                                        title: 'Are you sure you want Approve this order !!',
+                                        content: '',
+                                        buttons: {
+                                            confirm: function(){
+                                                orderstatus()
+                                            },
+                                            cancel: function(){
+                                                $.alert('You have not taken the action');
+                                            },
+                                           
+                                        }
+                                    });
+                                });
+                            
 
 </script>
 {% endblock javascripts %}

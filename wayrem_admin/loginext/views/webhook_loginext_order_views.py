@@ -7,6 +7,7 @@ import json
 from wayrem_admin.loginext.webhook_liberary import WebHookLiberary
 from wayrem_admin.utils.constants import *
 
+
 @method_decorator(csrf_exempt, name='dispatch')
 class LogiNextCreateRequestAPI(View):
     webhook=WebHookLiberary()
@@ -25,12 +26,14 @@ class LogiNextCreateOrderAPI(View):
     webhook=WebHookLiberary()
     @csrf_exempt
     def post(self, request, **kwargs):
+        # wayrem create
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
         create=body
         create_order_dic=self.webhook.createorder(create)
         order_reference_id=self.webhook.get_order(create_order_dic)
         self.webhook.saveorderrequest(create_order_dic,order_reference_id)
+        self.webhook.sendnotification(order_reference_id,ORDER_STATUS_PREPARING)
         return HttpResponse({'message':'Success'})
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -90,6 +93,7 @@ class LogiNextCancelOrderAPI(View):
     webhook=WebHookLiberary()
     @csrf_exempt
     def post(self, request, **kwargs):
+        # wayrem cancel
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
         create=body
@@ -110,6 +114,7 @@ class LogiNextCheckinOrderAPI(View):
         create_order_dic=self.webhook.checkinorder(create)
         order_reference_id=self.webhook.get_order(create_order_dic)
         self.webhook.saveorderrequest(create_order_dic,order_reference_id)
+        self.webhook.sendnotification(order_reference_id,ORDER_DELIVERY_DELIVERED)
         return HttpResponse({'message':'Success'})
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -117,6 +122,7 @@ class LogiNextDeliveredOrderAPI(View):
     webhook=WebHookLiberary()
     @csrf_exempt
     def post(self, request, **kwargs):
+        #Wayrem delivered
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
         create=body
@@ -131,6 +137,7 @@ class LogiNextAttemptedDeliveryOrderAPI(View):
     webhook=WebHookLiberary()
     @csrf_exempt
     def post(self, request, **kwargs):
+        #Wayrem Attempted Delivery
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
         create=body
@@ -146,6 +153,7 @@ class LogiNextPartiallyDeliveredOrderAPI(View):
     webhook=WebHookLiberary()
     @csrf_exempt
     def post(self, request, **kwargs):
+        #Wayrem Partially Delivered
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
         create=body
@@ -160,6 +168,7 @@ class LogiNextPickedupOrderAPI(View):
     webhook=WebHookLiberary()
     @csrf_exempt
     def post(self, request, **kwargs):
+        #Wayrem pickedup
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
         create=body
@@ -167,6 +176,9 @@ class LogiNextPickedupOrderAPI(View):
         order_reference_id=self.webhook.get_order(create_order_dic)
         self.webhook.saveorderrequest(create_order_dic,order_reference_id)
         self.webhook.status_update_order(create_order_dic,ORDER_DELIVERY_PICKUP)
+        self.webhook.status_update_order(create_order_dic,ORDER_DELIVERING)
+        self.webhook.sendnotification(order_reference_id,ORDER_DELIVERY_PICKUP)
+        self.webhook.sendnotification(order_reference_id,ORDER_DELIVERING)
         return HttpResponse({'message':'Success'})
 
 @method_decorator(csrf_exempt, name='dispatch')
@@ -174,6 +186,7 @@ class LogiNextOrderAttemptedPickupOrderAPI(View):
     webhook=WebHookLiberary()
     @csrf_exempt
     def post(self, request, **kwargs):
+        #Wayrem Attempted Pickup
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
         create=body
