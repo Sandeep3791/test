@@ -66,7 +66,7 @@ class UsersList(View):
     @method_decorator(login_required(login_url='wayrem_admin:root'))
     @method_decorator(role_required('User View'))
     def get(self, request, format=None):
-        userlist = User.objects.all()
+        userlist = User.objects.filter().exclude(is_superuser=True)
         paginator = Paginator(userlist, RECORDS_PER_PAGE)
         page = request.GET.get('page')
         try:

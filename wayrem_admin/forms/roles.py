@@ -16,6 +16,12 @@ class RoleForm(forms.ModelForm):
         model = Roles
         fields = ('role', 'status', 'content', 'permission')
 
+        error_messages = {
+            'role': {
+                'unique': "This role already exists.",
+            },
+        }
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for visible in self.visible_fields():
