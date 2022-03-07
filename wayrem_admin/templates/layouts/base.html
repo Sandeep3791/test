@@ -94,88 +94,103 @@
     $(".simplebar-mask .sidebar-inner ul.nav a").each(function(){
         // var path = window.location.pathname;
         $(".simplebar-mask .sidebar-inner ul.nav a[href*='"+path+"']").addClass("active");
-        if(path==$(this).attr('href')){
-            $(this).parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
-            $(this).parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
+        if(path== $(this).attr('href')){
+          $(this).parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div").parent('li.nav-item').addClass("active");
+          $(this).parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
+          $(this).parent( "li.nav-item" ).parent( "ul.nav" ).parent( ".active_div" ).parent('li.nav-item').addClass("active");
         }
     });
 
-    if(path=='/products/product-view-one/') {
+    setTimeout(function() {   //calls click event after a certain time
+      $(".simplebar-mask .sidebar-inner ul.nav a").each(function(){
+            $(this).parent( "li.nav-item" ).parent( "ul.nav" ).parent( "div.active_div.show" ).parent('li.nav-item').addClass("active");
+      });
+    }, 1);
+
+    if((path.indexOf('products/product/') != -1) || (path.indexOf('products/product-view') != -1)){
       $(".simplebar-mask .sidebar-inner ul.nav a[href*='/products/product/']").addClass("active");
       $(".simplebar-mask .sidebar-inner ul.nav a[href*='/products/product/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
       $(".simplebar-mask .sidebar-inner ul.nav a[href*='/products/product/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
     }
       
-    if(path.indexOf('products/update-product/') != -1){
+    if((path.indexOf('products/update-product/') != -1) || (path.indexOf('/products/product-details/') != -1)){
       $(".simplebar-mask .sidebar-inner ul.nav a[href*='/products/product-list/']").addClass("active");
       $(".simplebar-mask .sidebar-inner ul.nav a[href*='/products/product-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
       $(".simplebar-mask .sidebar-inner ul.nav a[href*='/products/product-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
     }
 
-    if((path.indexOf('/ingredient/update-ingredients/') != -1) || (path.indexOf('/create-ingredients') != -1)){
-      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/ingredient/ingredients-list/']").addClass("active");
-      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/ingredient/ingredients-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
-      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/ingredient/ingredients-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
+    if((path.indexOf('/ingredient/') != -1)){
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/ingredient/']").addClass("active");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/ingredient/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/ingredient/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
     }
     
-    if(path.indexOf('/category/update-categories') != -1){
+    if(path.indexOf('/category/') != -1){
       $(".simplebar-mask .sidebar-inner ul.nav a[href*='/category/categories-list/']").addClass("active");
       $(".simplebar-mask .sidebar-inner ul.nav a[href*='/category/categories-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
       $(".simplebar-mask .sidebar-inner ul.nav a[href*='/category/categories-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
     }
-    if(path.indexOf('/category/update-categories') != -1){
-      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/category/categories-list/']").addClass("active");
-      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/category/categories-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
-      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/category/categories-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
-    }
-    if(path.indexOf('/category/category-details/') != -1){
-      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/category/categories-list/']").addClass("active");
-      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/category/categories-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
-      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/category/categories-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
-    }
+   
     
-    if(path.indexOf('/supplier/supplier-details/') != -1){
+    if(path.indexOf('/supplier/') != -1){
       $(".simplebar-mask .sidebar-inner ul.nav a[href*='/supplier/supplier-list/']").addClass("active");
       $(".simplebar-mask .sidebar-inner ul.nav a[href*='/supplier/supplier-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
       $(".simplebar-mask .sidebar-inner ul.nav a[href*='/supplier/supplier-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
     }
-    if(path.indexOf('/supplier/update-supplier/') != -1){
-      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/supplier/supplier-list/']").addClass("active");
-      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/supplier/supplier-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
-      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/supplier/supplier-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
-    }
-    if(path.indexOf('/roles/create/') != -1){
-      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/roles/list/']").addClass("active");
-      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/roles/list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
-      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/roles/list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
-    }
-    if(path.indexOf('/roles/update/') != -1){
-      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/roles/list/']").addClass("active");
-      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/roles/list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
-      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/roles/list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
-    }
     
-    if(path.indexOf('/account/users-registration/') != -1){
+    if(path.indexOf('/roles/') != -1){
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/roles/list/']").addClass("active");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/roles/list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/roles/list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
+    }
+  
+    
+    if(path.indexOf('/account/') != -1){
       $(".simplebar-mask .sidebar-inner ul.nav a[href*='/account/users-list/']").addClass("active");
       $(".simplebar-mask .sidebar-inner ul.nav a[href*='/account/users-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
       $(".simplebar-mask .sidebar-inner ul.nav a[href*='/account/users-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
-    }
-    if(path.indexOf('/account/update-user/') != -1){
-      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/account/users-list/']").addClass("active");
-      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/account/users-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
-      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/account/users-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
-    }
-    if(path.indexOf('/account/user-details/') != -1){
-      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/account/users-list/']").addClass("active");
-      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/account/users-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
-      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/account/users-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
-    }
-    if(path.indexOf('/purchase_order/view-po/') != -1){
-      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/purchase_order/po-list/']").addClass("active");
-      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/purchase_order/po-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
-      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/purchase_order/po-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
     }
 
+    if(path.indexOf('/purchase_order/') != -1){
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/purchase_order/']").addClass("active");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/purchase_order/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/purchase_order/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
+    }
+    if((path.indexOf('/warehouses/') != -1)){
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/warehouses/list/']").addClass("active");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/warehouses/list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/warehouses/list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
+    }
+
+    if((path.indexOf('/inventories/') != -1)){
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/inventories/list/']").addClass("active");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/inventories/list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/inventories/list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
+    }
+    if((path.indexOf('/shipping-rates/') != -1)){
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/shipping-rates/']").addClass("active");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/shipping-rates/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/shipping-rates/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
+    }
+    
+    if((path.indexOf('/customer') != -1)){
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/customer/customers-list/']").addClass("active");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/customer/customers-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/customer/customers-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
+    }
+
+    if((path.indexOf('/home/pages/') != -1)){
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/home/pages/list/']").addClass("active");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/home/pages/list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/home/pages/list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
+    }
+    
+    if((path.indexOf('/orders/') != -1)){
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/orders/']").addClass("active");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/orders/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/orders/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
+    }
+    
     if(path.indexOf('/email-templates/') != -1){
       $(".simplebar-mask .sidebar-inner ul.nav a[href*='/email-templates/list/']").addClass("active");
       $(".simplebar-mask .sidebar-inner ul.nav a[href*='/email-templates/list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
