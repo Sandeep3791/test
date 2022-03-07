@@ -2,12 +2,26 @@ import requests
 import json,re
 from wayrem_admin.models_orders import Orders,ShippingLoginextNotification,StatusMaster,OrderDeliveryLogs
 from datetime import datetime
+from wayrem_admin.forecasts.firebase_notify import FirebaseLibrary
 
 class WebHookLiberary():
     def current_date_time(self,order_dic,order_reference_id):
         now = datetime.now()
         order_dic[order_reference_id]=now
         return order_dic
+
+    def sendnotification(self,order_reference_id,status_id):
+        order_id=self.get_order_id(order_reference_id)
+        if order_id:
+            FirebaseLibrary().send_notify(order_id=order_id,order_status=status_id)
+        return 1
+        
+    def get_order_id(self,order_reference_id):
+        get_order_id=Orders.objects.filter(order_tracking_number=order_reference_id).first()
+        if get_order_id is None:
+            return 0
+        else:
+            return get_order_id.id
 
     def get_order(self,order_dic):
         try:

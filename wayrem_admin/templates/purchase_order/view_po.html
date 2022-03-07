@@ -96,12 +96,12 @@
                                 </tr>
                                 {% else %}
                                 <tr>
-                                    <th scope="row"><strike>{{forloop.counter}}</strike></th>
-                                    <td><strike>{{i.product_name}}</strike></td>
-                                    <td><strike>{{i.product_qty}}</strike></td>
-                                    <td><strike>SAR {{i.product_name.price}}</strike></td>
-                                    {% comment %} <td><strike>within 2days</strike></td> {% endcomment %}
-                                    <td class="text-danger font-weight-bold"><strike>Not Available</strike></td>
+                                    <th scope="row">{{forloop.counter}}</th>
+                                    <td>{{i.product_name}}</td>
+                                    <td>{{i.product_qty}}</td>
+                                    <td>SAR {{i.product_name.price}}</td>
+                                    {% comment %} <td>within 2days</td> {% endcomment %}
+                                    <td class="text-danger font-weight-bold">Not Available</td>
                                 </tr>
                                 {% endif %}
                                 {% endfor %}

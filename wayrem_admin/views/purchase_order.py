@@ -21,8 +21,6 @@ import datetime
 import uuid
 from django.db import connection
 from django.http import HttpResponse
-
-
 # pdf export
 from django.template.loader import render_to_string
 from weasyprint import HTML
