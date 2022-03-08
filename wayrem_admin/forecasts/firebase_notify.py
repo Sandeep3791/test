@@ -53,7 +53,7 @@ class FirebaseLibrary:
             body_values = {
                 "Ref#": order_ref,
                 "status": status,
-                "link": f"https://admin-stg.wayrem.com/orders/{order_id}"
+                "link": f"https://admin-uat.wayrem.com/orders/{order_id}"
             }
             body = body.format(**body_values)
             users = User.objects.filter(order_notify=True)

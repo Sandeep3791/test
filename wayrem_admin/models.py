@@ -509,7 +509,7 @@ class CustomerAddresses(models.Model):
     is_default = models.BooleanField(blank=True, null=True, default=False)
 
     class Meta:
-        managed = False
+        # managed = False
         db_table = 'customer_addresses'
 
 
