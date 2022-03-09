@@ -141,10 +141,10 @@ endcomment %}
                                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
-                                        Are you sure {% if role.status == 'Active'%}
-                                        inactive
+                                        Are you sure you want to {% if role.status == 'Active'%}
+                                        deactivate
                                         {% else %}
-                                        Active
+                                        activate
                                         {% endif %} {{role.role}} ?
                                     </div>
                                     <div class="modal-footer">

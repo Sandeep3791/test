@@ -1,4 +1,5 @@
 import datetime
+import imp
 from django.urls import reverse_lazy
 from django.views.generic import ListView
 from wayrem_admin.filters.po_filters import *
@@ -26,6 +27,8 @@ from django.template.loader import render_to_string
 from weasyprint import HTML
 import tempfile
 from wayrem_admin.models_recurrence import ForecastJobtype
+from django.core import serializers
+
 
 def po_excel(request):
     return generate_excel("po_master", "purchase_order")
@@ -54,7 +57,8 @@ def create_purchase_order(request):
             request.session['supplier_company'] = request.POST['supplier_name']
             request.session.modified = True
             print('add more')
-            return render(request, "po_step1.html", {'form': form, 'po': po})
+            forecast_day = ForecastJobtype.objects.filter(status=1)
+            return render(request, "po_step1.html", {'form': form, 'po': po, 'forecast_day': forecast_day})
         elif 'send' in request.POST:
             if request.POST['supplier_name'] == '':
                 messages.error(request, "Please Select Supplier!")
@@ -118,8 +122,8 @@ def create_purchase_order(request):
             form = POFormOne(
                 initial={'supplier_name': request.session.get('supplier_company', None)})
     po = request.session.get('products', None)
-    forecast_day=ForecastJobtype.objects.filter(status=1)
-    return render(request, "po_step1.html", {'form': form, "po": po,'forecast_day':forecast_day})
+    forecast_day = ForecastJobtype.objects.filter(status=1)
+    return render(request, "po_step1.html", {'form': form, "po": po, 'forecast_day': forecast_day})
 
 
 def create_po_step2(request):
@@ -377,17 +381,16 @@ def po_pdf(request):
     # return response
 
 
-
 def load_supplier_products(request):
     supplier = request.GET.get('supplier')
     products = SupplierProducts.objects.filter(supplier_id=supplier)
     return render(request, 'po_supplier_products.html', {'products': products})
 
 
-def confirm_delivery(request,id=None):
-    po = PurchaseOrder.objects.filter(po_id=id,available=True)
+def confirm_delivery(request, id=None):
+    po = PurchaseOrder.objects.filter(po_id=id, available=True)
     Inventory().po_inventory_process(id)
     po_name = po[0].po_name
-    po_log = PO_log(po=po_name,status="confirm delivered")
+    po_log = PO_log(po=po_name, status="confirm delivered")
     po_log.save()
     return redirect('wayrem_admin:polist')

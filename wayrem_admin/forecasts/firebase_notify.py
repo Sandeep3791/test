@@ -1,8 +1,9 @@
 import requests
 import json
-from wayrem_admin.models import CustomerDevice, CustomerNotification, Settings
+from wayrem_admin.models import CustomerDevice, CustomerNotification, EmailTemplateModel, Settings, User
 
 from wayrem_admin.models_orders import StatusMaster, Orders
+from wayrem_admin.services import send_email
 
 
 class FirebaseLibrary:
@@ -38,6 +39,32 @@ class FirebaseLibrary:
 
         return response
 
+    def send_email_notification(self, order_id, order_ref, status):
+        try:
+            email_template = EmailTemplateModel.objects.get(
+                key="order_delivery_log_notification")
+            subject = email_template.subject
+            body = email_template.message_format
+            values = {
+                "Ref#": order_ref,
+                "status": status
+            }
+            subject = subject.format(**values)
+            body_values = {
+                "Ref#": order_ref,
+                "status": status,
+                "link": f"https://admin-stg.wayrem.com/orders/{order_id}"
+            }
+            body = body.format(**body_values)
+            users = User.objects.filter(order_notify=True)
+            for user in users:
+                email = user.email
+                send_email(to=email, subject=subject, body=body)
+            print("email sent successfully!!")
+        except:
+            print("Failed!!")
+        return True
+
     def status_to_msg(self, status_id):
         switcher = {
             1: "notification_app_order_received",
@@ -65,6 +92,8 @@ class FirebaseLibrary:
             }
             message = setting_msg.value.format(**values)
             print(devices)
+            self.send_email_notification(
+                order_id=order_id, order_ref=order_data.ref_number, status=notify_title)
             if not devices:
                 return "No device found!!"
             else:

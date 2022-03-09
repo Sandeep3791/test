@@ -102,9 +102,11 @@
                                 <td> {{data.1}}<input type="hidden" class="form-control" required name="product{{forloop.counter}}" value="{{data.0}}" id="product"></td>
                                 <td>{{data.2}}</td>
                                 <td><input type="number" class="form-control list_table_input" required name="quantity{{forloop.counter}}" value="{{data.3}}" id="quantity"></td>
-                                {% for forecast_day in forecast_day %}
-                                    <td>{{forecast_day.no_of_days|forecast_quantity:data.0}}</td>
-                                {% endfor %}
+                                {% if data.0 %}
+                                    {% for forecast_day in forecast_day %}
+                                        <td>{{forecast_day.no_of_days|forecast_quantity:data.0}}</td>
+                                    {% endfor %}
+                                {% endif %}
                                 <td><a class="btn btn-success btn-small" href=" {% url 'wayrem_admin:delete_inserted' data.0 %}" >Delete</a></td>
                             </tr>
                             
