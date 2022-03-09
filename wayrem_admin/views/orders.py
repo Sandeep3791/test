@@ -43,7 +43,7 @@ class OrderReferenceExport(View):
     model = Orders
     template_name = "orders/order_invoice.html"
     KEY='setting_vat'
-    WAYREM_VAT='setting_vat'
+    WAYREM_VAT='wayrem_vat_registration'
     def get(self, request, id):
         context={}
         context['currency']=CURRENCY
@@ -246,7 +246,7 @@ class OrderInvoiceView(LoginRequiredMixin,View):
     model = Orders
     template_name = "orders/order_invoice.html"
     KEY='setting_vat'
-    WAYREM_VAT='setting_vat'
+    WAYREM_VAT='wayrem_vat_registration'
     @method_decorator(role_required('Customer Order View'))
     def get(self, request, id):
         context={}
