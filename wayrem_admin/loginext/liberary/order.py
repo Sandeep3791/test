@@ -87,7 +87,8 @@ class Order(ApiBase):
         deliverLandmark=orderdetail.order_ship_landmark
         deliverLocality=orderdetail.order_ship_region
 
-        deliverCity=orderdetail.order_city
+        #deliverCity=orderdetail.order_city
+        deliverCity=orderdetail.order_ship_region
         #deliverState="Riyadh"
         deliverCountry=orderdetail.order_country
         deliverPinCode="NA"
