@@ -89,9 +89,11 @@ class CustomerLib(ApiBase):
         create_customer_dic['billingAddress']['apartment']=order_details.order_ship_building_name
         create_customer_dic['billingAddress']['streetName']=order_details.order_ship_address
         create_customer_dic['billingAddress']['landmark']=order_details.order_ship_landmark
+
         create_customer_dic['billingAddress']['locality']=order_details.order_ship_region
         create_customer_dic['billingAddress']['city']=order_details.order_city
-        create_customer_dic['billingAddress']['state']=order_details.order_city
+        create_customer_dic['billingAddress']['state']=order_details.order_ship_region
+
         create_customer_dic['billingAddress']['country']=order_details.order_country
         create_customer_dic['billingAddress']['pincode']="NA"
         create_customer_dic['billingAddress']['latitude']=order_details.order_ship_latitude
