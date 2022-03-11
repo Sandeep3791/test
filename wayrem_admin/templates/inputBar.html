@@ -51,7 +51,7 @@
                         <div class="input-group">
                             <span class="input-group-text" id="basic-addon1"><span
                                     class="fas fa-barcode"></span></span>
-                            <input type="text" placeholder="Barcode Number" class="form-control" id="code" required
+                            <input type="text" placeholder="Barcode Number" class="form-control" id="code" autofocus required
                                 name="code" aria-describedby="emailHelp">
                         </div>
                     </div>
@@ -129,10 +129,10 @@
   });
 </script> {% endcomment %}
 
-{% comment %} <script>
+<script>
   document.addEventListener('keydown', function(event) {
     if( event.keyCode == 13 || event.keyCode == 17 || event.keyCode == 74 )
       event.preventDefault();
   });
-</script> {% endcomment %}
+</script> 
 {% endblock javascripts %}
