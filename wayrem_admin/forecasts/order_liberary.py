@@ -61,6 +61,7 @@ class OrderLiberary:
         no_of_days =int(no_of_days)
         current_date_next=datetime.strptime(rg.recurrence_nextdate, "%Y-%m-%d").date()
         re_date = current_date_next + timedelta(days=no_of_days)
+        print(datetime.now())
         RecurrenceGrocery.objects.filter(id=rg.id).update(recurrence_nextdate=re_date,updated_at=datetime.now())
         self.update_grocery_products(rg.grocery_id,re_date)
        
@@ -116,15 +117,15 @@ class OrderLiberary:
             full_name=customer_address.full_name
 
             order_ship_name = full_name
-            order_ship_address = customer_address.house_no_building_name
-            order_ship_building_name = customer_address.road_name_area
+            order_ship_address = order_recurrence.customer.billing_country+", " + customer_address.region+", " + customer_address.landmark+", " + order_recurrence.customer.delivery_house_no_building_name
+            order_ship_building_name = customer_address.house_no_building_name
 
             order_ship_landmark = customer_address.landmark
             order_ship_region = customer_address.region
             order_ship_latitude = order_lat
             order_ship_longitude = order_long
             order_billing_name = full_name
-            order_billing_address = order_recurrence.customer.delivery_house_no_building_name
+            order_billing_address = order_recurrence.customer.billing_country+", " + customer_address.region+", " + customer_address.landmark+", " + order_recurrence.customer.delivery_house_no_building_name
             
             order_city = customer_address.town_city
             order_country = "SAU"
