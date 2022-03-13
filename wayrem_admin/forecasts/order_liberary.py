@@ -61,10 +61,8 @@ class OrderLiberary:
         no_of_days =int(no_of_days)
         current_date_next=datetime.strptime(rg.recurrence_nextdate, "%Y-%m-%d").date()
         re_date = current_date_next + timedelta(days=no_of_days)
-        print(datetime.now())
         RecurrenceGrocery.objects.filter(id=rg.id).update(recurrence_nextdate=re_date,updated_at=datetime.now())
         self.update_grocery_products(rg.grocery_id,re_date)
-       
         return 1
 
     def update_grocery_products(self,grocery_id,next_date):
@@ -87,8 +85,34 @@ class OrderLiberary:
 
         return order_id
     
+    def check_is_order_created(self,grocery_product_list):
+        is_order_created_qty=0
+        for gpl in grocery_product_list:
+            quantity=float(gpl.product_qty)
+            product_quantity=float(gpl.product.quantity)
+            product_threshold=float(gpl.product.outofstock_threshold)
+            total_quantity_demand=quantity+product_threshold
+            if product_quantity >= total_quantity_demand:
+                is_order_created_qty=1
+        return is_order_created_qty
+            #quantity,outofstock_threshold
+    
+    def total_product_qty_exist(self,product_det,quantity):
+        quantity=float(quantity)
+        product_quantity=float(product_det.quantity)
+        product_threshold=float(product_det.outofstock_threshold)
+        total_quantity_demand=quantity+product_threshold
+        if product_quantity >= total_quantity_demand:
+            return quantity
+        return float(0)
+
     def create_order(self,order_recurrence,grocery_product_list):
         try:
+            is_order_created_qty=self.check_is_order_created(grocery_product_list)
+            if not is_order_created_qty:
+                self.update_recurrence_groccery(order_recurrence) # order not created add new next date 
+                return 0
+            
             customer_id=order_recurrence.customer.id
             customer_address=self.get_customer_address(customer_id)
             ref_number = self.get_ref_number()
@@ -199,19 +223,21 @@ class OrderLiberary:
         total_item_margin=0
         for gpl in grocery_product_list:
             quantity=float(gpl.product_qty)
-            product_subtotal=float(gpl.product.price)
-            product_margin_amount=self.calculate_price_unit_type(gpl.product.wayrem_margin,gpl.product.price,gpl.product.margin_unit)
-            if gpl.product.discount is None:
-                product_discount_price=0
-                total_price_margin=product_subtotal+product_margin_amount
-            else:
-                product_discount_price=gpl.product.discount
-                total_price_margin=product_subtotal+product_margin_amount
-            total_product_discount_price=self.calculate_price_unit_type(product_discount_price,total_price_margin,gpl.product.dis_abs_percent)
-            
-            subtotal_unit_price += (product_subtotal+product_margin_amount-total_product_discount_price) * quantity 
-            total_item_discount +=(total_product_discount_price * quantity)
-            total_item_margin += (product_margin_amount * quantity)
+            quantity=self.total_product_qty_exist(gpl.product,quantity)
+            if quantity:
+                product_subtotal=float(gpl.product.price)
+                product_margin_amount=self.calculate_price_unit_type(gpl.product.wayrem_margin,gpl.product.price,gpl.product.margin_unit)
+                if gpl.product.discount is None:
+                    product_discount_price=0
+                    total_price_margin=product_subtotal+product_margin_amount
+                else:
+                    product_discount_price=gpl.product.discount
+                    total_price_margin=product_subtotal+product_margin_amount
+                total_product_discount_price=self.calculate_price_unit_type(product_discount_price,total_price_margin,gpl.product.dis_abs_percent)
+                
+                subtotal_unit_price += (product_subtotal+product_margin_amount-total_product_discount_price) * quantity 
+                total_item_discount +=(total_product_discount_price * quantity)
+                total_item_margin += (product_margin_amount * quantity)
         
         product_total = {'sub_total':subtotal_unit_price,'item_margin':total_item_margin,'total':subtotal_unit_price,'item_discount':total_item_discount,'discount':0}
         return product_total
@@ -249,7 +275,9 @@ class OrderLiberary:
     def create_order_detail(self, order_id, order_recurrence,grocery_product_list):
         for grocery_product in grocery_product_list:
             product = grocery_product.product
-            self.create_product(order_id,grocery_product.product_qty,product)
+            quantity=self.total_product_qty_exist(product,float(grocery_product.product_qty))
+            if quantity:
+                self.create_product(order_id,grocery_product.product_qty,product)
         return 1
 
     def create_product(self,order_id,pro_quantity ,product):
