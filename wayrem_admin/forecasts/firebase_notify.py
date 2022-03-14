@@ -1,6 +1,7 @@
 import requests
 import json
-from wayrem_admin.models import CustomerDevice, CustomerNotification, EmailTemplateModel, Settings, User
+from wayrem_admin.models import CustomerDevice, EmailTemplateModel, Settings, User
+from wayrem_admin.models_orders import CustomerNotification
 
 from wayrem_admin.models_orders import StatusMaster, Orders
 from wayrem_admin.services import send_email

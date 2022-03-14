@@ -276,3 +276,15 @@ class OrderLoginextShipment(models.Model):
     class Meta:
         app_label = "wayrem_admin"
         db_table = 'order_loginext_shipment'
+
+class CustomerNotification(models.Model):
+    id = models.AutoField(primary_key=True, unique=True)
+    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    order = models.ForeignKey('wayrem_admin.Orders', models.CASCADE, null=True)
+    title = models.CharField(max_length=255, null=True)
+    message = models.CharField(max_length=255, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        app_label = "wayrem_admin"
+        db_table = 'customer_notification'

@@ -114,7 +114,7 @@ class OrderLiberary:
                 return 0
             
             customer_id=order_recurrence.customer.id
-            customer_address=self.get_customer_address(customer_id)
+            customer_address=self.get_customer_address(order_recurrence.grocery.address.id)
             ref_number = self.get_ref_number()
             tax_vat = self.get_tax_vat()
             product_total=self.product_total(grocery_product_list)
@@ -141,7 +141,9 @@ class OrderLiberary:
             full_name=customer_address.full_name
 
             order_ship_name = full_name
-            order_ship_address = order_recurrence.customer.billing_country+", " + customer_address.region+", " + customer_address.landmark+", " + order_recurrence.customer.delivery_house_no_building_name
+            #order_ship_address = order_recurrence.customer.billing_country+", " + customer_address.region+", " + customer_address.landmark+", " + order_recurrence.customer.delivery_house_no_building_name
+            order_ship_address = "Saudi Arabia, " + customer_address.region +", " + customer_address.town_city+", " + customer_address.landmark+", " + customer_address.house_no_building_name
+            
             order_ship_building_name = customer_address.house_no_building_name
 
             order_ship_landmark = customer_address.landmark
@@ -149,9 +151,9 @@ class OrderLiberary:
             order_ship_latitude = order_lat
             order_ship_longitude = order_long
             order_billing_name = full_name
-            order_billing_address = order_recurrence.customer.billing_country+", " + customer_address.region+", " + customer_address.landmark+", " + order_recurrence.customer.delivery_house_no_building_name
+            order_billing_address = "Saudi Arabia, " + order_recurrence.customer.billing_region +", " + order_recurrence.customer.billing_town_city +", " + order_recurrence.customer.billing_landmark+", " + order_recurrence.customer.billing_house_no_building_name
             
-            order_city = customer_address.town_city
+            order_city = order_recurrence.customer.delivery_town_city
             order_country = "SAU"
             order_phone = order_recurrence.customer.contact
             order_email = order_recurrence.customer.email
@@ -256,8 +258,8 @@ class OrderLiberary:
             total_amount=float(specialprice)
         return total_amount
 
-    def get_customer_address(self,customer_id):
-        customer_address=CustomerAddresses.objects.filter(customer_id=customer_id,is_default=1).first()
+    def get_customer_address(self,customer_address_id):
+        customer_address=CustomerAddresses.objects.filter(id=customer_address_id).first()
         return customer_address
 
     def get_ref_number(self):

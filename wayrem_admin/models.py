@@ -768,18 +768,6 @@ class CustomerDevice(models.Model):
         db_table = 'customer_device'
 
 
-class CustomerNotification(models.Model):
-    id = models.AutoField(primary_key=True, unique=True)
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    order = models.ForeignKey('Orders', models.CASCADE, null=True)
-    title = models.CharField(max_length=255, null=True)
-    message = models.CharField(max_length=255, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        db_table = 'customer_notification'
-
-
 class GS1ProductFields(models.Model):
     ai_code = models.CharField(max_length=255, null=True)
     product_field = models.CharField(max_length=255, null=True)
