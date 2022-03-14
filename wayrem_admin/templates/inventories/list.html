@@ -150,7 +150,7 @@
         </table>
         {% if inventories %}
         <div class="card-footer px-3 border-0 d-flex align-items-center justify-content-between">
-            <div class="font-weight-bold small">Showing <b>{{ inventories.start_index }}</b> to <b>{{ inventories.end_index }}</b> out  of <b>{{ inventories.paginator.count }}</b> entries</div>
+            <div class="font-weight-bold small">Showing <b class="searchfoundstart">{{ inventories.start_index }}</b> to <b class="searchfound">{{ inventories.end_index }}</b> out  of <b>{{ inventories.paginator.count }}</b> entries</div>
             <nav aria-label="Page navigation example">
                 <ul class="pagination justify-content-end">
                     
@@ -190,7 +190,7 @@
         oTable = $('#filtertable').DataTable({
             dom: 'rt',
             pageLength : 25,
-            'columnDefs': [{ 'orderable': false, 'targets': [5, 6] }],
+            'columnDefs': [{ 'orderable': false, 'targets': [5] }],
             "oLanguage": {
                 "oPaginate": {
                     "sNext": '<i class="fas fa-arrow-circle-right text-primary"></i>',
@@ -211,6 +211,13 @@
         $("#table_search").on(
           "change keyup paste input", function() {
            oTable.search($(this).val()).draw();
+           var info = oTable.page.info();
+            $('.searchfound').text(info.recordsDisplay);
+           if(info.recordsDisplay==0) {
+            $('.searchfoundstart').text(0);
+           } else {
+            $('.searchfoundstart').text(1);
+           }
         })
     });
 </script> 
