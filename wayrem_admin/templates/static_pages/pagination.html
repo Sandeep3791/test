@@ -1,4 +1,3 @@
-{% if userlist %}
     <div class="card-footer px-3 border-0 d-flex align-items-center justify-content-between">
     <div class="font-weight-bold small">Showing <b>{{ page_obj.start_index }}</b> to <b>{{ page_obj.end_index }}</b> out of <b>{{ page_obj.paginator.count }}</b> entries</div>
     <nav  aria-label="Page navigation example">
@@ -35,5 +34,3 @@
     </nav>
 
     </div>
-
-{% endif %}

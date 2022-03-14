@@ -84,6 +84,13 @@ endcomment %}
         $("#table_search").on(
           "change keyup paste input", function() {
            oTable.search($(this).val()).draw();
+           var info = oTable.page.info();
+           $('.searchfound').text(info.recordsDisplay);
+           if(info.recordsDisplay==0) {
+            $('.searchfoundstart').text(0);
+           } else {
+            $('.searchfoundstart').text(1);
+           }
         })
     });
 </script>
