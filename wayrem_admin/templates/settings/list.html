@@ -1,6 +1,6 @@
 {% extends "layouts/base.html" %}
 {% load static %}
-{% block title %} Static Pages {% endblock %}
+{% block title %} Settings {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
@@ -11,65 +11,48 @@
 <script src="{% static 'assets/js/datatable_1.js' %}"></script>
 <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
 <script src="{% static 'assets/js/datatable.js' %}"></script>
-<style>
-div.dataTables_wrapper div.dataTables_info{display: none;}
-</style>
+
 {% endblock head %}
 
 {% block content %}
 <div class="dashboard_content_inner">
     <div class="topbar_pages">
-        <h4 class="text-title">Static Pages</h2>
+        <h4 class="text-title">Settings</h2>
         <div class="breadcrumb-section">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb padding-left-0">
-                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>      
-                    <li class="breadcrumb-item active" aria-current="page"><span class="sidebar-icon"><i class="far fa-newspaper"></i></span> Static Pages</li>
+                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
+                    <li class="breadcrumb-item active" aria-current="page"> <span class="sidebar-icon"><i class="fas fa-cogs"></i></span> Manage Settings</li>
                 </ol>
             </nav>
         </div>
+    </div>
+    <div class="table-settings mb-4">
+        {% include "settings/settings_filters.html" %} 
     </div>
     {% if messages %}
     {% for message in messages %}
     <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
         <strong> {{ message }}!</strong>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        <button type="button" class="btn-close bg-danger" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
     {% endfor %}
     {% endif %}
-     
-    <div class="table-settings mb-4 pt-2">
-        <div class="subheader row mt-3 align-items-center">
-            <div class="col-xl-3 col-lg-3 col-md-3 padding-left-0" >
-                <a href="{% url 'wayrem_admin:addstaticpages' %}" class="btn btn-primary col-sm-12 col-md-12 col-12 create_new">Create Static Page</a>
-            </div>
-    
-            <div class="col-xl-9 col-lg-9 col-9 my-2">
-                <div class="row d-flex align-items-center">
-                    <div class="col-xl-12 col-lg-3 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 " style="height:40px;">
-                    <form method="GET">    
-                        <div class="input-group subadmin_search">
-                            {{filter_form.static_page}}
-                            <button type="submit" class="btn btn-dark border-0 col-xl-3 col-md-5 col-12 fas fa-search"> Search</button>
-                        </div>
-                    </form>
-                    </div>
-                </div>        
-            </div>
-        </div>
-    </div>        
     <div class="card card-body border-light shadow-sm table-wrapper table-responsive pt-0">
-               {% include "static_pages/grid_staticpages.html" %} 
-                {% include "static_pages/pagination.html" %}    
+        {% include "settings/grid_settings.html" %} 
+        {% include "settings/pagination.html" %}    
     </div>
+    
 </div>
+
+
 <script>
 
     $(document).ready(function () {
         oTable = $('#filtertable').DataTable({
-            dom: 'rtip',
+            dom: 'rt',
             pageLength : 25,
-            'columnDefs': [{ 'orderable': false, 'targets': [3,]}],
+            'columnDefs': [{ 'orderable': false, 'targets': [4, 5] }],
             "oLanguage": {
                 "oPaginate": {
                     "sNext": '<i class="fas fa-arrow-circle-right text-primary"></i>',
@@ -86,6 +69,10 @@ div.dataTables_wrapper div.dataTables_info{display: none;}
         });
         $('#table_search').keyup(function () {
             oTable.search($(this).val()).draw();
+        })
+        $("#table_search").on(
+          "change keyup paste input", function() {
+           oTable.search($(this).val()).draw();
         })
     });
 </script>

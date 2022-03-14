@@ -92,3 +92,9 @@ class ChangePasswordForm(PasswordChangeForm):
         widget=forms.PasswordInput(
             attrs={'autocomplete': 'new-password', 'class': 'form-control'}, render_value=True),
     )
+
+
+
+class UserSearchFilter(forms.Form):
+    user = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'form-control p-2'}), required=False)

@@ -26,6 +26,11 @@ from wayrem_admin.models import PurchaseOrder, EmailTemplateModel
 from wayrem_admin.services import inst_Product, inst_Supplier, inst_SupplierProduct
 
 from wayrem_admin.views.product import product
+from django.urls import reverse_lazy
+from wayrem_admin.filters.supplier_filters import SupplierFilter
+from django.views.generic import ListView
+from wayrem_admin.forms.supplier import SupplierSearchFilter
+
 
 
 def supplier_excel(request):
@@ -81,25 +86,42 @@ def supplier_register(request):
         return redirect('wayrem_admin:dashboard')
 
 
-class SupplierList(View):
-    template_name = "supplierlist.html"
+# class SupplierList(View):
+#     template_name = "supplierlist.html"
 
-    @method_decorator(login_required(login_url='wayrem_admin:root'))
-    @method_decorator(role_required('Supplier View'))
-    def get(self, request, format=None):
-        supplierlist = Supplier.objects.all()
-        paginator = Paginator(supplierlist, RECORDS_PER_PAGE)
-        page = request.GET.get('page')
-        try:
-            slist = paginator.page(page)
-        except PageNotAnInteger:
-            # If page is not an integer, deliver first page.
-            slist = paginator.page(1)
-        except EmptyPage:
-            # If page is out of range (e.g. 9999), deliver last page of results.
-            slist = paginator.page(paginator.num_pages)
-        return render(request, self.template_name, {"supplierlist": slist})
+#     @method_decorator(login_required(login_url='wayrem_admin:root'))
+#     @method_decorator(role_required('Supplier View'))
+#     def get(self, request, format=None):
+#         supplierlist = Supplier.objects.all()
+#         paginator = Paginator(supplierlist, RECORDS_PER_PAGE)
+#         page = request.GET.get('page')
+#         try:
+#             slist = paginator.page(page)
+#         except PageNotAnInteger:
+#             # If page is not an integer, deliver first page.
+#             slist = paginator.page(1)
+#         except EmptyPage:
+#             # If page is out of range (e.g. 9999), deliver last page of results.
+#             slist = paginator.page(paginator.num_pages)
+#         return render(request, self.template_name, {"supplierlist": slist})
 
+
+class SupplierList(ListView):
+    model = Supplier
+    template_name = "supplier/list.html"
+    context_object_name = 'supplierlist'
+    paginate_by = RECORDS_PER_PAGE
+    success_url = reverse_lazy('wayrem_admin:supplierlist')
+
+    def get_queryset(self):
+        qs = Supplier.objects.all()
+        filtered_list = SupplierFilter(self.request.GET, queryset=qs)
+        return filtered_list.qs
+
+    def get_context_data(self, **kwargs):
+        context = super(SupplierList, self).get_context_data(**kwargs)
+        context['filter_form'] = SupplierSearchFilter(self.request.GET)
+        return context
 
 class DeleteSupplier(View):
 

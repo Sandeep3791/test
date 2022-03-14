@@ -55,3 +55,14 @@ class SupplierUpdateForm(forms.ModelForm):
             'company_name': forms.TextInput(attrs={'class': 'form-control'}),
             'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 3})
         }
+
+
+class SupplierSearchFilter(forms.Form):
+    supplier = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'form-control p-2'}), required=False)
+
+
+class SupplierInvoiceSearchFilter(forms.Form):
+    supplier_invoice = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'form-control p-2'}), required=False)
+

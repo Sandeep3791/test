@@ -9,7 +9,7 @@ class UserFilter(django_filters.FilterSet):
 
     class Meta:
         model = User
-        fields = ['category']
+        fields = ['username', 'email', 'contact']
 
     def user_filter(self, queryset, name, value):
         return User.objects.filter(

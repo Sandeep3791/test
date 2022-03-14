@@ -1,9 +1,8 @@
 <div class="subheader row align-items-center justify-content-between">
-    <div class="col-xl-5 col-lg-5 col-5">
-        <div class="col-xl-4 col-lg-4 col-md-4">
-            <a class="btn anchor_btn ps-0 pe-0"
-                    href="{% url 'wayrem_admin:sub-admin-register' %}">
-                    <button class="btn btn-success create_new">Create New User</button>
+    <div class="col-xl-5 col-lg-5 col-5">        
+        <div class="col-xl-11 col-lg-11 col-md-5">
+            <a class="btn anchor_btn ps-0 pe-0" href="{% url 'wayrem_admin:suppregister' %}">
+            <button class="btn btn-success create_new">Create New Supplier</button>
             </a>
         </div>
     </div>
@@ -13,7 +12,7 @@
             <div class="col-xl-12 col-lg-3 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 " style="height:40px;">
             <form method="GET">    
                 <div class="input-group subadmin_search">
-                    {{filter_form.user}}
+                    {{filter_form.supplier}}
                     <button type="submit" class="btn btn-dark border-0 col-xl-3 col-md-5 col-12 fas fa-search"> Search</button>
                 </div>
             </form>

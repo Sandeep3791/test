@@ -10,27 +10,48 @@ from wayrem_admin.forms import StaticpagesForm, StaticpagesViewForm
 from django.urls import reverse_lazy
 from wayrem_admin.decorators import role_required
 from wayrem_admin.utils.constants import *
+from django.urls import reverse_lazy
+from wayrem_admin.filters.static_pages import StaticPageFilter
+from django.views.generic import ListView
+from wayrem_admin.forms.static_pages import StaticPageSearchFilter
 
 
-class StaticpagesList(View):
+# class StaticpagesList(View):
+#     template_name = "static_pages/list.html"
+#     form = SettingsForm()
+
+#     @method_decorator(login_required(login_url='wayrem_admin:root'))
+#     @method_decorator(role_required('Static Pages View'))
+#     def get(self, request, format=None):
+#         userlist = StaticPages.objects.all()
+#         paginator = Paginator(userlist, RECORDS_PER_PAGE)
+#         page = request.GET.get('page')
+#         try:
+#             slist = paginator.page(page)
+#         except PageNotAnInteger:
+#             # If page is not an integer, deliver first page.
+#             slist = paginator.page(1)
+#         except EmptyPage:
+#             # If page is out of range (e.g. 9999), deliver last page of results.
+#             slist = paginator.page(paginator.num_pages)
+#         return render(request, self.template_name, {"userlist": slist, "form": self.form})
+
+class StaticpagesList(ListView):
+    model = StaticPages
     template_name = "static_pages/list.html"
-    form = SettingsForm()
+    context_object_name = 'userlist'
+    paginate_by = RECORDS_PER_PAGE
+    success_url = reverse_lazy('wayrem_admin:staticpages')
 
-    @method_decorator(login_required(login_url='wayrem_admin:root'))
-    @method_decorator(role_required('Static Pages View'))
-    def get(self, request, format=None):
-        userlist = StaticPages.objects.all()
-        paginator = Paginator(userlist, RECORDS_PER_PAGE)
-        page = request.GET.get('page')
-        try:
-            slist = paginator.page(page)
-        except PageNotAnInteger:
-            # If page is not an integer, deliver first page.
-            slist = paginator.page(1)
-        except EmptyPage:
-            # If page is out of range (e.g. 9999), deliver last page of results.
-            slist = paginator.page(paginator.num_pages)
-        return render(request, self.template_name, {"userlist": slist, "form": self.form})
+    def get_queryset(self):
+        qs = StaticPages.objects.all()
+        filtered_list = StaticPageFilter(self.request.GET, queryset=qs)
+        return filtered_list.qs
+
+    def get_context_data(self, **kwargs):
+        context = super(StaticpagesList, self).get_context_data(**kwargs)
+        context['filter_form'] = StaticPageSearchFilter(self.request.GET)
+        return context   
 
 
 class StaticpagesCreate(CreateView):
