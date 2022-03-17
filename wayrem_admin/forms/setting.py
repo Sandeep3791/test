@@ -13,3 +13,7 @@ class SettingsForm(forms.ModelForm):
             'display_name': forms.TextInput(attrs={'class': 'form-control'}),
             'type': forms.Select(attrs={'class': 'form-control form-select'}),
         }
+
+class SettingSearchFilter(forms.Form):
+    settings = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'form-control p-2'}), required=False)

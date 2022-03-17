@@ -44,15 +44,17 @@ div.dataTables_wrapper div.dataTables_info{display: none;}
                 <a href="{% url 'wayrem_admin:addstaticpages' %}" class="btn btn-primary col-sm-12 col-md-12 col-12 create_new">Create Static Page</a>
             </div>
     
-            <div class="col-xl-9 col-lg-9 col-12  padding-right-0">
-                <div class="row d-flex align-items-center ">
-                    <div class="col-xl-4 col-lg-3 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 ml-0 padding-right-0" style="height:40px; margin-left: auto;">
-                            <div class="input-group subadmin_search">
-                                    <span class="input-group-text" id="basic-addon2"><span class="fas fa-search"></span></span>
-                                    <input type="text" class="form-control table_searchbar" id="table_search" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2">
-                                </div>
-                    </div>           
-                </div>
+            <div class="col-xl-9 col-lg-9 col-9 my-2">
+                <div class="row d-flex align-items-center">
+                    <div class="col-xl-12 col-lg-3 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 " style="height:40px;">
+                    <form method="GET">    
+                        <div class="input-group subadmin_search">
+                            {{filter_form.static_page}}
+                            <button type="submit" class="btn btn-dark border-0 col-xl-3 col-md-5 col-12 fas fa-search"> Search</button>
+                        </div>
+                    </form>
+                    </div>
+                </div>        
             </div>
         </div>
     </div>        
@@ -84,6 +86,13 @@ div.dataTables_wrapper div.dataTables_info{display: none;}
         });
         $('#table_search').keyup(function () {
             oTable.search($(this).val()).draw();
+            var info = oTable.page.info();
+            $('.searchfound').text(info.recordsDisplay);
+           if(info.recordsDisplay==0) {
+            $('.searchfoundstart').text(0);
+           } else {
+            $('.searchfoundstart').text(1);
+           }
         })
     });
 </script>

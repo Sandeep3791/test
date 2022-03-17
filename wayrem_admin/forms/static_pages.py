@@ -47,3 +47,8 @@ class StaticpagesViewForm(forms.ModelForm):
             'slug': forms.TextInput(attrs={'class': 'form-control'}),
             'description': Textarea(attrs={'cols': 3, 'rows': 3}),
         }
+
+
+class StaticPageSearchFilter(forms.Form):
+    static_page = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'form-control p-2'}), required=False)
