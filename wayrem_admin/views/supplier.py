@@ -32,7 +32,6 @@ from django.views.generic import ListView
 from wayrem_admin.forms.supplier import SupplierSearchFilter
 
 
-
 def supplier_excel(request):
     return generate_excel("supplier_master", "suppliers")
 
@@ -123,6 +122,7 @@ class SupplierList(ListView):
         context['filter_form'] = SupplierSearchFilter(self.request.GET)
         return context
 
+
 class DeleteSupplier(View):
 
     @method_decorator(role_required('Supplier Delete'))
@@ -166,8 +166,9 @@ def update_supplier(request, id=None):
             # suppl.category_name.set(category_name)
             # suppl.save()
             return redirect('wayrem_admin:supplierlist')
-    suppl = Supplier.objects.get(id=id)
-    form = SupplierUpdateForm(instance=suppl)
+    else:
+        suppl = Supplier.objects.get(id=id)
+        form = SupplierUpdateForm(instance=suppl)
     return render(request, 'update_supplier.html', {'form': form, 'id': suppl.id})
 
 
