@@ -54,6 +54,15 @@ class InventoryCreate(CreateView):
     def dispatch(self, *args, **kwargs):
         return super(InventoryCreate, self).dispatch(*args, **kwargs)
     
+
+    def form_valid(self, form):
+        # This method is called when valid form data has been POSTed. 
+        form = form.save(commit=False)
+        messages.success(self.request,'created successfully.')
+        new_form = form.save()
+        Inventory().update_product_quantity(form.product.id)
+        return HttpResponseRedirect(reverse_lazy('wayrem_admin:inventories'))
+
 class InventoryUpdate(UpdateView):
     model=Inventory
     form_class = InventoryForm
