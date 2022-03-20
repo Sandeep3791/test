@@ -9,7 +9,7 @@ from wayrem_admin.forms import SettingsForm
 from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from wayrem_admin.export import generate_excel
-from wayrem_admin.models import Inventory
+from wayrem_admin.models import Inventory,Products
 from django.views.generic.edit import CreateView,UpdateView
 from django.views.generic import ListView
 from wayrem_admin.forms import InventoryForm,InventoryViewForm
@@ -18,6 +18,18 @@ from django.urls import reverse_lazy
 from django.db.models import Q
 from wayrem_admin.decorators import role_required
 from wayrem_admin.utils.constants import * 
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.db.models import F
+from django.db.models import Value
+from django.db.models.functions import Concat
+
+class InventoryAutocomplete(View):
+    def get(self, request, format=None):
+        q = self.request.GET.get('q') if self.request.GET.get('q') != None else ''
+        data = Products.objects.annotate(sku_name=Concat('SKU', Value(' - '), 'name')).values_list('sku_name',flat=True).filter(Q(SKU__icontains = q) | Q(name__icontains = q) ) 
+        json = list(data)
+        return JsonResponse(json, safe=False)
+        
 
 class InventoriesList(View):
     template_name = "inventories/list.html"
@@ -25,7 +37,7 @@ class InventoriesList(View):
     @method_decorator(login_required(login_url='wayrem_admin:root'))
     @method_decorator(role_required('Inventory View'))
     def get(self, request, format=None):
-        inventories = Inventory.objects.all()
+        inventories = Inventory.objects.all().order_by("-id")
         q = request.GET.get('q') if request.GET.get('q') != None else '' 
         if q != None:
             inventories = inventories.filter(Q(product__SKU__icontains=q) )
@@ -40,7 +52,6 @@ class InventoriesList(View):
         except EmptyPage:
             # If page is out of range (e.g. 9999), deliver last page of results.
             slist = paginator.page(paginator.num_pages)
-
         return render(request, self.template_name, {"inventories": slist, 'q':q, "form": self.form})
 
 class InventoryCreate(CreateView):
