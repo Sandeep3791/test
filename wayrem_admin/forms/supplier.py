@@ -39,6 +39,13 @@ class SupplierForm(forms.ModelForm):
             )
         return cleaned_data
 
+    def clean_username(self):
+        username = self.cleaned_data['username']
+        if ' ' in username:
+            raise forms.ValidationError(
+                'username should not contain any space')
+        return username
+
 
 class SupplierUpdateForm(forms.ModelForm):
     class Meta:
@@ -56,6 +63,13 @@ class SupplierUpdateForm(forms.ModelForm):
             'address': forms.Textarea(attrs={'class': 'form-control', 'rows': 3})
         }
 
+    def clean_username(self):
+        username = self.cleaned_data['username']
+        if ' ' in username:
+            raise forms.ValidationError(
+                'username should not contain any space')
+        return username
+
 
 class SupplierSearchFilter(forms.Form):
     supplier = forms.CharField(widget=forms.TextInput(
@@ -65,4 +79,3 @@ class SupplierSearchFilter(forms.Form):
 class SupplierInvoiceSearchFilter(forms.Form):
     supplier_invoice = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control p-2'}), required=False)
-
