@@ -9,7 +9,7 @@ from wayrem_admin.forms import SettingsForm
 from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from wayrem_admin.export import generate_excel
-from wayrem_admin.models import Inventory,Products
+from wayrem_admin.models import Inventory,Products,InventoryType
 from django.views.generic.edit import CreateView,UpdateView
 from django.views.generic import ListView
 from wayrem_admin.forms import InventoryForm,InventoryViewForm
@@ -65,14 +65,19 @@ class InventoryCreate(CreateView):
     def dispatch(self, *args, **kwargs):
         return super(InventoryCreate, self).dispatch(*args, **kwargs)
     
-
     def form_valid(self, form):
-        # This method is called when valid form data has been POSTed. 
         form = form.save(commit=False)
-        messages.success(self.request,'created successfully.')
+        product_id=form.product.id
+        #inventory_type=form.inventory_type.id
+        form.inventory_type=InventoryType.objects.get(id=1)
+        form.product=Products.objects.get(id=product_id)
         new_form = form.save()
         Inventory().update_product_quantity(form.product.id)
-        return HttpResponseRedirect(reverse_lazy('wayrem_admin:inventories'))
+        messages.success(self.request,'created successfully.')
+        return HttpResponse("valid")
+        #return HttpResponseRedirect(reverse_lazy('wayrem_admin:inventories'))
+    
+    
 
 class InventoryUpdate(UpdateView):
     model=Inventory
