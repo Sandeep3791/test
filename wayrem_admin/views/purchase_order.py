@@ -1,3 +1,4 @@
+from django.apps import apps
 import datetime
 import imp
 from django.urls import reverse_lazy
@@ -89,11 +90,18 @@ def create_purchase_order(request):
                     print(data)
                     product_instance = inst_Product(data[0])
                     product_qty = data[2]
-                    with connection.cursor() as cursor:
-                        cursor.execute(
-                            f"INSERT INTO {supplier_name.username}_purchase_order(`id`,`po_id`,`po_name`,`product_qty`,`product_name_id`,`supplier_name_id`) VALUES('{supp_po_id}','{po_id}','{po_name}','{data[2]}','{product_instance.id.hex}','{x.replace('-','')}');")
-                        product_order = PurchaseOrder(
-                            po_id=po_id, po_name=po_name, product_name=product_instance, product_qty=product_qty, supplier_name=supplier_name)
+                    supplier_purchase_model = str(
+                        supplier_name) + '_purchase_order'
+                    supplier = apps.get_model(
+                        app_label='wayrem_admin', model_name=supplier_purchase_model)
+                    supplier_po = supplier(po_id=po_id, po_name=po_name, product_name=product_instance,
+                                           product_qty=product_qty, supplier_name=supplier_name)
+                    supplier_po.save()
+                    # with connection.cursor() as cursor:
+                    #     cursor.execute(
+                    #         f"INSERT INTO {supplier_name.username}_purchase_order(`id`,`po_id`,`po_name`,`product_qty`,`product_name_id`,`supplier_name_id`) VALUES('{supp_po_id}','{po_id}','{po_name}','{data[2]}','{product_instance.id.hex}','{x.replace('-','')}');")
+                    product_order = PurchaseOrder(
+                        po_id=po_id, po_name=po_name, product_name=product_instance, product_qty=product_qty, supplier_name=supplier_name)
                     product_order.save()
                 messages.success(
                     request, f"Purchase Order Created Successfully!")
@@ -162,9 +170,16 @@ def create_po_step2(request):
                 product_instance = inst_Product_SKU(
                     supplier_product_instance.SKU)
                 product_qty = quantity
-                with connection.cursor() as cursor:
-                    cursor.execute(
-                        f"INSERT INTO {supplier_name.username}_purchase_order(`id`,`po_id`,`po_name`,`product_qty`,`product_name_id`,`supplier_name_id`) VALUES('{supp_po_id}','{po_id}','{po_name}','{quantity}','{product_instance.id}','{x.replace('-','')}');")
+                supplier_purchase_model = 'PurchaseOrder_' + \
+                    str(supplier_name.username)
+                supplier = apps.get_model(
+                    app_label='wayrem_admin', model_name=supplier_purchase_model)
+                supplier_po = supplier(po_id=po_id, po_name=po_name, product_name=product_instance,
+                                       product_qty=product_qty, supplier_name=supplier_name)
+                supplier_po.save()
+                # with connection.cursor() as cursor:
+                #     cursor.execute(
+                #         f"INSERT INTO {supplier_name.username}_purchase_order(`id`,`po_id`,`po_name`,`product_qty`,`product_name_id`,`supplier_name_id`) VALUES('{supp_po_id}','{po_id}','{po_name}','{quantity}','{product_instance.id}','{x.replace('-','')}');")
                 product_order = PurchaseOrder(
                     po_id=po_id, po_name=po_name, product_name=product_instance, supplier_product=supplier_product_instance, product_qty=product_qty, supplier_name=supplier_name)
                 product_order.save()

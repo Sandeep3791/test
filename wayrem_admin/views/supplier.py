@@ -32,6 +32,8 @@ from wayrem_admin.filters.supplier_filters import SupplierFilter
 from django.views.generic import ListView
 from wayrem_admin.forms.supplier import SupplierSearchFilter
 from wayrem_admin.create_prefix_models import create_supplier_models_cluster
+import os
+from wayrem.settings import BASE_DIR
 
 
 def supplier_excel(request):
@@ -55,7 +57,6 @@ def supplier_register(request):
                 # category_name = form.cleaned_data['category_name']
                 form.save()
 
-                create_supplier_models_cluster(username)
                 # user = Supplier(
                 #     username=username, email=email, password=password, company_name=company_name)
                 # user.save()
@@ -79,6 +80,12 @@ def supplier_register(request):
                 body = obj.message_format.format(**values)
                 # Role: {role}
                 send_email(to, subject, body)
+                create_supplier_models_cluster(username)
+                file = str(BASE_DIR) + "/newmigration"
+                print(os.path.exists(file))
+                with open(file, mode='a'):
+                    pass
+                print(os.path.exists(file))
                 messages.success(request, 'Supplier Created Successfully!!')
                 return redirect('wayrem_admin:supplierlist')
         else:

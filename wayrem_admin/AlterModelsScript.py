@@ -101,7 +101,6 @@ class Invoice_{0}(models.Model):
     invoice_id = models.AutoField(primary_key=True, unique=True)
     invoice_no = models.CharField(max_length=250, null=True)
     po_name = models.CharField(max_length=250, null=True)
-    ro_name = models.CharField(max_length=250, null=True)
     file = models.FileField(upload_to='invoices/', storage=upload_storage,
                             null=True)
     supplier_name = models.CharField(max_length=250, null=True)    
