@@ -607,6 +607,9 @@ class InventoryType(models.Model):
         max_length=50, db_collation='utf8mb4_unicode_ci')
     status = models.IntegerField(default=1)
 
+    def __str__(self):
+        return self.type_name
+        
     class Meta:
         db_table = 'inventory_type'
 

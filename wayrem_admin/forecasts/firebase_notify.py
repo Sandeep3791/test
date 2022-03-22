@@ -109,7 +109,7 @@ class FirebaseLibrary:
                     }
                     self.push_notification_in_firebase(notf)
                 notification_store = CustomerNotification(
-                    customer=customer_id, order=order_data, title=notify_title, message=f"Your Order {order_data.ref_number} is {notify_msg}!")
+                    customer=customer_id, order=order_data, title=notify_title, message=message)
                 notification_store.save()
         except:
             print("something missing")
