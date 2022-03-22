@@ -30,7 +30,7 @@ def dashboard(request):
     completed_po_count = PurchaseOrder.objects.filter(status="delivered").values(
         'po_name', 'supplier_name__company_name', 'po_id', 'status').distinct().count()
     completed_po = PurchaseOrder.objects.filter(status="delivered")
-    sum_completed_po = sum([int(item.supplier_product.price)
+    sum_completed_po = sum([float(item.supplier_product.price)
                            for item in completed_po])
     this_month = datetime.datetime.now().month
     this_day = datetime.datetime.now().day

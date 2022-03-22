@@ -62,7 +62,7 @@ UNIT = (
 )
 
 upload_storage = FileSystemStorage(
-    location='/opt/app/wayrem-admin-backend/media/common_folder')
+    location='/home/fealty/Desktop/admin_17/wayrem-admin-backend/media/common_folder')
 # upload_storage = FileSystemStorage(
 #     location='/home/fealty/Desktop/Admin/wayrem-admin-backend/media/common_folder')
 # /opt/app/wayrem-admin-backend/media/common_folder
