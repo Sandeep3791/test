@@ -1,4 +1,5 @@
 migrations
+SupplierModels*.py
 __pycache__
 wayrem_env
 media
