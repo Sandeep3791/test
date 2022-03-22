@@ -1,4 +1,5 @@
 # Suppliers Registration and Management Start
+import imp
 from wayrem_admin.utils.constants import *
 import uuid
 from wayrem_admin.services import inst_Product, inst_Supplier
@@ -30,6 +31,7 @@ from django.urls import reverse_lazy
 from wayrem_admin.filters.supplier_filters import SupplierFilter
 from django.views.generic import ListView
 from wayrem_admin.forms.supplier import SupplierSearchFilter
+from wayrem_admin.create_prefix_models import create_supplier_models_cluster
 
 
 
@@ -53,16 +55,18 @@ def supplier_register(request):
                 password = form.cleaned_data['password']
                 # category_name = form.cleaned_data['category_name']
                 form.save()
+
+                create_supplier_models_cluster(username)
                 # user = Supplier(
                 #     username=username, email=email, password=password, company_name=company_name)
                 # user.save()
                 # user.category_name.set(category_name)
                 # user.save()
-                with connection.cursor() as cursor:
-                    cursor.execute(
-                        f'CREATE TABLE If NOT Exists {username}_Invoice(`invoice_id` Varchar(250), `invoice_no` Varchar(250),`po_name` Varchar(250), `file` LONGBLOB, `supplier_name`  Varchar(250),`status` Varchar(250), `is active` boolean not null default 1 ,`created_at` DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL ,PRIMARY KEY(`invoice_id`));')
-                    cursor.execute(
-                        f'CREATE TABLE If NOT Exists {username}_purchase_order(`id` varchar(250) NOT NULL,`po_id` varchar(250) NOT NULL,`po_name` varchar(250) DEFAULT NULL,`product_qty` int NOT NULL,`status` varchar(250) DEFAULT NULL,`created_at`  DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,`product_name_id` int(250) DEFAULT NULL,`supplier_name_id` int(250) NOT NULL,PRIMARY KEY (`id`),FOREIGN KEY (`product_name_id`) REFERENCES `products_master` (`id`), FOREIGN KEY (`supplier_name_id`) REFERENCES `supplier_master` (`id`));')
+                # with connection.cursor() as cursor:
+                #     cursor.execute(
+                #         f'CREATE TABLE If NOT Exists {username}_Invoice(`invoice_id` Varchar(250), `invoice_no` Varchar(250),`po_name` Varchar(250), `file` LONGBLOB, `supplier_name`  Varchar(250),`status` Varchar(250), `is active` boolean not null default 1 ,`created_at` DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL ,PRIMARY KEY(`invoice_id`));')
+                #     cursor.execute(
+                #         f'CREATE TABLE If NOT Exists {username}_purchase_order(`id` varchar(250) NOT NULL,`po_id` varchar(250) NOT NULL,`po_name` varchar(250) DEFAULT NULL,`product_qty` int NOT NULL,`status` varchar(250) DEFAULT NULL,`created_at`  DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,`product_name_id` int(250) DEFAULT NULL,`supplier_name_id` int(250) NOT NULL,PRIMARY KEY (`id`),FOREIGN KEY (`product_name_id`) REFERENCES `products_master` (`id`), FOREIGN KEY (`supplier_name_id`) REFERENCES `supplier_master` (`id`));')
                 to = email
                 obj = EmailTemplateModel.objects.filter(
                     key='supplier_register').first()
