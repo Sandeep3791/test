@@ -19,7 +19,7 @@
         <div class="card card-body card_shadow mb-4">
             <h2 class="h3 ">Add Category</h2>
             <hr class="mb-4 ">
-            <form action="{% url 'wayrem_admin:createcategory' %}" method="POST" enctype="multipart/form-data" validate>
+            <form action="{% url 'wayrem_admin:createcategory' %}" method="POST" enctype="multipart/form-data" >
               {% csrf_token %}
                 <div class="row">
                    

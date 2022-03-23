@@ -408,4 +408,4 @@ def confirm_delivery(request, id=None):
     po_name = po[0].po_name
     po_log = PO_log(po=po_name, status="confirm delivered")
     po_log.save()
-    return redirect('wayrem_admin:polist')
+    return redirect('wayrem_admin:viewpo', id)

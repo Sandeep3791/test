@@ -9,11 +9,12 @@ class CategoryCreateForm(forms.ModelForm):
         fields = ("name", "image", "tag", "margin")
 
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control'}),
+            'name': forms.TextInput(attrs={'class': 'form-control', 'maxlength':35 }),
             'margin': forms.TextInput(attrs={'class': 'form-control'}),
             'image': forms.FileInput(attrs={'class': 'form--control-select'}),
             'tag': forms.Textarea(attrs={'class': 'form-control', 'rows': '3'})
         }
+    
 
 
 UNIT = (
@@ -36,7 +37,7 @@ choices_role = get_category
 
 class CategoryForm(forms.Form):
     name = forms.CharField(widget=forms.TextInput(
-        attrs={'class': "form-control"}))
+        attrs={'class': "form-control", 'maxlength': 35}))
     margin = forms.CharField(widget=forms.NumberInput(
         attrs={'class': "form-control"}), initial=0)
     unit = forms.CharField(widget=forms.Select(choices=UNIT, attrs={

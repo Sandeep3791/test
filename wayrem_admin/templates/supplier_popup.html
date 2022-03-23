@@ -35,7 +35,7 @@
         </div>
     </div>
     <div class="row rounded mx-auto shadow-sm bg-white w-50 mt-5">
-        <div class="col-xl-4 col-lg-4   other_info view_border">
+        <div class="col-xl-4 col-lg-6 other_info ">
             <div class="">
                 <div class="row">
                     <div class="col-12 text_value">
@@ -54,9 +54,7 @@
                     {% comment %} <div class="col-6 text_value">
                         <button class="btn bg-primary text-white ki_btn">Edit</button>
                     </div> {% endcomment %}
-                    <div class="col-6 text_value">
-                        <a href="{% url 'wayrem_admin:supplierlist' %}"  class="btn bg-danger text-white ki_btn">Back</a>
-                    </div>
+                    
                     <!-- <div class="col-12 text_value">
                         <label for="">Role</label>
 
@@ -89,6 +87,10 @@
                 </div>
 
             </div>
+        </div>
+        <hr>
+        <div class="col-2 text_value ">
+            <a href="{% url 'wayrem_admin:supplierlist' %}"  class="btn bg-danger text-white ki_btn ">Back</a>
         </div>
     </div>
 </div>

@@ -119,7 +119,7 @@ def update_categories(request, id=None, *args, **kwargs):
     form = CategoryUpdateForm(instance=user, initial={                              
                               'parent_category': user.parent                              
                               })
-    return render(request, 'update_category.html', {'form': form, 'id': user.id})
+    return render(request, 'update_category.html', {'form': form, 'id': user.id, 'user':user})
 
 
 @role_required('Categories View')
