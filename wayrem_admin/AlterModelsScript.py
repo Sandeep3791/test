@@ -1,18 +1,17 @@
-from http.client import HTTPResponse
-from django.core.files import File
-from django.core.management import call_command
-import requests, json
+import requests
+import json
 from wayrem.settings import BASE_DIR
 import os
 from wayrem_admin.models import Supplier
-from django.http import HttpResponse, JsonResponse, request, HttpResponseRedirect
+from django.http import HttpResponse
 from wayrem import constant
+
 
 def AlterModelsCreate(request, key):
     if key == "mnbvcjhgdsndckvnifhvkmvg":
         models = CreateModels()
         return HttpResponse(models)
-        
+
     else:
         return HttpResponse("Enter valied key")
 
@@ -20,7 +19,8 @@ def AlterModelsCreate(request, key):
 def CreateModels():
 
     old_name = os.path.join(BASE_DIR, "wayrem_admin/models/SupplierModels.py")
-    new_name = os.path.join(BASE_DIR, "wayrem_admin/models/New_SupplierModels.txt")
+    new_name = os.path.join(
+        BASE_DIR, "wayrem_admin/models/New_SupplierModels.txt")
     # new_name = r"./models/New_Models.txt"
 
     if os.path.isfile(new_name):
@@ -29,7 +29,6 @@ def CreateModels():
     os.rename(old_name, new_name)
     file = old_name
     open(file, 'a').close()
-
 
     w = open(old_name, 'a')
     w.write("""
@@ -91,7 +90,7 @@ upload_storage = FileSystemStorage(
 
 
     """)
-    supplierData = Supplier.objects.all().order_by("-pk")
+    supplierData = Supplier.objects.all()
     for suppliers in supplierData:
         w.write("""
 #------------------supplier_{0} models-----------------------------------------------------------------------------
@@ -150,31 +149,23 @@ class PurchaseOrder_{0}(models.Model):
     w.close
     try:
         url = constant.WAYREM_SUPPLIER_BASE_URL + "AlterModelsCreateSupplier"
-        payload={'key': "mnbvcjhgdsndckvnifhvkmvgwer"}
+        payload = {'key': "mnbvcjhgdsndckvnifhvkmvgwer"}
         body = json.dumps(payload)
 
         headers = {
-        'Content-Type': 'application/json',
-        'Cookie': 'csrftoken=X3RzQAn8PQbOGQLRHFEPBRkg3PMqDQttqe1VMXe1iGHhtvQ6hHmfz8VK18BriYNV'
+            'Content-Type': 'application/json',
+            'Cookie': 'csrftoken=X3RzQAn8PQbOGQLRHFEPBRkg3PMqDQttqe1VMXe1iGHhtvQ6hHmfz8VK18BriYNV'
         }
-        response = requests.request("POST", url, headers=headers,data=body)
+        response = requests.request("POST", url, headers=headers, data=body)
         msg = response
+        file = str(BASE_DIR) + "/newmigration"
+        print(os.path.exists(file))
+        with open(file, mode='a'):
+            pass
+        print(os.path.exists(file))
         # call_command('makemigrations')
         # call_command('migrate')
     except Exception as e:
 
         msg = e
     return msg
-
-
-
-
-
-
-
-
-
-
-
-
-
