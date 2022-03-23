@@ -54,4 +54,3 @@ TYPE = (
 
 upload_storage = FileSystemStorage(
     location='/opt/app/wayrem-admin-backend/media/common_folder')
-
