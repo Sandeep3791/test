@@ -77,7 +77,31 @@
         })
     });
 </script>
-
+<script>
+    function supplierprodFunc(id){
+        
+        const url="{% url 'wayrem_admin:allproductsupplier' %}";
+        $.ajax({
+            
+            url:url,
+            data: {
+                        'supplierid': id       // add the country id to the GET parameters
+                    },
+            success:function(data){
+                console.log(data)
+            $("#test"+id).html(data);
+            
+            $("#supplier"+id).modal('show');
+            },
+        });
+    
+        }
+        $(document).ready(function(){
+        
+            $('#supplier').modal('hide');
+        
+        });
+</script>
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
