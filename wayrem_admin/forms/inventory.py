@@ -15,22 +15,17 @@ choices_products = get_products
 
 
 class InventoryForm(forms.ModelForm):
-    
-    product_det=forms.CharField(required=False)
     product=forms.ModelChoiceField(queryset=Products.objects.all(), empty_label=None, widget=forms.Select(attrs={'class': 'form-select'}))
     inventory_type=forms.ModelChoiceField(queryset=InventoryType.objects.filter(id=1), empty_label=None, widget=forms.Select(attrs={'class': 'form-select'}))
-    
-    
     def __init__(self, *args, **kwargs):
         super(InventoryForm, self).__init__(*args, **kwargs)
         self.fields['product'].label_from_instance = lambda instance: instance.SKU + " - " +instance.name
 
     class Meta:
         model = Inventory
-        fields = ("product_det","product", "quantity",'inventory_type')
+        fields = ("product", "quantity",'inventory_type')
         widgets = {
             'quantity': forms.NumberInput(attrs={'min':'0', 'step':'1', 'class': 'form-control'}),
-            'product_det':forms.TextInput(attrs={'class': 'form-control prod_det'}),
         }
 
 class InventoryViewForm(forms.ModelForm):

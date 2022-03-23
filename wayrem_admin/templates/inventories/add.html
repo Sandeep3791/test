@@ -31,7 +31,7 @@
                             <div class="col-md-12 mb-2">
                                 <div>
                                     <label for="name">Product  <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.product.errors | striptags}}</em></span></label>
-                                    {{form.product_det|add_class:" prod_det d-none"}}
+                                    
                                     {{form.product|add_class:"form-control productSelect "}}
                                     <!-- d-none -->
                                     <div class="input-group" id="name_error_message" style="color: #d12525;"></div>
@@ -70,33 +70,8 @@
 {% endblock content %}
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
-<script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
-<link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
 
 <script>
-    //$('.productSelect').select2()
-    $( document ).ready(function() {
-        $(document).on('keyup','.prod_det',function(){
-            $(".prod_det").autocomplete({
-                source: function( request, response ) {
-                    $.ajax( {
-                    url: "http://localhost:8000/inventories/product_det_autocomplete/?q=100",
-                    dataType: "json",
-                    data: {
-                        term: request.term
-                    },
-                    success: function( data ) {
-                        response( data );
-                    }
-                    } );
-                },
-            minLength: 4,
-            })
-        })
-
-        
-    });
-
      $(function () {
             var error_n = false;
             var error_d = false;
