@@ -1,0 +1,393 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% load util_tags  %}
+{% load template_tags %}
+
+{% block title %} View Customer {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+{% block content %}
+<div class="dashboard_content_inner">
+    {{form.media}}
+    <div class="topbar_pages padding-0">
+        <h4 class="text-title">View Customer</h2>
+        <div class="breadcrumb-section">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb padding-left-0">
+                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:customerslist' %}"><span class="sidebar-icon"><span class="fas fa-users"></span></span> Customers</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">View Customer Template</li>
+                </ol>
+            </nav>
+        </div> 
+    </div>
+    <div class="justify-content-center form-bg-image mt-5">
+        <div class="col-12 col-xl-12">
+            <div class="card card-body card_shadow mb-4">
+                
+                <div class="card-body pb-5">                            
+                    <div class="container-fluid">
+                        
+                            <h5 class="mb-4">Personal Information</h5>
+                            <div class="row">   
+                                <div class="col-md-6">
+                                    <div class="row"> 
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-4 text-left">
+                                                <label class="" for="email">First Name</label>
+                                                <div class="input-group"> 
+                                                    <input type="text" value="{{user.first_name}}" disabled class="form-control" 
+                                                    aria-describedby="emailHelp">                                                                                                                                          
+                                                </div>                                            
+                                            </div> 
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-4 text-left">
+                                                <label class="" for="email">Last Name</label>
+                                                <div class="input-group"> 
+                                                    <input type="text" value="{{user.last_name}}" disabled class="form-control" 
+                                                    aria-describedby="emailHelp">
+                                                </div>         
+                                            </div>
+                                        </div> 
+                                    </div>
+                                    <div class="row"> 
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-4 text-left">
+                                                <label class="" for="email">Email</label>
+                                                <div class="input-group"> 
+                                                    <input type="text" value="{{user.email}}" disabled class="form-control" 
+                                                     aria-describedby="emailHelp">                                                                                                                                          
+                                                </div>                                            
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="form-group mb-4 text-left">
+                                                <label class="" for="email">Contact</label>
+                                                <div class="input-group"> 
+                                                    <input type="text" value="{{user.contact}}" disabled class="form-control" 
+                                                     aria-describedby="emailHelp">                                                                                                                                          
+                                                </div>                                            
+                                            </div>
+                                        </div> 
+                                    </div>
+                                    
+                                </div> 
+                                <div class="col-md-6">
+                                    <img src="http://admin-uat.wayrem.com/media/common_folder/{% image_tag user.profile_pic %}" class="user-avatar large-avatar rounded-circle mx-auto  mb-4" alt="Neil Portrait">
+                                </div>
+                               
+                            </div>
+     
+                            
+                            <div class="row">                               
+                                <div class="col-md-6">
+                                    <div class="form-group mb-4 text-left">
+                                        <label class="" for="email">Status</label>
+                                        <div class="input-group">   
+                                            {% if user.verification_status %}                                              
+                                                <input type="text" value="{{user.verification_status|title}}" disabled class="form-control" aria-describedby="emailHelp">  
+                                            {% else %}
+                                                <input type="text" value="Waiting For Approval" disabled class="form-control"  aria-describedby="emailHelp">  
+                                            {% endif %}                                                                                                                                       
+                                        </div>                                            
+                                    </div>
+                                </div> 
+    
+                                <div class="col-md-6">
+                                    <div class="form-group mb-4 text-left">
+                                        <label class="" for="email">About</label>
+                                        <div class="input-group"> 
+                                            <input type="text" value="{{user.about}}" disabled class="form-control" 
+                                             aria-describedby="emailHelp">                                                                                                                                          
+                                        </div>                                            
+                                    </div>  
+                                </div> 
+                            </div>
+                            
+                            <div class="row">   
+                                <div class="col-md-6">
+                                    <div class="form-group mb-4 text-left">
+                                        <label class="" for="email">Business Type</label>
+                                        <div class="input-group"> 
+                                            <input type="text" value="{{user.business_type}}" disabled class="form-control" 
+                                             aria-describedby="emailHelp">                                                                                                                                          
+                                        </div>                                            
+                                    </div>  
+                                </div> 
+                                <div class="col-md-6">
+                                    <div class="form-group mb-4 text-left">
+                                        <label class="" for="email">Business Name</label>
+                                        <div class="input-group"> 
+                                            <input type="text" value="{{user.business_name}}" disabled class="form-control" 
+                                             aria-describedby="emailHelp">                                                                                                                                          
+                                        </div>                                            
+                                    </div>
+                                </div> 
+                            </div> 
+    
+                            <div class="row">   
+                                <div class="col-md-6">
+                                    <div class="form-group mb-4 text-left">
+                                        <label class="" for="email">Registration Number</label>
+                                        <div class="input-group"> 
+                                            <input type="text" value="{{user.registration_number}}" disabled class="form-control" 
+                                             aria-describedby="emailHelp">                                                                                                                                          
+                                        </div>                                            
+                                    </div>  
+                                </div> 
+                                <div class="col-md-6">
+                                    <div class="form-group mb-4 text-left">
+                                        <label class="" for="email">Tax Number</label>
+                                        <div class="input-group"> 
+                                            <input type="text" value="{{user.tax_number}}" disabled class="form-control" 
+                                             aria-describedby="emailHelp">                                                                                                                                          
+                                        </div>                                            
+                                    </div>
+                                </div> 
+                            </div>                      
+                    </div>                                                        
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="justify-content-center form-bg-image mt-5">
+        <div class="col-12 col-xl-12">
+            <div class="card card-body card_shadow mb-4">
+                
+                <div class="card-body pb-5">                            
+                    <div class="container-fluid">
+                                                     
+                       
+                            <h5 class="mb-4">Delivery Address</h5>
+                            <div class="row">   
+                                <div class="col-md-6">
+                                    <div class="form-group mb-4 text-left">
+                                        <label class="" for="email">Delivery House No.Building Name</label>
+                                        <div class="input-group"> 
+                                            <input type="text" value="{{user.delivery_house_no_building_name}}" disabled class="form-control" 
+                                             aria-describedby="emailHelp">                                                                                                                                          
+                                        </div>                                            
+                                    </div>  
+                                </div> 
+                                <div class="col-md-6">
+                                    <div class="form-group mb-4 text-left">
+                                        <label class="" for="email">Delivery Road Name Area</label>
+                                        <div class="input-group">                                                 
+                                            <input type="text" value="{{user.delivery_road_name_Area}}" disabled class="form-control" 
+                                             aria-describedby="emailHelp">                                                                                                                                             
+                                        </div>                                            
+                                    </div>
+                                </div> 
+                            </div> 
+    
+                            <div class="row">   
+                                <div class="col-md-6">
+                                    <div class="form-group mb-4 text-left">
+                                        <label class="" for="email">Delivery Landmark</label>
+                                        <div class="input-group"> 
+                                            <input type="text" value="{{user.delivery_landmark}}" disabled class="form-control" 
+                                             aria-describedby="emailHelp">                                                                                                                                          
+                                        </div>                                            
+                                    </div>  
+                                </div> 
+                                <div class="col-md-6">
+                                    <div class="form-group mb-4 text-left">
+                                        <label class="" for="email">Delivery Country</label>
+                                        <div class="input-group">                                                 
+                                            <input type="text" value="{{user.delivery_country}}" disabled class="form-control" 
+                                             aria-describedby="emailHelp">                                                                                                                                             
+                                        </div>                                            
+                                    </div>
+                                </div> 
+                                <div class="row">   
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-4 text-left">
+                                            <label class="" for="email">Delivery Region</label>
+                                            <div class="input-group"> 
+                                                <input type="text" value="{{user.delivery_region}}" disabled class="form-control" 
+                                                 aria-describedby="emailHelp">                                                                                                                                          
+                                            </div>                                            
+                                        </div>  
+                                    </div> 
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-4 text-left">
+                                            <label class="" for="email">Delivery Town City</label>
+                                            <div class="input-group">                                                 
+                                                <input type="text" value="{{user.delivery_town_city}}" disabled class="form-control" 
+                                                 aria-describedby="emailHelp">                                                                                                                                             
+                                            </div>                                            
+                                        </div>
+                                    </div> 
+                                </div> 
+
+                                <div class="row">   
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-4 text-left">
+                                            <label class="" for="email">Delivery Address Latitude</label>
+                                            <div class="input-group"> 
+                                                <input type="text" value="{{user.deliveryAddress_latitude}}" disabled class="form-control" 
+                                                 aria-describedby="emailHelp">                                                                                                                                          
+                                            </div>                                            
+                                        </div>  
+                                    </div> 
+                                    <div class="col-md-6">
+                                        <div class="form-group mb-4 text-left">
+                                            <label class="" for="email">Delivery Address Longitude</label>
+                                            <div class="input-group">                                                 
+                                                <input type="text" value="{{user.deliveryAddress_longitude}}" disabled class="form-control" 
+                                                 aria-describedby="emailHelp">                                                                                                                                             
+                                            </div>                                            
+                                        </div>
+                                    </div> 
+                                </div> 
+                            </div> 
+
+                            <div>
+
+                            </div>
+                        
+                    </div>                                                        
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="justify-content-center form-bg-image mt-5">
+        <div class="col-12 col-xl-12">
+            <div class="card card-body card_shadow mb-4">
+                
+                <div class="card-body pb-5">                            
+                    <div class="container-fluid">
+                                                     
+                        <h5 class="mb-4">Billing Detail</h5>
+                        <div class="row">   
+                            <div class="col-md-6">
+                                <div class="form-group mb-4 text-left">
+                                    <label class="" for="email">Billing House No. Building Name</label>
+                                    <div class="input-group"> 
+                                        <input type="text" value="{{user.billing_house_no_building_name}}" disabled class="form-control" 
+                                         aria-describedby="emailHelp">                                                                                                                                          
+                                    </div>                                            
+                                </div>  
+                            </div> 
+                            <div class="col-md-6">
+                                <div class="form-group mb-4 text-left">
+                                    <label class="" for="email">Billing Road Name Area</label>
+                                    <div class="input-group">                                                 
+                                        <input type="text" value="{{user.billing_road_name_Area}}" disabled class="form-control" 
+                                         aria-describedby="emailHelp">                                                                                                                                             
+                                    </div>                                            
+                                </div>
+                            </div> 
+                        </div> 
+
+                        <div class="row">   
+                            <div class="col-md-6">
+                                <div class="form-group mb-4 text-left">
+                                    <label class="" for="email">Billing Landmark</label>
+                                    <div class="input-group"> 
+                                        <input type="text" value="{{user.billing_landmark}}" disabled class="form-control" 
+                                         aria-describedby="emailHelp">                                                                                                                                          
+                                    </div>                                            
+                                </div>  
+                            </div> 
+                            <div class="col-md-6">
+                                <div class="form-group mb-4 text-left">
+                                    <label class="" for="email">Billing Country</label>
+                                    <div class="input-group">                                                 
+                                        <input type="text" value="{{user.billing_country}}" disabled class="form-control" 
+                                         aria-describedby="emailHelp">                                                                                                                                             
+                                    </div>                                            
+                                </div>
+                            </div> 
+                        </div> 
+
+                        <div class="row">   
+                            <div class="col-md-6">
+                                <div class="form-group mb-4 text-left">
+                                    <label class="" for="email">Billing Region</label>
+                                    <div class="input-group"> 
+                                        <input type="text" value="{{user.billing_region}}" disabled class="form-control" 
+                                         aria-describedby="emailHelp">                                                                                                                                          
+                                    </div>                                            
+                                </div>  
+                            </div> 
+                            <div class="col-md-6">
+                                <div class="form-group mb-4 text-left">
+                                    <label class="" for="email">Billing Town City</label>
+                                    <div class="input-group">                                                 
+                                        <input type="text" value="{{user.billing_town_city}}" disabled class="form-control" 
+                                         aria-describedby="emailHelp">                                                                                                                                             
+                                    </div>                                            
+                                </div>
+                            </div> 
+                        </div>                        
+
+                        <div class="row">   
+                            <div class="col-md-6">
+                                <div class="form-group mb-4 text-left">
+                                    <label class="" for="email">Billling Address Latitude</label>
+                                    <div class="input-group"> 
+                                        <input type="text" value="{{user.billlingAddress_Latitude}}" disabled class="form-control" 
+                                         aria-describedby="emailHelp">                                                                                                                                          
+                                    </div>                                            
+                                </div>  
+                            </div> 
+                            <div class="col-md-6">
+                                <div class="form-group mb-4 text-left">
+                                    <label class="" for="email">Billing Address Longitude</label>
+                                    <div class="input-group">                                                 
+                                        <input type="text" value="{{user.billingAddress_longitude}}" disabled class="form-control" 
+                                         aria-describedby="emailHelp">                                                                                                                                             
+                                    </div>                                            
+                                </div>
+                            </div>
+                        </div> 
+                    </div>
+                </div>                                                        
+            </div>
+        </div>
+    </div>
+    <div class="justify-content-center form-bg-image mt-5">
+        <div class="col-12 col-xl-12">
+            <div class="card card-body card_shadow mb-4">
+                <div class="card-body pb-5">                            
+                    <div class="container-fluid">
+                        <h5 class="mb-4">Registration Docs</h5>
+                        <div class="row">   
+                            <div class="col-md-6">
+                                <div class="form-group mb-4 text-left">
+                                    <label class="" for="email">Registration Document</label>
+                                    <div class="input-group"> 
+                                        <a href="http://admin-uat.wayrem.com/media/common_folder/{% image_tag user.registration_docs_path %}">View</a>                                                                                                                                          
+                                    </div>                                            
+                                </div>  
+                            </div> 
+                            <div class="col-md-6">
+                                <div class="form-group mb-4 text-left">
+                                    <label class="" for="email">Tax document:</label>
+                                    <div class="input-group">
+                                        <a href="http://admin-stg.wayrem.com/media/common_folder/{% image_tag user.tax_docs_path %}">View</a>
+                                    </div>                                            
+                                </div>
+                            </div> 
+                        </div> 
+                        <div class="mt-4">
+                            <a href="{% url 'wayrem_admin:customerslist' %}" class="btn btn-block btn-primary">Cancel</a>
+                            {% if user.verification_status == "waiting for approval" %} 
+                            <a href="{% url 'wayrem_admin:customer_verification' user.id %}?status=active" class="btn btn-block btn-success">Approve</a>
+                            {% endif %}
+                        </div>
+                    </div>                                                        
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

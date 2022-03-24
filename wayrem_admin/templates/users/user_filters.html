@@ -1,0 +1,30 @@
+<div class="subheader row align-items-center justify-content-between">
+    <div class="col-xl-5 col-lg-5 col-5">
+        <div class="col-xl-4 col-lg-4 col-md-4">
+            <a class="btn anchor_btn ps-0 pe-0"
+                    href="{% url 'wayrem_admin:sub-admin-register' %}">
+                    <button class="btn btn-success create_new">Create New User</button>
+            </a>
+        </div>
+    </div>
+
+    <div class="col-xl-4 col-lg-4 col-8 my-2">
+        <div class="row d-flex align-items-center">
+            <div class="col-xl-12 col-lg-3 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 " style="height:40px;">
+            <form method="GET">    
+                <div class="input-group subadmin_search">
+                    {{filter_form.user}}
+                    <button type="submit" class="btn btn-dark border-0 col-xl-3 col-md-5 col-12 fas fa-search"> Search</button>
+                </div>
+            </form>
+            </div>
+        </div>
+
+    </div>
+
+    {% comment %} <div class="col-xl-2 col-lg-2 col-md-2 padding-right-0 m-2 justify-content-end d-flex">
+                <a class=" btn btn-primary col-xl-12 col-lg-12" data-bs-toggle="modal" data-bs-target="#advance_filter" href="#">Filter <img src="/static/assets/img/logo/filter1.svg" height="" width=""> </a>
+    </div> {% endcomment %}
+</div>
+
+

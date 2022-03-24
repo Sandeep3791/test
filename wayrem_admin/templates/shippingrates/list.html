@@ -1,0 +1,103 @@
+{% extends "layouts/base.html" %}
+{% load static  %}
+{% block title %} Orders {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+{% endblock head %}
+{% block content %}
+<div class="dashboard_content_inner">
+    <div class="topbar_pages">
+        <h4 class="text-title">Shipping Rates</h2>
+        <div class="breadcrumb-section">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb padding-left-0">
+                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
+                    <li class="breadcrumb-item"><span class="sidebar-icon"><i class="fas fa-box-open"></i></span> <span class="sidebar-text">Inventory & Warehouses &nbsp; </span></li>
+                    <li class="breadcrumb-item active" aria-current="page"> Shipping Rates</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <div class="table-settings mb-4">
+          {% include "shippingrates/shippingrates_filter.html" %} 
+    </div>
+    
+    <div class="alert-container"></div>
+    {% if messages %}
+    {% for message in messages %}
+    <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
+        <strong> {{ message }}!</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    <div class="card card-body border-light shadow-sm table-wrapper table-responsive pt-0">
+        {% include "shippingrates/grid_shippingrates.html" %} 
+        {% include "shippingrates/pagination.html" %}    
+    </div>
+
+    <div class="modal fade" id="orderpopup" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Update User Shift</h5>
+                </div>
+                <div class="modal-body"></div>
+            </div>     
+        </div>
+    </div>
+    
+</div>
+
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<style>
+.create_shipping_rates a{width:171px}
+</style>
+  <script>
+    $(document).ready(function(){
+        $('.orderstatus').click(function(){
+            order_status_id=$(this).data("id");
+            var url="/orders/updateorderstatus/"+order_status_id;
+            $.ajax({
+                url: url,
+                type: 'GET',
+                cache: false,
+                success: function(data) {
+                    $('#orderpopup').modal('show');
+                    $("#orderpopup").html(data);
+                }
+            })
+            
+        })
+
+    })   
+
+$("#orderpopup").on("click",".order_submit_success",function(e){
+         url = $("#orderpopup #oderform").attr("action")
+		 type_form=$("#orderpopup #oderform").attr("method")
+	   	 data_ser=$("#orderpopup #oderform").serialize()
+         order_status_id=$(this).data("id");
+         $.ajax({
+	            type: type_form,
+	            url: url,
+	            data: data_ser,
+	            cache: false,
+	            success: function (data) {
+                     $('#orderpopup').modal('hide');
+                     $(".status_"+order_status_id).html(data);
+                     var alert_message='<div class="alert-container alert alert-success alert-dismissible fade show" role="alert" ><strong> Order status Updated!!</strong><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
+                     $(".alert-container").html(alert_message);   
+                     $(".alert-container").fadeOut(2500);
+                }
+         })
+    })
+</script>
+{% endblock javascripts %}

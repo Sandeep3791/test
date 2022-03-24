@@ -1,0 +1,94 @@
+   
+   <nav class="navbar navbar-top navbar-expand ps-0 pe-2 pb-3 pt-3 bg-white" id="topbar_content">
+        <div class="container-fluid dashboard_content_inner">
+          <div class="d-flex justify-content-between w-100" id="navbarSupportedContent">
+
+
+            {% comment %} <label class="subadmin_search d-flex align-items-center col-xl-4 col-lg-3 col-md-0 ms-4 mb-0">
+              <input class="nav_searchbar" type="search" placeholder="Search" style="">
+              <!-- <img src="images/Search.svg" alt=""> -->
+             </label> {% endcomment %}
+
+
+            <div class="d-flex align-items-center">
+              <!-- Search form -->
+              <form class="navbar-search form-inline" id="navbar-search-main">
+                <div class="input-group input-group-merge search-bar">
+                    <!-- <span class="input-group-text" id="topbar-addon"><span class="fas fa-search"></span></span> -->
+                    <!-- <input type="text" class="form-control" id="topbarInputIconLeft" placeholder="Search" aria-label="Search" aria-describedby="topbar-addon"> -->
+                </div>
+              </form>
+            </div>
+            <!-- Navbar links -->
+            <ul class="navbar-nav align-items-center me-3">
+              
+              <li class="nav-item dropdown">
+                <a class="nav-link text-dark me-lg-3 icon-notifications dropdown-toggle" data-unread-notifications="true" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  <span class="icon icon-sm">
+                    <span class="fas fa-bell bell-shake"></span>
+                    <span class="icon-badge rounded-circle unread-notifications"></span>
+                  </span>
+                </a> 
+                <div class="dropdown-menu dashboard-dropdown dropdown-menu-lg dropdown-menu-center mt-2 py-0">
+                  <div class="list-group list-group-flush">
+                    <a href="#" class="text-center text-primary fw-bold border-bottom border-light py-3">Notifications</a>
+                    {% if not request.notifications %}
+                    <div class= "">
+                      <p class="text-center my-2">No Notifications</p>
+                    </div>
+                     {% endif %}
+                    <div class= "{% if request.notifications %}Notifications_list {% endif %}">
+                    {% for notification in request.notifications %}
+                    <a href="{% url 'wayrem_admin:notification-delete' notification.id %}" class="list-group-item list-group-item-action border-bottom border-light">
+                      <div class="row align-items-center">
+                          <div class="col-auto">
+                            <!-- Avatar -->
+                            <img alt="Image placeholder" src="/static/assets/img/team/profile-picture-1.jpg" class="user-avatar lg-avatar rounded-circle">
+                          </div>
+                          <div class="col ps-0 ms-2">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                  <h4 class="h6 mb-0 text-small">{{notification.supplier.company_name}}</h4>
+                                </div>
+                                <div class="text-end">
+                                  <small class="text-danger">{{notification.created_at|time:"h:i a"}}</small>
+                                </div>
+                            </div>
+                            <p class="font-small mt-1 mb-0">{{notification.message}}</p>
+                          </div>
+                      </div>
+                    </a>
+                    {% endfor %}
+                    </div>
+                    <!-- <a href="#" class="dropdown-item text-center text-primary fw-bold rounded-bottom py-3">View all</a> -->
+                  </div>
+                </div>
+              </li>
+              
+              
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle pt-1 px-0" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                  <div class="media d-flex align-items-center">
+                    {% comment %} <img class="user-avatar md-avatar rounded-circle" alt="Image placeholder" src="/static/assets/img/team/profile-picture-2.jpg"> {% endcomment %}
+                    <div class="media-body ms-2 text-dark align-items-center d-none d-lg-block">
+                      <span class="mb-0 font-small fw-bold">
+                        <strong>{{ request.user.username| title }} &nbsp;</strong>
+                      </span>
+                    <span class="fas fa-user"></span>
+                    </div>
+                  </div>
+                </a>
+                <div class="dropdown-menu dashboard-dropdown dropdown-menu-end mt-2 py-0">
+                    <a class="dropdown-item rounded-top fw-bold" href="{% url 'wayrem_admin:updateprofile' %}">
+                      <span class="far fa-user-circle"></span>My Profile</a>
+                    <!-- <a class="dropdown-item fw-bold" href="/settings.html"><span class="fas fa-cog"></span>Settings</a> -->
+                    <div role="separator" class="dropdown-divider my-0"></div>
+                    <a class="dropdown-item rounded-bottom fw-bold" href="{% url 'wayrem_admin:logout' %}">
+                      <span class="fas fa-sign-out-alt text-danger"></span>Logout</a>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+    </nav>
+    

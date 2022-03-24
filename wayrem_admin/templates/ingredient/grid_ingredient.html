@@ -1,0 +1,60 @@
+{% load util_tags  %}
+{% block content %}
+<table class="table table-hover text-center" id="filtertable">
+    <thead class="">
+        <tr>
+            <th scope="col">Ingredient Name</th>
+            <th scope="col">Ingredient Status</th>
+            <th scope="col">Actions</th>
+        </tr>
+    </thead>
+    <tbody class="bg-white">
+        {% for ingre in list %}
+
+        <tr>
+            <td>{{ingre.ingredients_name}}</td>
+            <td>{{ingre.ingredients_status}}</td>
+            <td>
+                <div class="btn-group">
+                    <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="icon icon-sm">
+                            <span class="fas fa-ellipsis-h icon-dark"></span>
+                        </span>
+                        <span class="sr-only">Toggle Dropdown</span>
+                    </button>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="{% url 'wayrem_admin:updateingredients' ingre.id %}"><span class="fas fa-edit mr-2"></span>Edit</a>
+                        <a class="dropdown-item text-danger"  data-bs-toggle="modal" data-bs-target="#deleteModal{{ingre.id}}" href="#"> <span class="fas fa-trash-alt mr-2"></span>Remove</a>
+                    </div>
+                </div>
+                <!-- Modal -->
+                <div class="modal fade" id="deleteModal{{ingre.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Delete {{ingre.ingredients_name | title}}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                Are you sure want to delete {{ingre.ingredients_name | title}} ?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+                                <form method="POST" action="{% url 'wayrem_admin:deleteingredients' %}">
+                                    {% csrf_token %}
+                                    <input type="hidden" value="{{ingre.id}}" name="ingredients_id">
+                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+            
+        </tr>
+        {% endfor %}
+
+    </tbody>
+</table>
+{% endblock content %}

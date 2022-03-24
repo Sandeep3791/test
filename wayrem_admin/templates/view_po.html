@@ -1,0 +1,105 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %} Purchase Order {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+<div class="dashboard_content_inner">
+    <div class="topbar_pages">
+            <h4 class="text-title">View Purchase Order</h2>
+            <div class="breadcrumb-section">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb padding-left-0">
+                        <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:polist' %}"><span class="sidebar-icon"><span class="fas fa-file-alt"></span></span> Purchase Order</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">View Purchase Order</li>
+                    </ol>
+                </nav>
+            </div>
+    </div>
+    <div class="row justify-content-center form-bg-image mt-5">
+        <div class="col-12 d-flex align-items-center justify-content-center">
+            <div class="bg-white shadow-soft border rounded border-light p-4 p-lg-5 w-100 ">
+                <div class="text-center text-md-center mb-4 mt-md-0">
+                    <h1 class="mb-0 h3">
+                        {% comment %} <img src="{% static '/assets/img/logo/Wayrem_logo..svg'%}"
+                            style="width:80%" alt=""> {% endcomment %}
+                    </h1>
+                    <br />
+                    <p>
+                        {% if messages %}
+                        {% for message in messages %}
+                    <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show"
+                        {% endif %} role="alert">
+                        <strong> {{ message }}</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"
+                            aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    </p>
+                    <div class="row">
+                        <div class="col">
+                            <h5>Purchase Order :</h5>
+                            <p>{{po.0.po_name}}</p>
+                        </div>
+                        <div class="col">
+                            <h5>Supplier :</h5>
+                            <p>{{po.0.supplier_name}}</p>
+                        </div>
+                    </div>
+                    <div class="container mt-4">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">S. No.</th>
+                                    <th scope="col">Product</th>
+                                    <th scope="col">Quantity</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            {% for i in po %}
+                                <tr>
+                                    <th scope="row">{{forloop.counter}}</th>
+                                    <td>{{i.product_name}}</td>
+                                    <td>{{i.product_qty}}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="text-right">
+                        <a href="{% url 'wayrem_admin:polist' %}" class="btn btn-dark my-3" >Back</a>
+                        <a href="{% url 'wayrem_admin:pdf_po' %}?po_id={{po.0.po_id}}" class="btn btn-danger my-3" >Download</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<script src="https://code.jquery.com/jquery-2.2.4.js"></script>
+<script>
+
+    $('#code').keyup(function () {
+        if (this.value.length >= 12) {
+            $('#subHere').click();
+        }
+    });
+</script>
+
+<script>
+    document.addEventListener('keydown', function (event) {
+        if (event.keyCode == 13 || event.keyCode == 17 || event.keyCode == 74)
+            event.preventDefault();
+    });
+</script>
+{% endblock javascripts %}

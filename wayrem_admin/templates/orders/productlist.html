@@ -1,0 +1,611 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% block title %} Products List {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+{% block head %}
+<script src="{% static 'assets/js/datatable_ajax.js' %}"></script>
+<link rel="stylesheet" href="{% static 'assets/css/datatable.css' %}">
+<link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+<script src="{% static 'assets/js/datatable_1.js' %}"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+<script src="{% static 'assets/js/datatable.js' %}"></script>
+{% comment %} 
+    <script src=  "https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.js">  </script>  
+    <script src= "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.js">  </script>  
+    <link href= "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/ui-lightness/jquery-ui.css" rel="stylesheet" type="text/css" />   {% endcomment %}
+{% endblock head %}
+
+{% block content %}
+
+<div class="filter_width p-4 dropdown_content" id="myProfile">
+   
+</div>
+<div class="modal fade" id="advance_filter" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Advance Filter</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="GET">
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
+                                <label for="inputPassword4">Product Name</label>
+                            </div>
+                            <div class="col-12 input_border">
+                                <input type="text" id="tags" name="product_name" class="form-control p-2">
+                            </div>
+                            <script>
+                                $( function() {
+                                  var availableTags = [
+                                      {% for i in productslist %}
+                                          "{{i.name}}",
+                                      {% endfor %}
+                                  ];
+                                  $( "#tags" ).autocomplete({
+                                    source: availableTags
+                                  });
+                                } );
+                            </script>
+                        </div>
+            
+                        <div class="col-4">
+                            <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
+                                <label for="inputPassword4">SKU</label>
+                            </div>
+                            <div class="col-12 input_border">
+                                <input type="text" id="search_sku" name="product_sku" class="form-control p-2">
+                            </div>
+                            <script>
+                                $( function() {
+                                  var availableTags = [
+                                      {% for i in productslist %}
+                                          "{{i.SKU}}",
+                                      {% endfor %}
+                                  ];
+                                  $( "#search_sku" ).autocomplete({
+                                    source: availableTags
+                                  });
+                                } );
+                            </script>
+                        </div>
+            
+                        <div class="col-4">
+                            <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
+                                <label for="inputPassword4">Supplier</label>
+                            </div>
+                            <div class="col-12 input_border">
+                                <input type="text" id="supplier_search" name="suppliers" class="form-control p-2">
+                            </div>
+                            <script>
+                                $( function() {
+                                  var availableTags = [
+                                      {% for name in suppliers_name %}
+                                          "{{name}}",
+                                      {% endfor %}
+                                  ];
+                                  $( "#supplier_search" ).autocomplete({
+                                    source: availableTags
+                                  });
+                                } );
+                            </script>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-4">
+                            <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
+                                <label for="inputPassword4">Category</label>
+                            </div>
+                            <div class="col-12 input_border">
+                                <select class="form-select form-select-md rounded-1" name="product_category" aria-label=".form-select-md example">
+                                    <option disabled selected="None">select category</option>
+                                    {% for category in categories %}
+                                    <option value="{{category}}">{{category}}</option>
+                                    {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    
+                    {% comment %} <div class="col-4"> {% endcomment %}
+                        {% comment %} <div class="input_border text-black m-0 text-center d-flex alifn-item-center"><label for="inputPassword4">Lorem Ipsum</label>
+                        </div> {% endcomment %}
+                        {% comment %} <div class="col-8 input_border">
+                            <select class="form-select form-select-md rounded-1" aria-label=".form-select-md example">
+                                <option selected="">lorem</option>
+                                <option value="1">lorem1</option>
+                                <option value="2">lorem2</option>
+                                <option value="3">lorem3</option>
+                            </select>
+                        </div> {% endcomment %}
+                    {% comment %} </div> {% endcomment %}
+                    
+                        {% comment %} <div class="col-4"> {% endcomment %}
+                            {% comment %} <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
+                                <label for="inputPassword4">Lorem Ipsum</label>
+                            </div> {% endcomment %}
+                            {% comment %} <div class="col-8 input_border">
+                                <select class="form-select form-select-md rounded-1" aria-label=".form-select-md example">
+                                    <option selected="">lorem</option>
+                                    <option value="1">lorem1</option>
+                                    <option value="2">lorem2</option>
+                                    <option value="3">lorem3</option>
+                                </select>
+                            </div> {% endcomment %}
+                        {% comment %} </div> {% endcomment %}
+                            <div class="row mt-4 d-flex justify-content-end">
+                               {% comment %} <a  href="{% url 'wayrem_admin:productlist' %}">         {% endcomment %}
+                                    <button type="cancel" onclick="cancelBtn()" class="btn  btn-danger me-2 btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Cancel</button>
+                                {% comment %} </a> {% endcomment %}
+                                <button type="submit" class="btn btn-dark border-0 col-xl-3 col-md-5 col-12">Apply</button>
+                            </div>
+                    </div>
+                    
+                        {% comment %} <div class="row mt-4"> {% endcomment %}
+                            {% comment %} <div class="col-4"> {% endcomment %}
+                                {% comment %} <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
+                                    <label for="inputPassword4">Lorem Ipsum</label>
+                                </div> {% endcomment %}
+                                {% comment %} <div class="col-8 input_border text-black">
+                                    <div class="form-check" style="line-height: 27px;">lorem ipsum
+                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" style="display: flex;width: 20px;height: 20px;">
+                                    </div>
+                                </div> {% endcomment %}
+                            {% comment %} </div> {% endcomment %}
+                            
+                            {% comment %} <div class="col-4"> {% endcomment %}
+                                {% comment %} <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
+                                    <label for="inputPassword4">Lorem Ipsum</label>
+                                </div> {% endcomment %}
+                                {% comment %} <div class="col-8 input_border text-black">
+                                    <div class="form-check" style="line-height: 27px;">lorem ipsum
+                                        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" style="display: flex;width: 20px;height: 20px;">
+                                    </div>
+                                 </div> {% endcomment %}
+                            {% comment %} </div> {% endcomment %}
+                                
+                                {% comment %} <div class="col-4"> {% endcomment %}
+                                    {% comment %} <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
+                                        <label for="inputPassword4">Lorem Ipsum</label>
+                                    </div> {% endcomment %}
+                                    {% comment %} <div class="col-8 input_border text-black">
+                                        <div class="form-check" style="line-height: 27px;">lorem ipsum
+                                            <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" style="display: flex;width: 20px;height: 20px;">
+                                        </div>
+                                    </div> {% endcomment %}
+                                {% comment %} </div> {% endcomment %}
+                                    
+                                {% comment %} </div> {% endcomment %}
+                                
+                                
+                </form>
+            </div>
+            <!-- <div class="modal-footer">
+                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+            </div> -->
+        </div>
+    </div>
+</div>
+<div class="dashboard_content_inner">
+    <div class="topbar_pages">
+        <h4 class="text-title">All Products</h2>
+        <div class="breadcrumb-section">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb padding-left-0">
+                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
+                    <li class="breadcrumb-item"><a href="#"><span class="sidebar-icon"><i class="fas fa-gift"></i></span> <span class="sidebar-text">Product Management &nbsp; </span></a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Manage Products</li>
+                </ol>
+            </nav>
+        </div>
+    </div> 
+    {% if messages %}
+    {% for message in messages %}
+    <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
+        <strong> {{ message }}!</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4">
+        <div class="d-block mb-4 mb-md-0"></div>
+        <div class="btn-toolbar mb-2 mb-md-0">
+            <div class="btn-group">
+                <button class="button button1 export_file dropdown-toggle btn btn-sm btn-outline-primary" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                    Export
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                    
+                    <li>
+                        <a class="dropdown-item" href="{% url 'wayrem_admin:excelproduct' %}"> Export Product List </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="table-settings mb-4">
+        <div class="subheader row mt-3 align-items-center">
+            <div class="col-xl-2 col-md-2 col-lg-2 col-md-5">
+                <a class="btn anchor_btn ps-0 pe-0" href="{% url 'wayrem_admin:product' %}">
+                    <button class="btn btn-success create_new">Create Product</button>
+                </a>
+            </div>
+            <div class="add_btn col-xl-2 col-lg-2 col-md-5 d-flex align-items-righ padding-0 justify-content-center">
+                <div class="col-xl-10 col-md-3 col-lg-10 col-md-5">
+                    
+                </div>
+            </div>
+            <div class="col-xl-8 col-md-8 col-lg-8">
+                <div class=" d-flex align-items-center justify-content-end my-2">
+                    <div class="col-xl-7 col-md-7 col-lg-7 " style="height:40px;">
+                        <div class="input-group subadmin_search">
+                            <span class="input-group-text" id="basic-addon2"><span class="fas fa-search"></span></span>
+                            <input type="text" class="form-control table_searchbar" id="table_search" placeholder="Search" aria-label="Search" aria-describedby="basic-addon2">
+                        </div>
+                    </div>
+                    <div class="col-xl-2 col-lg-2 col-md-2 padding-right-0 m-2 justify-content-end d-flex">
+                        <a class=" btn btn-primary col-xl-12 col-lg-12"  data-bs-toggle="modal" data-bs-target="#advance_filter" href="#">Filter <img src="/static/assets/img/logo/filter1.svg" height="" width=""> </a>
+                        <!-- <div class="filter_btn btn btn-primary" style="margin-top: 2px;"  onclick="myProfile()">
+                                                        
+                        </div>                                   -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card card-body border-light shadow-sm table-wrapper table-responsive pt-0">
+        <table class="table table-hover text-center" id="filtertable">
+            <thead class="">
+                <tr>
+                    {% comment %} <th scope="col">S. No.</th> {% endcomment %}
+                    <th scope="col">SKU</th>
+                    <th scope="col">Product Name</th>
+                    {% comment %} <th scope="col">Category Name</th> {% endcomment %}
+                    <th scope="col">Suppliers</th>
+                    <th scope="col">lowest quoted price</th>
+                    <th scope="col">lowest delivery time</th>
+                    <th scope="col">PO</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody class="bg-white">
+                {% for prod in productslist %}
+                <tr>
+                    {% comment %} <th scope="row">{{forloop.counter}}</th> {% endcomment %}
+                    <td>{{prod.SKU}}</td>
+                    <td>{{prod.name |truncatechars:9 }}</td>
+                    {% comment %} <td>
+                    {% for i in prod.product_category.all%}
+                    
+                        {{i}}
+                        {% endfor %}
+                        </td> {% endcomment %}
+                        <td>
+                        {% comment %} <a class="btn btn-sm" href="{% url 'wayrem_admin:viewprodsupplier' %}?product={{prod.SKU}}"> {% endcomment %}
+                        <a type="button" class="btn btn-sm" onclick="supplierFunc('{{prod.SKU}}')">
+                        View Supplier
+                        </a></td>
+                        <!-- Modal View Supplier -->
+                        <div class="modal fade" id="supplier{{prod.SKU}}" tabindex="-1" aria-labelledby="exampleModalLabel1"
+                        aria-hidden="true">
+                        <div class="modal-dialog  modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="">{{prod.product_name |title}}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div id="test{{prod.SKU}}"></div>
+                                    
+                                </div>                    
+                            </div>
+                        </div> 
+                    </div>
+                    <td>
+                    {% comment %} <a class="btn btn-sm" href="{% url 'wayrem_admin:lowest_price' %}?product={{prod.SKU}}"> {% endcomment %}
+                    <a type="button" class="btn btn-sm" onclick="lowestFunc('{{prod.SKU}}')">View</a></td>
+                        <!-- Modal Lowest Price -->
+                        <div class="modal fade" id="lowest{{prod.SKU}}" tabindex="-1" aria-labelledby="exampleModalLabel1"
+                        aria-hidden="true">
+                        <div class="modal-dialog  modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="">{{prod.product_name |title}}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div id="lowest_price{{prod.SKU}}"></div>
+                                    
+                                </div>                    
+                            </div>
+                        </div> 
+                    </div>
+                    <td>
+                    <a type="button" class="btn btn-sm" onclick="lowesttimeFunc('{{prod.SKU}}')">
+                    View
+                    </a></td>
+
+                    <!-- Modal Lowest Time -->
+                        <div class="modal fade" id="lowesttime{{prod.SKU}}" tabindex="-1" aria-labelledby="exampleModalLabel1"
+                        aria-hidden="true">
+                        <div class="modal-dialog  modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="">{{prod.product_name |title}}</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div id="lowest_time{{prod.SKU}}"></div>
+                                    
+                                </div>                    
+                            </div>
+                        </div> 
+                    </div>
+                    <td>
+                        <a type="button" class="btn btn-sm " data-bs-toggle="modal" href="{% url 'wayrem_admin:create_po' %}?product={{prod.id}}">Raise PO
+                        </a>
+                    </td>
+                    <td>
+                        <div class="btn-group">
+                            <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="icon icon-sm">
+                                    <span class="fas fa-ellipsis-h icon-dark"></span>
+                                </span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                            </button>
+                            <div class="dropdown-menu">
+                                <a class="dropdown-item" href="{% url 'wayrem_admin:productdetails' prod.id %}"><span class="fas fa-eye mr-2"></span>View Details</a>
+                                <a class="dropdown-item" href="{% url 'wayrem_admin:updateproduct' prod.id %}"><span class="fas fa-edit mr-2"></span>Edit</a>
+                                <a class="dropdown-item text-danger"  data-bs-toggle="modal" data-bs-target="#deleteModal{{prod.id}}" href="#"> <span class="fas fa-trash-alt mr-2"></span>Remove</a>
+                            </div>
+                        </div>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="deleteModal{{prod.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">Delete {{prod.product_name | title}}</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        Are you sure want to delete {{prod.product_name | title}} ?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+                                        <form method="POST" action="{% url 'wayrem_admin:deleteproduct' %}">
+                                            {% csrf_token %}
+                                            <input type="hidden" value="{{prod.id}}" name="product_id">
+                                            <button type="submit" class="btn btn-danger">Delete</button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    
+                    
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="card-footer px-3 border-0 d-flex align-items-center justify-content-between">
+            <div class="font-weight-bold small">Showing <b>{{ productslist.start_index }}</b> to <b>{{ productslist.end_index }}</b> out  of <b>{{ productslist.paginator.count }}</b> entries</div>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination justify-content-end">
+                    {% if productslist.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ productslist.previous_page_number }}">Previous</a>
+                        </li>
+                    {% endif %}
+                    {% if productslist.number|add:'-4' > 1 %}
+                        <li class="page-item"><a class="page-link" href="?page={{ productslist.number|add:'-5' }}">&hellip;</a></li>
+                    {% endif %}
+                    {% for num in productslist.paginator.page_range %}
+                        {% if num == productslist.number %}
+                            <li class="page-item active" aria-current="page">
+                                <a class="page-link" href="#">{{ num }}</a>
+                            </li>
+                        {% elif num > productslist.number|add:'-5' and num < productslist.number|add:'5' %}
+                            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>            
+                        {% endif %} 
+                    {% endfor %}
+                    {% if productslist.paginator.num_pages > productslist.number|add:'4' %}
+                        <li class="page-item"><a class="page-link" href="?page={{ productslist.number|add:'5' }}">&hellip;</a></li>
+                    {% endif %}
+                    {% if productslist.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ productslist.next_page_number }}">Next</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+        
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        oTable = $('#filtertable').DataTable({
+            dom: 'rt',
+            pageLength : 25,
+            'columnDefs': [{ 'orderable': false, 'targets': [5, 6] }],
+            "oLanguage": {
+                "oPaginate": {
+                    "sNext": '<i class="fas fa-arrow-circle-right text-primary"></i>',
+                    "sPrevious": '<i class="fas fa-arrow-circle-left text-primary"></i>'
+                }
+            },
+            "fnDrawCallback": function (oSettings) {
+                if (oSettings._iDisplayLength > oSettings.fnRecordsDisplay()) {
+                    $(oSettings.nTableWrapper).find('.dataTables_paginate').hide();
+                } else {
+                    $(oSettings.nTableWrapper).find('.dataTables_paginate').show();
+                }
+            }
+        });
+        $('#table_search').keyup(function () {
+            oTable.search($(this).val()).draw();
+        })
+        $("#table_search").on(
+          "change keyup paste input", function() {
+           oTable.search($(this).val()).draw();
+        })
+    });
+</script> 
+
+<script>
+function supplierFunc(SKU){
+  
+    const url="{% url 'wayrem_admin:viewprodsupplier' %}";
+    $.ajax({
+        
+        url:url,
+        data: {
+                    'product': SKU       // add the country id to the GET parameters
+                },
+        success:function(data){
+        $("#test"+SKU).html(data);
+        
+        $("#supplier"+SKU).modal('show');
+        },
+    });
+
+    }
+    $(document).ready(function(){
+    
+        $('#supplier').modal('hide');
+    
+    });
+</script>
+
+<script>
+function lowestFunc(SKU){
+  
+    const url="{% url 'wayrem_admin:lowest_price' %}";
+    $.ajax({
+        
+        url:url,
+        data: {
+                    'product': SKU       // add the country id to the GET parameters
+                },
+        success:function(data){
+        $("#lowest_price"+SKU).html(data);
+        
+        $("#lowest"+SKU).modal('show');
+        },
+    });
+
+    }
+    $(document).ready(function(){
+    
+        $('#lowest').modal('hide');
+    
+    });
+</script>
+
+<script>
+function lowesttimeFunc(SKU){
+  
+    const url="{% url 'wayrem_admin:lowest_time' %}";
+    $.ajax({
+        
+        url:url,
+        data: {
+                    'product': SKU       // add the country id to the GET parameters
+                },
+        success:function(data){
+        $("#lowest_time"+SKU).html(data);
+        
+        $("#lowesttime"+SKU).modal('show');
+        },
+    });
+
+    }
+    $(document).ready(function(){
+    
+        $('#lowest').modal('hide');
+    
+    });
+</script>
+<script>
+    function myProfile() {
+        var x = document.getElementById("myProfile");
+        if (x.style.display === "none") {
+            x.style.display = "block";
+        } else {
+            x.style.display = "none";
+      
+        }
+      }
+
+      function cancelBtn() {
+        console.log("button clicked")
+        location = location.href.split('?')[0];
+        
+        
+        var x = document.getElementById("myProfile");
+        if (x.style.display === "block") {
+            x.style.display = "none";
+        } 
+        
+      }
+</script>
+{% comment %} 
+<script>
+    $(document).ready(function () {
+        oTable = $('#filtertable').DataTable({
+            dom: 'rt',
+            'columnDefs': [{ 'orderable': false, 'targets': [5, 6] }],
+            "oLanguage": {
+                "oPaginate": {
+                    "sNext": '<i class="fas fa-arrow-circle-right text-primary"></i>',
+                    "sPrevious": '<i class="fas fa-arrow-circle-left text-primary"></i>'
+                }
+            },
+            "fnDrawCallback": function (oSettings) {
+                if (oSettings._iDisplayLength > oSettings.fnRecordsDisplay()) {
+                    $(oSettings.nTableWrapper).find('.dataTables_paginate').hide();
+                } else {
+                    $(oSettings.nTableWrapper).find('.dataTables_paginate').show();
+                }
+            }
+        });
+        $('#table_search').keyup(function () {
+            oTable.search($(this).val()).draw();
+        });
+        $("#table_search").on(
+          "change keyup paste input", function() {
+           oTable.search($(this).val()).draw();
+        })
+    });
+</script> {% endcomment %}
+
+<script>
+    function myProfile() {
+        var x = document.getElementById("myProfile");
+        if (x.style.display === "none") {
+            x.style.display = "block";
+        } else {
+            x.style.display = "none";
+      
+        }
+      }
+
+      function cancelBtn() {
+        var x = document.getElementById("myProfile");
+        if (x.style.display === "block") {
+            x.style.display = "none";
+        } 
+      }
+</script>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

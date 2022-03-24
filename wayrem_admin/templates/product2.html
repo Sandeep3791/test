@@ -1,0 +1,315 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %} Create Product {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+<link type="text/css" href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+{% endblock stylesheets %}
+
+{% block content %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.css" integrity="sha512-p209YNS54RKxuGVBVhL+pZPTioVDcYPZPYYlKWS9qVvQwrlzxBxkR8/48SCP58ieEuBosYiPUS970ixAfI/w/A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+
+{% comment %} <script type="text/javascript">
+       $(document).ready(function () {
+            $('#id_product_category').select2({
+            placeholder: 'Select Category',
+            })
+            $('#id_supplier_name').select2({
+            placeholder: 'Select Supplier',
+            });
+     });
+    </script> {% endcomment %}
+<div class="topbar_pages padding-0">
+        <div class="container ">
+            <h4 class="text-title">Add Product | Step - 2</h2>
+            <div class="breadcrumb-section">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb padding-left-0">
+                        <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
+                        <li class="breadcrumb-item"><a href="#"><span class="sidebar-icon"><i class="fas fa-gift"></i></span> <span class="sidebar-text">Product Management &nbsp; </span></a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:product' %}"><span class="sidebar-icon"><i class="fas fa-gift"></i></span> <span class="sidebar-text">Create Product   &nbsp; </span></a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Step 2</li>
+                    </ol>
+                </nav>
+            </div>
+        </div> 
+    </div>
+<main class="align-items-center admin_signup_lg">
+    <section class="d-flex   align-items-center my-5 mt-lg-6 mb-lg-5">
+        <div class="container ">
+            <div class="row justify-content-center form-bg-image">
+                <div class="col-12 d-flex align-items-center justify-content-center">
+                    <div
+                        class="mb-4 mb-lg-0 bg-white  rounded p-4 p-lg-4 w-100" style="box-shadow: 0px 14px 20px 0px #00000014;">
+                        <div class="mb-4 mt-md-0">
+                            <h1 class="mb-0 h3">
+                                <!-- <img src="{% static '/assets/img/logo/Wayrem_logo..svg'%}" alt=""> -->
+                                 Add Product | Step - 2
+                            </h1>
+                            <hr>
+                            
+                            <p>
+                                {% if messages %}
+                                {% for message in messages %}
+                            <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show"
+                                {% endif %} role="alert">
+                                <strong> {{ message }}</strong>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+
+
+                            </p>
+                        </div>
+
+ {% if form.non_field_errors %}
+  {% for error in form.non_field_errors %}
+  <div class="alert alert-danger alert-dismissible fade show" role="alert">
+  {{error}}
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+  <span aria-hidden="true">&times;</span>
+</div>
+  {% endfor %}
+{% endif %}
+
+                         <form method="post" action="{% url 'wayrem_admin:productviewtwo' %}" enctype="multipart/form-data" validate>
+                                {% csrf_token %}
+                                {{ form.non_field_errors }}
+                                <div class="row">
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="name">Weight <span class="text-danger">*</span><span class="text-danger"><em> {{form.product_weight.errors | striptags}}
+                                                </em>
+                                            </span></label>
+                                            <div class="input-group first">   
+                                             {{form.product_weight}} 
+                                               {{form.unit}}
+                                               <div class="input-group" id="weight_error_message" style="color: #d12525;"></div>
+                                            </div>
+                                            
+                                            <span class="text-error"></span>
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+                                    
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="name">Price <span class="text-danger">*</span><span class="text-danger"><em> {{form.price.errors | striptags}}
+                                                </em>
+                                            </span></label>
+                                            <div class="input-group">   
+                                                {{form.price}}
+                                                <div class="input-group" id="price_error_message" style="color: #d12525;"></div>
+                                            </div>
+                                           
+                                            <span class="text-error"></span>
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="name">Discount <span class="text-danger">*</span><span class="text-danger"><em> {{form.discount.errors | striptags}}
+                                                </em>
+                                            </span></label>
+                                            <div class="input-group first">   
+                                                {{form.discount}}
+                                                {{form.dis_abs_percent}}
+                                                <div class="input-group" id="discount_error_message" style="color: #d12525;"></div>
+                                            </div>
+                                            <!-- <div class="input-group">
+                                                <span class="text-danger"><em> {{form.image4.errors | striptags}}
+                                                    </em></span>
+                                            </div> -->
+                                            <span class="text-error"></span>
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+                                   <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="name">Wayrem Margin <span class="text-danger">*</span> <span class="text-danger"> <em> {{form.wayrem_margin.errors | striptags}}
+                                            </em> </span> </label>
+                                            <div class="input-group">
+                                                {{form.wayrem_margin}}
+                                                {{form.wayrem_abs_percent}}
+                                                <div class="input-group" id="margin_error_message" style="color: #d12525;"></div>
+                                            </div>
+                                            <span class="text-error"></span>
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4">
+                                            <label for="image">Package Count <span class="text-danger">*</span><span class="text-danger"><em> {{form.package_count.errors | striptags}}
+                                                </em>
+                                            </span></label>
+                                            <div class="input-group">
+                                                {% comment %} <span class="input-group-text" id="product_code"><span
+                                                        class="fas fa-lock"></span></span> {% endcomment %}
+                                                {{form.package_count}}
+                                                <div class="input-group" id="pcount_error_message" style="color: #d12525;"></div>
+                                            </div>
+                                           
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+                                </div>
+                                <div class="row">
+                                   
+                                   <!-- Form -->
+                                    <div class="col-lg-12">
+                                        <div class="form-group mb-4">
+                                            <label for="name">Product Meta Key <span class="text-danger">*</span><span class="text-danger"><em> {{form.product_meta_key.errors | striptags}}
+                                                </em>
+                                            </span></label>
+                                            <div class="input-group">
+                                                {{form.product_meta_key}}
+                                                <div class="input-group" id="metaKey_error_message" style="color: #d12525;"></div>
+                                            </div>
+                                           
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->                                    
+                                </div>
+                            {% comment %} <div class="row">
+                                    <div class="col-md-6 d-grid">
+                                                <a href="{% url 'wayrem_admin:productviewone' %}" class="btn btn-secondary">Previous</a>
+                                        </div>  
+                                <div class="col-md-6 d-grid">
+                                        <button type="submit" class="btn text-white"
+                                            style="background-color:#29313d;">Next</button>
+                                    </div> 
+                                </div> {% endcomment %}
+
+                                <div class="mt-1">
+                                <a  href="{% url 'wayrem_admin:productviewone' %}" class="btn  btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Previous</a>
+                                <button type="submit" class="btn btn-dark border-0 col-xl-3 col-md-5 col-12" >Next</button>
+                            </div>
+                                
+
+                            </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+<script>
+    $(function() {
+   
+   var error_data = false;
+   
+   $("#id_product_weight").focusout(function(){
+    check_weight();
+   });
+   $("#id_price").focusout(function() {
+      check_price();
+   });
+   $("#id_discount").focusout(function() {
+      check_discount();
+   });
+   $("#id_wayrem_margin").focusout(function() {
+       check_margin();
+   });
+   $("#id_package_count").focusout(function() {
+       check_packageCount();
+   });
+   $("#id_product_meta_key").focusout(function() {
+       check_PMK();
+   });
+   
+     
+   function check_weight() {
+      var Weight = $("#id_product_weight").val();
+      if (Weight !== '') {
+         $("#weight_error_message").hide();
+         $("#id_product_weight").css("border-bottom","2px solid #34F458");
+      } else {
+         $("#weight_error_message").html("Please Enter Valid Weight ");
+         $("#weight_error_message").show();
+         error_data = true;
+      }
+   }
+   
+   function check_price() {
+      var price = $("#id_price").val();
+      if (price !== '') {
+         $("#price_error_message").hide();
+         $("#id_price").css("border-bottom","2px solid #34F458");
+      } else {
+         $("#price_error_message").html("Please Enter Valid Price ");
+         $("#price_error_message").show();
+         error_data = true;
+      }
+   }
+
+   function check_discount() {
+      var disc = $("#id_discount").val();
+      if (disc !== '') {
+         $("#discount_error_message").hide();
+         $("#id_discount").css("border-bottom","2px solid #34F458");
+      } else {
+         $("#discount_error_message").html("Please Enter Valid Discount ");
+         $("#discount_error_message").show();
+         error_data = true;
+      }
+   }
+
+   function check_margin() {
+      var margin = $("#id_wayrem_margin").val();
+      if (margin !== '') {
+         $("#margin_error_message").hide();
+         $("#id_wayrem_margin").css("border-bottom","2px solid #34F458");
+      } else {
+         $("#margin_error_message").html("Please Enter Valid Wayrem Margin ");
+         $("#margin_error_message").show();
+         error_data = true;
+      }
+   }
+
+   function check_packageCount() {
+      var count = $("#id_package_count").val();
+      if (count !== '') {
+         $("#pcount_error_message").hide();
+         $("#id_package_count").css("border-bottom","2px solid #34F458");
+      } else {
+         $("#pcount_error_message").html("Please Enter Valid Package Count");
+         $("#pcount_error_message").show();
+         error_data = true;
+      }
+   }
+
+   function check_PMK() {
+      var pmk = $("#id_product_meta_key").val();
+      if (pmk !== '') {
+         $("#metaKey_error_message").hide();
+         $("#id_price").css("border-bottom","2px solid #34F458");
+      } else {
+         $("#metaKey_error_message").html("Please Enter Product Meta key");
+         $("#metaKey_error_message").show();
+         error_data = true;
+      }
+   }
+   });
+   
+   </script>
+{% endblock javascripts %}

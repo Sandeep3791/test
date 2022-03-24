@@ -1,0 +1,182 @@
+
+{% extends "layouts/base.html" %}
+
+{% block title %} Update Inventory {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+{% block content %}
+{{form.media}}
+{% load widget_tweaks %}
+
+<div class="topbar_pages padding-0">
+    <div class="container ">
+        <h4 class="text-title">Update Inventory</h2>
+        <div class="breadcrumb-section">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb padding-left-0">
+                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
+                    <li class="breadcrumb-item"><span class="sidebar-icon"><i class="fas fa-box-open"></i></span> <span class="sidebar-text">Inventory & Warehouses &nbsp; </span></li>
+                    <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'wayrem_admin:inventories' %}">Manage Inventories</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Update Inventory</li>
+                </ol>
+            </nav>
+        </div>
+    </div> 
+</div>
+<div class="row d-flex justify-content-center">
+   
+    <div class="col-12 col-xl-12">
+        <div class="card card-body card_shadow mb-4">
+            
+            <form action="{% url 'wayrem_admin:update_inventory' inventory_pk %}" method="POST" enctype="multipart/form-data" validate>
+              {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-12 mb-2">
+                        <div>
+                            <label for="name">Product  <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.product.errors | striptags}}</em></span></label>
+                            {{form.product|add_class:"form-control"|attr:'readonly: true'}}
+                            <div class="input-group" id="name_error_message" style="color: #d12525;"></div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-12 mb-2">
+                        <div>
+                            <label for="inventory_type">Inventory Type <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.inventory_type.errors | striptags}}</em></span></label>
+                            {{form.inventory_type|add_class:"form-control"}}
+                            <div class="input-group"  id="message_format_error_message" style="color: #d12525;"></div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mb-2">
+                        <div>
+                            <label for="quantity">Quantity <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.quantity.errors | striptags}}</em></span></label>
+                            {{form.quantity}}
+                            <div class="input-group" id="quantity_error_message" style="color: #d12525;"></div>
+                        </div>
+                    </div>
+
+
+                    
+                    <div class="mt-3">
+                        <a href="{% url 'wayrem_admin:inventories' %}"class="btn  btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Cancel</a>
+                        <button type="submit" class="btn  btn-dark btn-block col-xl-3 col-md-5 col-12">Save</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+<script>
+     $(function () {
+            var error_n = false;
+            var error_d = false;
+    
+            $("#id_name").focusout(function () {
+                check_name();
+            });
+            $("#id_key").focusout(function () {
+                id_key();
+            });
+
+             $("#id_from_email").focusout(function () {
+                id_from_email();
+            });
+
+             $("#id_to_email").focusout(function () {
+                id_to_email();
+            });
+            
+            $("#id_subject").focusout(function () {
+                id_subject();
+            });
+
+
+            function check_name() {
+                var name = $("#id_name").val();
+                if (name !== '') {
+                    $("#name_error_message").hide();
+                    // $("#id_name").css("border-bottom", "2px solid #34F458");
+                } else {
+                    $("#name_error_message").html("Please Enter Name ");
+                    $("#name_error_message").show();
+                    error_n = true;
+                }
+            }
+    
+            function id_key() {
+                var description = $("#id_key").val();
+                if (description !== '') {
+                    $("#key_error_message").hide();
+                    // $("#id_description").css("border-bottom", "2px solid #34F458");
+                } else {
+                    $("#key_error_message").html("Please Enter Key");
+                    $("#key_error_message").show();
+                    error_d = true;
+                }
+            }
+
+            function IsEmail(email) {
+                var regex = /^([a-zA-Z0-9_\.\-\+])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+                if(!regex.test(email)) {
+                    return false;
+                }else{
+                    return true;
+                }
+            }
+
+            function id_from_email() {
+                var description = $("#id_from_email").val();
+                if (description !== '') {
+                    if( !IsEmail(description)) { 
+                        $("#from_email_error_message").html("Please Enter correct Email.");
+                        $("#from_email_error_message").show();
+                        error_d = true;
+                     }else{
+                         $("#from_email_error_message").hide();
+                     }
+                    // $("#id_description").css("border-bottom", "2px solid #34F458");
+                } else {
+                    $("#from_email_error_message").html("Please Enter From email");
+                    $("#from_email_error_message").show();
+                    error_d = true;
+                }
+            }
+
+            function id_to_email() {
+                var description = $("#id_to_email").val();
+                if (description !== '') {
+                    $("#to_email_error_message").hide();
+                    // $("#id_description").css("border-bottom", "2px solid #34F458");
+                } else {
+                    $("#to_email_error_message").html("Please Enter TO email");
+                    $("#to_email_error_message").show();
+                    error_d = true;
+                }
+            }
+
+            function id_subject(){
+                var description = $("#id_subject").val();
+                if (description !== '') {
+                    $("#subject_error_message").hide();
+                    // $("#id_description").css("border-bottom", "2px solid #34F458");
+                } else {
+                    $("#subject_error_message").html("Please Enter Subject");
+                    $("#subject_error_message").show();
+                    error_d = true;
+                }
+            }
+
+
+    
+        });
+    
+    </script>
+
+{% endblock javascripts %}

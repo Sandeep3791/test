@@ -1,0 +1,227 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %} Import Products {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+    <div class="dashboard_content_inner">
+    <div class="topbar_pages">
+        <h4 class="text-title">Import Product </h2>
+        <div class="breadcrumb-section">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb padding-left-0">
+                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
+                    <li class="breadcrumb-item"><span class="sidebar-icon"><i class="fas fa-gift"></i></span> <span class="sidebar-text">Product Management &nbsp; </span></li>
+                    {% comment %} <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:productlist' %}"><span class="sidebar-icon"><i class="fas fa-gift"></i></span> <span class="sidebar-text">Manage Product &nbsp; </span></a></li> {% endcomment %}
+                    <li class="breadcrumb-item active" aria-current="page">Import Products </li>
+                </ol>
+            </nav>
+        </div> 
+    </div>
+    <div class="text-center text-md-center mt-md-0">
+        <h1 class="mb-0 h3">
+            {% comment %} <img src="{% static '/assets/img/logo/Wayrem_logo..svg'%}" style="width:80%" alt=""> {% endcomment %}
+        </h1>
+        <br />
+        <p>
+           {% if messages %}
+        {% for message in messages %}
+        <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
+        <strong> {{ message }}</strong> 
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}        
+        {% endif %}
+
+
+        </p>
+    </div>
+    <div class="row justify-content-center form-bg-image">
+        <div class="row d-flex align-items-center justify-content-center">
+            <div class="col-12 col-sm-6 col-xl-3 mb-4  p-0">
+                <div class="card border-light shadow-sm">
+                    <div class="card-body">
+                        <div class="row d-block d-xl-flex align-items-center">
+                            <div class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
+                                <div class="icon icon-shape icon-md icon-shape-secondary rounded me-4 me-sm-0"><span class="fas fa-tasks"></span></div>
+                            </div>
+                            <div class="col-12 col-xl-7 px-xl-0">
+                                <div class="d-none d-sm-block">
+                                    <h6>SKU images in queue</h6>
+                                    <h4 class="mb-1 available_folders">{{available_folders}}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-xl-3 mb-4">
+                <div class="card border-light shadow-sm">
+                    <div class="card-body">
+                        <div class="row d-block d-xl-flex align-items-center">
+                            <div class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
+                                <div class="icon icon-shape icon-md icon-shape-secondary rounded me-4 me-sm-0"><span class="fas fa-exclamation-triangle"></span></div>
+                            </div>
+                            <div class="col-12 col-xl-7 px-xl-0">
+                                <div class="d-none d-sm-block">
+                                    <h6>Invalid SKU <br> images</h6>
+                                    <h4 class="mb-1 failed_folders">{{failed_folders}}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-xl-3 mb-4 padding-left-0">
+                <div class="card border-light shadow-sm">
+                    <div class="card-body">
+                        <div class="row d-block d-xl-flex align-items-center">
+                            <div class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
+                                <div class="icon icon-shape icon-md icon-shape-secondary rounded me-4 me-sm-0"><span class="fas fa-database"></span></div>
+                            </div>
+                            <div class="col-12 col-xl-7 px-xl-0">
+                                <div class="d-none d-sm-block">
+                                    <h6>SKU in database with images</h6>
+                                    <h4 class="mb-1"><span class="product_with_imgs">{{product_with_imgs}}</span> out of <span class="total_product_images">{{total_product_images}}</span></h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-xl-3 mb-4 p-0">
+                <div class="card border-light shadow-sm">
+                    <div class="card-body">
+                        <div class="row d-block d-xl-flex align-items-center">
+                            <div class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
+                                <div class="icon icon-shape icon-md icon-shape-secondary rounded me-4 me-sm-0"><span class="fas fa-ban"></span></div>
+                            </div>
+                            <div class="col-12 col-xl-7 px-xl-0">
+                                <div class="d-none d-sm-block">
+                                    <h6>SKU without <br> images</h6>
+                                    <h4 class="mb-1 no_image_products">{{no_image_products}}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="bg-white  rounded p-4 p-lg-4 shadow-sm mb-4">
+                <!-- Form -->
+                <div class="row d-flex">
+                    <div class="form-group col-sm-6 col-xl-4">
+                        <label for="code" class="h5">Import Products</label>
+                        <form action="{% url 'wayrem_admin:import_excel' %}" method="POST" enctype="multipart/form-data" >
+                            {% csrf_token %}
+                            <div class="form-file">
+                                    <input type="file" class="form-file-input" name="myFileInput" required accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" id="myFileInput" />
+                                    <label class="form-file-label" for="myFileInput">
+                                        <span class="form-file-text">Choose file...</span>
+                                        <span class="form-file-button">Browse</span>
+                                </label>
+                            </div>
+                            <div class="d-grid col-xl-1 mt-5 col-md-1 col-12">
+                                <button  onclick="lowestFunc()" id="subHere" class="btn btn-dark">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- End of Form -->
+                </div>
+            </div>
+            {% if unwanted_columns or missing_columns %}
+                <div class="table-data my-2">
+                    <div class="row">
+                        <div class="col-12 col-sm-6 col-xl-6 p-0 padding-right-2">
+                            <div class="bg-white rounded p-lg-4 shadow-sm">
+                                {% if missing_columns %}
+                                <div class="col">
+                                    <p class="text-danger"><strong>Missing columns</strong> </p>
+                                    <p>{% for column in missing_columns %}
+                                        <b> {{column}}</b>,  
+                                        {% endfor %}</p>
+                                        <p class="text-danger" >Please add required columns!</p>
+                                </div>
+                                {% endif %}
+                                {% if missing_columns or unwanted_columns %}
+                                <h5 class="text-danger text-right">
+                                    Import again!!
+                                </h5>
+                                {% endif %}
+                            </div>
+                        </div>
+                        {% if unwanted_columns %}
+                        <div class="col-12 col-sm-6 col-xl-6 p-0 padding-left-2">
+                                <div class="bg-white rounded p-lg-4 shadow-sm " style=" height: 100%; ">
+                                    <p class="text-danger"><strong>Unwanted columns</strong> </p>
+                                    <p>{% for column in unwanted_columns %}
+                                    <b>{{column}}</b>, 
+                                    {% endfor %}</p>
+                                    <p class="text-danger" >Please remove unwanted columns!</p>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+            {% if request.session.excel_product %}
+                <div class="table-data my-2">
+                    <div class="row">
+                        <div class="col-12 col-sm-6 col-xl-6">
+                            <div class="bg-white rounded p-lg-4 shadow-sm">
+                                <h4>Total Entries:  <b>{{total_entries}}</b></h4>
+                                <h4>Duplicate Entries (in excel):  <b>{{duplicate_entries}}</b></h4>
+                                <h6>Are you sure you want to import?</h6>
+                                <div class="text-right">
+                                    <a href="{% url 'wayrem_admin:productlist' %}" class="btn btn-danger">Cancel</a>
+                                    <a href="{% url 'wayrem_admin:importproducts' %}" class="btn btn-success">Import</a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-xl-6  rounded p-4 p-lg-4">
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            <!-- <div class="bg-white  rounded p-4 p-lg-4 w-50 shadow-sm mx-2">
+                <h1 class="text-center">Images import</h1>
+                <hr>
+                <div id="load" class="my-2">
+                </div>
+            </div> -->
+        </div>
+    </div>
+    
+</div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<script>
+    function loadimg(){
+        const url="{% url 'wayrem_admin:image_import' %}";
+        $.ajax({
+            url:url,
+            data: {},
+            success:function(data){
+                var obj = JSON.parse(data)
+                console.log(obj.available_folders)
+            $(".available_folders").text(obj.available_folders);
+            $(".failed_folders").text(obj.failed_folders);
+            $(".product_with_imgs").text(obj.product_with_imgs);
+            $(".total_product_images").text(obj.total_product_images);
+            $(".product_with_imgs").text(obj.product_with_imgs);
+            $(".no_image_products").text(obj.no_image_products);
+            
+            },
+        });
+    }
+loadimg(); // This will run on page load
+setInterval(function(){
+    loadimg() // this will run after every 5 seconds
+}, 30000);
+</script>
+{% endblock javascripts %}

@@ -1,0 +1,142 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4">
+    <div class="d-block mb-4 mb-md-0"></div>
+    <div class="btn-toolbar mb-2 mb-md-0">
+                <div class="btn-group">
+                    <a class="btn btn-sm btn-outline-primary" type="button" href="{% url 'wayrem_admin:excelproduct' %}">
+                        Export
+                    </a>
+                    <a href="{% url 'wayrem_admin:import_excel' %}" class="btn btn-sm btn-outline-primary" type="button">
+                        Import
+                    </a>
+                     {% comment %} <button class="btn btn-sm btn-outline-primary" type="button" id="dropdownMenuButton2" onclick="document.getElementById('myFileInput').click()">
+                        Import
+                    </button> {% endcomment %}
+                    {% comment %} <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                        <li>
+                            <a class="dropdown-item" href="{% url 'wayrem_admin:excelproduct' %}"> Export Products </a>
+                        </li>
+                    </ul>  {% endcomment %}
+                </div>
+            </div>
+</div>        
+<div class="subheader row align-items-center justify-content-between">
+            <div class="col-xl-5 col-lg-5 col-5">
+                <div class="col-xl-4 col-lg-4 col-md-4">
+                    <a class="btn anchor_btn ps-0 pe-0" href="{% url 'wayrem_admin:product' %}">
+                        <button class="btn btn-success create_new">Create Product</button>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-xl-4 col-lg-4 col-8 my-2">
+                <div class="row d-flex align-items-center">
+                    <div class="col-xl-12 col-lg-3 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 " style="height:40px;">
+                    <form method="GET">    
+                        <div class="input-group subadmin_search">
+                            {{filter_form.name}}
+                            <button type="submit" class="btn btn-dark border-0 col-xl-3 col-md-5 col-12 fas fa-search"> Search</button>
+                        </div>
+                    </form>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="col-xl-2 col-lg-2 col-md-2 padding-right-0 m-2 justify-content-end d-flex">
+                        <a class=" btn btn-primary col-xl-12 col-lg-12" data-bs-toggle="modal" data-bs-target="#advance_filter" href="#">Filter <img src="/static/assets/img/logo/filter1.svg" height="" width=""> </a>
+            </div>
+</div>
+
+
+<div class="modal fade" id="advance_filter" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Advance filter - Search by:</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="GET" autocomplete="off">
+                    <div class="row">
+                        <div class="col-4">
+                            <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
+                                <label for="inputPassword4">Product Name</label>
+                            </div>
+                            <div class="col-12 input_border">
+                                {{filter_form.name}}
+                            </div>
+                        </div>
+            
+                        <div class="col-4">
+                            <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
+                                <label for="inputPassword4">Manufacture Date</label>
+                            </div>
+                            <div class="col-12 input_border">
+                                <div class="input-group date date_pickers"  >
+                                    {{filter_form.date_of_mfg}}
+                                    <div class="input-group-addon">
+                                        <span class="glyphicon glyphicon-th"></span>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+            
+                        <div class="col-4">
+                            <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
+                                <label for="inputPassword4">Expiry Date</label>
+                            </div>
+                            <div class="col-12 input_border">
+                                <div class="input-group date date_pickers"  >
+                                    {{filter_form.date_of_exp}}
+                                    <div class="input-group-addon">
+                                        <span class="glyphicon glyphicon-th"></span>
+                                    </div>
+                                </div>
+    
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-4">
+                            <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
+                                <label for="inputPassword4">SKU</label>
+                            </div>
+                            <div class="col-12 input_border">
+                                {{filter_form.SKU}}
+                            </div>
+                    </div>
+
+                    <div class="col-4">
+                            <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
+                                <label for="inputPassword4">Category</label>
+                            </div>
+                            <div class="col-12 input_border">
+                                {{filter_form.category}}
+                            </div>
+                    </div>
+
+                    <div class="col-4">
+                            <div class="input_border text-black m-0 text-center d-flex alifn-item-center">
+                                <label for="inputPassword4">Supplier</label>
+                            </div>
+                            <div class="col-12 input_border">
+                                {{filter_form.supplier}}
+                            </div>
+                    </div>
+
+                    <div class="row mt-4 d-flex justify-content-end">
+                                    <button type="cancel" onclick="cancelBtn()" class="btn  btn-danger me-2 btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Cancel</button>
+                                <button type="submit" class="btn btn-dark border-0 col-xl-3 col-md-5 col-12">Apply</button>
+                            </div>
+                    </div>
+                    
+                       
+                                
+                </form>
+            </div>
+           
+        </div>
+    </div>
+</div>

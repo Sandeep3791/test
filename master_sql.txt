@@ -1,0 +1,87 @@
+
+INSERT INTO `status_master` (`id`, `name`, `description`, `status_color`, `status_type`, `sort_order`, `customer_view`, `status`) VALUES
+(1, 'Order Received', 'Order is waiting for confirmation', '#0000FF', 1, 1, 1, 1),
+(2, 'Preparing order', 'Order is confirmed and preparing for shipping', '#00008B', 1, 2, 1, 1),
+(3, 'Order pickup', 'Order is picked up from warehouse', '#9b870c', 1, 3, 1, 1),
+(4, 'Delivering order', 'Order is on the way', '#90ee90', 1, 4, 1, 1),
+(5, 'Order Delivered', 'Order was delivered', '#006400', 1, 5, 1, 1),
+(6, 'Pending', NULL, '#FFFF00', 2, 1, 1, 1),
+(7, 'Paid', NULL, '#00FF00', 2, 2, 1, 1),
+(8, 'Declined', NULL, '#000000', 2, 3, 1, 1),
+(9, 'Offline', NULL, '#00FF00', 3, 1, 1, 0),
+(10, 'Cash On Delivery', NULL, '#00FF00', 3, 2, 1, 1),
+(11, 'Cheque', NULL, '#00FF00', 3, 3, 1, 0),
+(12, 'Draft', NULL, '#00FF00', 3, 4, 1, 0),
+(13, 'Wired', NULL, '#00FF00', 3, 5, 1, 0),
+(14, 'Online', NULL, '#00FF00', 3, 6, 1, 1),
+(15, 'Order Cancelled', 'Your order was cancelled', '#FF0000', 1, 5, 1, 1),
+(16, 'Order pending for approval', 'Order pending for approval', '#FFFF00', 4, 1, 1, 1),
+(17, 'Order approved', 'Approve order', '#00FF00', 4, 1, 1, 1),
+(18, 'Order cancelled', 'Cancel order', '#FF0000', 4, 1, 1, 1),
+(19, 'Attempted Pickup', NULL, '#FFFF00', 1, 5, 0, 1),
+(20, 'Order Partially Delivered', NULL, '#0000FF', 1, 5, 1, 1),
+(21, 'Order Attempted Delivery', 'You were not available at delivery address', '#00008B', 1, 5, 1, 1),
+(22, 'Order Returned to Warehouse', 'Order was returned to warehouse, will be rescheduled for delivery', '#000000', 1, 5, 1, 1),
+(23, 'Recurrent order pending for customer approval', NULL, '#FFFF00', 4, 1, 1, 1),
+(24, 'Online customer', NULL, '#2361ce', 5, 1, 1, 1),
+(25, 'Recurrence order', NULL, '#2361ce', 5, 1, 1, 1);
+
+
+------------------------------------
+
+INSERT INTO `forecast_jobtype` (`id`, `no_of_days`, `status`) VALUES
+(1, 5, 1),
+(2, 7, 1),
+(3, 10, 1),
+(4, 15, 1);
+
+------------------------------------
+
+INSERT INTO `settings` (`id`, `key`, `display_name`, `value`, `details`, `type`, `order`) VALUES
+(1, 'forecast_delivery_span_per_day', 'forecast delivery span per day', '3', '', 'text', 1),
+(2, 'forecast_product_threshold', 'Min qty must be available in  inventory', '1', '', 'text', 1),
+(5, 'wayrem_vat', 'VAT NO', '984632244224244', '', 'text', 1),
+(4, 'setting_vat', 'VAT', '15', '', 'text', 1),
+(6, 'loginext_username', 'UserName', 'raghad.baeshen@rahal.mynaghi.com', '', 'text', 1),
+(7, 'loginext_password', 'LogiNext Password', 'Rb123456', '', 'text', 1),
+(8, 'loginext_basepath', 'Loginext URL', 'https://api.loginextsolutions.com', '', 'text', 1);
+
+-------------------------------------
+
+INSERT INTO `inventory_type` (`id`, `type_name`, `status`) VALUES
+(1, 'Starting', 1),
+(2, 'Received', 1),
+(3, 'Shipped', 1),
+(4, 'Canceled', 1);
+
+-----------------------------------------
+
+
+INSERT INTO `state_code` (`id`, `state`, `loginext_code`, `status`) VALUES
+(1, 'Ha\'il	', 'Ha\'il	', 1),
+(2, 'Qassim', 'Qassim', 1),
+(3, 'Riyadh Province', 'Riyadh', 1),
+(4, 'Tabuk Province', 'Tabuk', 1),
+(5, 'Madinah', 'Madinah', 1),
+(6, 'Bahah', 'Bahah', 1),
+(7, 'Northern Borders Province', 'Northern B', 1),
+(8, 'Jawf', 'Jawf', 1),
+(9, 'Jizan', 'Jizan', 1),
+(10, 'Aseer Province', 'Asir', 1),
+(11, 'Najran', 'Najran', 1),
+(12, 'Eastern Province', 'Eastern Pr', 1),
+(13, 'Al Bahah Province', 'BA', 1),
+(14, 'Al Hudud ash Shamaliyah', 'HS', 1),
+(15, 'Al Jowf', 'JA', 1),
+(16, 'Al Madinah Province', 'MD', 1),
+(17, 'Al Qassim', 'QS', 1),
+(18, 'Ar Riyad', 'RI', 1),
+(19, 'Ash Sharqiyah', 'SH', 1),
+(20, 'Hail', 'HA', 1),
+(21, 'Al Qurayyat', 'Al Qurayya', 1),
+(22, 'Hail Province', 'Hail', 1);
+
+------------------------------------------------
+
+
+

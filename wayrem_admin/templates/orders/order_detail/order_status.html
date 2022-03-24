@@ -1,0 +1,84 @@
+<style>
+    .pending_type {display: flex;justify-content: space-between;align-items: center;padding: 0.7rem 1rem;width: fit-content;background: #ffc10712;border-radius: 10px;color: #d8a301;font-size: .9rem;width: 100%;}
+    .paid_type {display: flex;justify-content: space-between;align-items: center;padding: 0.7rem 1rem;width: fit-content;background: #05a67717;border-radius: 10px;color: #05A677;font-size: .9rem;width: 100%;}
+    .declined_type {width: 100%!important;padding: 0.7rem 1rem;background: #e11d470e;border-radius: 10px;color: #e11d48!important;font-size: .9rem;display: flex;justify-content: space-between;align-items: center;}
+    .payment_status {background: #4caf50;color: white;padding: 0.2rem 0.5rem;width: fit-content;border-radius: 5px;font-size: 0.8rem;}
+</style>
+<div class="card card-body bg-white border-light shadow-sm mb-4 p-4">
+    <div class="">
+        <label class="my-1 mr-2 text-gray-600" for="country">Order Refrence:</label><span class="font-weight-bold"> #{{order.ref_number}}</span>
+    </div>
+    <div class="d-flex justify-content-between align-items-center mt-2">
+        <h2 class="h5 m-0">INV {{order_transaction.invoices_id}}</h2>
+        <a href="{% url 'wayrem_admin:invoiceorder' order.id %}" class="btn btn-info" ><i class="fa fa-download" aria-hidden="true"></i> Download</a>
+    </div>
+    <div>
+
+    </div>
+</div>
+
+<div class="card card-body bg-white border-light shadow-sm mb-4 p-4 orderstatus">
+    <form class="oderform" method="post" action="{%url 'wayrem_admin:updateorderstatus' order.id %}">
+    {% csrf_token %}
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h5 m-0">Order status</h2>
+        {% if order.status.id != 18 %}<button class="btn btn-primary order_submit_success" type="button" data-id={{order.id}}>Save</button>{% endif %}
+    </div>
+    <div>
+        <div class="">
+            <!-- <label class="my-1 mr-2" for="country">Order status</label>  -->
+            {{status_form.status}}
+        </div>
+    </div>
+    </form>
+</div>
+
+
+{% if PAYMENT_STATUS_DECLINED == order_transaction.payment_status.id or PAYMENT_STATUS_CONFIRM == order_transaction.payment_status.id  %}
+<div class="card card-body bg-white border-light shadow-sm mb-4 p-4">
+    <div class="d-flex justify-content-between align-items-center"><span class={% if PAYMENT_STATUS_DECLINED == order_transaction.payment_status.id %}"declined_type"{% else %}"paid_type"{% endif %}>
+       <span> Order has been {{order_transaction.payment_status}}!</span><span class="payment_status {% if PAYMENT_STATUS_DECLINED == order_transaction.payment_status.id %}bg-danger{% else %}bg-success {% endif %} ms-2">{{order_transaction.payment_status}}</span></span>
+    </div>
+</div>
+{% else %}
+<div class="card card-body bg-white border-light shadow-sm mb-4 p-4 orderpayment">
+    <form class="oderform" method="post" action="{%url 'wayrem_admin:updatepaymentstatusstatus' order_transaction.id %}">
+    {% csrf_token %}
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h2 class="h5 m-0">Payment</h2>
+    </div>
+    <div class="d-flex justify-content-between align-items-center flex-column">
+        <div class="pending_type">
+            <span>{{order_transaction.payment_mode.name}}</span>
+            <span class="payment_status bg-warning ms-2">{{order_transaction.payment_status.name}}</span>
+        </div>
+        <div class="d-flex justify-content-between w-100 mt-4">
+            <button class="btn btn-success modelpaymentstatus" type="button" data-id="{{PAYMENT_STATUS_CONFIRM}}" >Confirm</button>
+            <!-- <button class="btn btn-danger modelpaymentstatus" type="button" data-id="{{PAYMENT_STATUS_DECLINED}}" data-bs-toggle="modal" data-bs-target="#modal-default">Decline</button> -->
+        </div>
+    </div>
+    <div style="display:none">{{payment_status_form.payment_status}}</div>
+    </form>
+</div>
+{% endif %}
+
+
+
+<div class="modal fade" id="modal-default" tabindex="-1" role="dialog" aria-labelledby="modal-default" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="h6 modal-title">Payment Type</h2>
+                
+                <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to confirm the payment ?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success orderpaymentupdate">Confirm</button>
+                <button type="button" class="btn btn-link text-gray ms-auto" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

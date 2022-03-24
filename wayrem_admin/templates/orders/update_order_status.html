@@ -1,0 +1,34 @@
+{% block content %}
+{% load static %}
+
+    <div class="modal-dialog " role="document">
+        <form id="oderform" action="{%url 'wayrem_admin:updateorderstatus' id_pk %}" method="post" novalidate="">
+            {% csrf_token %}
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2 class="h6 modal-title">Order update status</h2>
+                </div>
+                <div class="modal-body">
+                
+                    <div class="row">
+                    
+                        <div class="col-md-12 mb-2">
+                            <div>
+                                <label for="status">Status <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.status.errors | striptags}}</em></span></label>
+                                {{form.status}}
+                                <div class="input-group" id="status_error_message" style="color: #d12525;"></div>
+                            </div>
+                        </div>
+                    </div>
+                
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary order_submit_success" data-id="{{id_pk}}">Submit</button>
+                    
+                </div>
+            </div>
+        </form>
+    </div>
+
+{% endblock content %}

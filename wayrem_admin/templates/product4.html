@@ -1,0 +1,208 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %} Create Product {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}
+<link type="text/css" href="{% static 'assets/css/style.css' %}" rel="stylesheet">
+{% endblock stylesheets %}
+
+{% block content %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.css" integrity="sha512-p209YNS54RKxuGVBVhL+pZPTioVDcYPZPYYlKWS9qVvQwrlzxBxkR8/48SCP58ieEuBosYiPUS970ixAfI/w/A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+
+{% comment %} <script type="text/javascript">
+       $(document).ready(function () {
+            $('#id_product_category').select2({
+            placeholder: 'Select Category',
+            })
+            $('#id_supplier_name').select2({
+            placeholder: 'Select Supplier',
+            });
+     });
+    </script> {% endcomment %}
+    <div class="dashboard_content_inner">
+        <div class="topbar_pages">
+            <h4 class="text-title">Add Product | Step - 2</h2>
+            <div class="breadcrumb-section">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb padding-left-0">
+                        <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
+                        <li class="breadcrumb-item"><span class="sidebar-icon"><i class="fas fa-gift"></i></span> <span class="sidebar-text">Product Management &nbsp; </span></li>
+                        <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:product' %}">Create Product   &nbsp; </a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'wayrem_admin:productviewone' %}">Step 1</a></li>                        
+                        <li class="breadcrumb-item active" aria-current="page">Step 2</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+
+        <div class="py-4 justify-content-center form-bg-image mt-5">
+            <div class="row justify-content-center form-bg-image">
+                <div class="col-12 d-flex align-items-center justify-content-center">
+                    <div class="mb-4 mb-lg-0 bg-white shadow-sm rounded p-4 p-lg-4 w-100">
+                        <div class="mb-4 mt-md-0">
+                            <h1 class="mb-0 h3">
+                                <!-- <img src="{% static '/assets/img/logo/Wayrem_logo..svg'%}" alt=""> -->
+                                 Add Product | Step - 2
+                            </h1>
+                            <hr>
+                            
+                            <p>
+                                {% if messages %}
+                                {% for message in messages %}
+                            <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show"
+                                {% endif %} role="alert">
+                                <strong> {{ message }}</strong>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+
+
+                            </p>
+                        </div>
+                        {% if form.non_field_errors %}
+                        {% for error in form.non_field_errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        {{error}}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </div>
+                        {% endfor %}
+                        {% endif %}
+
+                        <form method="post" action="{% url 'wayrem_admin:product_images' %}" enctype="multipart/form-data" validate>
+                                {% csrf_token %}
+                                {{ form.non_field_errors }}
+                                <div class="row">
+                            
+                                    <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4 form-file">
+                                            <label for="description">Product Primary Image <span class="text-danger">*</span>  <span class="text-danger"> <em> {{form.primary_image.errors | striptags}}
+                                            </em>
+                                        </span></label>
+                                            {{form.primary_image}}
+                                            <label class="form-file-label" for="id_primary_image">
+                                                    <span class="form-file-text">Choose file...</span>
+                                                    <span class="form-file-button">Browse</span>
+                                            </label>
+                                            <span class="text-danger"> <em> {{form.primary_image.errors | striptags}} </em> </span>
+                                            <span class="input-group submit" id="error" style="color: #d12525;"></span>
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+
+                                     <!-- Form -->
+                                    <div class="col-lg-6">
+                                        <div class="form-group mb-4 form-file multiple">
+                                            <label for="description">Product Image <span class="text-danger">*</span>  <span class="text-danger"> <em> {{form.primary_image.errors | striptags}}
+                                            </em>
+                                        </span></span> 
+                                            </label>
+                                            {{form.images}} 
+                                            <label class="form-file-label" for="customFile">
+                                                    <span class="form-file-text">Choose file...</span>
+                                                    <span class="form-file-button">Browse</span>
+                                            </label>
+                                            <span class="input-group submit" id="error1" style="color: #d12525;"></span>  
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+                                    &nbsp;
+                                    <span><h5>Instructions</h5></span>
+                                   <span>* Only the .png .jpg, .jpeg Image Format is Acceptable.</span>
+                                   <span>* The Image Dimensions Should be (Width x Height).</span>
+                                    &nbsp;
+                                <div class="mt-1">
+                                <a  href="{% url 'wayrem_admin:productviewone' %}" class="btn  btn-danger btn-block col-xl-1 col-lg-1 col-md-3 col-12 mt-sm-3 mt-md-0 mt-3">Previous</a>
+                                <button type="submit" class="btn btn-dark border-0 col-xl-1 col-lg-1 col-md-3 col-12" >Save</button>
+                                </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+<script>
+
+    $("#id_primary_image").on("change", function () {
+    
+    var extension = $(this).val().split('.').pop().toLowerCase();
+    var validFileExtensions = ['jpeg', 'jpg', 'png', 'gif', 'bmp'];
+    if(this.files[0].size > 2000000) {
+    // alert("Sorry!! Max allowed file size is 2 MB");
+    $("#error").text("Sorry!! Max allowed file size is 2 MB").show();
+    $(this).val('');
+    }
+    else if ($.inArray(extension, validFileExtensions) == -1) {
+        $("#error").text("Sorry!! Upload only jpg, jpeg, png, gif, bmp file").show();
+                $(this).replaceWith($(this).val('').clone(true));
+                // $('#submit').prop('disabled', true);
+        }
+    else {
+        $("#error").text('').hide();
+    // $('#submit').prop('disabled', false);
+    
+    }
+    });
+    
+    $("#id_images").on("change", function () {
+    
+    var extension = $(this).val().split('.').pop().toLowerCase();
+    var validFileExtensions = ['jpeg', 'jpg', 'png', 'gif', 'bmp'];
+    if(this.files[0].size > 2000000) {
+    // alert("Sorry!! Max allowed file size is 2 MB");
+    $("#error1").text("Sorry!! Max allowed file size is 2 MB").show();
+    $(this).val('');
+    }
+    else if ($.inArray(extension, validFileExtensions) == -1) {
+        $("#error1").text("Sorry!! Upload only jpg, jpeg, png, gif, bmp file").show();
+                $(this).replaceWith($(this).val('').clone(true));
+                // $('#submit').prop('disabled', true);
+        }
+    else {
+        $("#error1").text('').hide();
+    // $('#submit').prop('disabled', false);
+    
+    }
+    });
+
+    $("#id_image3").on("change", function () {
+    
+    var extension = $(this).val().split('.').pop().toLowerCase();
+    var validFileExtensions = ['jpeg', 'jpg', 'png', 'gif', 'bmp'];
+    if(this.files[0].size > 2000000) {
+    // alert("Sorry!! Max allowed file size is 2 MB");
+    $("#error2").text("Sorry!! Max allowed file size is 2 MB").show();
+    $(this).val('');
+    }
+    else if ($.inArray(extension, validFileExtensions) == -1) {
+        $("#error2").text("Sorry!! Upload only jpg, jpeg, png, gif, bmp file").show();
+                $(this).replaceWith($(this).val('').clone(true));
+                // $('#submit').prop('disabled', true);
+        }
+    else {
+        $("#error2").text('').hide();
+    // $('#submit').prop('disabled', false);
+    
+    }
+    });
+    
+    
+    </script>
+
+{% endblock javascripts %}

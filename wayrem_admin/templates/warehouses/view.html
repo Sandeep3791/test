@@ -1,0 +1,151 @@
+
+{% extends "layouts/base.html" %}
+{% load widget_tweaks %}
+{% block title %} Add Warehouse {% endblock %} 
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+{% block content %}
+<div class="dashboard_content_inner">
+    {{form.media}}
+    <div class="topbar_pages padding-0">
+        <h4 class="text-title">View Warehouse</h2>
+        <div class="breadcrumb-section">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb padding-left-0">
+                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
+                    <li class="breadcrumb-item"><span class="sidebar-icon"><i class="fas fa-box-open"></i></span> <span class="sidebar-text">Inventory & Warehouses &nbsp; </span></li>
+                    <li class="breadcrumb-item active" aria-current="page"><a href="{% url 'wayrem_admin:warehouses' %}">Manage Warehouses</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">View Warehouse</li>
+                </ol>
+            </nav>
+        </div> 
+    </div>
+    <div class="justify-content-center form-bg-image mt-5">
+        <div class="col-12 col-xl-12">
+            <div class="card card-body card_shadow mb-4">
+                
+                <form action="{% url 'wayrem_admin:update_warehouse' warehouse_pk %}" method="POST" enctype="multipart/form-data" validate>
+                  {% csrf_token %}
+                    <div class="row">
+                      <div class="col-md-12 mb-2">
+                            <div>
+                                <label for="code_name">Name <span class="text-danger"><em>{{form.code_name.errors | striptags}}</em></span></label>
+                                {{form.code_name|add_class:'form-control'}}
+                                <div class="input-group" id="name_error_message" style="color: #d12525;"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 mb-2">
+                            <div>
+                                <label for="name">Latitude <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.latitude.errors | striptags}}</em></span></label>
+                                {{form.latitude}}
+                                <div class="input-group" id="branch_name_error_message" style="color: #d12525;"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 mb-2">
+                            <div>
+                                <label for="name">Longitude <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.longitude.errors | striptags}}</em></span></label>
+                                {{form.longitude}}
+                                <div class="input-group" id="branch_name_error_message" style="color: #d12525;"></div>
+                            </div>
+                        </div>
+    
+                        <div class="col-md-12 mb-2">
+                            <div>
+                                <label for="key">Address  <span class="text-danger"><em>{{form.address.errors | striptags}}</em></span></label>
+                                {{form.address|add_class:'form-control'}}
+                                <div class="input-group" id="from_email_error_message" style="color: #d12525;"></div>
+                            </div>
+                        </div>
+    
+                        <div class="col-md-12 mb-2">
+                            <div>
+                                <label for="status">Status  <span class="text-danger"><em>{{form.status.errors | striptags}}</em></span></label>
+                                {{form.status|add_class:'form-control'}}
+                                <div class="input-group" id="from_email_error_message" style="color: #d12525;"></div>
+                            </div>
+                        </div>
+    
+                        <div class="mt-3">
+                        <a href="{% url 'wayrem_admin:inventories' %}" class="btn  btn-dark btn-block col-xl-3 col-md-5 col-12">Back</a>
+                    </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+<script>
+ 
+    $("input[type='file']").on("change", function () {
+    
+    var extension = $(this).val().split('.').pop().toLowerCase();
+    var validFileExtensions = ['jpeg', 'jpg', 'png', 'gif', 'bmp'];
+    if(this.files[0].size > 2000000) {
+    // alert("Sorry!! Max allowed file size is 2 MB");
+    $("#error").text("Sorry!! Max allowed file size is 2 MB").show();
+    $(this).val('');
+    }
+    else if ($.inArray(extension, validFileExtensions) == -1) {
+        $("#error").text("Sorry!! Upload only jpg, jpeg, png, gif, bmp file").show();
+                $(this).replaceWith($(this).val('').clone(true));
+                // $('#submit').prop('disabled', true);
+        }
+    else {
+        $("#error").text('').hide();
+    // $('#submit').prop('disabled', false);
+    
+    }
+    });
+    
+        $(function () {
+    
+            var error_n = false;
+            var error_d = false;
+    
+            $("#id_name").focusout(function () {
+                check_name();
+            });
+            $("#id_description").focusout(function () {
+                check_description();
+            });
+    
+    
+            function check_name() {
+                var name = $("#id_name").val();
+                if (name !== '') {
+                    $("#name_error_message").hide();
+                    // $("#id_name").css("border-bottom", "2px solid #34F458");
+                } else {
+                    $("#name_error_message").html("Please Enter Category Name ");
+                    $("#name_error_message").show();
+                    error_n = true;
+                }
+            }
+    
+            function check_description() {
+                var description = $("#id_description").val();
+                if (description !== '') {
+                    $("#description_error_message").hide();
+                    // $("#id_description").css("border-bottom", "2px solid #34F458");
+                } else {
+                    $("#description_error_message").html("Please Enter description");
+                    $("#description_error_message").show();
+                    error_d = true;
+                }
+            }
+    
+        });
+    
+    </script>
+
+{% endblock javascripts %}

@@ -1,0 +1,97 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% block title %} Customer list {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+{% block head %}
+<script src="{% static 'assets/js/datatable_ajax.js' %}"></script>
+<link rel="stylesheet" href="{% static 'assets/css/datatable.css' %}">
+<link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+<script src="{% static 'assets/js/datatable_1.js' %}"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+<script src="{% static 'assets/js/datatable.js' %}"></script>
+
+{% comment %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css"> {%
+endcomment %}
+{% comment %}
+<link href="https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,800&display=swap"
+    rel="stylesheet"> {% endcomment %}
+
+
+
+{% endblock head %}
+
+{% block content %}
+<div class="dashboard_content_inner">
+    <div class="topbar_pages">
+            <h4 class="text-title">Customers</h2>
+            <div class="breadcrumb-section">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb padding-left-0">
+                        <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page"><span class="sidebar-icon"><i class="fas fa-users"></i></span></span> Customers</li>
+                    </ol>
+                </nav>
+            </div>
+    </div>
+    <div class="table-settings mb-4">
+        {% include "customer/customer_filters.html" %} 
+  </div>
+    {% if messages %}
+    {% for message in messages %}
+    <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
+        <strong> {{ message }}!</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    <div class="card card-body border-light shadow-sm table-wrapper table-responsive pt-0">
+        {% include "customer/grid_customer.html" %} 
+        {% include "customer/pagination.html" %}    
+    </div>   
+</div>
+
+{% comment %} <script>
+
+    $(document).ready(function () {
+        oTable = $('#filtertable').DataTable({
+            dom: 'rt',
+            pageLength : 25,
+            'columnDefs': [{ 'orderable': false, 'targets': [3,4] }],
+            "oLanguage": {
+                "oPaginate": {
+                    "sNext": '<i class="fas fa-arrow-circle-right text-primary"></i>',
+                    "sPrevious": '<i class="fas fa-arrow-circle-left text-primary"></i>'
+                }
+            },
+            "fnDrawCallback": function (oSettings) {
+                if (oSettings._iDisplayLength > oSettings.fnRecordsDisplay()) {
+                    $(oSettings.nTableWrapper).find('.dataTables_paginate').hide();
+                } else {
+                    $(oSettings.nTableWrapper).find('.dataTables_paginate').show();
+                }
+            }
+        });
+        $('#table_search').keyup(function () {
+            oTable.search($(this).val()).draw();
+        })
+        $("#table_search").on(
+          "change keyup paste input", function() {
+           oTable.search($(this).val()).draw();
+           var info = oTable.page.info();
+            $('.searchfound').text(info.recordsDisplay);
+           if(info.recordsDisplay==0) {
+            $('.searchfoundstart').text(0);
+           } else {
+            $('.searchfoundstart').text(1);
+           }
+        })
+    });
+</script> {% endcomment %}
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

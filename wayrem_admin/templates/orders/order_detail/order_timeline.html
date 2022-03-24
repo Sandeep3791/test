@@ -1,0 +1,27 @@
+<div class="card card-body border-light shadow-sm mb-4">
+    <h5>Timeline - Delivery logs</h5>
+    <hr>
+
+    <!--line-->
+    <section class="timeline_area">
+        {% for timeline in order_timeline %}
+            {% if forloop.counter == 1 %}
+                <div class="timline_status fill_status_comp pe-0">
+            {% else %}
+                {% if forloop.last %}
+                <div class="timline_status fill_status_current pe-0">
+                {% else %}
+                <div class="timline_status fill_status_comp pe-0">
+                {% endif %}
+            {% endif %}
+                <div class="comp_status">{{timeline.order_status.name}}</div>
+                <div class="d-flex align-items-end flex-column">
+                    <span>{{timeline.log_date|date:"d M, y"}}</span>
+                    <span>{{timeline.log_date|date:"g:i a"}}</span>
+                </div>
+            </div>
+        {% endfor %}
+       
+        
+    </section>
+</div>

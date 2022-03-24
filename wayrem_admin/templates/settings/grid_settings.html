@@ -1,0 +1,38 @@
+{% load util_tags  %}
+{% block content %}
+<table class="table table-hover text-center" id="filtertable">
+    <thead class="">
+        <tr>
+            <!-- <th scope="col">S. No.</th> -->
+            <th scope="col">Key</th>
+            <th scope="col">Display Name</th>
+            <th scope="col">Value</th>
+            <th scope="col">Action</th>
+        </tr>
+    </thead>
+    <tbody class="bg-white">
+        {% for user in userlist %}
+        {% if user.is_superuser %}
+        {% else %}
+        <tr>
+        <form method="post" action="{% url 'wayrem_admin:settings_update' user.id %}" >
+        {% csrf_token %}
+            <td>{{user.key}}</td>
+            <td><input type="text" value="{{user.display_name}}" class="form-control form-control-sm" style="height:10px;" name="display_name"></td>
+            <td>
+            {% if user.type == "text" %}
+            <input type="text" value="{{user.value}}" class="form-control form-control-sm" style="height:10px;"  name="value">
+            {% else %}
+            <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="value">{{user.value}}</textarea>
+            {% endif %}
+            </td>
+            <td>                    
+                <button type="submit" class="btn btn-primary btn-sm">Update</button>                
+            </td>
+            </form>
+        </tr>
+        {% endif %}
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock content %}

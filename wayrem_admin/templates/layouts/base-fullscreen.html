@@ -1,0 +1,67 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head> 
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<!-- Primary Meta Tags -->
+
+<title>
+   Wayrem - {% block title %}{% endblock %}
+</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta name="title" content="Wayrem">
+<meta name="author" content="Themesberg">
+<meta name="description" content="Wayrem">
+<meta name="keywords" content="Wayrem" />
+{% comment %} <link rel="canonical" href="https://appseed.us/admin-dashboards/django-dashboard-volt"> {% endcomment %}
+
+
+<!-- Favicon -->
+{% comment %} <link rel="apple-touch-icon" sizes="120x120" href="/static/assets/img/favicon/apple-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/static/assets/img/favicon/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/static/assets/img/favicon/favicon-16x16.png">
+<link rel="manifest" href="/static/assets/img/favicon/site.webmanifest">
+<link rel="mask-icon" href="/static/assets/img/favicon/safari-pinned-tab.svg" color="#ffffff">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="theme-color" content="#ffffff"> {% endcomment %}
+<link rel="apple-touch-icon" sizes="120x120" href="{% static '/assets/img/logo/Wayrem_logo..svg'%}">
+<link rel="icon" type="image/png" sizes="32x32" href="{% static '/assets/img/logo/Wayrem_logo..svg'%}">
+<link rel="icon" type="image/png" sizes="16x16" href="{% static '/assets/img/logo/Wayrem_logo..svg'%}">
+<link rel="manifest" href="/static/assets/img/favicon/site.webmanifest">
+<link rel="mask-icon" href="{% static '/assets/img/logo/Wayrem_logo..svg'%}" color="#ffffff">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="theme-color" content="#ffffff">
+
+<!-- Fontawesome -->
+<link type="text/css" href="{% static 'assets/vendor/@fortawesome/fontawesome-free/css/all.min.css' %}" rel="stylesheet">
+
+<!-- Sweet Alert -->
+<link type="text/css" href="{% static 'assets/vendor/sweetalert2/dist/sweetalert2.min.css' %}" rel="stylesheet">
+
+<!-- Notyf -->
+<link type="text/css" href="{% static 'assets/vendor/notyf/notyf.min.css' %}" rel="stylesheet">
+
+<!-- Volt CSS -->
+<link type="text/css" href="{% static 'assets/css/volt.css' %}" rel="stylesheet">
+
+<link type="text/css" href="{% static 'assets/css/wayrem_admin.css'%}" rel="stylesheet">
+
+</head>
+<body>
+
+    {% block content %}{% endblock content %}
+
+    {% include 'includes/scripts.html' %}
+
+  <script>
+    // var alertElement = document.getElementById('hide')
+    var alertElement = document.getElementsByClassName('alert-dismissible')
+    window.setTimeout(function () {
+      alertElement[0].style.display = 'none';
+    }, 2322);
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,54 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %} Sign In {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+<p>
+    {% if messages %}
+    {% for message in messages %}
+<div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
+    <strong> {{ message }}</strong>
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endfor %}
+{% endif %}
+</p>
+
+
+<main class="  align-items-center admin_login_lg">
+    <!-- Section -->
+    <section class="d-flex align-items-center my-5 mt-lg-6 mb-lg-5">
+        <div class="container">
+            <div class="row justify-content-center form-bg-image">
+                <div class="col-12 d-flex align-items-center justify-content-center">
+                    <div class="bg-white shadow-soft border rounded border-light p-4 p-lg-5 w-100 fmxw-500">
+                        <div class="text-center text-md-center mb-4 mt-md-0">
+                            <h1 class="mb-4 h4">
+
+                                Select Option To Add Product
+                            </h1>
+                            <div class="row">
+                                <div class="col-md-6"><a href="{% url 'wayrem_admin:inputBar' %}"
+                                        class="btn btn-secondary btn-lg">Scan Product Barcode</a>
+                                </div>
+                                <div class="col-md-6"><a href="{% url 'wayrem_admin:productviewone' %}"
+                                        class="btn btn-primary btn-lg">Add Product Manually</a>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}

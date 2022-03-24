@@ -1,0 +1,1088 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %} Update Product {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.css" integrity="sha512-p209YNS54RKxuGVBVhL+pZPTioVDcYPZPYYlKWS9qVvQwrlzxBxkR8/48SCP58ieEuBosYiPUS970ixAfI/w/A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+
+<script type="text/javascript">
+       $(document).ready(function () {
+            $('#id_category').select2({
+            placeholder: 'Select Category',
+            })
+            $('#id_supplier').select2({
+            placeholder: 'Select Supplier',
+            });
+     });
+    </script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+             $('#id_category').select2({
+             placeholder: 'Select Category',
+             })
+             $('#id_supplier').select2({
+             placeholder: 'Select Supplier',
+             });
+      });
+     </script>
+     <script type="text/javascript">
+         $(document).ready(function () {
+              $('.select_ingrid').select2({
+              placeholder: 'Select Ingredient',
+              })
+              $('.select_unit').select2({
+              placeholder: 'Select Unit',
+              });
+              $(".simplebar-mask .sidebar-inner ul.nav a").each(function(){
+                 var path = window.location.pathname;
+                 $(".simplebar-mask .sidebar-inner ul.nav a[href*='"+path+"']").addClass("active");
+                 if(path==$(this).attr('href')){
+                     $(this).parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
+                     $(this).parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
+                 }
+             });
+       });
+      </script>
+<div class="dashboard_content_inner">
+    <div class="topbar_pages">
+        <h4 class="text-title">Update Product </h2>
+        <div class="breadcrumb-section">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb padding-left-0">
+                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
+                    <li class="breadcrumb-item"><span class="sidebar-icon"><i class="fas fa-gift"></i></span> <span class="sidebar-text">Product Management &nbsp; </span></li>
+                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:productlist' %}">Manage Products</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Update Product</li>
+                </ol>
+            </nav>
+        </div>
+</div>
+ <!---=========page popup==========-->
+ <div class="modal" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">heading</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="row mb-5">
+                <div class="col">
+                    <h6>lorem ipsum</h6>
+                </div>
+
+                <div class="col">
+                    <h6>lorem ipsum</h6>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col">
+                    <h6>lorem ipsum</h6>
+                </div>
+
+                <div class="col">
+                    <h6>lorem ipsum</h6>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
+          <button type="button ps-4 pe-4" class="btn btn-primary" style="padding: 8px 28px;">Fill</button>
+        </div>
+      </div>
+    </div>
+  </div>
+    <!--==============================-->
+    <div class="row justify-content-center form-bg-image mt-5 px-3">
+        <div class="col-12 d-flex align-items-center justify-content-center">
+            
+            {% if messages %}
+            <div class="mb-4 mb-lg-0 bg-white  rounded p-4 p-lg-4 w-100" style="box-shadow: 0px 14px 20px 0px #00000014;"></div>
+            {% for message in messages %}
+                <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
+                    <strong> {{ message }}</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            
+            {% endfor %}
+            </div>
+            {% endif %}
+
+            
+            {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            {{error}}
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </div>
+            {% endfor %}
+            {% endif %}
+            <form method="post" action="{% url 'wayrem_admin:updateproduct' id %}"  id="product1" data-supplier-url = "{% url 'wayrem_admin:ajax_load_supplier' %}" enctype="multipart/form-data" validate>
+                    {% csrf_token %}
+                    {{ form.non_field_errors }}
+                <div class="row bg-white" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
+
+                    <h2 class="h5 mb-4 mt-4">
+                        Product Information
+                    </h2>
+
+                    <div class="row">
+                        <!-- Form -->
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                                <label for="name">SKU <span class="text-danger">*</span> <span class="text-danger"><em> {{form.SKU.errors | striptags}}
+                                </em></span></label>
+                                <div class="input-group input_border">   
+                                    {{form.SKU}}
+                                    <div class="input-group" id="sku_error_message" style="color: #d12525;"></div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <!-- End of Form -->
+
+                        <!-- Form -->
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                                <label for="image">Product Name <span class="text-danger">*</span> <span class="text-danger"> <em> {{form.name.errors | striptags}}
+                                </em> </span></label>
+                                <div class="input-group">
+                                    
+                                    {{form.name}}
+                                    <div class="input-group" id="name_error_message" style="color: #d12525;"></div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <!-- End of Form -->
+                    </div>
+                    <div class="row">
+                        
+                        
+                        <!-- Form -->
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                            
+                                <label for="description">Product Category  <span class="text-danger">
+                                    <em> {{form.category.errors | striptags}}
+                                    </em>
+                                </span></label>
+                                <div class="input-group">
+                                    
+                                    {{form.category}}
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <!-- End of Form -->
+
+                        <!-- Form -->
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4 col-gap">
+                                <label for="name">Weight <span class="text-danger">*</span><span class="text-danger"><em> {{form.weight.error | striptags}} {{form.unit.error | striptags}} 
+                                    </em>
+                                </span></label>
+                                <div class="input-group first">   
+                                    <div class="w-75">{{form.weight}} </div>
+                                    <div class="w-25 px-2">{{form.weight_unit}} </div>
+                                <div class="input-group" id="weight_error_message" style="color: #d12525;"></div>
+                                </div>
+                                
+                                <span class="text-error"></span>
+                            </div>
+                        </div>
+                        <!-- End of Form -->
+                        
+                        <!-- Form -->
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                                <label for="name">Price <span class="text-danger">*</span><span class="text-danger"><em> {{form.price.error | striptags}} 
+                                    </em>
+                                </span></label>
+                                <div class="input-group">   
+                                    {{form.price}}<span class="input-group-text" id="basic-addon1">SAR</span>
+                                    <div class="input-group" id="price_error_message" style="color: #d12525;"></div>
+                                </div>
+                            
+                                <span class="text-error"></span>
+                            </div>
+                        </div>
+                        <!-- End of Form -->
+                        
+                    </div>
+
+                    
+                    
+                    <div class="row">
+                        <!-- Form -->
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                                <label for="description">Date of Manufacture  <span class="text-danger">*</span> <span class="text-danger">
+                                    <em> {{form.date_of_mfg.errors | striptags}}
+                                    </em>
+                                </span></label>
+                                <div class="input-group">
+                                    
+                                    {{form.date_of_mfg}}
+                                    <div class="input-group" id="dom_error_message" style="color: #d12525;"></div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <!-- End of Form -->
+
+
+                        <!-- Form -->
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                                <label for="provider">Date of Expiry  <span class="text-danger">*</span>  <span class="text-danger"> <em> {{form.date_of_exp.errors | striptags}}
+                                </em>
+                            </span></label>
+                                <div class="input-group date_input_box">
+                                
+                                    {{form.date_of_exp}}
+                                    <div class="input-group" id="doe_error_message" style="color: #d12525;"></div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <!-- End of Form -->
+
+                        <!-- Form -->
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                                <label for="provider">Manufacturer Name <span class="text-danger">*</span>  <span class="text-danger"> <em> {{form.mfr_name.errors | striptags}}
+                                </em>
+                            </span></label>
+                                <div class="input-group date_input_box">
+                                
+                                    {{form.mfr_name}}
+                                    <div class="input-group" id="mfr_error_message" style="color: #d12525;"></div>
+                                </div>
+                            
+                            </div>
+                        </div>
+                        <!-- End of Form -->
+
+                        <!-- Form -->
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+
+                            <label for="description">Supplier Company <span class="text-danger"><em> {{form.supplier.errors | striptags}}
+                                    </em>
+                                </span></label>
+                                <div class="input-group">
+                                {% comment %}  {% endcomment %}
+                            {{form.supplier}}
+                            {% comment %} </script> {% endcomment %}
+                                </div>
+
+                                
+                            </div>
+                        </div>
+                        <!-- End of Form -->
+
+                        <!-- Form -->
+                        <div class="col-lg-12">
+                            <div class="form-group mb-4">
+                                <label for="name">Description <span class="text-danger"><em>{{form.description.error | striptags}} 
+                                    </em>
+                                </span></label>
+                                <div class="input-group">   
+                                {{form.description}}
+                                </div>
+                            </div>
+                        </div>
+                        <!-- End of Form -->
+
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                                <label for="name">Discount <span class="text-danger"></span><span class="text-danger"><em> {{form.discount.error | striptags}} 
+                                    </em>
+                                </span></label>
+                                <div class="input-group first">  
+                                    <div class="w-75 px-2">
+                                        {{form.discount}}
+                                    </div> 
+                                    <div class="w-25 px-2">
+                                        {{form.dis_abs_percent}}
+                                    </div> 
+                                    
+                                    <div class="input-group" id="discount_error_message" style="color: #d12525;"></div>
+                                </div>
+                                <!-- <div class="input-group">
+                                    <span class="text-danger"><em> 
+                                        </em></span>
+                                </div> -->
+                                <span class="text-error"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>    
+
+    
+                <div class="row mt-4 bg-white" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
+
+                    <h4 class="mb-4 mt-4">
+                        Stock Management
+                    </h4>
+                      
+                    <div class="col-lg-6">
+
+                        <div class="form-group mb-4">
+                                <label for="name">Warehouse <span class="text-danger">*</span><span class="text-danger"><em> {{form.quantity.errors | striptags}}
+                                </em>
+                                </span></label>
+                                <div class="input-group">   
+                                    <div class="w-75 px-2">{{form.warehouse}}</div>
+                                    <div class="input-group error_field_msg" id= "warehouse_error_message" style="color: #d12525;"></div>
+                                </div>
+                                <div class="input-group">
+                                    <span class="text-danger"><em> 
+                                        </em></span>
+                                </div>
+                                <span class="text-error"></span>
+                            </div>
+
+                        <div class="form-group mb-4">
+                            <label for="name">Product Quantity <span class="text-danger">*</span><span class="text-danger"><em> {{form.quantity.errors | striptags}}
+                            </em>
+                            </span></label>
+                            <div class="input-group">   
+                                <div class="w-75 px-2">
+                                {{form.quantity}}
+                            </div>
+                                <div class="w-25 px-2">{{form.quantity_unit}} </div>
+                                <div class="input-group" id="quantity_error_message" style="color: #d12525;"></div>
+                            </div>
+                            <div class="input-group">
+                                <span class="text-danger"><em> 
+                                    </em></span>
+                            </div>
+                            <span class="text-error"></span>
+                        </div>
+                    </div>
+                    <div class="col-lg-12">
+                            <div class="form-group mb-4">
+                                <label for="name">Out of Stock Threshold <span class="text-danger">*</span><span class="text-danger"><em> {{form.outofstock_threshold.errors | striptags}}
+                                </em>
+                                </span></label>
+                                <div class="input-group">   
+                                    <div class="w-50 px-2">{{form.outofstock_threshold}}</div>
+                                    <div class="input-group error_field_msg" id= "outofstock_threshold_error_message" style="color: #d12525;"></div>
+                                </div>
+                                <div class="input-group">
+                                    <span class="text-danger"><em> 
+                                        </em></span>
+                                </div>
+                                <span class="text-error"></span>
+                            </div>
+                    </div>
+
+                    <!-- Form -->
+                    <div class="col-lg-12">
+                    <div class="row">
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label >Starting Inventory</label>
+                                <div class="">{{form.inventory_starting}}</div>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label >Received Inventory</label>
+                                <div class="">{{form.inventory_received}}</div>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label >Shipped Inventory</label>
+                                <div class="">{{form.inventory_shipped}}</div>
+                            </div>
+                        </div>
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label >Cancelled Inventory</label>
+                                <div class="">{{form.inventory_cancelled}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    </div>
+                    
+                    <div class="col-lg-12">
+                    <br/>
+                        <div class="form-group mb-4">
+                            <label for="image">Package Count <span class="text-danger"></span><span class="text-danger"><em> {{form.package_count.error | striptags}}
+                                </em>
+                            </span></label>
+                            <div class="form-check form-switch">
+                                
+                                {{form.package_count}}
+                                <label for="id_package_count">Package</label>
+                                <div class="input-group" id="pcount_error_message" style="color: #d12525;"></div>
+                            </div>
+                        
+                        </div>
+                    </div>
+                    <!-- End of Form -->
+
+                    </div>
+
+                <div class="row mt-4 bg-white" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
+
+                    <h4 class="mb-4 mt-4">
+                        Ingredients
+                    </h4>
+
+                    <div class="row ingredients_form">
+                        <!-- Form -->
+                        <div class="col-lg-12">
+                            <div class="form-group mb-4">
+                                <div class="input-group">   
+                                    {{ formset.management_form }}
+                                    
+                                    {% for form in formset %}
+                                    {{ form.id }}
+                                    <div class="row col-12 form-row spacer my-2">
+                                        {% comment %} <div class="col-2">
+                                            <label>Ingredients</label>
+                                        </div> {% endcomment %}
+                                        <div class="row">
+                                        {% comment %} <div class="col-12 my-2"> {% endcomment %}
+                                            <div class="col-3">
+                                                <label>Ingredients </label>
+                                                {{form.ingredient}}
+                                                
+                                            </div>
+                                            <div class="col-3">
+                                                <label>Quantity </label>
+                                                {{form.quantity}}
+                                            </div>
+
+                                                <div class="col-3">
+                                                <label>Unit </label>
+                                                {{form.unit}}
+                                            </div>
+                                                <div class="col-3 d-flex align-items-end">
+                                                <div class="input-group-append">
+                                                    <button class="btn {% if forloop.counter == 1 %} btn-success add-form-row {% else %} btn-danger remove-form-row {% endif %} ps-3 pe-3   {% if forloop.counter == 1 %} addmmoreaction {% endif %}"  data-formid="0">
+                                                        {% if forloop.counter == 1 %}+{% else %}-{% endif %}</button>
+                                                        
+                                                </div>
+                                            </div>
+                                        </div>
+                                    {% comment %} </div> {% endcomment %}
+                                    </div>
+                                    {% endfor %}
+
+                                    
+                                </div>
+                            
+
+                            </div>
+                        </div>
+                        <!-- End of Form -->
+
+                        
+
+                    
+
+                        
+                        
+                    </div>
+
+                    </div>
+                    <!--=====================------=====================-->
+
+
+                    <!--==================row====================-->
+                <div class="row mt-4 bg-white" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
+
+                    <h4 class="mb-4 mt-4">
+                        Product Margin
+                    </h4>
+
+                    <div class="row">
+                        
+                        <!-- Form -->
+                       
+                        <!-- End of Form -->
+                    <!-- Form -->
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                                <label for="name">Wayrem Margin <span class="text-danger">*</span> <span class="text-danger"> <em> {{form.wayrem_margin.error | striptags}} 
+                                </em> </span> </label>
+                                <div class="input-group">
+                                    <div class="w-75 px-2">
+                                    {{form.wayrem_margin}}
+                                    </div>
+                                    <div class="w-25 px-2">
+                                        {{form.margin_unit}}
+                                    </div>
+                                    <div class="input-group" id="margin_error_message" style="color: #d12525;"></div>
+                                    <div class="input-group mt-2">
+                                        <div class="form-check mx-2">
+                                            
+                                            <label class="form-check-label" for="cat_marginopen">
+                                                Category Margin
+                                            </label>
+                                            <input class="form-check-input" type="radio" name="cat_margin" id="cat_marginopen">
+                                            <div class='selectedcat_margin'></div>
+                                        </div>
+                                        <div class="form-check mx-5">
+                                            <input class="form-check-input" type="radio" name="cat_margin" id="cat_margin1">
+                                            <label class="form-check-label" for="cat_margin1">
+                                                Product Margin
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <span class="text-error"></span>
+                            </div>
+                        </div>
+                        <!-- End of Form -->
+
+                        
+                    </div>
+
+                </div>
+                    <!--==================row end===================-->
+
+
+                    <!--==========row====================-->
+                    <div class="row mt-4 bg-white" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
+
+                        <h4 class=" mb-4 mt-4">
+                            Meta Information
+                        </h4>
+
+                        <div class="row">
+                        
+                            <!-- Form -->
+                        <div class="col-lg-12">
+                            <div class="form-group mb-4">
+                                <label for="name">Product Meta Key <span class="text-danger">*</span><span class="text-danger"><em> {{form.meta_key.error | striptags}}
+                                    </em>
+                                </span></label>
+                                <div class="input-group">
+                                    {{form.meta_key}}
+                                    <div class="input-group" id="metaKey_error_message" style="color: #d12525;"></div>
+                                </div>
+                            
+                            </div>
+                        </div>
+                        <!-- End of Form -->              
+                        
+                        </div>
+
+                    </div>
+                    <!--============row end===============-->
+
+
+
+                    <!--===================row===================-->
+                    <div class="row mt-4 mb-4 bg-white" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
+
+                    <h4 class="mb-4 mt-4">
+                        Status
+                    </h4>
+
+                    <div class="row">
+                        <!-- Form -->
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                                <div class="form-check">
+                                    <label class="form-check-label" for="quantity">  Featured Product  <span class="text-danger"> <em> {{form.feature_product.errors | striptags}}
+                                    </em>
+                                </span></label>
+                                    {{form.feature_product}}
+                                </div>
+                            
+                            </div>
+                        </div>
+                        <!-- End of Form -->
+                        <!-- Form -->
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                                <div class="form-check">
+                                    <label class="form-check-label" for="weight">Publish <span class="text-danger"> <em> {{form.publish.errors | striptags}}
+                                    </em>
+                                </span></label>
+                                    {{form.publish}}
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <!-- End of Form -->
+                    </div>
+
+                    </div>
+                    <!--================row end==================-->
+                    <div class="row mt-4 bg-white" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
+
+                        <h4 class=" mb-4 mt-4">
+                            Product Images
+                        </h4>
+
+                        <div class="row">
+                        
+                            <!-- Form -->
+                            {% if image %}
+                            <img src="{{image.url}}" style="width:200px;height:150px;" class='me-5'>
+                            {% endif %}
+                            <div class="col-lg-12">
+                                <div class="form-group col-lg-6 mb-4 form-file">
+                                    <label for="description">Primary image  <span class="text-danger">* <em>{{ form.primary_image.errors|striptags}}</em></span> </label>
+                                    {{ form.primary_image}}
+                                    <label class="form-file-label ps-2 pe-2" for="customFile">
+                                        <span class="form-file-text">Choose file...</span>
+                                        <span class="form-file-button">Browse</span>
+                                    </label>
+                                    <span class="text-danger"><em> {{form.meta_key.error | striptags}} </em></span>
+                                    <div class="input-group" id="metaKey_error_message" style="color: #d12525;"></div>
+                            </div>
+                        </div>
+                        <!-- End of Form -->              
+                        
+                    <div class="row">
+                        <h6 class="mb-3">Images Gallery</h6>
+                        {% for product in product_images %}
+                        {% if product.image.url %}
+                        <div class="col product_gallery_images">
+                            <!-- <form method="POST"  enctype="multipart/form-data" class="id_ajax_upload_{{product.id}} id_ajax_upload_form">  -->
+                                {% csrf_token %}
+                                <img src="{{product.image.url}}" style="width:200px; height:150px;" class='me-5 mt-2' id="id_image_upload_{{product.id}}">
+                                <!-- <span class="editimage"><i class="fas fa-edit text-dark"></i></span> -->
+                                <!-- <a type="button" onclick="imgDelete()"> -->
+                                <span class="deleteimage" dataid="{{product.id}}"><i class="fas fa-trash-alt text-danger"></i></span></a>
+                            
+                                <input type="file" name= "updateimage" class="updateimage" style=" display: none; " product-id="{{product.id}}">
+                                <input type="hidden" name="updateimageID" class="updateimageID" value="{{product.id}}" style=" display: none; ">
+                            <!-- </form> -->
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>  
+            </div>
+                <!-- Form -->
+                <div class="col-lg-12">
+                    <div class="col-lg-6 form-group mb-4 form-file multiple">
+                        <label for="description">Upload New Image <span class="text-danger"></span> </label>
+                        {{ form3.images}}
+                        <label class="form-file-label ps-2 pe-2" for="customFile">
+                            <span class="form-file-text">Choose file...</span>
+                            <span class="form-file-button">Browse</span>
+                        </label>
+                        <span class="text-danger"><em>{{form3.images.error | striptags}}</em></span>
+                        <div class="input-group" id="met aKey_error_message" style="color: #d12525;"></div>
+                    </div>
+                </div>
+                <!-- End of Form -->
+            </div>
+
+        </div>
+        <div class="mt-4">
+            <a  href="{% url 'wayrem_admin:productlist' %}" class="btn  btn-danger btn-block col-xl-1 col-md-1 col-12 mt-sm-3 mt-md-0 mt-3">Back</a>
+            <button id="your-id"class="btn btn-dark border-0 col-xl-1 col-md-1 col-12" >Update</button>
+        </div>
+        <script>
+            var form = document.getElementById("product1");
+        
+        document.getElementById("your-id").addEventListener("click", function () {
+          form.submit();
+        });
+        </script>
+        
+                            </form>
+                        </div>  
+</div>
+
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<script>
+    function imgDelete(){
+        var productid =  $('.deleteimage').attr('dataid');
+        console.log("button clicked")
+        console.log(productid)
+        
+        var url = "{% url 'wayrem_admin:delete_product_images' %}"
+        $.ajax({                       // initialize an AJAX request
+            url: url,                    // set the url of the request (= /persons/ajax/load-cities/ )
+            data: {
+                'deleteimage': productid       // add the country id to the GET parameters
+            },
+            success: function (data) {   
+                console.log(data)
+                $('.deleteimage').parent('.product_gallery_images').remove();
+            }
+        });
+    }
+    $('.deleteimage').click(function(){
+        var productid =  $(this).attr('dataid');
+        var url = "{% url 'wayrem_admin:delete_product_images' %}"
+        $(this).parent('.product_gallery_images').remove();
+        $.ajax({                       // initialize an AJAX request
+            url: url,                    // set the url of the request (= /persons/ajax/load-cities/ )
+            data: {
+                'deleteimage': productid       // add the country id to the GET parameters
+            },
+            success: function (data) {   
+                console.log(data)
+                
+            }
+        });
+    }); 
+</script>
+
+<script type="text/javascript">
+    function updateElementIndex(el, prefix, ndx) {
+        var id_regex = new RegExp('(' + prefix + '-\\d+)');
+        var replacement = prefix + '-' + ndx;
+        if ($(el).attr("for")) $(el).attr("for", $(el).attr("for").replace(id_regex, replacement));
+        if (el.id) el.id = el.id.replace(id_regex, replacement);
+        if (el.name) el.name = el.name.replace(id_regex, replacement);
+    }
+    function cloneMore(selector, prefix,clickid) {
+        
+        var newElement = $(selector).clone(true);
+        var total = $('#id_' + prefix + '-TOTAL_FORMS').val();
+        var currentrow = total;
+       
+        //newElement.find('select_ingrid').attr({'name': 'form-'+currentrow+'-ingredient', 'id': 'id_form-'+currentrow+'-ingredient'});
+        newElement.find(':input:not([type=button]):not([type=submit]):not([type=reset])').each(function() {
+            var name = $(this).attr('name')
+            if(name) {
+                name = name.replace('-' + (total-1) + '-', '-' + total + '-');
+                var id = 'id_' + name;
+                $(this).attr({'name': name, 'id': id}).val('').removeAttr('checked');
+            }
+        });
+        newElement.find('label').each(function() {
+            var forValue = $(this).attr('for');
+            if (forValue) {
+              forValue = forValue.replace('-' + (total-1) + '-', '-' + total + '-');
+              $(this).attr({'for': forValue});
+            }
+        });
+        newElement.find('.addmmoreaction').attr('data-formid',currentrow);
+        
+
+        total++;
+        $('#id_' + prefix + '-TOTAL_FORMS').val(total);
+        $(selector).after(newElement);
+        jQuery('#id_form-'+currentrow+'-ingredient + .select2.select2-container').remove();
+        jQuery('#id_form-'+currentrow+'-ingredient').select2();
+
+        jQuery('#id_form-'+currentrow+'-unit + .select2.select2-container').remove();
+        jQuery('#id_form-'+currentrow+'-unit').select2();
+
+        $('.select_ingrid').select2({
+             placeholder: 'Select Ingredient',
+             })
+             $('.select_unit').select2({
+             placeholder: 'Select Unit',
+             });
+             
+        var conditionRow = $('.form-row:not(:last)');
+        conditionRow.find('.btn.add-form-row')
+            .removeClass('btn-success').addClass('btn-danger')
+            .removeClass('add-form-row').addClass('remove-form-row')
+            .html('-')
+           
+        jQuery('.addmmoreaction[data-formid="0"]').removeClass('remove-form-row').addClass('add-form-row')
+        .removeClass('btn-danger').addClass('btn-success').html('+');
+        jQuery('.ingredients_form .input-group > .row.col-12.form-row.spacer.my-2:last-child .addmmoreaction').removeClass('btn-success').addClass('btn-danger')
+            .removeClass('add-form-row').addClass('remove-form-row')
+            .html('-')
+        return false;
+    }
+    function deleteForm(prefix, btn) {
+        var total = parseInt($('#id_' + prefix + '-TOTAL_FORMS').val());
+        if (total > 1){
+            btn.closest('.form-row').remove();
+            var forms = $('.form-row');
+            $('#id_' + prefix + '-TOTAL_FORMS').val(forms.length);
+            for (var i=0, formCount=forms.length; i<formCount; i++) {
+                $(forms.get(i)).find(':input').each(function() {
+                    updateElementIndex(this, prefix, i);
+                });
+            }
+        }
+        return false;
+    }
+    $(document).on('click', '.add-form-row', function(e){
+        e.preventDefault();
+        var clickid = jQuery(this).attr('data-formid');
+        cloneMore('.form-row:last', 'form',clickid);
+        if(clickid==0){
+            jQuery(this).removeClass('remove-form-row');
+            jQuery(this).addClass('add-form-row');
+        }
+    });
+    $(document).on('click', '.remove-form-row', function(e){
+        e.preventDefault();
+        deleteForm('form', $(this));
+        return false;
+    });
+    jQuery('#id_category').change(function(){
+        var catvals = jQuery(this).val();
+        var optionhtml = '';
+        var mainvalnum = '';
+        var mainvalnumtype = '';
+        var selText = '';
+        optionhtml += '<select name="cat_marginselected" class="cat_marginselected form-select">';
+            optionhtml += '<option>select</option>';
+            $("#id_category option:selected").each(function () {
+                var $this = $(this);
+                if($this.length) {
+                    selText = $this.text();
+                    var selTextsplit = selText.split(' - ');
+                    var selTextsnumber = selTextsplit[1].split('%');
+                    
+                    if(selTextsplit[1].indexOf("%")>0){
+                        mainvalnum = selTextsnumber[0];
+                        mainvalnumtype = '%';
+                    } else {
+
+                        mainvalnum = selTextsplit[1].split('(absolute')[0];
+                        mainvalnumtype = '(Absolute ';
+                    }
+                    
+                    optionhtml += '<option class="form-check-input" id="'+$this.attr('value')+'" val-text="'+selTextsplit[0]+'" val-autoops="'+mainvalnum+'" val-autoopstype = "'+mainvalnumtype+'">'+selText+'</option>';
+                    jQuery('.selectedcat_margin').html(optionhtml);
+                    clickaction();
+                }
+            });
+            optionhtml += '</select>';
+        });
+
+        $('.editimage').click(function(){
+            $(this).next('.deleteimage').next('input').click();
+            
+        });
+        
+        function clickaction(){
+        $('.selectedcat_margin select').change(function(){
+
+            var checkedval = $('.selectedcat_margin select option:selected');
+            $('#id_wayrem_margin').val(checkedval.attr('val-autoops'));
+            $('#id_margin_unit').val(checkedval.attr('val-autoopstype'));
+        });
+        }
+    
+</script>
+
+<script>
+    $("#id_product_category").change(function () {
+        const url = $("#product1").attr("data-supplier-url");  // get the url of the load_cities view
+        const supplierId = $(this).val();  // get the selected supplier ID from the HTML input
+
+        $.ajax({                       // initialize an AJAX request
+            url: url,                    // set the url of the request (= /persons/ajax/load-cities/ )
+            data: {
+                'category_product': supplierId       // add the country id to the GET parameters
+            },
+            success: function (data) {   // data is the return of the load_cities view function
+                $("#id_supplier_name").html(data);  // replace the contents of the city input with the data that came from the server
+                
+            }
+        });
+
+    });
+    $(".updateimage").change(function () {
+        var productID = jQuery(this).attr('product-id');
+        jQuery('.id_ajax_upload_'+productID).submit();
+
+        var file = $('.id_ajax_upload_'+productID+' input[type=file]').get(0).files[0];
+ 
+        if(file){
+            var reader = new FileReader();
+ 
+            reader.onload = function(){
+                $("#id_image_upload_"+productID).attr("src", reader.result);
+            }
+ 
+            reader.readAsDataURL(file);
+        }
+
+        
+    });
+    $('.id_ajax_upload_form').submit(function(e){
+            e.preventDefault();
+            $form = $(this)
+            var formData = new FormData(this);
+            $.ajax({
+                url: "{% url 'wayrem_admin:update_product_images' %}",
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    $('.error').remove();
+                    console.log(response)
+                    if(response.error){
+                        $.each(response.errors, function(name, error){
+                            error = '<small class="text-muted error">' + error + '</small>'
+                            $form.find('[name=' + name + ']').after(error);
+                        })
+                    }
+                    else{
+                        
+                    }
+                },
+                cache: false,
+                contentType: false,
+                processData: false
+            });
+        });
+    
+
+    // $(".updateimage").change(function () {
+    //     var imagevae = $(this).next('.updateimageID').val();
+    //     var fd = new FormData();
+    //     var files = $('#file')[0].files;
+
+    //     $.ajax({                       // initialize an AJAX request
+    //         url: url,                    // set the url of the request (= /persons/ajax/load-cities/ )
+    //         data: {
+    //             'updateimageID': imagevae       // add the country id to the GET parameters
+    //         },
+    //         success: function (data) {   // data is the return of the load_cities view function
+    //             $("#id_supplier_name").html(data);  // replace the contents of the city input with the data that came from the server
+                
+    //         }
+    //     });
+
+    // });
+</script>
+
+<script>
+    $(function() {
+   
+   var error_data = false;
+   
+   $("#id_SKU").focusout(function(){
+      check_sku();
+   });
+   $("#id_product_name").focusout(function() {
+      check_productName();
+   });
+   $("#id_product_code").focusout(function() {
+      check_productCode();
+   });
+   $("#id_mfr_name").focusout(function() {
+       check_mfr();
+   });
+   $("#id_dom").focusout(function() {
+       check_dom();
+   });
+   $("#id_doe").focusout(function() {
+       check_doe();
+   });
+   $("#id_outofstock_threshold").focusout(function() {
+       check_outofstock();
+   });
+   
+   
+   
+   function check_sku() {
+      var skudata = $("#id_SKU").val();
+      if (skudata !== '') {
+         $("#sku_error_message").hide();
+         $("#id_SKU").css("border-bottom","2px solid #34F458");
+      } else {
+         $("#sku_error_message").html("Please Enter Valid SKU");
+         $("#sku_error_message").show();
+         error_data = true;
+      }
+   }
+   
+   function check_productName() {
+      var p_name = $("#id_product_name").val()
+      if ( p_name !== '') {
+         $("#name_error_message").hide();
+         $("#id_product_name").css("border-bottom","2px solid #34F458");
+      } else {
+         $("#name_error_message").html("Please Enter Valid Product Name ");
+         $("#name_error_message").show();
+         error_data = true;
+      }
+   }
+   
+   function check_productCode() {
+      var p_code = $("#id_product_code").val()
+      if ( p_code !== '') {
+         $("#code_error_message").hide();
+         $("#id_product_code").css("border-bottom","2px solid #34F458");
+      } else {
+         $("#code_error_message").html("Please Enter Valid Product Code ");
+         $("#code_error_message").show();
+         error_data = true;
+      }
+   }
+   
+   function check_mfr() {
+      var mfr = $("#id_mfr_name").val()
+      if ( mfr !== '') {
+         $("#mfr_error_message").hide();
+         $("#id_mfr_name").css("border-bottom","2px solid #34F458");
+      } else {
+         $("#mfr_error_message").html("Please Enter Valid Manufacturer Name");
+         $("#mfr_error_message").show();
+         error_data = true;
+      }
+   }
+   
+   function check_dom() {
+      var mfr = $("#id_dom").val()
+      if ( mfr !== '') {
+         $("#dom_error_message").hide();
+         $("#id_dom").css("border-bottom","2px solid #34F458");
+      } else {
+         $("#dom_error_message").html("Please Enter Valid Manufacture Date");
+         $("#dom_error_message").show();
+         error_data = true;
+      }
+   }
+   
+   function check_doe() {
+      var mfr = $("#id_doe").val()
+      if ( mfr !== '') {
+         $("#doe_error_message").hide();
+         $("#id_doe").css("border-bottom","2px solid #34F458");
+      } else {
+         $("#doe_error_message").html("Please Enter Valid Expiry Data");
+         $("#doe_error_message").show();
+         error_data = true;
+      }
+   }
+   
+   function check_outofstock(){
+       var mfr = $("#id_outofstock_threshold").val()
+      if ( mfr !== '') {
+         $("#outofstock_threshold_error_message").hide();
+         $("#id_outofstock_threshold").css("border-bottom","2px solid #34F458");
+      } else {
+         $("#outofstock_threshold_error_message").html("Please Enter Valid Out of Stock threshold");
+         $("#outofstock_threshold_error_message").show();
+         error_data = true;
+      }
+   }
+   
+   
+   });
+   
+</script>
+{% endblock javascripts %}

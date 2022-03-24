@@ -1,0 +1,25 @@
+{% load util_tags  %}
+{% block content %}
+<table class="table table-hover text-center" id="filtertable">
+    <thead class="">
+        <tr>
+            <!-- <th scope="col">S. No.</th> -->
+            <th scope="col">Purchase Order</th>
+            <th scope="col">Supplier Name</th>
+            <th scope="col">Invoice</th>
+        </tr>
+    </thead>
+    <tbody class="bg-white">
+        {% for user in userlist %}
+        {% if user.is_superuser %}
+        {% else %}
+        <tr>            
+            <td>{{user.po_name}}</td>
+            <td>{{user.supplier_name}}</td>
+            <td><a type="button" class="btn btn-sm "  href="{% url 'wayrem_admin:downloadinvoice' %}?invoice_no={{user.invoice_no}}"><i class="fas fa-file-invoice"></i></a></td>                    
+        </tr>
+        {% endif %}
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock content %}
