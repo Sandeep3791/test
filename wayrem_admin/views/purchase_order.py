@@ -90,8 +90,8 @@ def create_purchase_order(request):
                     print(data)
                     product_instance = inst_Product(data[0])
                     product_qty = data[2]
-                    supplier_purchase_model = str(
-                        supplier_name) + '_purchase_order'
+                    supplier_purchase_model = "PurchaseOrder_" + str(
+                        supplier_name)
                     supplier = apps.get_model(
                         app_label='wayrem_admin', model_name=supplier_purchase_model)
                     supplier_po = supplier(po_id=po_id, po_name=po_name, product_name=product_instance,
