@@ -91,7 +91,7 @@ def create_purchase_order(request):
                     product_instance = inst_Product(data[0])
                     product_qty = data[2]
                     supplier_purchase_model = "PurchaseOrder_" + str(
-                        supplier_name)
+                        supplier_name.username)
                     supplier = apps.get_model(
                         app_label='wayrem_admin', model_name=supplier_purchase_model)
                     supplier_po = supplier(po_id=po_id, po_name=po_name, product_name=product_instance,
@@ -170,8 +170,8 @@ def create_po_step2(request):
                 product_instance = inst_Product_SKU(
                     supplier_product_instance.SKU)
                 product_qty = quantity
-                supplier_purchase_model = 'PurchaseOrder_' + \
-                    str(supplier_name.username)
+                supplier_purchase_model = "PurchaseOrder_" + str(
+                    supplier_name.username)
                 supplier = apps.get_model(
                     app_label='wayrem_admin', model_name=supplier_purchase_model)
                 supplier_po = supplier(po_id=po_id, po_name=po_name, product_name=product_instance,
