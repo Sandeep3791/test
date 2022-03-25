@@ -539,6 +539,7 @@ def import_products(request):
         df['inventory_cancelled'] = 0
         df['inventory_onhand'] = df['quantity']
         df['inventory_received'] = 0
+        df['outofstock_threshold'] = 0
         weight_unit = pd.merge(
             df, df_units, left_on='weight_unit', right_on='unit_name')
         weight_unit_id = weight_unit['id']
