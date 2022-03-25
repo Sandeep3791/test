@@ -570,12 +570,16 @@ def import_products(request):
         df_products_categories.to_sql(
             'products_master_category', engine, if_exists='append', index=False)
         inventory_df = pd.DataFrame()
-        inventory_df['product_id'] = ids
-        inventory_df['inventory_type_id'] = 1
         inventory_df['quantity'] = df7['quantity']
-        inventory_df['warehouse_id'] = 1
+        inventory_df['po_id'] = None
+        inventory_df['supplier_id'] = None
+        inventory_df['order_id'] = None
+        inventory_df['order_status'] = None
         inventory_df['created_at'] = datetime.now()
         inventory_df['updated_at'] = datetime.now()
+        inventory_df['inventory_type_id'] = 1
+        inventory_df['product_id'] = ids
+        inventory_df['warehouse_id'] = 1
         inventory_df.to_sql('inventory', engine,
                             if_exists='append', index=False)
         ingredients = pd.DataFrame()
