@@ -56,7 +56,7 @@ class SupplierUpdateForm(forms.ModelForm):
         # role = forms.MultipleChoiceField(choices=Roles)
 
         widgets = {
-            'username': forms.TextInput(attrs={'class': 'form-control'}),
+            'username': forms.TextInput(attrs={'class': 'form-control', 'readonly': True}),
             'email': forms.EmailInput(attrs={'class': 'form-control'}),
             'category_name': forms.SelectMultiple(attrs={'class': 'form-control'}),
             'company_name': forms.TextInput(attrs={'class': 'form-control'}),
