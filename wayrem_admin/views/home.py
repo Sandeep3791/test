@@ -61,6 +61,7 @@ def dashboard(request):
     else:
         total_transaction_amount = 0
     today = datetime.date.today()
+    print(today)
     week_ago = today - datetime.timedelta(days=7)
     x = Orders.objects.filter(order_date__gte=week_ago).annotate(
         day=TruncDay('order_date')).values('day').annotate(total=Count('id'))
