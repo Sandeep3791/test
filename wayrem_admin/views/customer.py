@@ -1,3 +1,4 @@
+from wayrem_admin.services import send_email
 from wayrem_admin.forms import CustomerSearchFilter
 from django.urls import reverse_lazy
 from wayrem_admin.utils.constants import *
@@ -9,7 +10,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views import View
 from django.utils.decorators import method_decorator
-from wayrem_admin.models import Customer
+from wayrem_admin.models import Customer, EmailTemplateModel
 from wayrem_admin.decorators import role_required
 from wayrem_admin.export import generate_pdf, generate_excel
 from django.core.paginator import Paginator
@@ -81,9 +82,19 @@ def customer_details(request, id=None):
 def customer_verification(request, id=None):
     status = request.GET.get('status')
     user = Customer.objects.filter(id=id).first()
+    email_id = user.email
+    full_name = f"{user.first_name} {user.last_name}"
     user.verification_status = status
     user.save()
     if status == "active":
+        email_template = EmailTemplateModel.objects.get(
+            key="customer_approved")
+        subject = email_template.subject
+        values = {
+            "customer": full_name
+        }
+        body = email_template.message_format.format(**values)
+        send_email(to=email_id, subject=subject, body=body)
         messages.success(request, f"{user.first_name} is now Active")
     else:
         messages.error(request, f"{user.first_name} is now Inactive")

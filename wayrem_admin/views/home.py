@@ -68,13 +68,6 @@ def dashboard(request):
     total_orders_day = [i.get('total') for i in x]
     q = Orders.objects.filter(order_date__gte=datetime.datetime.today()-datetime.timedelta(
         days=30), order_date__lte=datetime.datetime.today()).annotate(month=TruncMonth('order_date'), day=TruncDay('order_date')).values('month', 'day').annotate(total=Count('id')).order_by('month')
-    # q = Orders.objects.annotate(month=TruncMonth('order_date'), day=TruncDay(
-    #     'order_date')).values('month', 'day').annotate(total=Count('id'))
-    # x = Orders.objects.annotate(week=TruncWeek('order_date'),day=TruncDay('order_date')).values('week','day').annotate(total=Count('id'))
-    #  x = Orders.objects.annotate(week=TruncWeek('order_date')).values('week').annotate(total=Count('id'))
-    month_ago = today.replace(month=this_month-1)
-    # q = Orders.objects.filter(order_date__gt=month_ago).annotate(month=TruncMonth(
-    #     'order_date'), day=TruncDay('order_date')).values('month', 'day').annotate(total=Count('id'))
     context = {
         'subadmins': subadmins,
         'suppliers': suppliers,
