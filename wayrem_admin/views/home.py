@@ -10,6 +10,7 @@ from django.db.models import Sum
 from django.db.models.functions import (
     TruncDate, TruncDay, TruncHour, TruncMinute, TruncSecond, TruncWeek, TruncMonth)
 from django.db.models import Count
+from dateutil import relativedelta
 
 
 class RootUrlView(RedirectView):
@@ -42,7 +43,8 @@ def dashboard(request):
         order_date__month=this_month).count()
     present_month = datetime.datetime.now()
     try:
-        next_month = present_month.replace(month=present_month.month+1)
+        next_month = datetime.date.today() + relativedelta.relativedelta(months=1)
+        # next_month = present_month.replace(month=present_month.month+1)
     except ValueError:
         if present_month.month == 12:
             next_month = present_month.replace(
