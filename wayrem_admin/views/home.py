@@ -10,6 +10,7 @@ from django.db.models import Sum
 from django.db.models.functions import (
     TruncDate, TruncDay, TruncHour, TruncMinute, TruncSecond, TruncWeek, TruncMonth)
 from django.db.models import Count
+from dateutil import relativedelta
 
 
 class RootUrlView(RedirectView):
@@ -42,7 +43,7 @@ def dashboard(request):
         order_date__month=this_month).count()
     present_month = datetime.datetime.now()
     try:
-        next_month = present_month.replace(month=present_month.month+1)
+        next_month = datetime.date.today() + relativedelta.relativedelta(months=1)
     except ValueError:
         if present_month.month == 12:
             next_month = present_month.replace(
@@ -67,14 +68,7 @@ def dashboard(request):
     order_days = [i.get('day').strftime("%a") for i in x]
     total_orders_day = [i.get('total') for i in x]
     q = Orders.objects.filter(order_date__gte=datetime.datetime.today()-datetime.timedelta(
-        days=30), order_date__lte=datetime.datetime.today()).annotate(month=TruncMonth('order_date'), day=TruncDay('order_date')).values('month', 'day').annotate(total=Count('id')).order_by('month')
-    # q = Orders.objects.annotate(month=TruncMonth('order_date'), day=TruncDay(
-    #     'order_date')).values('month', 'day').annotate(total=Count('id'))
-    # x = Orders.objects.annotate(week=TruncWeek('order_date'),day=TruncDay('order_date')).values('week','day').annotate(total=Count('id'))
-    #  x = Orders.objects.annotate(week=TruncWeek('order_date')).values('week').annotate(total=Count('id'))
-    month_ago = today.replace(month=this_month-1)
-    # q = Orders.objects.filter(order_date__gt=month_ago).annotate(month=TruncMonth(
-    #     'order_date'), day=TruncDay('order_date')).values('month', 'day').annotate(total=Count('id'))
+        days=30), order_date__lte=datetime.datetime.today()).annotate(month=TruncMonth('order_date'), day=TruncDay('order_date')).values('month', 'day').annotate(total=Count('id')).order_by('month')   
     context = {
         'subadmins': subadmins,
         'suppliers': suppliers,
