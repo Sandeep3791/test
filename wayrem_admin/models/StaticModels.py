@@ -468,6 +468,7 @@ class Customer(models.Model):
     tax_number = models.BigIntegerField(null=True)
     registration_docs_path = models.CharField(max_length=255, null=True)
     tax_docs_path = models.CharField(max_length=255, null=True)
+    marrof_docs_path = models.CharField(max_length=255, null=True)
     # billing_name = models.CharField(max_length=255, null=True)
     # billing_address = models.TextField(null=True)
     delivery_house_no_building_name = models.CharField(
