@@ -622,6 +622,7 @@ class Inventory(models.Model):
         max_length=30, blank=True, null=True, choices=order_status_choices)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    description = models.CharField(max_length=1000, blank=True, null=True)
 
     def po_inventory_process(self, po_id):
         po_details = PurchaseOrder.objects.filter(po_id=po_id, available=True)
@@ -690,7 +691,7 @@ class Inventory(models.Model):
             product_type.query.group_by = [('inventory_type')]
             for quantity_cal in product_type:
                 quantity = quantity_cal['inventory_quantity']
-                if quantity_cal['inventory_type'] == 3:
+                if quantity_cal['inventory_type'] == 3 or quantity_cal['inventory_type'] == 5:
                     total_quantity -= quantity
                     inventory_shipped = quantity
                 else:
