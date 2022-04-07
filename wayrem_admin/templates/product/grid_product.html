@@ -103,6 +103,7 @@
                         <a class="dropdown-item" href="{% url 'wayrem_admin:productdetails' prod.id %}"><span class="fas fa-eye mr-2"></span>View Details</a>
                         <a class="dropdown-item" href="{% url 'wayrem_admin:updateproduct' prod.id %}"><span class="fas fa-edit mr-2"></span>Edit</a>
                         <a class="dropdown-item add_menu_quantity" href="#" data-bs-toggle="modal" data-bs-target="#updateQuantity" data-id="{{prod.id}}"><span class="fas fa-edit mr-2"></span>Add Quantity</a>
+                        <a class="dropdown-item remove_menu_quantity" href="#" data-bs-toggle="modal" data-bs-target="#removeQuantity" data-id="{{prod.id}}"><span class="fas fa-edit mr-2"></span>Remove Quantity</a>
                         <a class="dropdown-item text-danger"  data-bs-toggle="modal" data-bs-target="#deleteModal{{prod.id}}" href="#"> <span class="fas fa-trash-alt mr-2"></span>Remove</a>
                     </div>
                 </div>
@@ -141,7 +142,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Delete {{prod.product_name | title}}</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Add Quantity in inventory</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form id="add_inventory" action="{% url 'wayrem_admin:add_inventory' %}" method="POST" enctype="multipart/form-data">
@@ -166,6 +167,43 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="removeQuantity" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Remove Quantity in inventory</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="remove_inventory" action="{% url 'wayrem_admin:add_inventory' %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="modal-body">
+                <div class="col-md-12 mb-2">
+                    <div>
+                        <input name="product" type="hidden" class="form-control" value="" id="rem_product_ids" />
+                        <input name="inventory_type" type="hidden" class="form-control" value="5" id="rem_inventorytype" />
+                        <label for="quantity">Quantity <span class="text-danger">*</span>  <span class="text-danger"></span></label>
+                        <input type="number" name="quantity" min="1" step="1" class="form-control" required="" value="1" id="id_quantity">
+                        
+                        <label for="description">Discreption <span class="text-danger">*</span>  <span class="text-danger"></span></label>
+                        <input type="text" name="description"  class="form-control" required >
+                        
+                        <div class="input-group" id="quantity_error_message" style="color: #d12525;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-dark rem_inventory_save">Save</button>
+                
+            </div>
+        </form>
+        </div>
+    </div>
+</div>
+
+
+
 </td>
 
 
@@ -181,8 +219,15 @@ $(document).ready(function(){
         $("#product_ids").val(pst);
         $('#updateQuantity').modal('show');
 })
+$(".remove_menu_quantity").on("click",function(e){
+        e.preventDefault();
+        pst=$(this).data("id");
+        $("#rem_product_ids").val(pst);
+        $('#removeQuantity').modal('show');
+})
 
-    $('#updateQuantity').on('click','.add_inventory_save',function(e){
+
+$('#updateQuantity').on('click','.add_inventory_save',function(e){
         e.preventDefault();
         url = $("#updateQuantity #add_inventory").attr("action")
         type_form=$("#updateQuantity #add_inventory").attr("method")
@@ -198,11 +243,25 @@ $(document).ready(function(){
                 location.reload()
             }
         })
-
-
     })
 
-    
+    $('#removeQuantity').on('click','.rem_inventory_save',function(e){
+        e.preventDefault();
+        url = $("#removeQuantity #remove_inventory").attr("action")
+        type_form=$("#removeQuantity #remove_inventory").attr("method")
+        data_ser=$("#removeQuantity #remove_inventory").serialize()
+        $.ajax({
+            type: type_form,
+            url: url,
+            data: data_ser,
+            cache: false,
+            success: function (data) {
+                $("#rem_product_ids").val("");
+                $('#removeQuantity').modal('hide');
+                location.reload()
+            }
+        })
+    })
    
 
 });
