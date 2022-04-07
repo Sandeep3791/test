@@ -46,7 +46,6 @@
         </span>
         <div class="multi-level collapse " role="list" id="submenu-pages" aria-expanded="false">
           <ul class="flex-column nav">
-            {% if request.user.is_superuser %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'wayrem_admin:roles_list' %}">
                 <span class="sidebar-text">Roles</span>
@@ -56,11 +55,7 @@
               <a class="nav-link" href="{% url 'wayrem_admin:userlist' %}">
                 <span class="sidebar-text">Users </span>
               </a>
-            </li>
-             
-            {% endif %}
-            
-           
+            </li>                                    
           </ul>
         </div>
       </li>
@@ -78,7 +73,6 @@
         </span>
         <div class="multi-level collapse " role="list" id="submenu-pages-2" aria-expanded="false">
           <ul class="flex-column nav">
-            {% if request.user.is_superuser %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'wayrem_admin:supplierlist' %}">
                 <span class="sidebar-text">Supplier List </span>
@@ -88,11 +82,7 @@
               <a href="{% url 'wayrem_admin:invoicelist' %}" class="nav-link">
                 <span class="sidebar-text">Supplier Invoice</span>
               </a>
-            </li>
-             
-            {% endif %}
-            
-           
+            </li>                                   
           </ul>
         </div>
       </li>
@@ -120,7 +110,6 @@
         </span>
         <div class="multi-level collapse" role="list" id="submenu-pages2" aria-expanded="false">
           <ul class="flex-column nav">
-            {% if request.user.is_superuser %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'wayrem_admin:product' %}">
                 <span class="sidebar-text">Create Product </span>
@@ -141,7 +130,6 @@
                 <span class="sidebar-text">Ingredients </span>
               </a>
             </li>
-            {% endif %}
             
            
           </ul>
@@ -159,7 +147,6 @@
         </span>
         <div class="multi-level collapse "role="list" id="submenu-pages-inventory" aria-expanded="false">
           <ul class="flex-column nav">
-            {% if request.user.is_superuser %}
             <li class="nav-item">
               <a class="nav-link" href="{% url 'wayrem_admin:warehouses' %}">
                 <span class="sidebar-text">Warehouses </span>
@@ -171,11 +158,7 @@
                 <span class="sidebar-text">Shipping Rate </span>
               </a>
 
-            </li>
-             
-            {% endif %}
-            
-           
+            </li>                        
           </ul>
         </div>
       </li>
@@ -199,7 +182,6 @@
   </li>
 </ul>
 
-{% if request.user.is_superuser %}
 <ul class="nav">
   <li class="nav-item w-100 {% if 'dashboard' in segment %} active {% endif %}">
     <a href="{% url 'wayrem_admin:settingslist' %}" class="nav-link">
@@ -226,7 +208,6 @@
     </a>
   </li>
 </ul>
-{% endif %}
 
   
     <ul class="nav m-1">

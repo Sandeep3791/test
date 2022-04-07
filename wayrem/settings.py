@@ -75,7 +75,7 @@ WSGI_APPLICATION = 'wayrem.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'wayrem_testing',
+        'NAME': 'wayrem_stg_v2',
         'USER': 'wayremdb_adminuser',
         'PASSWORD': 'r2wXJfUs78NczMFWRXcV',
         'HOST': '15.185.103.226',
@@ -141,14 +141,15 @@ MESSAGE_TAGS = {messages_s.ERROR: 'danger'}
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # MEDIA_ROOT = os.path.join('/home/fealty/Desktop/wayrem_kapil/backup/')
 # MEDIA_ROOT = os.path.join('common_folder')
-MEDIA_ROOT = os.path.dirname(
-    "/opt/app/wayrem-admin-backend/media/common_folder/")
-MEDIA_URL = '/media/common_folder/'
+# -----------------------------
 # MEDIA_ROOT = os.path.dirname(
-#     "home/fealty/Desktop/admin_17/wayrem-admin-backend/media/common_folder/")
+#     "/opt/app/wayrem-admin-backend/media/common_folder/")
+# MEDIA_URL = '/media/common_folder/'
+MEDIA_ROOT = os.path.dirname(
+    "/home/fealty/Desktop/Admin_uat_5/wayrem-admin-backend/media/common_folder/")
 # MEDIA_ROOT = os.path.dirname(
 #     "/home/suryaaa/Music/excels/")
-# MEDIA_URL = '/media/'
+MEDIA_URL = '/media/'
 
 # MEDIA_ROOT = os.path.dirname(
 #     "/home/fealty/Desktop/admin_17/wayrem-admin-backend/media/common_folder/")

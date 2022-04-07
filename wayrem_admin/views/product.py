@@ -246,8 +246,14 @@ def product_images(request):
             obj.meta_key = request.session.get("meta_key", None)
             obj.feature_product = request.session.get("feature_product", None)
             obj.publish = request.session.get("publish", None)
-            obj.date_of_mfg = request.session.get("date_of_mfg", None)
-            obj.date_of_exp = request.session.get("date_of_exp", None)
+            dom = request.session.get("date_of_mfg",None)
+            doe = request.session.get("date_of_exp",None)   
+            if dom == "None":
+                dom = None
+            if doe == "None":
+                doe = None
+            obj.date_of_mfg = dom
+            obj.date_of_exp = doe
             obj.mfr_name = request.session.get("mfr_name", None)
             obj.dis_abs_percent = request.session.get("dis_abs_percent", None)
             obj.description = request.session.get("description", None)
@@ -376,6 +382,10 @@ def update_product(request, id=None, *args, **kwargs):
         form3 = ProductImgUpdateForm(request.POST, request.FILES)
         # form2 = ProductImageFormset(
         # request.POST or None, request.FILES or None)
+        print(form.is_valid())
+        print(form.errors)
+        print(form1.is_valid())
+        print(form3.is_valid())
         if form.is_valid() and form1.is_valid() and form3.is_valid():
             ingrd.delete()
             form.save()

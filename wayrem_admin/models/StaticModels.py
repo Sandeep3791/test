@@ -104,9 +104,11 @@ TYPE = (
     ('textarea', 'Textarea'),
 )
 
-upload_storage = FileSystemStorage(
-    location='/opt/app/wayrem-admin-backend/media/common_folder')
+# upload_storage = FileSystemStorage(
+#     location='/opt/app/wayrem-admin-backend/media/common_folder')
 
+upload_storage = FileSystemStorage(
+    location='/home/fealty/Desktop/Admin_uat_5/wayrem-admin-backend/media/common_folder')
 
 
 class Roles(models.Model):
@@ -130,6 +132,7 @@ class User(AbstractUser):
     id = models.AutoField(primary_key=True, unique=True)
     po_notify = models.BooleanField(default=False, null=True, blank=True)
     order_notify = models.BooleanField(default=False, null=True, blank=True)
+    margin_access = models.BooleanField(default=False, null=True, blank=True)
     email = models.EmailField(_('email address'), unique=True)
     contact = models.CharField(
         max_length=12, null=True, unique=True, blank=False)
@@ -304,12 +307,12 @@ class Products(models.Model):
     SKU = models.CharField(max_length=255, null=True, blank=False, unique=True)
     category = models.ManyToManyField('Categories', null=True)
     # product_code = models.CharField(max_length=255, null=True)
-    meta_key = models.TextField()
+    meta_key = models.TextField(null=True, blank=True)
     feature_product = models.BooleanField(default=True)
     publish = models.BooleanField(default=False)
-    date_of_mfg = models.DateField(null=True)
-    date_of_exp = models.DateField(null=True)
-    mfr_name = models.CharField(max_length=100, null=True, blank=False)
+    date_of_mfg = models.DateField(blank=True, null=True)
+    date_of_exp = models.DateField(blank=True, null=True)
+    mfr_name = models.CharField(max_length=100, null=True, blank=True)
     supplier = models.ManyToManyField('Supplier', null=True, blank=True)
     dis_abs_percent = models.CharField(
         max_length=20, choices=DIS_ABS_PERCENT, null=True, blank=False)
@@ -318,16 +321,16 @@ class Products(models.Model):
     quantity = models.CharField(max_length=100, null=True, default=1)
     quantity_unit = models.ForeignKey(
         Unit, on_delete=models.CASCADE, null=True, blank=True, related_name='%(class)s_quantity_unit')
-    weight = models.CharField(null=True, max_length=255)
+    weight = models.CharField(blank=True, null=True, max_length=255)
     weight_unit = models.ForeignKey(
         Unit, on_delete=models.CASCADE, null=True, blank=True, related_name='%(class)s_weight_unit')
     price = models.CharField(null=True, max_length=100)
-    discount = models.CharField(max_length=50, null=True, blank=False)
+    discount = models.CharField(max_length=50, null=True, blank=True)
     package_count = models.CharField(
         max_length=50, null=True, blank=True, default=1)
-    wayrem_margin = models.CharField(max_length=100, null=True)
+    wayrem_margin = models.CharField(max_length=100, blank=True, null=True)
     margin_unit = models.CharField(
-        max_length=20, choices=DIS_ABS_PERCENT, null=True, blank=False)
+        max_length=20, choices=DIS_ABS_PERCENT, null=True, blank=True)
     primary_image = models.ImageField(
         upload_to=get_file_path, storage=upload_storage, default='product.jpg', null=True)
     gs1 = models.CharField(max_length=255, null=True, blank=True)
@@ -447,7 +450,7 @@ class Customer(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
     first_name = models.CharField(max_length=255, null=True)
     last_name = models.CharField(max_length=255, null=True)
-    business_type = models.CharField(max_length=255, null=True)
+    business_type = models.ForeignKey('BusinessType' ,on_delete=models.CASCADE, null=True)
     business_name = models.CharField(max_length=255, null=True)
     email = models.EmailField(blank=False, unique=True, null=True)
     password = models.CharField(max_length=255, null=True)
@@ -768,3 +771,12 @@ class GS1ProductFields(models.Model):
 
     class Meta:
         db_table = 'gs1_product_fields'
+
+
+class BusinessType(models.Model):
+    id = models.AutoField(primary_key=True, unique=True)
+    business_type = models.CharField(max_length=255, null=True)    
+    status = models.BooleanField(default=True)
+
+    class Meta:
+        db_table = 'business_type'

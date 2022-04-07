@@ -134,7 +134,7 @@
                         </div>
                         <!-- End of Form -->
                         <!-- Form -->
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
                             <div class="form-group">
                                 
                                 <div class="form-check">
@@ -152,7 +152,7 @@
                         <!-- End of Form -->
 
                         <!-- End of Form -->
-                        <div class="col-lg-6">
+                        <div class="col-lg-4">
                             <div class="form-group mb-4">
                                 <div class="form-check">
                                     {{form.order_notify}}
@@ -166,6 +166,24 @@
                             </div>
                         </div>
                         <!-- End of Form -->
+                        <!-- Form -->
+                        <div class="col-lg-4">
+                            <div class="form-group">
+                                
+                                <div class="form-check">
+                                    {{form.margin_access}}
+                                    <label for="id_margin_access">Margin Access </label>
+                                    <div class="invalid-feedback" id="email_error_message"></div>
+
+                                </div>
+                                {% comment %} <div class="input-group">
+                                    <span class="text-danger"> {{form.email.errors | striptags}} </span>
+                                </div> {% endcomment %}
+                                <span class="text-error"></span>
+                            </div>
+                        </div>
+                        <!-- End of Form -->
+                        
 
                         {% comment %} <span class="text-danger">*</span> {% endcomment %}
                         <!-- Form -->
