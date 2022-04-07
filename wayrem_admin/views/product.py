@@ -413,7 +413,7 @@ class DeleteProduct(View):
     def post(self, request):
         productid = request.POST.get('product_id')
         products = Products.objects.get(id=productid)
-        products.SKU = products.SKU + "_deleted"
+        products.SKU = products.SKU + "3353833"
         products.is_deleted = True
         products.save()
         messages.success(request, "Product Deleted Successfully!")
