@@ -68,8 +68,8 @@ class InventoryCreate(CreateView):
     def form_valid(self, form):
         form = form.save(commit=False)
         product_id=form.product.id
-        #inventory_type=form.inventory_type.id
-        form.inventory_type=InventoryType.objects.get(id=1)
+        inventory_type_id=form.inventory_type.id
+        form.inventory_type=InventoryType.objects.get(id=inventory_type_id)
         form.product=Products.objects.get(id=product_id)
         new_form = form.save()
         Inventory().update_product_quantity(form.product.id)
@@ -77,7 +77,11 @@ class InventoryCreate(CreateView):
         return HttpResponse("valid")
         #return HttpResponseRedirect(reverse_lazy('wayrem_admin:inventories'))
     
-    
+    def form_invalid(self, form):
+        response = super().form_invalid(form)
+        print(form.errors)
+        return HttpResponse("invalid")
+        pass
 
 class InventoryUpdate(UpdateView):
     model=Inventory

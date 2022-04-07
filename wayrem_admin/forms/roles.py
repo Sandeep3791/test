@@ -8,9 +8,7 @@ class RoleForm(forms.ModelForm):
         attrs={'class': 'form-control', 'rows': '3', 'placeholder': 'Add Role Description...'}))
 
     choice_status = (("Active", "Active"), ("Inactive", "Inactive"))
-
-    status = forms.ChoiceField(
-        choices=choice_status, widget=forms.Select(attrs={'class': 'form-select', }))
+    status = forms.ChoiceField(choices=choice_status, widget=forms.Select(attrs={'class': 'form-select', }))
 
     class Meta:
         model = Roles

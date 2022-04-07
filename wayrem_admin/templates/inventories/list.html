@@ -88,14 +88,14 @@
                     <td>{{item.product.SKU}}</td>
                     <td>{{item.inventory_type.type_name}}</td>
                     <td>
-                        {% if item.inventory_type.id == 3 %}
+                        {% if item.inventory_type.id == 3 or item.inventory_type.id == 5  %}
                         --
                         {% else %}
                         {{item.quantity}}
                         {% endif %}
                     </td>
                     <td>
-                        {% if item.inventory_type.id == 3 %}
+                        {% if item.inventory_type.id == 3 or item.inventory_type.id == 5 %}
                         {{item.quantity}}
                         {% else %}
                         --

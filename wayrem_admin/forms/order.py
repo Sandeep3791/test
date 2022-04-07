@@ -52,9 +52,11 @@ class OrderAdvanceFilterForm(ModelForm):
     orderrefer=forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control p-2'}),required=False)
     contact=forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control p-2'}),required=False)
     customer_name=forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control p-2'}),required=False)
-
     start_date = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control p-2'}),required=False)
     end_date = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control p-2'}),required=False)
+    
+    choice_status = (("1", "All"), ("2", "Home business"), ("3", "None home business"))
+    business_type = forms.ChoiceField(choices=choice_status, widget=forms.Select(attrs={'class': 'form-select', }))
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         order_choices = [(get_users_options.pk, get_users_options.name)
@@ -63,7 +65,7 @@ class OrderAdvanceFilterForm(ModelForm):
         self.fields['status'].choices = order_choices
     class Meta:
         model = Orders
-        fields = ['orderrefer','order_ref','status','contact','customer_name','start_date','end_date']
+        fields = ['orderrefer','order_ref','status','contact','customer_name','start_date','end_date','business_type']
 
 class OrderStatusFilter(ModelForm):
     status = forms.ChoiceField(required=False, widget=forms.Select(attrs={'class': 'form-control form-control-select'}))
