@@ -451,8 +451,8 @@ def import_excel(request):
     if request.method == "POST":
         delSession(request)
         file = request.FILES["myFileInput"]
-        required_cols = ['sku*', 'product name*', 'manufacture date*', 'expiry date*', 'manufacturer name*', 'description', 'weight*', 'weight unit*', 'quantity*',
-                         'quantity unit*', 'price*', 'discount', 'discount unit', 'wayrem_margin', 'margin_unit', 'meta tags', 'feature_product', 'publish', 'package_count', 'category']
+        required_cols = ['sku*', 'product name*', 'manufacture date', 'expiry date', 'manufacturer name', 'description', 'weight', 'weight unit', 'quantity',
+                         'quantity unit', 'price', 'discount', 'discount unit', 'wayrem_margin', 'margin_unit', 'meta tags', 'feature_product', 'publish', 'package_count', 'category']
         df = pd.read_excel(file)
         excel_cols = list(df.columns)
         missing_cols = list(set(required_cols) - set(excel_cols))
@@ -502,7 +502,7 @@ def import_products(request):
         df_category = pd.read_sql('select * from categories_master', con)
         product_ingredients = pd.read_sql(
             'select * from product_ingredients', con)
-
+        df['category'] = df['category'].fillna('None')
         df_category["name"] = df_category["name"].str.lower()
         df["category"] = df["category"].str.lower()
         df_units = pd.read_sql('select * from unit_master', con)
@@ -513,14 +513,14 @@ def import_products(request):
         # df["first_column"] = df["first_column"].str.lower()
         dict = {'sku*': 'SKU',
                 'product name*': 'name',
-                'manufacturer name*': 'mfr_name',
-                'manufacture date*': 'date_of_mfg',
-                'expiry date*': 'date_of_exp',
-                'weight unit*': 'weight_unit',
-                'weight*': 'weight',
-                'quantity unit*': 'quantity_unit',
-                'quantity*': 'quantity',
-                'price*': 'price',
+                'manufacturer name': 'mfr_name',
+                'manufacture date': 'date_of_mfg',
+                'expiry date': 'date_of_exp',
+                'weight unit': 'weight_unit',
+                'weight': 'weight',
+                'quantity unit': 'quantity_unit',
+                'quantity': 'quantity',
+                'price': 'price',
                 'discount unit': 'dis_abs_percent',
                 'wayrem margin': 'wayrem_margin',
                 'margin unit': 'margin_unit',
@@ -529,6 +529,9 @@ def import_products(request):
                 'package count': 'package_count',
                 }
         df.rename(columns=dict, inplace=True)
+        df['quantity'] = df['quantity'].fillna(0)
+        df['weight_unit'] = df['weight_unit'].fillna("None")
+        df['quantity_unit'] = df['quantity_unit'].fillna("None")
         df['created_at'] = datetime.now()
         df['updated_at'] = datetime.now()
         df['warehouse_id'] = 1
@@ -540,12 +543,18 @@ def import_products(request):
         df['inventory_onhand'] = df['quantity']
         df['inventory_received'] = 0
         df['outofstock_threshold'] = 0
-        weight_unit = pd.merge(
-            df, df_units, left_on='weight_unit', right_on='unit_name')
-        weight_unit_id = weight_unit['id']
-        quantity_unit = pd.merge(
-            df, df_units, left_on='quantity_unit', right_on='unit_name')
-        quantity_unit_id = quantity_unit['id']
+        try:
+            weight_unit = pd.merge(
+                df, df_units, left_on='weight_unit', right_on='unit_name')
+            weight_unit_id = weight_unit['id']
+        except:
+            weight_unit_id = None
+        try:
+            quantity_unit = pd.merge(
+                df, df_units, left_on='quantity_unit', right_on='unit_name')
+            quantity_unit_id = quantity_unit['id']
+        except:
+            quantity_unit_id = None
         del df['weight_unit']
         del df['quantity_unit']
         df['weight_unit_id'] = weight_unit_id
@@ -597,11 +606,12 @@ def import_products(request):
             "inserted_records": inserted_records
         }
         if inserted_records == 0:
-            messages.error(request, "Products already exists!")
+            messages.danger(request, "Products already exists!")
         else:
             messages.success(request, "Products Imported Successfully!")
         return render(request, "product/import_results.html", context)
-    except:
+    except Exception as e:
+        print(e)
         messages.error(request, "Please select a valid file!")
         return redirect('wayrem_admin:import_excel')
 
