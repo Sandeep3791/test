@@ -302,7 +302,7 @@ class ProductList(ListView):
     success_url = reverse_lazy('wayrem_admin:productlist')
 
     def get_queryset(self):
-        qs = Products.objects.filter()
+        qs = Products.objects.filter(is_deleted=False)
         filtered_list = ProductFilter(self.request.GET, queryset=qs)
         return filtered_list.qs
 
@@ -413,7 +413,10 @@ class DeleteProduct(View):
     def post(self, request):
         productid = request.POST.get('product_id')
         products = Products.objects.get(id=productid)
-        products.delete()
+        products.SKU = products.SKU + "_deleted"
+        products.is_deleted = True
+        products.save()
+        messages.success(request, "Product Deleted Successfully!")
         return redirect('wayrem_admin:productlist')
 
 
@@ -507,8 +510,6 @@ def import_products(request):
             'select * from products_master', con)
         df_products['SKU'] = df_products['SKU'].astype(int)
         df_category = pd.read_sql('select * from categories_master', con)
-        product_ingredients = pd.read_sql(
-            'select * from product_ingredients', con)
         df['category'] = df['category'].fillna('None')
         df_category["name"] = df_category["name"].str.lower()
         df["category"] = df["category"].str.lower()
@@ -550,6 +551,7 @@ def import_products(request):
         df['inventory_onhand'] = df['quantity']
         df['inventory_received'] = 0
         df['outofstock_threshold'] = 0
+        df['is_deleted'] = False
         try:
             weight_unit = pd.merge(
                 df, df_units, left_on='weight_unit', right_on='unit_name')

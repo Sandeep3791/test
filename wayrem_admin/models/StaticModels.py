@@ -343,6 +343,7 @@ class Products(models.Model):
     inventory_onhand = models.SmallIntegerField(default=0)
     outofstock_threshold = models.SmallIntegerField(
         default=0, null=True, blank=True,)
+    is_deleted = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name + " (SKU: " + self.SKU + ")"
