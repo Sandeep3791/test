@@ -21,7 +21,8 @@ class SubAdminForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ("username", "email", "contact", "role", "po_notify", "order_notify", "margin_access")
+        fields = ("username", "email", "contact", "role",
+                  "po_notify", "order_notify", "margin_access")
 
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control'}),
@@ -44,7 +45,8 @@ class SubAdminUpdateForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ("username", "email", "contact", "role", "po_notify", "order_notify", "margin_access")
+        fields = ("username", "email", "contact", "role",
+                  "po_notify", "order_notify", "margin_access")
 
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control'}),
@@ -94,7 +96,6 @@ class ChangePasswordForm(PasswordChangeForm):
         widget=forms.PasswordInput(
             attrs={'autocomplete': 'new-password', 'class': 'form-control'}, render_value=True),
     )
-
 
 
 class UserSearchFilter(forms.Form):

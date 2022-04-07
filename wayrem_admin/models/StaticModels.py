@@ -138,7 +138,7 @@ class User(AbstractUser):
         max_length=12, null=True, unique=True, blank=False)
     role = models.ForeignKey(
         Roles, on_delete=models.CASCADE, null=True, blank=True)
-    dob = models.DateField(null=True, blank=True)    
+    dob = models.DateField(null=True, blank=True)
     gender = models.CharField(
         max_length=1, choices=GENDER_CHOICES, default='M', null=True, blank=True)
     address = models.CharField(max_length=500, null=True, blank=True)
@@ -404,7 +404,7 @@ class SupplierProducts(models.Model):
     product_name = models.CharField(max_length=500, null=True, blank=True)
     quantity = models.IntegerField(null=True, default=1)
     price = models.CharField(null=True, max_length=255)
-    available = models.BooleanField(default=True)    
+    available = models.BooleanField(default=True)
     deliverable_days = models.CharField(max_length=20,
                                         choices=deliverable, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -424,7 +424,7 @@ class PurchaseOrder(models.Model):
         SupplierProducts, on_delete=models.SET_NULL, null=True)
     product_qty = models.IntegerField(null=False, default=1)
     supplier_name = models.ForeignKey(
-        Supplier, on_delete=models.CASCADE, null=False)    
+        Supplier, on_delete=models.CASCADE, null=False)
     available = models.BooleanField(default=True)
     reason = models.TextField(default=None, null=True)
     status = models.CharField(
@@ -450,7 +450,8 @@ class Customer(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
     first_name = models.CharField(max_length=255, null=True)
     last_name = models.CharField(max_length=255, null=True)
-    business_type = models.ForeignKey('BusinessType' ,on_delete=models.CASCADE, null=True)
+    business_type = models.ForeignKey(
+        'BusinessType', on_delete=models.CASCADE, null=False)
     business_name = models.CharField(max_length=255, null=True)
     email = models.EmailField(blank=False, unique=True, null=True)
     password = models.CharField(max_length=255, null=True)
@@ -527,7 +528,7 @@ class Invoice(models.Model):
     po_name = models.CharField(max_length=250, null=True)
     file = models.FileField(upload_to='invoices/', storage=upload_storage,
                             null=True)
-    supplier_name = models.CharField(max_length=250, null=True)    
+    supplier_name = models.CharField(max_length=250, null=True)
     status = models.CharField(
         max_length=35, choices=invoice_status, default='released', null=True, blank=True)
     is_active = models.BooleanField(default=True)
@@ -776,7 +777,7 @@ class GS1ProductFields(models.Model):
 
 class BusinessType(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
-    business_type = models.CharField(max_length=255, null=True)    
+    business_type = models.CharField(max_length=255, null=True)
     status = models.BooleanField(default=True)
 
     class Meta:

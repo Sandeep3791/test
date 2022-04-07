@@ -1,13 +1,13 @@
-from django.forms import Textarea,ModelChoiceField
+from django.forms import Textarea, ModelChoiceField
 from django import forms
 from django.forms import widgets
-from wayrem_admin.models import Inventory,InventoryType
+from wayrem_admin.models import Inventory, InventoryType
 from wayrem_admin.models import Products
 
 
 def get_products():
     obj = Products.objects.all()
-    choice = [(r.id, r.SKU + " - " + r.name ) for r in obj]
+    choice = [(r.id, r.SKU + " - " + r.name) for r in obj]
     return choice
 
 
@@ -15,33 +15,42 @@ choices_products = get_products
 
 
 class InventoryForm(forms.ModelForm):
-    product=forms.ModelChoiceField(queryset=Products.objects.all(), empty_label=None, widget=forms.Select(attrs={'class': 'form-select'}))
-    inventory_type=forms.ModelChoiceField(queryset=InventoryType.objects.filter(id__in=[1,5]), empty_label=None, widget=forms.Select(attrs={'class': 'form-select'}))
+    product = forms.ModelChoiceField(queryset=Products.objects.all(
+    ), empty_label=None, widget=forms.Select(attrs={'class': 'form-select'}))
+    inventory_type = forms.ModelChoiceField(queryset=InventoryType.objects.filter(
+        id__in=[1, 5]), empty_label=None, widget=forms.Select(attrs={'class': 'form-select'}))
+
     def __init__(self, *args, **kwargs):
         super(InventoryForm, self).__init__(*args, **kwargs)
-        self.fields['product'].label_from_instance = lambda instance: instance.SKU + " - " +instance.name
+        self.fields['product'].label_from_instance = lambda instance: instance.SKU + \
+            " - " + instance.name
 
     class Meta:
         model = Inventory
-        fields = ("product", "quantity",'inventory_type','description')
+        fields = ("product", "quantity", 'inventory_type', 'description')
         widgets = {
-            'quantity': forms.NumberInput(attrs={'min':'0', 'step':'1', 'class': 'form-control'}),
+            'quantity': forms.NumberInput(attrs={'min': '0', 'step': '1', 'class': 'form-control'}),
         }
 
+
 class InventoryViewForm(forms.ModelForm):
-    product = forms.ChoiceField(choices=choices_products, widget=forms.Select(attrs={'class': 'form-select', 'readonly': 'true'}))
+    product = forms.ChoiceField(choices=choices_products, widget=forms.Select(
+        attrs={'class': 'form-select', 'readonly': 'true'}))
 
     get_inventory_type_dict = {0: 'Starting', 1: 'Received', 2: 'Shipped'}
     inventory_type_choices = list(get_inventory_type_dict.items())
-    inventory_type = forms.ChoiceField(choices=inventory_type_choices, widget=forms.Select(attrs={'class':'form-select'}))
+    inventory_type = forms.ChoiceField(
+        choices=inventory_type_choices, widget=forms.Select(attrs={'class': 'form-select'}))
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        
+
         self.fields['inventory_type'].widget.attrs['readonly'] = True
+
     class Meta:
         model = Inventory
-        fields = ( "product","quantity", 'inventory_type')
+        fields = ("product", "quantity", 'inventory_type')
         readonly_fields = ["product"]
         widgets = {
-            'quantity': forms.NumberInput(attrs={'min':'0', 'step':'1', 'class': 'form-control'}),
+            'quantity': forms.NumberInput(attrs={'min': '0', 'step': '1', 'class': 'form-control'}),
         }

@@ -25,7 +25,13 @@
             $('#id_supplier').select2({
             placeholder: 'Select Supplier',
             });
+<<<<<<< HEAD
             
+=======
+            $('#id_weight_unit').select2({
+            placeholder: 'Select Category',
+            })
+>>>>>>> df5829fbc6ead51ca58cbc0c4f5fd1d9aa89777a
             $('#id_quantity_unit').select2({
             placeholder: 'Select Category',
             })
@@ -183,7 +189,13 @@
                             <!-- Form -->
                             <div class="col-lg-6">
                                 <div class="form-group mb-4">
+<<<<<<< HEAD
                                     <label for="name">Weight</label>
+=======
+                                    <label for="name">Weight <span class="text-danger">*</span><span class="text-danger"><em> {{form.weight.error | striptags}} {{form.unit.error | striptags}} 
+                                        </em>
+                                    </span></label>
+>>>>>>> df5829fbc6ead51ca58cbc0c4f5fd1d9aa89777a
                                     <div class="input-group first">   
                                         <div class="w-75">{{form.weight}} </div>
                                         <div class="w-25 px-2">{{form.weight_unit}} </div>
@@ -216,7 +228,14 @@
                             <!-- Form -->
                             <div class="col-lg-6">
                                 <div class="form-group mb-4">
+<<<<<<< HEAD
                                     <label for="description">Date of Manufacture </label>
+=======
+                                    <label for="description">Date of Manufacture  <span class="text-danger">*</span> <span class="text-danger">
+                                        <em> {{form.date_of_mfg.errors | striptags}}
+                                        </em>
+                                    </span></label>
+>>>>>>> df5829fbc6ead51ca58cbc0c4f5fd1d9aa89777a
                                     <div class="input-group">
                                         
                                         {{form.date_of_mfg}}
@@ -231,7 +250,13 @@
                             <!-- Form -->
                             <div class="col-lg-6">
                                 <div class="form-group mb-4">
+<<<<<<< HEAD
                                     <label for="provider">Date of Expiry </label>
+=======
+                                    <label for="provider">Date of Expiry  <span class="text-danger">*</span>  <span class="text-danger"> <em> {{form.date_of_exp.errors | striptags}}
+                                    </em>
+                                </span></label>
+>>>>>>> df5829fbc6ead51ca58cbc0c4f5fd1d9aa89777a
                                     <div class="input-group date_input_box">
                                     
                                         {{form.date_of_exp}}
@@ -245,7 +270,13 @@
                             <!-- Form -->
                             <div class="col-lg-6">
                                 <div class="form-group mb-4">
+<<<<<<< HEAD
                                     <label for="provider">Manufacturer Name</label>
+=======
+                                    <label for="provider">Manufacturer Name <span class="text-danger">*</span>  <span class="text-danger"> <em> {{form.mfr_name.errors | striptags}}
+                                    </em>
+                                </span></label>
+>>>>>>> df5829fbc6ead51ca58cbc0c4f5fd1d9aa89777a
                                     <div class="input-group date_input_box">
                                     
                                         {{form.mfr_name}}
@@ -289,7 +320,13 @@
 
                             <div class="col-lg-6">
                                 <div class="form-group mb-4">
+<<<<<<< HEAD
                                     <label for="name">Discount</label>
+=======
+                                    <label for="name">Discount <span class="text-danger">*</span><span class="text-danger"><em> {{form.discount.error | striptags}} 
+                                        </em>
+                                    </span></label>
+>>>>>>> df5829fbc6ead51ca58cbc0c4f5fd1d9aa89777a
                                     <div class="input-group first">   
                                         <div class="w-75"> {{form.discount}}</div>
                                         <div class="w-25 px-2">{{form.dis_abs_percent}}</div>
@@ -351,7 +388,13 @@
                         </div>
                         <div class="col-lg-6">
                         <div class="form-group mb-4">
+<<<<<<< HEAD
                                 <label for="name">Out of Stock Threashold </label>
+=======
+                                <label for="name">Out of Stock Threashold <span class="text-danger">*</span><span class="text-danger"><em> {{form.quantity.errors | striptags}}
+                                </em>
+                                </span></label>
+>>>>>>> df5829fbc6ead51ca58cbc0c4f5fd1d9aa89777a
                                 <div class="input-group">   
                                     <div class="w-75 px-2">{{form.outofstock_threshold}}</div>
                                     <div class="input-group error_field_msg" id= "outofstock_threshold_error_message" style="color: #d12525;"></div>
@@ -447,7 +490,10 @@
                     </div>
                 </div>
                 <!--=====================------=====================-->
+<<<<<<< HEAD
                 {% if request.user.margin_access or request.user.is_superuser %}
+=======
+>>>>>>> df5829fbc6ead51ca58cbc0c4f5fd1d9aa89777a
                 <!--==================row====================-->
                 <div class="mt-4 card border-light shadow-sm components-section">
                     <div class="card-body">
@@ -458,7 +504,12 @@
                             <!-- Form -->
                             <div class="col-lg-12">
                                 <div class="form-group mb-4">
+<<<<<<< HEAD
                                     <label for="name">Wayrem Margin <span class="text-danger">*</span></label>
+=======
+                                    <label for="name">Wayrem Margin <span class="text-danger">*</span> <span class="text-danger"> <em> {{form.wayrem_margin.error | striptags}} 
+                                    </em> </span> </label>
+>>>>>>> df5829fbc6ead51ca58cbc0c4f5fd1d9aa89777a
                                     <div class="input-group w-50">
                                         <div class="w-75"> {{form.wayrem_margin}}</div>
                                         <div class="w-25 px-2">{{form.margin_unit}}</div>
@@ -492,12 +543,21 @@
                                     <span class="text-error"></span>
                                 </div>
                             </div>
+<<<<<<< HEAD
                             <!-- End of Form -->                            
+=======
+                            <!-- End of Form -->
+
+                            
+>>>>>>> df5829fbc6ead51ca58cbc0c4f5fd1d9aa89777a
                         </div>
                     </div>
                 </div>
                 <!--==================row end===================-->
+<<<<<<< HEAD
                 {% endif %}
+=======
+>>>>>>> df5829fbc6ead51ca58cbc0c4f5fd1d9aa89777a
                 <!--==========row====================-->
                 <div class="mt-4 card border-light shadow-sm components-section">
                     <div class="card-body">
@@ -510,7 +570,13 @@
                             <!-- Form -->
                         <div class="col-lg-12">
                             <div class="form-group mb-4">
+<<<<<<< HEAD
                                 <label for="name">Product Meta tags</label>
+=======
+                                <label for="name">Product Meta tags <span class="text-danger">*</span><span class="text-danger"><em> {{form.meta_key.error | striptags}}
+                                    </em>
+                                </span></label>
+>>>>>>> df5829fbc6ead51ca58cbc0c4f5fd1d9aa89777a
                                 <div class="input-group">
                                     {{form.meta_key}}
                                     <div class="input-group error_field_msg" id ="metaKey_error_message" style="color: #d12525;"></div>
@@ -734,8 +800,13 @@
       $('.selectedcat_margin select').change(function(){
 
           var checkedval = $('.selectedcat_margin select option:selected');
+<<<<<<< HEAD
           {% comment %} $('#id_wayrem_margin').val(checkedval.attr('val-autoops').replace(/ /g,''));
           $('#id_margin_unit').val(checkedval.attr('val-autoopstype')); {% endcomment %}
+=======
+          $('#id_wayrem_margin').val(checkedval.attr('val-autoops').replace(/ /g,''));
+          $('#id_margin_unit').val(checkedval.attr('val-autoopstype'));
+>>>>>>> df5829fbc6ead51ca58cbc0c4f5fd1d9aa89777a
       });
     }
 </script>
@@ -766,6 +837,7 @@
             console.log('dddd')
             check_sku();
             check_productName();
+<<<<<<< HEAD
             check_productCode();
             
             check_validation_text("id_price","price_error_message","Price");
@@ -775,6 +847,35 @@
         $(".form-control").focusout(function(){
             check_validation_text("id_price","price_error_message","Price");            
             check_validation_text("id_quantity","quantity_error_message","Quantity");
+=======
+            check_id_weight();
+            check_productCode();
+            check_mfr();
+            check_dom();
+            check_doe();
+            
+            check_validation_text("id_price","price_error_message","Price");
+            check_validation_text("id_date_of_mfg","dom_error_message","Date of Manufacture");
+            check_validation_text("id_date_of_exp","doe_error_message","Date of Expiry");
+            check_validation_text("id_discount","discount_error_message","Discount");
+            check_validation_text("id_quantity","quantity_error_message","Quantity");
+            
+            check_validation_text("id_outofstock_threshold","outofstock_threshold_error_message","Out of stock");
+
+            check_validation_text("id_wayrem_margin","margin_error_message","Margin");
+            check_validation_text("id_meta_key","metaKey_error_message","Meta Key");
+        });
+        
+        $(".form-control").focusout(function(){
+            check_validation_text("id_price","price_error_message","Price");
+            check_validation_text("id_date_of_mfg","dom_error_message","Date of Manufacture");
+            check_validation_text("id_date_of_exp","doe_error_message","Date of Expiry");
+            check_validation_text("id_discount","discount_error_message","Discount");
+            check_validation_text("id_quantity","quantity_error_message","Quantity");
+            check_validation_text("id_outofstock_threshold","outofstock_threshold_error_message","Out of stock");
+            check_validation_text("id_wayrem_margin","margin_error_message","Margin");
+            check_validation_text("id_meta_key","metaKey_error_message","Meta Key");
+>>>>>>> df5829fbc6ead51ca58cbc0c4f5fd1d9aa89777a
         });
         
    
@@ -783,12 +884,32 @@
         });
         $("#id_name").focusout(function() {
             check_productName();
+<<<<<<< HEAD
         });       
         $("#id_product_code").focusout(function() {
             check_productCode();
         });
         
        
+=======
+        });
+        $("#id_weight").focusout(function() {
+            check_id_weight();
+        });
+        $("#id_product_code").focusout(function() {
+            check_productCode();
+        });
+        $("#id_mfr_name").focusout(function() {
+            check_mfr();
+        });
+        $("#id_dom").focusout(function() {
+            check_dom();
+        });
+        $("#id_doe").focusout(function() {
+            check_doe();
+        });
+    });
+>>>>>>> df5829fbc6ead51ca58cbc0c4f5fd1d9aa89777a
    
    
     function check_sku() {
@@ -815,6 +936,32 @@
       }
    }
 
+<<<<<<< HEAD
+=======
+   function check_id_weight() {
+      var id_weight = $("#id_weight").val()
+      if ( id_weight !== '') {
+         $("#weight_error_message").hide();
+         $("#id_weight").css("border-bottom","2px solid #34F458");
+      } else {
+         $("#weight_error_message").html("Please Enter Valid Weight ");
+         $("#weight_error_message").show();
+         error_data = true;
+      }
+   }
+   function check_validation_text(id,erridid, fname) {
+      var id_weight = $("#"+id).val()
+      if ( id_weight !== '') {
+         $("#"+erridid).hide();
+         $("#"+id).css("border-bottom","2px solid #34F458");
+      } else {
+         $("#"+erridid).html("Please Enter Valid "+fname);
+         $("#"+erridid).show();
+         error_data = true;
+      }
+   }
+
+>>>>>>> df5829fbc6ead51ca58cbc0c4f5fd1d9aa89777a
    function check_productCode() {
       var p_code = $("#id_product_code").val()
       if ( p_code !== '') {
@@ -827,6 +974,44 @@
       }
    }
    
+<<<<<<< HEAD
      
+=======
+   function check_mfr() {
+      var mfr = $("#id_mfr_name").val()
+      if ( mfr !== '') {
+         $("#mfr_error_message").hide();
+         $("#id_mfr_name").css("border-bottom","2px solid #34F458");
+      } else {
+         $("#mfr_error_message").html("Please Enter Valid Manufacturer Name");
+         $("#mfr_error_message").show();
+         error_data = true;
+      }
+   }
+   
+   function check_dom() {
+      var mfr = $("#id_dom").val()
+      if ( mfr !== '') {
+         $("#dom_error_message").hide();
+         $("#id_dom").css("border-bottom","2px solid #34F458");
+      } else {
+         $("#dom_error_message").html("Please Enter Valid Manufacture Date");
+         $("#dom_error_message").show();
+         error_data = true;
+      }
+   }
+   
+   function check_doe() {
+      var mfr = $("#id_doe").val()
+      if ( mfr !== '') {
+         $("#doe_error_message").hide();
+         $("#id_doe").css("border-bottom","2px solid #34F458");
+      } else {
+         $("#doe_error_message").html("Please Enter Valid Expiry Data");
+         $("#doe_error_message").show();
+         error_data = true;
+      }
+   }  
+>>>>>>> df5829fbc6ead51ca58cbc0c4f5fd1d9aa89777a
    </script> 
 {% endblock javascripts %}

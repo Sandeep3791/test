@@ -161,7 +161,7 @@ class ProductFormImageView(forms.ModelForm):
     class Meta:
         model = Products
         fields = ("name", "SKU", "category", "meta_key", "feature_product", "publish", "date_of_mfg", "date_of_exp", "mfr_name", "supplier",
-                  "dis_abs_percent", "description", "warehouse", "quantity", "inventory_starting", "inventory_received", "inventory_shipped", "inventory_cancelled","outofstock_threshold", "quantity_unit", "weight", "weight_unit", "price", "discount", "package_count", "wayrem_margin", "margin_unit", "primary_image")
+                  "dis_abs_percent", "description", "warehouse", "quantity", "inventory_starting", "inventory_received", "inventory_shipped", "inventory_cancelled", "outofstock_threshold", "quantity_unit", "weight", "weight_unit", "price", "discount", "package_count", "wayrem_margin", "margin_unit", "primary_image")
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
@@ -201,8 +201,8 @@ class ProductFormImageView(forms.ModelForm):
         dom = cleaned_data.get("date_of_mfg")
         doe = cleaned_data.get("date_of_exp")
 
-        if dom!=None and doe!=None:
-            if dom >= doe :
+        if dom != None and doe != None:
+            if dom >= doe:
                 raise forms.ValidationError(
                     f"Date of expiry must be greater than {dom}"
                 )
@@ -277,9 +277,9 @@ class ProductFormOne(forms.Form):
     publish = forms.BooleanField(
         widget=forms.CheckboxInput(attrs={'class': "form-check-input"}), required=False)
     date_of_mfg = forms.DateField(input_formats=['%Y/%m/%d'],
-        widget=forms.DateInput(attrs={'class': 'form-control datepicker-input', 'placeholder': "dd/mm/yyyy", 'type': 'date'}), required=False)
+                                  widget=forms.DateInput(attrs={'class': 'form-control datepicker-input', 'placeholder': "dd/mm/yyyy", 'type': 'date'}), required=False)
     date_of_exp = forms.DateField(input_formats=['%Y/%m/%d'],
-        widget=forms.DateInput(attrs={'class': 'form-control datepicker-input', 'placeholder': "dd/mm/yyyy", 'type': 'date'}), required=False)
+                                  widget=forms.DateInput(attrs={'class': 'form-control datepicker-input', 'placeholder': "dd/mm/yyyy", 'type': 'date'}), required=False)
     mfr_name = forms.CharField(
         widget=forms.TextInput(attrs={'class': "form-control"}), required=False)
     category = forms.MultipleChoiceField(choices=choices_category, widget=forms.SelectMultiple(
@@ -314,17 +314,17 @@ class ProductFormOne(forms.Form):
         widget=forms.NumberInput(attrs={'class': "form-control"}), min_value=0)
     quantity_unit = forms.ChoiceField(choices=choices_unit, widget=forms.Select(
         attrs={'class': 'form-select'}))
-    outofstock_threshold=forms.IntegerField(
-        widget=forms.NumberInput(attrs={'class': "form-control", 'min': 0}),required=False, min_value=0)
-        
+    outofstock_threshold = forms.IntegerField(
+        widget=forms.NumberInput(attrs={'class': "form-control", 'min': 0}), required=False, min_value=0)
+
     def clean_date_of_exp(self):
         cleaned_data = super(ProductFormOne, self).clean()
 
         dom = cleaned_data.get("date_of_mfg")
         doe = cleaned_data.get("date_of_exp")
 
-        if dom!=None and doe!=None:
-            if dom >= doe :
+        if dom != None and doe != None:
+            if dom >= doe:
                 raise forms.ValidationError(
                     f"Date of expiry must be greater than {dom}"
                 )

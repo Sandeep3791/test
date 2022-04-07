@@ -146,6 +146,7 @@ MEDIA_ROOT = os.path.dirname(
     "/opt/app/wayrem-admin-backend/media/common_folder/")
 MEDIA_URL = '/media/common_folder/'
 
+
 # MEDIA_ROOT = os.path.dirname(
 #     "/home/fealty/Desktop/admin_17/wayrem-admin-backend/media/common_folder/")
 # MEDIA_URL = '/media/'
