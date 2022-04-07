@@ -589,6 +589,7 @@ def import_products(request):
         inventory_df['inventory_type_id'] = 1
         inventory_df['product_id'] = ids
         inventory_df['warehouse_id'] = 1
+        inventory_df = inventory_df[inventory_df.quantity != 0]
         inventory_df.to_sql('inventory', engine,
                             if_exists='append', index=False)
         ingredients = pd.DataFrame()
