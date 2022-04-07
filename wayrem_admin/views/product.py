@@ -614,7 +614,7 @@ def import_products(request):
             "inserted_records": inserted_records
         }
         if inserted_records == 0:
-            messages.danger(request, "Products already exists!")
+            messages.error(request, "Products already exists!")
         else:
             messages.success(request, "Products Imported Successfully!")
         return render(request, "product/import_results.html", context)
