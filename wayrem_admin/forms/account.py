@@ -21,7 +21,8 @@ class SubAdminForm(UserCreationForm):
 
     class Meta:
         model = User
-        fields = ("username", "email", "contact", "role", "po_notify", "order_notify")
+        fields = ("username", "email", "contact", "role",
+                  "po_notify", "order_notify", "margin_access")
 
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control'}),
@@ -29,7 +30,8 @@ class SubAdminForm(UserCreationForm):
             'contact': forms.NumberInput(attrs={'class': 'form-control', 'minlength': 10}),
             'role': forms.Select(attrs={'class': 'form-select'}),
             'po_notify': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            'order_notify': forms.CheckboxInput(attrs={'class': 'form-check-input'})
+            'order_notify': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'margin_access': forms.CheckboxInput(attrs={'class': 'form-check-input'})
             # 'role': forms.TextInput(attrs={'class': 'form-control'}),
         }
         error_messages = {
@@ -43,7 +45,8 @@ class SubAdminUpdateForm(forms.ModelForm):
 
     class Meta:
         model = User
-        fields = ("username", "email", "contact", "role", "po_notify", "order_notify")
+        fields = ("username", "email", "contact", "role",
+                  "po_notify", "order_notify", "margin_access")
 
         widgets = {
             'username': forms.TextInput(attrs={'class': 'form-control'}),
@@ -51,7 +54,8 @@ class SubAdminUpdateForm(forms.ModelForm):
             'contact': forms.NumberInput(attrs={'class': 'form-control', 'minlength': 10}),
             'role': forms.Select(attrs={'class': 'form-select'}),
             'po_notify': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
-            'order_notify': forms.CheckboxInput(attrs={'class': 'form-check-input'})
+            'order_notify': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
+            'margin_access': forms.CheckboxInput(attrs={'class': 'form-check-input'})
         }
 
 
@@ -92,7 +96,6 @@ class ChangePasswordForm(PasswordChangeForm):
         widget=forms.PasswordInput(
             attrs={'autocomplete': 'new-password', 'class': 'form-control'}, render_value=True),
     )
-
 
 
 class UserSearchFilter(forms.Form):

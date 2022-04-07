@@ -44,6 +44,7 @@ def dashboard(request):
     present_month = datetime.datetime.now()
     try:
         next_month = datetime.date.today() + relativedelta.relativedelta(months=1)
+        # next_month = present_month.replace(month=present_month.month+1)
     except ValueError:
         if present_month.month == 12:
             next_month = present_month.replace(
@@ -62,13 +63,14 @@ def dashboard(request):
     else:
         total_transaction_amount = 0
     today = datetime.date.today()
+    print(today)
     week_ago = today - datetime.timedelta(days=7)
     x = Orders.objects.filter(order_date__gte=week_ago).annotate(
         day=TruncDay('order_date')).values('day').annotate(total=Count('id'))
     order_days = [i.get('day').strftime("%a") for i in x]
     total_orders_day = [i.get('total') for i in x]
     q = Orders.objects.filter(order_date__gte=datetime.datetime.today()-datetime.timedelta(
-        days=30), order_date__lte=datetime.datetime.today()).annotate(month=TruncMonth('order_date'), day=TruncDay('order_date')).values('month', 'day').annotate(total=Count('id')).order_by('month')   
+        days=30), order_date__lte=datetime.datetime.today()).annotate(month=TruncMonth('order_date'), day=TruncDay('order_date')).values('month', 'day').annotate(total=Count('id')).order_by('month')
     context = {
         'subadmins': subadmins,
         'suppliers': suppliers,
