@@ -1,5 +1,8 @@
 {% load util_tags  %}
 {% block content %}
+<style>
+    .errormsg{color:red;font-size: 10px;display: none;text-align: left;}
+</style>
 <table class="table table-hover text-center" id="filtertable">
     <thead class="">
         <tr>
@@ -185,9 +188,9 @@
                         <label for="quantity">Quantity <span class="text-danger">*</span>  <span class="text-danger"></span></label>
                         <input type="number" name="quantity" min="1" step="1" class="form-control" required="" value="1" id="id_quantity">
                         
-                        <label for="description">Discreption <span class="text-danger">*</span>  <span class="text-danger"></span></label>
-                        <input type="text" name="description"  class="form-control" required >
-                        
+                        <label for="description">Description <span class="text-danger">*</span>  <span class="text-danger"></span></label>
+                        <input type="text" name="description"  class="form-control" id="description" required >
+                        <label class="input-group error_field_msg errormsg ">Field is required</label>
                         <div class="input-group" id="quantity_error_message" style="color: #d12525;"></div>
                     </div>
                 </div>
@@ -223,6 +226,7 @@ $(".remove_menu_quantity").on("click",function(e){
         e.preventDefault();
         pst=$(this).data("id");
         $("#rem_product_ids").val(pst);
+        $('.errormsg').css('display','none');
         $('#removeQuantity').modal('show');
 })
 
@@ -247,6 +251,14 @@ $('#updateQuantity').on('click','.add_inventory_save',function(e){
 
     $('#removeQuantity').on('click','.rem_inventory_save',function(e){
         e.preventDefault();
+        var des=$("#description").val().trim()
+        if (!des){
+         $('.errormsg').css('display','contents');
+         return false
+        }else{
+            $('.errormsg').css('display','none');
+        }
+        
         url = $("#removeQuantity #remove_inventory").attr("action")
         type_form=$("#removeQuantity #remove_inventory").attr("method")
         data_ser=$("#removeQuantity #remove_inventory").serialize()
@@ -257,6 +269,7 @@ $('#updateQuantity').on('click','.add_inventory_save',function(e){
             cache: false,
             success: function (data) {
                 $("#rem_product_ids").val("");
+                $("#description").val("")
                 $('#removeQuantity').modal('hide');
                 location.reload()
             }

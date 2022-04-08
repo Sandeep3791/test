@@ -447,7 +447,7 @@ class Customer(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
     first_name = models.CharField(max_length=255, null=True)
     last_name = models.CharField(max_length=255, null=True)
-    business_type = models.CharField(max_length=255, null=True)
+    business_type = models.ForeignKey('BusinessType', models.DO_NOTHING,db_column='business_type')
     business_name = models.CharField(max_length=255, null=True)
     email = models.EmailField(blank=False, unique=True, null=True)
     password = models.CharField(max_length=255, null=True)
@@ -769,3 +769,10 @@ class GS1ProductFields(models.Model):
 
     class Meta:
         db_table = 'gs1_product_fields'
+
+class BusinessType(models.Model):
+    name = models.CharField(max_length=255)
+    status = models.IntegerField(default=1)
+
+    class Meta:
+        db_table = 'business_type'
