@@ -72,16 +72,21 @@ class InventoryCreate(CreateView):
 
     def form_valid(self, form):
         form = form.save(commit=False)
-        product_id = form.product.id
-        inventory_type_id = form.inventory_type.id
-        form.inventory_type = InventoryType.objects.get(id=inventory_type_id)
-        form.product = Products.objects.get(id=product_id)
+        product_id=form.product.id
+        inventory_type_id=form.inventory_type.id
+        form.inventory_type=InventoryType.objects.get(id=inventory_type_id)
+        form.product=Products.objects.get(id=product_id)
+        
+        if inventory_type_id == 5:
+            if int(form.quantity) > int(form.product.quantity):
+                messages.error(self.request,'Product quantities cannot be removed more than the available quantities')
+                return HttpResponse("valid")
         new_form = form.save()
         Inventory().update_product_quantity(form.product.id)
         messages.success(self.request, 'created successfully.')
         return HttpResponse("valid")
-        # return HttpResponseRedirect(reverse_lazy('wayrem_admin:inventories'))
-
+        
+    
     def form_invalid(self, form):
         response = super().form_invalid(form)
         print(form.errors)

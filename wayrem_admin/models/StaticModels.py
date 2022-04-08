@@ -451,8 +451,7 @@ class Customer(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
     first_name = models.CharField(max_length=255, null=True)
     last_name = models.CharField(max_length=255, null=True)
-    business_type = models.ForeignKey(
-        'BusinessType', on_delete=models.CASCADE, null=False)
+    business_type = models.ForeignKey('BusinessType', models.DO_NOTHING,db_column='business_type',null=False)
     business_name = models.CharField(max_length=255, null=True)
     email = models.EmailField(blank=False, unique=True, null=True)
     password = models.CharField(max_length=255, null=True)
