@@ -191,13 +191,13 @@ def supplier_details(request, id=None):
 
 def allproductsupplier(request):
     supplierid = request.GET.get('supplierid')
-    products = SupplierProducts.objects.filter(supplier_id_id=supplierid)
+    products = SupplierProducts.objects.filter(supplier_id_id=supplierid, product_id__is_deleted=False)
     product_list = []
     for product in products:
         product_list.append(product.product_id)
     best_product = []
     for i in product_list:
-        data = BestProductsSupplier.objects.filter(product_id=i)
+        data = BestProductsSupplier.objects.filter(product_id=i.id)
         data2 = [{'lowest_price': i.lowest_price, 'lowest_delivery_time':
                   i.lowest_delivery_time, 'supplier_id': i.supplier_id} for i in data]
         data2 = data2.pop()
