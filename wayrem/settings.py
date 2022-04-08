@@ -72,33 +72,33 @@ WSGI_APPLICATION = 'wayrem.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'wayrem_stg_v1',
-#         'USER': 'wayremdb_adminuser',
-#         'PASSWORD': 'r2wXJfUs78NczMFWRXcV',
-#         'HOST': '15.185.103.226',
-#         'PORT': '3306',
-#         'OPTIONS': {
-#             "init_command": "SET foreign_key_checks = 0;",
-#         },
-#     }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'wayrem_v4',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',
+        'NAME': 'wayrem_stg_v1',
+        'USER': 'wayremdb_adminuser',
+        'PASSWORD': 'r2wXJfUs78NczMFWRXcV',
+        'HOST': '15.185.103.226',
         'PORT': '3306',
         'OPTIONS': {
             "init_command": "SET foreign_key_checks = 0;",
         },
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'wayrem_v4',
+#         'USER': 'root',
+#         'PASSWORD': '',
+#         'HOST': 'localhost',
+#         'PORT': '3306',
+#         'OPTIONS': {
+#             "init_command": "SET foreign_key_checks = 0;",
+#         },
+#     }
+# }
 
 # DATABASES = {
 #     'default': {
@@ -138,15 +138,14 @@ STATIC_ROOT = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'wayrem_admin.User'
 MESSAGE_TAGS = {messages_s.ERROR: 'danger'}
+# ! Media Files Local settings
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+# MEDIA_URL = '/media/'
+# ! Media Files Server settings
 MEDIA_ROOT = os.path.dirname(
     "/opt/app/wayrem-admin-backend/media/common_folder/")
 MEDIA_URL = '/media/common_folder/'
-# MEDIA_ROOT = os.path.dirname(
-#     "home/fealty/Desktop/admin_17/wayrem-admin-backend/media/common_folder/")
-# MEDIA_ROOT = os.path.dirname(
-#     "/home/suryaaa/Music/excels/")
-# MEDIA_URL = '/media/'
+
 
 # MEDIA_ROOT = os.path.dirname(
 #     "/home/fealty/Desktop/admin_17/wayrem-admin-backend/media/common_folder/")

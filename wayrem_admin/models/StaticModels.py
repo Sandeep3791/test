@@ -107,6 +107,8 @@ TYPE = (
 upload_storage = FileSystemStorage(
     location='/opt/app/wayrem-admin-backend/media/common_folder')
 
+# upload_storage = FileSystemStorage(
+#     location='/home/fealty/Desktop/Admin_uat_5/wayrem-admin-backend/media/common_folder')
 
 
 class Roles(models.Model):
@@ -130,12 +132,13 @@ class User(AbstractUser):
     id = models.AutoField(primary_key=True, unique=True)
     po_notify = models.BooleanField(default=False, null=True, blank=True)
     order_notify = models.BooleanField(default=False, null=True, blank=True)
+    margin_access = models.BooleanField(default=False, null=True, blank=True)
     email = models.EmailField(_('email address'), unique=True)
     contact = models.CharField(
         max_length=12, null=True, unique=True, blank=False)
     role = models.ForeignKey(
         Roles, on_delete=models.CASCADE, null=True, blank=True)
-    dob = models.DateField(null=True, blank=True)    
+    dob = models.DateField(null=True, blank=True)
     gender = models.CharField(
         max_length=1, choices=GENDER_CHOICES, default='M', null=True, blank=True)
     address = models.CharField(max_length=500, null=True, blank=True)
@@ -304,12 +307,12 @@ class Products(models.Model):
     SKU = models.CharField(max_length=255, null=True, blank=False, unique=True)
     category = models.ManyToManyField('Categories', null=True)
     # product_code = models.CharField(max_length=255, null=True)
-    meta_key = models.TextField()
+    meta_key = models.TextField(null=True, blank=True)
     feature_product = models.BooleanField(default=True)
     publish = models.BooleanField(default=False)
-    date_of_mfg = models.DateField(null=True)
-    date_of_exp = models.DateField(null=True)
-    mfr_name = models.CharField(max_length=100, null=True, blank=False)
+    date_of_mfg = models.DateField(blank=True, null=True)
+    date_of_exp = models.DateField(blank=True, null=True)
+    mfr_name = models.CharField(max_length=100, null=True, blank=True)
     supplier = models.ManyToManyField('Supplier', null=True, blank=True)
     dis_abs_percent = models.CharField(
         max_length=20, choices=DIS_ABS_PERCENT, null=True, blank=False)
@@ -318,16 +321,16 @@ class Products(models.Model):
     quantity = models.CharField(max_length=100, null=True, default=1)
     quantity_unit = models.ForeignKey(
         Unit, on_delete=models.CASCADE, null=True, blank=True, related_name='%(class)s_quantity_unit')
-    weight = models.CharField(null=True, max_length=255)
+    weight = models.CharField(blank=True, null=True, max_length=255)
     weight_unit = models.ForeignKey(
         Unit, on_delete=models.CASCADE, null=True, blank=True, related_name='%(class)s_weight_unit')
     price = models.CharField(null=True, max_length=100)
-    discount = models.CharField(max_length=50, null=True, blank=False)
+    discount = models.CharField(max_length=50, null=True, blank=True)
     package_count = models.CharField(
         max_length=50, null=True, blank=True, default=1)
-    wayrem_margin = models.CharField(max_length=100, null=True)
+    wayrem_margin = models.CharField(max_length=100, blank=True, null=True)
     margin_unit = models.CharField(
-        max_length=20, choices=DIS_ABS_PERCENT, null=True, blank=False)
+        max_length=20, choices=DIS_ABS_PERCENT, null=True, blank=True)
     primary_image = models.ImageField(
         upload_to=get_file_path, storage=upload_storage, default='product.jpg', null=True)
     gs1 = models.CharField(max_length=255, null=True, blank=True)
@@ -340,6 +343,7 @@ class Products(models.Model):
     inventory_onhand = models.SmallIntegerField(default=0)
     outofstock_threshold = models.SmallIntegerField(
         default=0, null=True, blank=True,)
+    is_deleted = models.BooleanField(default=False)
 
     def __str__(self):
         return self.name + " (SKU: " + self.SKU + ")"
@@ -401,7 +405,7 @@ class SupplierProducts(models.Model):
     product_name = models.CharField(max_length=500, null=True, blank=True)
     quantity = models.IntegerField(null=True, default=1)
     price = models.CharField(null=True, max_length=255)
-    available = models.BooleanField(default=True)    
+    available = models.BooleanField(default=True)
     deliverable_days = models.CharField(max_length=20,
                                         choices=deliverable, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -421,7 +425,7 @@ class PurchaseOrder(models.Model):
         SupplierProducts, on_delete=models.SET_NULL, null=True)
     product_qty = models.IntegerField(null=False, default=1)
     supplier_name = models.ForeignKey(
-        Supplier, on_delete=models.CASCADE, null=False)    
+        Supplier, on_delete=models.CASCADE, null=False)
     available = models.BooleanField(default=True)
     reason = models.TextField(default=None, null=True)
     status = models.CharField(
@@ -447,7 +451,7 @@ class Customer(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
     first_name = models.CharField(max_length=255, null=True)
     last_name = models.CharField(max_length=255, null=True)
-    business_type = models.ForeignKey('BusinessType', models.DO_NOTHING,db_column='business_type')
+    business_type = models.ForeignKey('BusinessType', models.DO_NOTHING,db_column='business_type',null=False)
     business_name = models.CharField(max_length=255, null=True)
     email = models.EmailField(blank=False, unique=True, null=True)
     password = models.CharField(max_length=255, null=True)
@@ -464,6 +468,7 @@ class Customer(models.Model):
     tax_number = models.BigIntegerField(null=True)
     registration_docs_path = models.CharField(max_length=255, null=True)
     tax_docs_path = models.CharField(max_length=255, null=True)
+    marrof_docs_path = models.CharField(max_length=255, null=True)
     # billing_name = models.CharField(max_length=255, null=True)
     # billing_address = models.TextField(null=True)
     delivery_house_no_building_name = models.CharField(
@@ -524,7 +529,7 @@ class Invoice(models.Model):
     po_name = models.CharField(max_length=250, null=True)
     file = models.FileField(upload_to='invoices/', storage=upload_storage,
                             null=True)
-    supplier_name = models.CharField(max_length=250, null=True)    
+    supplier_name = models.CharField(max_length=250, null=True)
     status = models.CharField(
         max_length=35, choices=invoice_status, default='released', null=True, blank=True)
     is_active = models.BooleanField(default=True)
@@ -770,9 +775,11 @@ class GS1ProductFields(models.Model):
     class Meta:
         db_table = 'gs1_product_fields'
 
+
 class BusinessType(models.Model):
-    name = models.CharField(max_length=255)
-    status = models.IntegerField(default=1)
+    id = models.AutoField(primary_key=True, unique=True)
+    business_type = models.CharField(max_length=255, null=True)
+    status = models.BooleanField(default=True)
 
     class Meta:
         db_table = 'business_type'

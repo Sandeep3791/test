@@ -1,3 +1,4 @@
+import imp
 import re
 from django.db import connection
 from django.http import response
@@ -246,8 +247,14 @@ def product_images(request):
             obj.meta_key = request.session.get("meta_key", None)
             obj.feature_product = request.session.get("feature_product", None)
             obj.publish = request.session.get("publish", None)
-            obj.date_of_mfg = request.session.get("date_of_mfg", None)
-            obj.date_of_exp = request.session.get("date_of_exp", None)
+            dom = request.session.get("date_of_mfg", None)
+            doe = request.session.get("date_of_exp", None)
+            if dom == "None":
+                dom = None
+            if doe == "None":
+                doe = None
+            obj.date_of_mfg = dom
+            obj.date_of_exp = doe
             obj.mfr_name = request.session.get("mfr_name", None)
             obj.dis_abs_percent = request.session.get("dis_abs_percent", None)
             obj.description = request.session.get("description", None)
@@ -295,7 +302,7 @@ class ProductList(ListView):
     success_url = reverse_lazy('wayrem_admin:productlist')
 
     def get_queryset(self):
-        qs = Products.objects.filter()
+        qs = Products.objects.filter(is_deleted=False)
         filtered_list = ProductFilter(self.request.GET, queryset=qs)
         return filtered_list.qs
 
@@ -406,7 +413,10 @@ class DeleteProduct(View):
     def post(self, request):
         productid = request.POST.get('product_id')
         products = Products.objects.get(id=productid)
-        products.delete()
+        products.SKU = products.SKU + "3353833"
+        products.is_deleted = True
+        products.save()
+        messages.success(request, "Product Deleted Successfully!")
         return redirect('wayrem_admin:productlist')
 
 
@@ -500,8 +510,6 @@ def import_products(request):
             'select * from products_master', con)
         df_products['SKU'] = df_products['SKU'].astype(int)
         df_category = pd.read_sql('select * from categories_master', con)
-        product_ingredients = pd.read_sql(
-            'select * from product_ingredients', con)
         df['category'] = df['category'].fillna('None')
         df_category["name"] = df_category["name"].str.lower()
         df["category"] = df["category"].str.lower()
@@ -543,6 +551,7 @@ def import_products(request):
         df['inventory_onhand'] = df['quantity']
         df['inventory_received'] = 0
         df['outofstock_threshold'] = 0
+        df['is_deleted'] = False
         try:
             weight_unit = pd.merge(
                 df, df_units, left_on='weight_unit', right_on='unit_name')
@@ -589,6 +598,7 @@ def import_products(request):
         inventory_df['inventory_type_id'] = 1
         inventory_df['product_id'] = ids
         inventory_df['warehouse_id'] = 1
+        inventory_df = inventory_df[inventory_df.quantity != 0]
         inventory_df.to_sql('inventory', engine,
                             if_exists='append', index=False)
         ingredients = pd.DataFrame()
@@ -606,7 +616,7 @@ def import_products(request):
             "inserted_records": inserted_records
         }
         if inserted_records == 0:
-            messages.danger(request, "Products already exists!")
+            messages.error(request, "Products already exists!")
         else:
             messages.success(request, "Products Imported Successfully!")
         return render(request, "product/import_results.html", context)

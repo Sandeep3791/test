@@ -20,20 +20,20 @@ class ProductForm(forms.ModelForm):
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'SKU': forms.NumberInput(attrs={'class': 'form-control'}),
             # 'product_code': forms.TextInput(attrs={'class': 'form-control'}),
-            'meta_key': forms.Textarea(attrs={'class': "form-control", 'rows': '3'}),
+            'meta_key': forms.Textarea(attrs={'class': "form-control", "required": False, 'rows': '3'}),
             'feature_product': forms.CheckboxInput(attrs={'class': "form-check-input"}),
             'publish': forms.CheckboxInput(attrs={'class': "form-check-input"}),
             'date_of_mfg': DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'date_of_exp': DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-            'mfr_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'mfr_name': forms.TextInput(attrs={'class': 'form-control', "required": False}),
             'dis_abs_percent': forms.Select(attrs={'class': 'form-select'}),
             'description': forms.Textarea(attrs={'class': "form-control", 'rows': '3'}),
             'quantity': forms.NumberInput(attrs={'class': 'form-control'}),
             'quantity_unit': forms.Select(attrs={'class': 'form-select'}),
-            'weight': forms.NumberInput(attrs={'class': 'form-control'}),
-            'weight_unit': forms.Select(attrs={'class': 'form-select'}),
+            'weight': forms.NumberInput(attrs={'class': 'form-control', "required": False}),
+            'weight_unit': forms.Select(attrs={'class': 'form-select', "required": False}),
             'price': forms.NumberInput(attrs={'class': 'form-control'}),
-            'discount': forms.NumberInput(attrs={'class': "form-control"}),
+            'discount': forms.NumberInput(attrs={'class': "form-control", 'required': False}),
             'package_count': forms.CheckboxInput(attrs={'class': "form-check-input"}),
             'wayrem_margin': forms.NumberInput(attrs={'class': "form-control"}),
             'margin_unit': forms.Select(attrs={'class': 'form-select'}),
@@ -161,7 +161,7 @@ class ProductFormImageView(forms.ModelForm):
     class Meta:
         model = Products
         fields = ("name", "SKU", "category", "meta_key", "feature_product", "publish", "date_of_mfg", "date_of_exp", "mfr_name", "supplier",
-                  "dis_abs_percent", "description", "warehouse", "quantity", "inventory_starting", "inventory_received", "inventory_shipped", "inventory_cancelled","outofstock_threshold", "quantity_unit", "weight", "weight_unit", "price", "discount", "package_count", "wayrem_margin", "margin_unit", "primary_image")
+                  "dis_abs_percent", "description", "warehouse", "quantity", "inventory_starting", "inventory_received", "inventory_shipped", "inventory_cancelled", "outofstock_threshold", "quantity_unit", "weight", "weight_unit", "price", "discount", "package_count", "wayrem_margin", "margin_unit", "primary_image")
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
@@ -201,12 +201,21 @@ class ProductFormImageView(forms.ModelForm):
         dom = cleaned_data.get("date_of_mfg")
         doe = cleaned_data.get("date_of_exp")
 
-        if dom >= doe:
-            raise forms.ValidationError(
-                f"Date of expiry must be greater than {dom}"
-            )
+        if dom != None and doe != None:
+            if dom >= doe:
+                raise forms.ValidationError(
+                    f"Date of expiry must be greater than {dom}"
+                )
+            else:
+                return doe
         else:
             return doe
+        # if dom >= doe:
+        #     raise forms.ValidationError(
+        #         f"Date of expiry must be greater than {dom}"
+        #     )
+        # else:
+        #     return doe
 
 
 ProductImageFormset = modelformset_factory(
@@ -267,20 +276,20 @@ class ProductFormOne(forms.Form):
         widget=forms.CheckboxInput(attrs={'class': "form-check-input"}), required=False)
     publish = forms.BooleanField(
         widget=forms.CheckboxInput(attrs={'class': "form-check-input"}), required=False)
-    date_of_mfg = forms.DateField(
-        widget=forms.DateInput(attrs={'class': 'form-control datepicker-input', 'placeholder': "dd/mm/yyyy", 'type': 'date'}))
-    date_of_exp = forms.DateField(
-        widget=forms.DateInput(attrs={'class': 'form-control datepicker-input', 'placeholder': "dd/mm/yyyy", 'type': 'date'}))
+    date_of_mfg = forms.DateField(input_formats=['%Y/%m/%d'],
+                                  widget=forms.DateInput(attrs={'class': 'form-control datepicker-input', 'placeholder': "dd/mm/yyyy", 'type': 'date'}), required=False)
+    date_of_exp = forms.DateField(input_formats=['%Y/%m/%d'],
+                                  widget=forms.DateInput(attrs={'class': 'form-control datepicker-input', 'placeholder': "dd/mm/yyyy", 'type': 'date'}), required=False)
     mfr_name = forms.CharField(
-        widget=forms.TextInput(attrs={'class': "form-control"}))
+        widget=forms.TextInput(attrs={'class': "form-control"}), required=False)
     category = forms.MultipleChoiceField(choices=choices_category, widget=forms.SelectMultiple(
         attrs={'class': 'form-control'}), required=False)
     supplier = forms.MultipleChoiceField(
         choices=choices_role, widget=forms.SelectMultiple(attrs={'class': 'form-control'}), required=False)
     weight = forms.CharField(
-        widget=forms.NumberInput(attrs={'class': "form-control", 'min': 0, 'step': '0.001'}))
+        widget=forms.NumberInput(attrs={'class': "form-control", 'min': 0, 'step': '0.001'}), required=False)
     weight_unit = forms.ChoiceField(choices=choices_unit, widget=forms.Select(
-        attrs={'class': 'form-select'}))
+        attrs={'class': 'form-select'}), required=False)
     price = forms.CharField(
         widget=forms.NumberInput(attrs={'class': "form-control", 'min': 1, 'step': '0.01'}))
     discount = forms.CharField(
@@ -288,13 +297,13 @@ class ProductFormOne(forms.Form):
     dis_abs_percent = forms.ChoiceField(
         choices=DIS_ABS_PERCENT, widget=forms.Select(attrs={'class': 'form-select'}))
     wayrem_margin = forms.IntegerField(
-        widget=forms.NumberInput(attrs={'class': "form-control", 'min': 0}), min_value=0)
+        widget=forms.NumberInput(attrs={'class': "form-control", 'min': 0}), required=False, min_value=0)
     margin_unit = forms.ChoiceField(
-        choices=DIS_ABS_PERCENT, widget=forms.Select(attrs={'class': 'form-select'}))
+        choices=DIS_ABS_PERCENT, widget=forms.Select(attrs={'class': 'form-select'}), required=False)
     package_count = forms.CharField(
         widget=forms.CheckboxInput(attrs={'class': "form-check-input"}), required=False)
     meta_key = forms.CharField(
-        widget=forms.Textarea(attrs={'class': "form-control", 'rows': '3'}))
+        widget=forms.Textarea(attrs={'class': "form-control", 'rows': '3'}), required=False)
     description = forms.CharField(
         widget=forms.Textarea(attrs={'class': "form-control", 'rows': '3'}), required=False)
 
@@ -305,19 +314,22 @@ class ProductFormOne(forms.Form):
         widget=forms.NumberInput(attrs={'class': "form-control"}), min_value=0)
     quantity_unit = forms.ChoiceField(choices=choices_unit, widget=forms.Select(
         attrs={'class': 'form-select'}))
-    outofstock_threshold=forms.IntegerField(
-        widget=forms.NumberInput(attrs={'class': "form-control", 'min': 0}), min_value=0)
-        
+    outofstock_threshold = forms.IntegerField(
+        widget=forms.NumberInput(attrs={'class': "form-control", 'min': 0}), required=False, min_value=0)
+
     def clean_date_of_exp(self):
         cleaned_data = super(ProductFormOne, self).clean()
 
         dom = cleaned_data.get("date_of_mfg")
         doe = cleaned_data.get("date_of_exp")
 
-        if dom >= doe:
-            raise forms.ValidationError(
-                f"Date of expiry must be greater than {dom}"
-            )
+        if dom != None and doe != None:
+            if dom >= doe:
+                raise forms.ValidationError(
+                    f"Date of expiry must be greater than {dom}"
+                )
+            else:
+                return doe
         else:
             return doe
 

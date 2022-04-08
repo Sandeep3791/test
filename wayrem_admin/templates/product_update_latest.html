@@ -189,9 +189,7 @@
                         <!-- Form -->
                         <div class="col-lg-6">
                             <div class="form-group mb-4 col-gap">
-                                <label for="name">Weight <span class="text-danger">*</span><span class="text-danger"><em> {{form.weight.error | striptags}} {{form.unit.error | striptags}} 
-                                    </em>
-                                </span></label>
+                                <label for="name">Weight </label>
                                 <div class="input-group first">   
                                     <div class="w-75">{{form.weight}} </div>
                                     <div class="w-25 px-2">{{form.weight_unit}} </div>
@@ -227,10 +225,7 @@
                         <!-- Form -->
                         <div class="col-lg-6">
                             <div class="form-group mb-4">
-                                <label for="description">Date of Manufacture  <span class="text-danger">*</span> <span class="text-danger">
-                                    <em> {{form.date_of_mfg.errors | striptags}}
-                                    </em>
-                                </span></label>
+                                <label for="description">Date of Manufacture </label>
                                 <div class="input-group">
                                     
                                     {{form.date_of_mfg}}
@@ -245,9 +240,7 @@
                         <!-- Form -->
                         <div class="col-lg-6">
                             <div class="form-group mb-4">
-                                <label for="provider">Date of Expiry  <span class="text-danger">*</span>  <span class="text-danger"> <em> {{form.date_of_exp.errors | striptags}}
-                                </em>
-                            </span></label>
+                                <label for="provider">Date of Expiry </label>
                                 <div class="input-group date_input_box">
                                 
                                     {{form.date_of_exp}}
@@ -261,9 +254,7 @@
                         <!-- Form -->
                         <div class="col-lg-6">
                             <div class="form-group mb-4">
-                                <label for="provider">Manufacturer Name <span class="text-danger">*</span>  <span class="text-danger"> <em> {{form.mfr_name.errors | striptags}}
-                                </em>
-                            </span></label>
+                                <label for="provider">Manufacturer Name </label>
                                 <div class="input-group date_input_box">
                                 
                                     {{form.mfr_name}}
@@ -307,9 +298,7 @@
 
                         <div class="col-lg-6">
                             <div class="form-group mb-4">
-                                <label for="name">Discount <span class="text-danger"></span><span class="text-danger"><em> {{form.discount.error | striptags}} 
-                                    </em>
-                                </span></label>
+                                <label for="name">Discount </label>
                                 <div class="input-group first">  
                                     <div class="w-75 px-2">
                                         {{form.discount}}
@@ -375,9 +364,7 @@
                     </div>
                     <div class="col-lg-12">
                             <div class="form-group mb-4">
-                                <label for="name">Out of Stock Threshold <span class="text-danger">*</span><span class="text-danger"><em> {{form.outofstock_threshold.errors | striptags}}
-                                </em>
-                                </span></label>
+                                <label for="name">Out of Stock Threshold </label>
                                 <div class="input-group">   
                                     <div class="w-50 px-2">{{form.outofstock_threshold}}</div>
                                     <div class="input-group error_field_msg" id= "outofstock_threshold_error_message" style="color: #d12525;"></div>
@@ -505,7 +492,7 @@
                     </div>
                     <!--=====================------=====================-->
 
-
+                {% if request.user.margin_access or request.user.is_superuser %}
                     <!--==================row====================-->
                 <div class="row mt-4 bg-white" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
 
@@ -521,8 +508,7 @@
                     <!-- Form -->
                         <div class="col-lg-6">
                             <div class="form-group mb-4">
-                                <label for="name">Wayrem Margin <span class="text-danger">*</span> <span class="text-danger"> <em> {{form.wayrem_margin.error | striptags}} 
-                                </em> </span> </label>
+                                <label for="name">Wayrem Margin <span class="text-danger">*</span></label>
                                 <div class="input-group">
                                     <div class="w-75 px-2">
                                     {{form.wayrem_margin}}
@@ -558,7 +544,7 @@
 
                 </div>
                     <!--==================row end===================-->
-
+                {% endif %}
 
                     <!--==========row====================-->
                     <div class="row mt-4 bg-white" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">
@@ -572,9 +558,7 @@
                             <!-- Form -->
                         <div class="col-lg-12">
                             <div class="form-group mb-4">
-                                <label for="name">Product Meta Key <span class="text-danger">*</span><span class="text-danger"><em> {{form.meta_key.error | striptags}}
-                                    </em>
-                                </span></label>
+                                <label for="name">Product Meta Key </label>
                                 <div class="input-group">
                                     {{form.meta_key}}
                                     <div class="input-group" id="metaKey_error_message" style="color: #d12525;"></div>
@@ -982,18 +966,8 @@
    $("#id_product_code").focusout(function() {
       check_productCode();
    });
-   $("#id_mfr_name").focusout(function() {
-       check_mfr();
-   });
-   $("#id_dom").focusout(function() {
-       check_dom();
-   });
-   $("#id_doe").focusout(function() {
-       check_doe();
-   });
-   $("#id_outofstock_threshold").focusout(function() {
-       check_outofstock();
-   });
+   
+
    
    
    
@@ -1032,54 +1006,7 @@
          error_data = true;
       }
    }
-   
-   function check_mfr() {
-      var mfr = $("#id_mfr_name").val()
-      if ( mfr !== '') {
-         $("#mfr_error_message").hide();
-         $("#id_mfr_name").css("border-bottom","2px solid #34F458");
-      } else {
-         $("#mfr_error_message").html("Please Enter Valid Manufacturer Name");
-         $("#mfr_error_message").show();
-         error_data = true;
-      }
-   }
-   
-   function check_dom() {
-      var mfr = $("#id_dom").val()
-      if ( mfr !== '') {
-         $("#dom_error_message").hide();
-         $("#id_dom").css("border-bottom","2px solid #34F458");
-      } else {
-         $("#dom_error_message").html("Please Enter Valid Manufacture Date");
-         $("#dom_error_message").show();
-         error_data = true;
-      }
-   }
-   
-   function check_doe() {
-      var mfr = $("#id_doe").val()
-      if ( mfr !== '') {
-         $("#doe_error_message").hide();
-         $("#id_doe").css("border-bottom","2px solid #34F458");
-      } else {
-         $("#doe_error_message").html("Please Enter Valid Expiry Data");
-         $("#doe_error_message").show();
-         error_data = true;
-      }
-   }
-   
-   function check_outofstock(){
-       var mfr = $("#id_outofstock_threshold").val()
-      if ( mfr !== '') {
-         $("#outofstock_threshold_error_message").hide();
-         $("#id_outofstock_threshold").css("border-bottom","2px solid #34F458");
-      } else {
-         $("#outofstock_threshold_error_message").html("Please Enter Valid Out of Stock threshold");
-         $("#outofstock_threshold_error_message").show();
-         error_data = true;
-      }
-   }
+                    
    
    
    });
