@@ -82,6 +82,7 @@ DATABASES = {
         'PORT': '3306',
         'OPTIONS': {
             "init_command": "SET foreign_key_checks = 0;",
+            "init_command": "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));"
         },
     }
 }
@@ -89,13 +90,14 @@ DATABASES = {
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'wayrem_v4',
+#         'NAME': 'wayrem_temp_8',
 #         'USER': 'root',
-#         'PASSWORD': '',
+#         'PASSWORD': 'root1234',
 #         'HOST': 'localhost',
 #         'PORT': '3306',
 #         'OPTIONS': {
 #             "init_command": "SET foreign_key_checks = 0;",
+#             "init_command": "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));"
 #         },
 #     }
 # }
@@ -148,7 +150,7 @@ MEDIA_URL = '/media/common_folder/'
 
 
 # MEDIA_ROOT = os.path.dirname(
-#     "/home/fealty/Desktop/admin_17/wayrem-admin-backend/media/common_folder/")
+#     "/home/fealty/Desktop/admin_dev_8/wayrem-admin-backend/media/common_folder/")
 # MEDIA_URL = '/media/'
 # /home/suryaaa/Music/database/
 
