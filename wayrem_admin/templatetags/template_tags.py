@@ -34,13 +34,10 @@ def net_vat_amt(unit_price, qty, *args, **kwargs):
     return "{:.2f}".format(net)
 
 
-
 @register.simple_tag()
 def image_tag(value, *args, **kwargs):
     if value:
         return value.split("/")[-1]
     else:
-        x = "user_profile-1.jpeg"
+        x = False
         return x
-     
-
