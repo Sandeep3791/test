@@ -1,6 +1,6 @@
 from wayrem_admin.forecasts.firebase_notify import FirebaseLibrary
 from wayrem_admin.services import send_email
-from wayrem_admin.forms import CustomerSearchFilter
+from wayrem_admin.forms import CustomerSearchFilter, CustomerEmailUpdateForm
 from django.urls import reverse_lazy
 from wayrem_admin.utils.constants import *
 from wayrem_admin.filters.customer_filters import *
@@ -123,3 +123,27 @@ def customer_verification(request, id=None):
     else:
         messages.error(request, f"{user.first_name} is now Inactive")
     return redirect('wayrem_admin:customerslist')
+
+def customer_email_update(request, id=None):
+    customer = Customer.objects.get(id=id)
+    email_id = customer.email
+    full_name = f"{customer.first_name} {customer.last_name}"
+    if request.method == "POST":
+        # kwargs = { 'data' : request.POST }
+        form = CustomerEmailUpdateForm(request.POST or None, instance=customer)
+        if form.is_valid():            
+            form.save()            
+            email_template = EmailTemplateModel.objects.get(
+            key="customer_email_update")
+            subject = email_template.subject
+            values = {
+                # "customer": full_name,
+                "customer_name": full_name,
+                "updated_email": email_id
+            }
+            body = email_template.message_format.format(**values)
+            send_email(to=email_id, subject=subject, body=body)
+            return redirect('wayrem_admin:customerslist')
+    else:
+        form = CustomerEmailUpdateForm(instance=customer)
+    return render(request, 'customer_email_update.html', {'form': form, 'id': customer.id})

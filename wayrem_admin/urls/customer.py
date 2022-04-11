@@ -10,5 +10,6 @@ urlpatterns = [
          views.customer_details, name='customerdetails'),
     path('customer-verify/<str:id>/',
          views.customer_verification, name='customer_verification'),
+    path('customer-email-update/<str:id>/', views.customer_email_update, name='customer_email_update')
 
 ]
