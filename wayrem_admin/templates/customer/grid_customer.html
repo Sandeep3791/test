@@ -51,6 +51,7 @@
                         </button>
                         <div class="dropdown-menu">
                             <a class="dropdown-item" href="{% url 'wayrem_admin:customerdetails' user.id %}"><span class="fas fa-eye mr-2"></span>View Details</a>
+                            <a class="dropdown-item" href="{% url 'wayrem_admin:customer_email_update' user.id %}"><span class="fas fa-edit mr-2"></span>Update Email</a>
                             {% comment %} <a class="dropdown-item" href=""><span class="fas fa-edit mr-2"></span>Edit</a>
                             <a class="dropdown-item text-danger"  data-bs-toggle="modal" data-bs-target="#deleteModal{{suppl.id}}" href="#"> <span class="fas fa-trash-alt mr-2"></span>Remove</a> {% endcomment %}
                         </div>

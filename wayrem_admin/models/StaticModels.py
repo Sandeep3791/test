@@ -108,7 +108,7 @@ upload_storage = FileSystemStorage(
     location='/opt/app/wayrem-admin-backend/media/common_folder')
 
 # upload_storage = FileSystemStorage(
-#     location='/home/fealty/Desktop/Admin_uat_5/wayrem-admin-backend/media/common_folder')
+#     location='/home/fealty/Desktop/admin_dev_8/wayrem-admin-backend/media/common_folder')
 
 
 class Roles(models.Model):
@@ -400,7 +400,8 @@ class SupplierProducts(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
     supplier_id = models.ForeignKey(
         Supplier, on_delete=models.CASCADE, null=True)
-    product_id = models.IntegerField()
+    product_id = models.ForeignKey(
+        Products, on_delete=models.CASCADE, db_column='product_id', null=True, blank=True)
     SKU = models.CharField(max_length=250, null=True, blank=True)
     product_name = models.CharField(max_length=500, null=True, blank=True)
     quantity = models.IntegerField(null=True, default=1)

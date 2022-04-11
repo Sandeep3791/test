@@ -4,4 +4,4 @@
 
 # For Local
 WAYREM_ADMIN_BASE_URL = "http://127.0.0.1:8000/"
-WAYREM_SUPPLIER_BASE_URL = "http://127.0.0.1:8002/wayrem_supplier/"
+WAYREM_SUPPLIER_BASE_URL = "http://127.0.0.1:8001/wayrem_supplier/"

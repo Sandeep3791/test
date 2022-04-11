@@ -398,7 +398,7 @@ def po_pdf(request):
 
 def load_supplier_products(request):
     supplier = request.GET.get('supplier')
-    products = SupplierProducts.objects.filter(supplier_id=supplier)
+    products = SupplierProducts.objects.filter(supplier_id=supplier, product_id__is_deleted=False)
     return render(request, 'po_supplier_products.html', {'products': products})
 
 
