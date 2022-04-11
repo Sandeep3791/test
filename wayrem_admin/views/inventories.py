@@ -77,6 +77,10 @@ class InventoryCreate(CreateView):
         form.inventory_type=InventoryType.objects.get(id=inventory_type_id)
         form.product=Products.objects.get(id=product_id)
         
+        if int(form.quantity) == 0:
+            messages.error(self.request,'Product quantities cannot be Zero.')
+            return HttpResponse("valid")
+
         if inventory_type_id == 5:
             if int(form.quantity) > int(form.product.quantity):
                 messages.error(self.request,'Product quantities cannot be removed more than the available quantities')
