@@ -1,4 +1,21 @@
 {% load static %}
+<style>
+  .nav-label {
+    float: right;
+    margin-left: 1rem;
+    font-style: normal;
+    z-index: 1;
+}
+.nav-label .rounded {
+  height: 22px;
+  width: 22px;
+  background-color:#0000FF;
+  border-radius: 50% !important;
+  display: inline-block;
+  font-size: 70%;
+  padding: 3px 4px  
+}
+</style>
 <nav id="sidebarMenu" class="sidebar d-md-block bg-dark text-white collapse" data-simplebar>
   <div class="sidebar-inner px-3 pt-3">
     <div class="user-card d-flex d-md-none align-items-center justify-content-between justify-content-md-center pb-4">
@@ -177,7 +194,7 @@
   <li class="nav-item w-100 {% if 'dashboard' in segment %} active {% endif %}">
     <a href="{% url 'wayrem_admin:customerslist' %}" class="nav-link">
       <span class="sidebar-icon"><i class="fas fa-users"></i></span></span>
-      <span class="sidebar-text">Customers</span>
+      <span class="sidebar-text">Customers</span><span class="nav-label"><b class="label rounded label-sm warn">{{request.new_customer}}</b></span>
     </a>
   </li>
 </ul>
@@ -214,7 +231,7 @@
       <li class="nav-item w-100 {% if 'dashboard' in segment %} active {% endif %}">
         <a href="{% url 'wayrem_admin:orderlist' %}" class="nav-link">
           <span class="sidebar-icon"><i class="fas fa-download"></i></span>
-          <span class="sidebar-text">Order</span>
+          <span class="sidebar-text">Order</span><span class="nav-label"><b class="label rounded label-sm warn">{{request.new_order}}</b></span>
         </a>
       </li>
     </ul>
