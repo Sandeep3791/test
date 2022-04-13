@@ -9,6 +9,7 @@
     </tr>
   </thead>
   <tbody>
+    {% if i.supplier_id %}
     <tr>
       <th scope="row">1</th>
       <td>{{i.supplier_id}}</td>
@@ -17,10 +18,7 @@
       <td>
        <a class="btn btn-sm btn-dark" href="{% url 'wayrem_admin:create_po' %}?suprod={{i.supplier_id.id}}?{{i.SKU}}">Raise PO</a>
        </td>
-    </tr>
-  </tbody>
+      </tr>
+      {% endif %}
+    </tbody>
 </table>
-                                
-                                
-
-
