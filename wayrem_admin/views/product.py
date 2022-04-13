@@ -413,8 +413,9 @@ class DeleteProduct(View):
     def post(self, request):
         productid = request.POST.get('product_id')
         products = Products.objects.get(id=productid)
-        products.SKU = products.SKU + "3353833"
+        products.SKU = products.SKU + "_deleted"
         products.is_deleted = True
+        products.publish = False
         products.save()
         messages.success(request, "Product Deleted Successfully!")
         return redirect('wayrem_admin:productlist')
@@ -508,7 +509,7 @@ def import_products(request):
                       host=DATABASES['default']['HOST'], database=DATABASES['default']['NAME'])
         df_products = pd.read_sql(
             'select * from products_master', con)
-        df_products['SKU'] = df_products['SKU'].astype(int)
+        df_products['SKU'] = df_products['SKU'].astype(str)
         df_category = pd.read_sql('select * from categories_master', con)
         df['category'] = df['category'].fillna('None')
         df_category["name"] = df_category["name"].str.lower()
@@ -568,6 +569,7 @@ def import_products(request):
         del df['quantity_unit']
         df['weight_unit_id'] = weight_unit_id
         df['quantity_unit_id'] = quantity_unit_id
+        df['SKU'] = df['SKU'].astype(str)
         df7 = df[~df.SKU.isin(df_products.SKU)]
         count_df = len(df7)
         ids = [i for i in range(last_id+1, last_id+count_df+1)]
