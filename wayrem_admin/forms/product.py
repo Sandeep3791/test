@@ -18,7 +18,7 @@ class ProductForm(forms.ModelForm):
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'SKU': forms.NumberInput(attrs={'class': 'form-control'}),
+            'SKU': forms.TextInput(attrs={'class': 'form-control'}),
             # 'product_code': forms.TextInput(attrs={'class': 'form-control'}),
             'meta_key': forms.Textarea(attrs={'class': "form-control", "required": False, 'rows': '3'}),
             'feature_product': forms.CheckboxInput(attrs={'class': "form-check-input"}),
@@ -125,7 +125,7 @@ class ProductFormView(forms.ModelForm):
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'SKU': forms.NumberInput(attrs={'class': 'form-control'}),
+            'SKU': forms.TextInput(attrs={'class': 'form-control'}),
             # 'product_code': forms.TextInput(attrs={'class': 'form-control'}),
             'meta_key': forms.Textarea(attrs={'class': "form-control", 'rows': '3'}),
             'feature_product': forms.CheckboxInput(attrs={'class': "form-check-input"}),
@@ -268,7 +268,7 @@ choices_warehouse = get_warehouse
 
 
 class ProductFormOne(forms.Form):
-    SKU = forms.CharField(widget=forms.NumberInput(
+    SKU = forms.CharField(widget=forms.TextInput(
         attrs={'class': "form-control"}))
     name = forms.CharField(
         widget=forms.TextInput(attrs={'class': "form-control"}))
@@ -349,7 +349,7 @@ class ProductAdvanceFilterForm(forms.ModelForm):
         attrs={'class': 'form-control form-control-select'}))
     name = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control p-2'}), required=False)
-    SKU = forms.CharField(widget=forms.NumberInput(
+    SKU = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control p-2'}), required=False)
     date_of_mfg = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control p-2'}), required=False)
