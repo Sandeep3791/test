@@ -20,7 +20,7 @@ class CustomerLib(ApiBase):
         return self.AUTHENTICATE_KEY
 
     def accountcode(self,customer_id):
-        get_accountcode=self.customer_prefix+str(customer_id)
+        get_accountcode=self.customer_prefix+"_"+str(customer_id)
         return get_accountcode
 
     def get_customer_id(self,customer_id):
