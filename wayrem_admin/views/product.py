@@ -518,6 +518,7 @@ def import_products(request):
         del df_units['is_active']
         duplicate_excel_records = len(df[df.duplicated('sku*')])
         df = df.drop_duplicates(subset="sku*", keep='first', inplace=False)
+        # NaN values removed from sku and product name
         df = df[df['sku*'].notna()]
         df = df[df['product name*'].notna()]
         # df["first_column"] = df["first_column"].str.lower()
