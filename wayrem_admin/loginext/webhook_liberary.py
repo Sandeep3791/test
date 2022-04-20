@@ -1,6 +1,6 @@
 import requests
 import json,re
-from wayrem_admin.models_orders import Orders,ShippingLoginextNotification,StatusMaster,OrderDeliveryLogs
+from wayrem_admin.models_orders import Orders,ShippingLoginextNotification,StatusMaster,OrderDeliveryLogs,OrderTransactions
 from datetime import datetime
 from wayrem_admin.forecasts.firebase_notify import FirebaseLibrary
 
@@ -36,10 +36,17 @@ class WebHookLiberary():
                 p_id=ShippingLoginextNotification.objects.get(reference_id=reference_id)
                 return p_id.id
         except:
-            reference_id=order_dic['reference_id']
-            print(ShippingLoginextNotification.objects.filter(reference_id=reference_id).query)
-                
+            #reference_id=order_dic['reference_id']
+            #print(ShippingLoginextNotification.objects.filter(reference_id=reference_id).query)
             return 0
+
+    def get_order_payment_type(self,ship_log_not_id):
+        if ship_log_not_id:
+            p_id=ShippingLoginextNotification.objects.get(id=ship_log_not_id)
+            return p_id.payment_mode
+        else:
+            return 0
+
 
     def saveorderrequest(self,create_order_dic,order_reference_id):
         shipping_loginext_notify=ShippingLoginextNotification.objects.filter(id=order_reference_id).update(**create_order_dic)
@@ -373,3 +380,10 @@ class WebHookLiberary():
             odl=OrderDeliveryLogs(order_id=order_id,order_status=deliv_obj_stat_instance,order_status_details="status change",log_date=now,user_id=1,customer_view=deliv_obj_stat_instance.customer_view)
             odl.save()
 
+    def update_payment_status(self,reference_dic):
+        order_reference_det=self.get_order_id(reference_dic)
+        if order_reference_det is not None:
+            order_id=order_reference_det.id
+            transaction_instance=StatusMaster.objects.get(id=7)
+            OrderTransactions.objects.filter(order_id=order_id).update(payment_status=transaction_instance)
+            return 1

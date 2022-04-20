@@ -128,8 +128,15 @@ class LogiNextDeliveredOrderAPI(View):
         create=body
         create_order_dic=self.webhook.deliveredorder(create)
         order_reference_id=self.webhook.get_order(create_order_dic)
+        
         self.webhook.saveorderrequest(create_order_dic,order_reference_id)
         self.webhook.status_update_order(create_order_dic,ORDER_DELIVERY_DELIVERED)
+        
+        # get payment type
+        get_payment_type=self.webhook.get_order_payment_type(order_reference_id)
+        if get_payment_type == "COD":
+            self.webhook.update_payment_status(create_order_dic)
+        
         return HttpResponse({'message':'Success'})
 
 @method_decorator(csrf_exempt, name='dispatch')
