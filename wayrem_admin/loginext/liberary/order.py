@@ -65,7 +65,7 @@ class Order(ApiBase):
 
         priority='PRIORITY1'
         preparationTime=20
-        paymentType='Prepaid'
+        paymentType='COD'
         packageValue=orderdetail.grand_total
         noofitems=self.get_total_items(orderdetail.id)
         start_time=datetime.now()
