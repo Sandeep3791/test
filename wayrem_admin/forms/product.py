@@ -1,3 +1,4 @@
+from django.forms.widgets import SelectDateWidget
 from django.forms import (
     formset_factory, modelformset_factory, BaseModelFormSet)
 from django import forms
@@ -18,7 +19,7 @@ class ProductForm(forms.ModelForm):
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'SKU': forms.NumberInput(attrs={'class': 'form-control'}),
+            'SKU': forms.TextInput(attrs={'class': 'form-control'}),
             # 'product_code': forms.TextInput(attrs={'class': 'form-control'}),
             'meta_key': forms.Textarea(attrs={'class': "form-control", "required": False, 'rows': '3'}),
             'feature_product': forms.CheckboxInput(attrs={'class': "form-check-input"}),
@@ -125,7 +126,7 @@ class ProductFormView(forms.ModelForm):
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
-            'SKU': forms.NumberInput(attrs={'class': 'form-control'}),
+            'SKU': forms.TextInput(attrs={'class': 'form-control'}),
             # 'product_code': forms.TextInput(attrs={'class': 'form-control'}),
             'meta_key': forms.Textarea(attrs={'class': "form-control", 'rows': '3'}),
             'feature_product': forms.CheckboxInput(attrs={'class': "form-check-input"}),
@@ -268,7 +269,7 @@ choices_warehouse = get_warehouse
 
 
 class ProductFormOne(forms.Form):
-    SKU = forms.CharField(widget=forms.NumberInput(
+    SKU = forms.CharField(widget=forms.TextInput(
         attrs={'class': "form-control"}))
     name = forms.CharField(
         widget=forms.TextInput(attrs={'class': "form-control"}))
@@ -276,10 +277,10 @@ class ProductFormOne(forms.Form):
         widget=forms.CheckboxInput(attrs={'class': "form-check-input"}), required=False)
     publish = forms.BooleanField(
         widget=forms.CheckboxInput(attrs={'class': "form-check-input"}), required=False)
-    date_of_mfg = forms.DateField(input_formats=['%Y/%m/%d'],
-                                  widget=forms.DateInput(attrs={'class': 'form-control datepicker-input', 'placeholder': "dd/mm/yyyy", 'type': 'date'}), required=False)
-    date_of_exp = forms.DateField(input_formats=['%Y/%m/%d'],
-                                  widget=forms.DateInput(attrs={'class': 'form-control datepicker-input', 'placeholder': "dd/mm/yyyy", 'type': 'date'}), required=False)
+    date_of_mfg = forms.DateField(widget=forms.DateInput(
+        attrs={'class': 'form-control datepicker-input', 'placeholder': "dd/mm/yyyy", 'type': 'date'}), required=False)
+    date_of_exp = forms.DateField(widget=forms.DateInput(
+        attrs={'class': 'form-control datepicker-input', 'placeholder': "dd/mm/yyyy", 'type': 'date'}), required=False)
     mfr_name = forms.CharField(
         widget=forms.TextInput(attrs={'class': "form-control"}), required=False)
     category = forms.MultipleChoiceField(choices=choices_category, widget=forms.SelectMultiple(
@@ -342,6 +343,7 @@ class ProductFormOne(forms.Form):
 
 # Advance Filters
 
+
 class ProductAdvanceFilterForm(forms.ModelForm):
     category = forms.ChoiceField(required=False, widget=forms.Select(
         attrs={'class': 'form-control form-control-select'}))
@@ -349,7 +351,7 @@ class ProductAdvanceFilterForm(forms.ModelForm):
         attrs={'class': 'form-control form-control-select'}))
     name = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control p-2'}), required=False)
-    SKU = forms.CharField(widget=forms.NumberInput(
+    SKU = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control p-2'}), required=False)
     date_of_mfg = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control p-2'}), required=False)

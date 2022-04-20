@@ -22,7 +22,7 @@
         <tr>
             {% comment %} <th scope="row">{{forloop.counter}}</th> {% endcomment %}
             <td>{{prod.SKU}}</td>
-            <td>{{prod.name |truncatechars:9 }}</td>
+            <td>{{prod.name |slice:21 }}</td>
             {% comment %} <td>
             {% for i in prod.product_category.all%}
             

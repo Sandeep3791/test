@@ -316,7 +316,7 @@ class Products(models.Model):
     supplier = models.ManyToManyField('Supplier', null=True, blank=True)
     dis_abs_percent = models.CharField(
         max_length=20, choices=DIS_ABS_PERCENT, null=True, blank=False)
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True)
     warehouse = models.ForeignKey(Warehouse, models.DO_NOTHING, null=True)
     quantity = models.CharField(max_length=100, null=True, default=1)
     quantity_unit = models.ForeignKey(

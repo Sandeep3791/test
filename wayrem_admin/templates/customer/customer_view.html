@@ -358,14 +358,17 @@
                     <div class="container-fluid">
                         <h5 class="mb-4">Registration Docs</h5>
                         <div class="row">   
+                            {% if user.registration_docs_path %}
                             <div class="col-md-4">
                                 <div class="form-group mb-4 text-left">
                                     <label class="" for="email">Registration Document</label>
                                     <div class="input-group"> 
-                                        <a href="http://admin-stg.wayrem.com/media/common_folder/{% image_tag user.registration_docs_path %}">View</a>                                                                                                                                          
+                                        <a href="http://admin-stg.wayrem.com/media/common_folder/{% image_tag user.registration_docs_path %}">View</a>                                
                                     </div>                                            
                                 </div>  
                             </div> 
+                            {% endif %}
+                            {% if user.tax_docs_path %}
                             <div class="col-md-4">
                                 <div class="form-group mb-4 text-left">
                                     <label class="" for="email">Tax Document:</label>
@@ -374,6 +377,8 @@
                                     </div>                                            
                                 </div>
                             </div> 
+                            {% endif %}
+                            {% if user.marrof_docs_path %}
                             <div class="col-md-4">
                                 <div class="form-group mb-4 text-left">
                                     <label class="" for="email">Marrof Document:</label>
@@ -382,6 +387,7 @@
                                     </div>                                            
                                 </div>
                             </div> 
+                            {% endif %}
                         </div> 
                         <div class="mt-4">
                             <a href="{% url 'wayrem_admin:customerslist' %}" class="btn btn-block btn-primary">Cancel</a>

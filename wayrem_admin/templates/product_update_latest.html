@@ -189,7 +189,8 @@
                         <!-- Form -->
                         <div class="col-lg-6">
                             <div class="form-group mb-4 col-gap">
-                                <label for="name">Weight </label>
+                                <label for="name">Weight  <span class="text-danger"><em> {{form.weight.errors | striptags}}
+                                </em></span></label>
                                 <div class="input-group first">   
                                     <div class="w-75">{{form.weight}} </div>
                                     <div class="w-25 px-2">{{form.weight_unit}} </div>
@@ -225,7 +226,8 @@
                         <!-- Form -->
                         <div class="col-lg-6">
                             <div class="form-group mb-4">
-                                <label for="description">Date of Manufacture </label>
+                                <label for="description">Date of Manufacture  <span class="text-danger"><em> {{form.date_of_mfg.errors | striptags}}
+                                </em></span></label>
                                 <div class="input-group">
                                     
                                     {{form.date_of_mfg}}
@@ -240,7 +242,8 @@
                         <!-- Form -->
                         <div class="col-lg-6">
                             <div class="form-group mb-4">
-                                <label for="provider">Date of Expiry </label>
+                                <label for="provider">Date of Expiry  <span class="text-danger"><em> {{form.date_of_exp.errors | striptags}}
+                                </em></span></label>
                                 <div class="input-group date_input_box">
                                 
                                     {{form.date_of_exp}}
@@ -254,7 +257,8 @@
                         <!-- Form -->
                         <div class="col-lg-6">
                             <div class="form-group mb-4">
-                                <label for="provider">Manufacturer Name </label>
+                                <label for="provider">Manufacturer Name  <span class="text-danger"><em> {{form.mfr_name.errors | striptags}}
+                                </em></span></label>
                                 <div class="input-group date_input_box">
                                 
                                     {{form.mfr_name}}
@@ -298,7 +302,8 @@
 
                         <div class="col-lg-6">
                             <div class="form-group mb-4">
-                                <label for="name">Discount </label>
+                                <label for="name">Discount  <span class="text-danger"><em> {{form.discount.errors | striptags}}
+                                </em></span></label>
                                 <div class="input-group first">  
                                     <div class="w-75 px-2">
                                         {{form.discount}}
@@ -364,7 +369,8 @@
                     </div>
                     <div class="col-lg-12">
                             <div class="form-group mb-4">
-                                <label for="name">Out of Stock Threshold </label>
+                                <label for="name">Out of Stock Threshold  <span class="text-danger"><em> {{form.outofstock_threshold.errors | striptags}}
+                                </em></span></label>
                                 <div class="input-group">   
                                     <div class="w-50 px-2">{{form.outofstock_threshold}}</div>
                                     <div class="input-group error_field_msg" id= "outofstock_threshold_error_message" style="color: #d12525;"></div>
@@ -382,7 +388,8 @@
                     <div class="row">
                         <div class="col-3">
                             <div class="form-group">
-                                <label >Starting Inventory</label>
+                                <label >Starting Inventory  <span class="text-danger"><em> {{form.inventory_starting.errors | striptags}}
+                                </em></span></label>
                                 <div class="">{{form.inventory_starting}}</div>
                             </div>
                         </div>
@@ -508,7 +515,8 @@
                     <!-- Form -->
                         <div class="col-lg-6">
                             <div class="form-group mb-4">
-                                <label for="name">Wayrem Margin <span class="text-danger">*</span></label>
+                                <label for="name">Wayrem Margin <span class="text-danger">*</span> <span class="text-danger"><em> {{form.wayrem_margin.errors | striptags}}
+                                </em></span></label>
                                 <div class="input-group">
                                     <div class="w-75 px-2">
                                     {{form.wayrem_margin}}
@@ -558,7 +566,8 @@
                             <!-- Form -->
                         <div class="col-lg-12">
                             <div class="form-group mb-4">
-                                <label for="name">Product Meta Key </label>
+                                <label for="name">Product Meta Key  <span class="text-danger"><em> {{form.meta_key.errors | striptags}}
+                                </em></span></label>
                                 <div class="input-group">
                                     {{form.meta_key}}
                                     <div class="input-group" id="metaKey_error_message" style="color: #d12525;"></div>

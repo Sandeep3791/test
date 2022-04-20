@@ -133,13 +133,14 @@ def customer_email_update(request, id=None):
         form = CustomerEmailUpdateForm(request.POST or None, instance=customer)
         if form.is_valid():            
             form.save()            
+            new_email = form.data['email']
             email_template = EmailTemplateModel.objects.get(
             key="customer_email_update")
             subject = email_template.subject
             values = {
                 # "customer": full_name,
                 "customer_name": full_name,
-                "updated_email": email_id
+                "updated_email": new_email
             }
             body = email_template.message_format.format(**values)
             send_email(to=email_id, subject=subject, body=body)

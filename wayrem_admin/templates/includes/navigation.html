@@ -43,7 +43,10 @@
                       <div class="row align-items-center">
                           <div class="col-auto">
                             <!-- Avatar -->
-                            <img alt="Image placeholder" src="/static/assets/img/team/profile-picture-1.jpg" class="user-avatar lg-avatar rounded-circle">
+                            {% comment %} <img alt="Supplier Profile Picture" src="/static/assets/img/team/profile-picture-1.jpg" class="user-avatar lg-avatar rounded-circle"> {% endcomment %}
+                            {% if notification.supplier.logo %}
+                            <img alt="Supplier Profile Picture" src="{{notification.supplier.logo.url}}" class="user-avatar lg-avatar rounded-circle">
+                            {% endif %}
                           </div>
                           <div class="col ps-0 ms-2">
                             <div class="d-flex justify-content-between align-items-center">
