@@ -6,15 +6,21 @@ from wayrem_admin.models import Settings
 from wayrem_admin.models import Warehouse
 
 class CustomerLib(ApiBase):
-    customer_prefix='wayrem'
-    customer_type='Wayrem'
-    
+    LOGINEXT_CUSTOMER_PREFIX='loginext_customer_prefix'
+    LOGINEXT_CUSTOMER_TYPE='loginext_customer_type'
+
+    def __init__(self):
+        loginext_customer_prefix=Settings.objects.filter(key=self.LOGINEXT_CUSTOMER_PREFIX).first()
+        loginext_customer_type=Settings.objects.filter(key=self.LOGINEXT_CUSTOMER_TYPE).first()
+        self.customer_type=loginext_customer_type.value.lower()   
+        self.customer_prefix=loginext_customer_prefix.value.lower()
+
     def get_authenticate_key(self):
         self.AUTHENTICATE_KEY=ApiBase.authenticate_secret_key(self)
         return self.AUTHENTICATE_KEY
 
     def accountcode(self,customer_id):
-        get_accountcode=self.customer_prefix+str(customer_id)
+        get_accountcode=self.customer_prefix+"_"+str(customer_id)
         return get_accountcode
 
     def get_customer_id(self,customer_id):
@@ -23,30 +29,53 @@ class CustomerLib(ApiBase):
             return 0
         else:
             return get_customer
+    def check_customer(self):
+        method="GET"
+        path="ClientApp/customer/v1/get/list?ids=wayrem1"
+        get_authenticate=self.get_authenticate_key()
+        headers={'WWW-Authenticate':get_authenticate}
+        response=ApiBase.send_request(self,method,path,[],headers)
+        if response['status'] == 200:
+            return response['data'][0]
+        else:
+            return 0
 
     def process_customer(self,order_details):
         account_code=self.accountcode(order_details.customer.id)
         is_account_exist=self.get_customer_id(order_details.customer.id)
+        get_customer_data=self.check_customer()
         if is_account_exist:
             if is_account_exist.customer_reference_id is None:
-                create_customer_response=self.create_customer(order_details,account_code)
-                customer_reference_id=self.get_customer_reference(create_customer_response)
-                insert_customer_response={'id':is_account_exist.id,'customer_id':order_details.customer.id,'customer_account_code':account_code,'customer_reference_id':customer_reference_id,'create_customer_response':create_customer_response}
-                self.insert_customer_response(insert_customer_response)
+                if get_customer_data:
+                    insert_customer_response={'id':is_account_exist.id,'customer_id':order_details.customer.id,'customer_account_code':account_code,'customer_reference_id':get_customer_data["referenceId"],'create_customer_response':get_customer_data}
+                    self.insert_customer_response(insert_customer_response)
+                    reference_id=get_customer_data["referenceId"]
+                    update_customer=self.update_customer(order_details,reference_id)
+                else:
+                    create_customer_response=self.create_customer(order_details,account_code)
+                    customer_reference_id=self.get_customer_reference(create_customer_response)
+                    insert_customer_response={'id':is_account_exist.id,'customer_id':order_details.customer.id,'customer_account_code':account_code,'customer_reference_id':customer_reference_id,'create_customer_response':create_customer_response}
+                    self.insert_customer_response(insert_customer_response)
             else:
                 reference_id=is_account_exist.customer_reference_id
                 update_customer=self.update_customer(order_details,reference_id)
                 insert_customer_response={'id':is_account_exist.id,'customer_id':order_details.customer.id,'customer_account_code':account_code,'customer_reference_id':reference_id,'create_customer_response':update_customer}
                 self.insert_customer_response(insert_customer_response)
         else:
-            create_customer_response=self.create_customer(order_details,account_code)
-            customer_reference_id=self.get_customer_reference(create_customer_response)
-            if customer_reference_id:
-                insert_customer_response={'customer_id':order_details.customer.id,'customer_account_code':account_code,'customer_reference_id':customer_reference_id,'create_customer_response':create_customer_response}
-                self.insert_customer_response(insert_customer_response)    
-            else:
-                insert_customer_response={'customer_id':order_details.customer.id,'customer_account_code':account_code,'customer_reference_id':None,'create_customer_response':create_customer_response}
+            if get_customer_data:
+                insert_customer_response={'customer_id':order_details.customer.id,'customer_account_code':account_code,'customer_reference_id':get_customer_data["referenceId"],'create_customer_response':get_customer_data}
                 self.insert_customer_response(insert_customer_response)
+                reference_id=get_customer_data["referenceId"]
+                update_customer=self.update_customer(order_details,reference_id)
+            else:
+                create_customer_response=self.create_customer(order_details,account_code)
+                customer_reference_id=self.get_customer_reference(create_customer_response)
+                if customer_reference_id:
+                    insert_customer_response={'customer_id':order_details.customer.id,'customer_account_code':account_code,'customer_reference_id':customer_reference_id,'create_customer_response':create_customer_response}
+                    self.insert_customer_response(insert_customer_response)    
+                else:
+                    insert_customer_response={'customer_id':order_details.customer.id,'customer_account_code':account_code,'customer_reference_id':None,'create_customer_response':create_customer_response}
+                    self.insert_customer_response(insert_customer_response)
         return account_code
 
     def get_customer_reference(self,response):
@@ -56,9 +85,6 @@ class CustomerLib(ApiBase):
             for data_reference in data:
                 reference_id=data_reference['referenceId']
         return reference_id
-
-    def check_customer(self):
-        pass
 
     def insert_customer_response(self,insert_customer_response):
         order_customer_response=OrderLoginextShipment(**insert_customer_response)
