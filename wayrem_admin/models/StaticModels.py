@@ -453,7 +453,7 @@ class Customer(models.Model):
     first_name = models.CharField(max_length=255, null=True)
     last_name = models.CharField(max_length=255, null=True)
     business_type = models.ForeignKey(
-        'BusinessType', models.DO_NOTHING, null=False)
+        'BusinessType', models.DO_NOTHING, null=True)
     business_name = models.CharField(max_length=255, null=True)
     email = models.EmailField(blank=False, unique=True, null=True)
     password = models.CharField(max_length=255, null=True)
