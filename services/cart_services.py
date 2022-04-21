@@ -43,6 +43,10 @@ def get_cart_product(customer_id, authorize: AuthJWT, db: Session):
 
     user_cart = db.execute(
         f'select * from {constants.Database_name}.customer_cart where customer_id = {customer_id}')
+    if user_cart.rowcount == 0:
+        common_msg = user_schemas.ResponseCommonMessage(
+            status=status.HTTP_404_NOT_FOUND, message="No products available in cart!")
+        return common_msg
     cart_list = []
     for var in user_cart:
         data = db.execute(
