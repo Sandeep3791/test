@@ -359,7 +359,7 @@ def get_all_orders(offset, customer_id, authorize: AuthJWT, db: Session):
                 last_log = []
             for data2 in order_details_data:
                 prod_data = db.execute(
-                    f"select * from {constants.Database_name}.products_master where id = {data2.product_id} and publish = {True}")
+                    f"select * from {constants.Database_name}.products_master where id = {data2.product_id}")
                 for i in prod_data:
                     # quantity_unit = i.quantity_unit_id
                     # weight_unit = i.weight_unit_id
@@ -456,7 +456,7 @@ def get_order_details(order_id, authorize: AuthJWT, db: Session):
             for data2 in order_details_data:
                 product_count = order_details_data.rowcount
                 prod_data = db.execute(
-                    f"select * from {constants.Database_name}.products_master where id = {data2.product_id} and publish = {True}")
+                    f"select * from {constants.Database_name}.products_master where id = {data2.product_id}")
                 for i in prod_data:
                     # quantity_unit = i.quantity_unit_id
                     # weight_unit = i.weight_unit_id
@@ -773,7 +773,7 @@ def get_filters_orders(offset, customer_id, filter_id, authorize: AuthJWT, db: S
                 last_log = []
             for data2 in order_details_data:
                 prod_data = db.execute(
-                    f"select * from {constants.Database_name}.products_master where id = {data2.product_id} and publish = {True}")
+                    f"select * from {constants.Database_name}.products_master where id = {data2.product_id}")
                 for i in prod_data:
                     # quantity_unit = i.quantity_unit_id
                     # weight_unit = i.weight_unit_id

@@ -1,12 +1,12 @@
-from sqlalchemy import Column, Integer, String, Float, BigInteger, BLOB, DateTime, ForeignKey
-from sqlalchemy.dialects.mysql import LONGTEXT
-from sqlalchemy.sql.sqltypes import Boolean
-from sqlalchemy.orm import relationship
-from database import Base
-from datetime import datetime, date
-import uuid
 import datetime as DT
+import uuid
+from datetime import date, datetime
+from database import Base
+from sqlalchemy import (BLOB, BigInteger, Column, DateTime, Float, ForeignKey,Integer, String)
+from sqlalchemy.dialects.mysql import LONGTEXT
+from sqlalchemy.orm import relationship
 from sqlalchemy.sql import func
+from sqlalchemy.sql.sqltypes import Boolean
 
 
 class CustomerDevice(Base):
