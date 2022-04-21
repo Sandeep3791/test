@@ -419,11 +419,11 @@ def get_all_orders(offset, customer_id, authorize: AuthJWT, db: Session):
                 date = str(order_date.strftime("%Y-%m-%d %H:%M:%S"))
                 order_status = data.status
 
-            order_type = data.order_type
-            order_type_data = db.execute(
-                f"select * from {constants.Database_name}.status_master where id = {order_type}")
-            for type_value in order_type_data:
-                order_value = type_value.name
+                order_type = data.order_type
+                order_type_data = db.execute(
+                    f"select * from {constants.Database_name}.status_master where id = {order_type}")
+                for type_value in order_type_data:
+                    order_value = type_value.name
 
             data_order = order_schemas.OrderDetails(order_id=data.id, order_ref_no=data.ref_number, sub_total=data.sub_total, item_discount=data.item_discount, tax_vat=vat_with_prcnt, total=data.total, grand_total=data.grand_total, email=data.order_email, contact=data.order_phone, country=data.order_country, city=data.order_city, billing_name=data.order_billing_name,
                                                    billing_address=data.order_billing_address, shipping_name=data.order_ship_name, shipping_address=data.order_ship_address, payment_type=payment_type, payment_status=payment_status, order_date=date, product_count=product_count, order_status=order_status, order_type=order_value, invoice_id=data.invoices_id, delivery_logs=last_log, products=order_product_list)
