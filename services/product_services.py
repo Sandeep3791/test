@@ -594,6 +594,10 @@ def get_favorite_product_details(customer_id, authorize: AuthJWT, db: Session):
     authorize.jwt_required()
     products = db.execute(
         f'select * from {constants.Database_name}.Favorite_Product where customer_id = "{customer_id}"')
+    if products.rowcount==0:
+        common_msg = user_schemas.ResponseCommonMessage(
+            status=status.HTTP_200_OK, message="No favourite products availabe!")
+        return common_msg
     product_list_data = []
     for var in products:
         data = db.execute(

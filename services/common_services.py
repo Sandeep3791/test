@@ -152,7 +152,7 @@ def check_jwt_token(token, db: Session):
 
 def get_business_type(authorize: AuthJWT, db: Session):
     # authorize.jwt_required()
-    business_data = db.execute(f"SELECT * FROM wayrem_stg_v1.business_type ;")
+    business_data = db.execute(f"SELECT * FROM {constants.Database_name}.business_type ;")
     business_list = []
     if business_data:
         for data in business_data:
