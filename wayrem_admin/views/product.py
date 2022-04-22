@@ -540,6 +540,11 @@ def import_products(request):
                 'package count': 'package_count',
                 }
         df.rename(columns=dict, inplace=True)
+        df['price'] = df['price'].astype(float)
+        df['weight'] = df['weight'].astype(float)
+        df['quantity'] = df['quantity'].astype(float)
+        df['discount'] = df['discount'].astype(float)
+        df['wayrem margin'] = df['wayrem margin'].astype(float)
         df['quantity'] = df['quantity'].fillna(0)
         df['weight_unit'] = df['weight_unit'].fillna("None")
         df['quantity_unit'] = df['quantity_unit'].fillna("None")
