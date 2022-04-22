@@ -7,7 +7,7 @@ import constants
 import random
 import logging.config
 import logging
-from models import user_models
+from models import user_models,order_models
 from schemas import user_schemas
 from services import common_services
 from fastapi import FastAPI, Depends, status
@@ -266,8 +266,8 @@ def delete_customer_address(address_id, authorize: AuthJWT, db: Session):
     authorize.jwt_required()
     delete_address_data = db.query(user_models.CustomerAddresses).filter(
         user_models.CustomerAddresses.id == address_id).first()
-    grocery_address = db.query(user_models.UserGrocery).filter(
-        user_models.UserGrocery.address_id == address_id).first()
+    grocery_address = db.query(order_models.UserGrocery).filter(
+        order_models.UserGrocery.address_id == address_id).first()
     if not delete_address_data:
         common_msg = user_schemas.ResponseCommonMessage(
             status=status.HTTP_404_NOT_FOUND, message="Address Doesn't Exist!")

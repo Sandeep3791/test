@@ -48,14 +48,14 @@ def get_device_id(customer_id, authorize: AuthJWT, db: Session):
     tokens = []
     temp_list = []
     for customer in customer_data:
-        temp = user_schemas.ListDeviceId(device_token=customer.device_id)
+        temp = firebase_schemas.ListDeviceId(device_token=customer.device_id)
         tokens.append(temp)
 
-    temp2 = user_schemas.DeviceId(customer_id=customer_id, data=tokens)
+    temp2 = firebase_schemas.DeviceId(customer_id=customer_id, data=tokens)
     temp_list.append(temp2)
 
     if customer_data:
-        response = user_schemas.ResponseDeviceId(
+        response = firebase_schemas.ResponseDeviceId(
             status=status.HTTP_200_OK, message="All Ids Fetched!", data=temp_list)
         return response
     else:
@@ -84,12 +84,12 @@ def send_notification_list(customer_id, authorize: AuthJWT, db: Session):
                 order_models.Orders.id == order_id).first()
             order_ref = foreign_data.ref_number
 
-            var = user_schemas.NotificationResponse(
+            var = firebase_schemas.NotificationResponse(
                 title=title, message=message, time=time, date=date, order_id=order_id, ref_no=order_ref)
             notf_data.append(var)
 
     if notf_data:
-        response = user_schemas.Notify(
+        response = firebase_schemas.Notify(
             status=status.HTTP_200_OK, message="All Notification!", data=notf_data)
         return response
     else:
@@ -128,7 +128,7 @@ def notification_status(customer_id, device_id, is_active: bool, authorize: Auth
         customer_data.is_active = is_active
         db.commit()
 
-        common_msg = user_schemas.ResponseNotificationStatus(
+        common_msg = firebase_schemas.ResponseNotificationStatus(
             status=status.HTTP_200_OK, message=" status changed successfully", is_active=is_active)
         return common_msg
 

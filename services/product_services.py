@@ -859,7 +859,7 @@ def search_filter_products(customer_id, authorize: AuthJWT, start_price, end_pri
         list2 = []
         if reviews:
             for review in reviews:
-                customer_data = db.query(product_models.User).filter(
+                customer_data = db.query(user_models.User).filter(
                     user_models.User.id == review.customer_id).first()
                 fname = customer_data.first_name
                 lname = customer_data.last_name
