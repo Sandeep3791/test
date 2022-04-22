@@ -30,16 +30,16 @@ class AllProductDetails(BaseModel):
     name: str
     SKU: str
     mfr_name: Optional[str] = None
-    description: str
+    description: Optional[str] = None
     quantity: Optional[str] = 0
     threshold: Optional[str] = None
-    quantity_unit: str
+    quantity_unit: Optional[str] = None
     weight: Optional[str] = None
-    weight_unit: str
+    weight_unit: Optional[str] = None
     categories: List[str]
-    price: str
+    price: Optional[str] = None
     discount: Optional[str] = None
-    discount_unit: str
+    discount_unit: Optional[str] = None
     favorite: Optional[bool] = None
     favorite_product_uuid: Optional[str] = None
     primary_image: str
