@@ -290,11 +290,13 @@ class OrderInvoiceView(LoginRequiredMixin, View):
         context['tax_vat'] = Settings.objects.filter(key=self.KEY).first()
         context['wayrem_vat'] = Settings.objects.filter(
             key=self.WAYREM_VAT).first()
+        context['wayrem_seller_name'] = Settings.objects.filter(
+            key="wayrem_seller_name").first()
         context['order_details'] = OrderDetails.objects.filter(order=order_id)
         context['order_transaction'] = OrderTransactions.objects.filter(
             order=order_id).first()
         fatoora_obj = Fatoora(
-            seller_name="Rahal Co.",
+            seller_name=context['wayrem_seller_name'].value,
             tax_number=context['wayrem_vat'].value,
             # invoice_date="2021-07-12T14:25:09+00:00",
             invoice_date=orders_details.order_date,
