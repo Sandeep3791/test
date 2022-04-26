@@ -8,6 +8,12 @@
         <div class="col-4 h6">{{order.id|total_items}} {%if order.id|total_items == 1 %}item{% else %} items{% endif %}</div>
         <div class="col-4 d-flex justify-content-end h6">{{currency}} {{order.sub_total}}</div>
     </div>
+    
+    <div class="row col-12">
+        <div class="col-4 h6">Shipping</div>
+        <div class="col-4 h6">Delivery Fees </div>
+        <div class="col-4 d-flex justify-content-end h6">{{currency}} {{order.shipping}}</div>
+    </div>
 
     <div class="row col-12">
         <div class="col-4 h6">VAT Total</div>
@@ -15,11 +21,6 @@
         <div class="col-4 d-flex justify-content-end h6">{{currency}} {{order.tax}}</div>
     </div>
 
-    <div class="row col-12">
-        <div class="col-4 h6">Shipping</div>
-        <div class="col-4 h6">Delivery Fees </div>
-        <div class="col-4 d-flex justify-content-end h6">{{currency}} {{order.shipping}}</div>
-    </div>
     
     <div class="row col-12 d-none">
         <div class="col-6 fw-bold h5">Total</div>
