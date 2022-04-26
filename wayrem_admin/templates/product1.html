@@ -186,7 +186,8 @@
                             <div class="col-lg-6">
                                 <div class="form-group mb-4">
                                     <label for="name">Weight <span class="text-danger"> <em> {{form.weight.errors | striptags}}
-                                    </em> </span></label>
+                                    </em> <em> {{form.weight_unit.errors | striptags}}
+                                    </em></span></label>
                                     <div class="input-group first">   
                                         <div class="w-75">{{form.weight}} </div>
                                         <div class="w-25 px-2">{{form.weight_unit}} </div>
@@ -296,7 +297,8 @@
                             <div class="col-lg-6">
                                 <div class="form-group mb-4">
                                     <label for="name">Discount <span class="text-danger"> <em> {{form.discount.errors | striptags}}
-                                    </em> </span></label>
+                                    </em> <em> {{form.dis_abs_percent.errors | striptags}}
+                                    </em></span></label>
                                     <div class="input-group first">   
                                         <div class="w-75"> {{form.discount}}</div>
                                         <div class="w-25 px-2">{{form.dis_abs_percent}}</div>
@@ -341,6 +343,7 @@
 
                             <div class="form-group mb-4">
                                 <label for="name">Product Quantity <span class="text-danger">*</span><span class="text-danger"><em> {{form.quantity.errors | striptags}}
+                                </em> <em> {{form.quantity_unit.errors | striptags}}
                                 </em>
                                 </span></label>
                                 <div class="input-group">   
