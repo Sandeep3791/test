@@ -8,7 +8,7 @@ from database import engine
 from starlette.middleware.cors import CORSMiddleware
 from fastapi.middleware import Middleware
 from sqlalchemy.orm import Session
-from models import user_models
+from models import user_models,firebase_models,order_models,product_models
 from routers import cart_routers,common_routers,firebase_routers,grocery_routers,order_routers,product_routers,user_address_routers,user_routers
 from schemas import user_schemas
 from fastapi_jwt_auth.exceptions import AuthJWTException
@@ -16,6 +16,9 @@ from fastapi.responses import JSONResponse
 
 
 user_models.Base.metadata.create_all(bind=engine)
+firebase_models.Base.metadata.create_all(bind=engine)
+order_models.Base.metadata.create_all(bind=engine)
+product_models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 middleware = [ Middleware(CORSMiddleware, allow_origins=['*'], allow_credentials=True, allow_methods=['*'], allow_headers=['*'])]

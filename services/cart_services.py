@@ -29,6 +29,11 @@ logger = logging.getLogger(__name__)
 
 def create_cart(request, authorize: AuthJWT, db: Session):
     authorize.jwt_required()
+    data_exist = db.query(order_models.CustomerCart).filter(order_models.CustomerCart.customer_id == request.customer_id, order_models.CustomerCart.product_id == request.product_id).first()
+    if data_exist:
+        common_msg = user_schemas.ResponseCommonMessage(
+        status=status.HTTP_404_NOT_FOUND, message="This products already available in your cart")
+        return common_msg
     db_data = order_models.CustomerCart(
         customer_id=request.customer_id, product_id=request.product_id, product_quantity=request.product_quantity)
     db.merge(db_data)
@@ -50,7 +55,7 @@ def get_cart_product(customer_id, authorize: AuthJWT, db: Session):
     cart_list = []
     for var in user_cart:
         data = db.execute(
-            f"select * from {constants.Database_name}.products_master where id = {var.product_id} and publish = {True}")
+            f"select * from {constants.Database_name}.products_master where id = {var.product_id} ")
         for i in data:
             # quantity_unit = i.quantity_unit_id
             # weight_unit = i.weight_unit_id

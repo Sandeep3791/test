@@ -40,14 +40,14 @@ class GetCartProducts(BaseModel):
     name: str
     SKU: str
     mfr_name: Optional[str] = None
-    description: str
+    description: Optional[str] = None
     quantity_unit: str
     threshold: Optional[str] = None
     weight: Optional[str] = None
     weight_unit: str
     price: str
     discount: Optional[str] = None
-    discount_unit: str
+    discount_unit: Optional[str] = None
     primary_image: str
     images: List[str]
     rating: float = None

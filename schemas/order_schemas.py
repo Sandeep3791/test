@@ -85,7 +85,7 @@ class OrdersProducts(BaseModel):
     name: str
     SKU: str
     mfr_name: Optional[str] = None
-    description: str
+    description: Optional[str] = None
     quantity_unit: str
     threshold: Optional[str] = None
     weight: Optional[str] = None
@@ -102,7 +102,7 @@ class OrdersProducts(BaseModel):
 class OrderByIdDeliveryLogs(BaseModel):
     id: int
     status_name: str
-    status_description: str
+    status_description: Optional[str] = None
     log_date: str
 
 

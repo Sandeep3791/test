@@ -234,8 +234,9 @@ def create_order(request, authorize: AuthJWT, db: Session):
         for i in vat_value:
             vat_prcnt_value = int(i[0])
 
-        vat_amount = (final_total/100)*vat_prcnt_value
-        final_grand_total = final_total+vat_amount+request.delivery_fees
+        final_total_with_delivery_fee = final_total+request.delivery_fees
+        vat_amount = (final_total_with_delivery_fee/100)*vat_prcnt_value
+        final_grand_total = final_total_with_delivery_fee + vat_amount
 
         order_data.sub_total = round(final_sub_total, 2)
         order_data.item_discount = round(final_discount_total, 2)

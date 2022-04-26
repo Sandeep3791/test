@@ -36,7 +36,7 @@ class CreateGrocerySchema(BaseModel):
     customer_id: int
     address_id: int
     grocery_name: str
-    description: str
+    description: Optional[str] = None
 
 
 class CreateGroceryResponse(BaseModel):
@@ -49,7 +49,7 @@ class UpdateGrocerySchemas(BaseModel):
     grocery_id: int
     grocery_name: str
     address_id: int
-    description: str
+    description: Optional[str] = None
 
 
 class UpdateGroceryResponse(BaseModel):
@@ -64,7 +64,7 @@ class ListGrocerDetailsResponse(BaseModel):
     customer_id: int
     address_id: int
     grocery_name: str
-    description: str
+    description: Optional[str] = None
     recurrence_next_date: str = None
 
 
@@ -78,14 +78,14 @@ class UserGrocerySchema(BaseModel):
     customer_id: int
     grocery_name: str
     address_id: int
-    description: str
+    description: Optional[str] = None
 
 
 class UpdateGrocery(BaseModel):
     grocery_id: int
     grocery_name: str
     address_id: int
-    description: str
+    description: Optional[str] = None
 
 
 class GroceryProductsList(BaseModel):
@@ -104,7 +104,7 @@ class GroceryProdResp(BaseModel):
     name: str
     SKU: str
     mfr_name: Optional[str] = None
-    description: str
+    description: Optional[str] = None
     quantity: str
     quantity_unit: str
     threshold: Optional[str] = None
@@ -113,7 +113,7 @@ class GroceryProdResp(BaseModel):
     categories: List[str]
     price: str
     discount: Optional[str]
-    discount_unit: str
+    discount_unit: Optional[str] = None
     favorite: Optional[bool] = None
     favorite_product_uuid: Optional[str] = None
     primary_image: str
@@ -123,7 +123,7 @@ class GroceryProdResp(BaseModel):
 class GroceryRecurrenceprod(BaseModel):
     grocery_id: int
     grocery_name: str
-    description: str
+    description: Optional[str] = None
     address_id: int
     recurrent_id: Optional[int] = None
     recurrenttype: Optional[str] = None
