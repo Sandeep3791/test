@@ -724,15 +724,15 @@ def get_delivery_fees(address_id, authorize: AuthJWT, db: Session):
                 fees = (z-1)*shipping_rates
                 delivery_fees = fees + basic_charge
 
-            data1 = user_schemas.Deliveryfeedata(
+            data1 = order_schemas.Deliveryfeedata(
                 delivery_fees=delivery_fees, free_delivery_after_amount=free_delivery_after_amount, vat_value=vat_prcnt_value)
-            common_msg = user_schemas.Getdeliveryfees(
+            common_msg = order_schemas.Getdeliveryfees(
                 status=status.HTTP_200_OK, message="Delivery fees and vat details ", data=data1)
             return common_msg
 
-        data1 = user_schemas.Deliveryfeedata(
+        data1 = order_schemas.Deliveryfeedata(
             free_delivery_after_amount=free_delivery_after_amount, vat_value=vat_prcnt_value)
-        common_msg = user_schemas.Getdeliveryfees(
+        common_msg = order_schemas.Getdeliveryfees(
             status=status.HTTP_200_OK, message="Delivery fees and vat details ", data=data1)
         return common_msg
     except:
