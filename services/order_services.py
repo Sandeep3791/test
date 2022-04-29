@@ -3,7 +3,7 @@ import constants
 from services import firebase_services
 import random
 import logging
-from models import user_models,order_models
+from models import user_models,order_models,firebase_models
 from schemas import firebase_schemas, user_schemas,order_schemas
 from services import common_services
 from fastapi import FastAPI, status
@@ -308,7 +308,7 @@ def create_order(request, authorize: AuthJWT, db: Session):
                     firebase_services.push_notification_in_firebase(notf)
 
                 if notf:
-                    fire = order_models.CustomerNotification(
+                    fire = firebase_models.CustomerNotification(
                         customer_id=request.customer_id, order_id=order_id, title=notf.title, message=notf.message, created_at=now_utc.astimezone(timezone(constants.Default_time_zone)))
                     db.merge(fire)
                     db.commit()
