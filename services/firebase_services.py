@@ -2,16 +2,12 @@
 import json
 import constants
 import requests
-from fastapi import Depends, FastAPI, status
-from fastapi.param_functions import Depends
+from fastapi import status
 from fastapi_jwt_auth import AuthJWT
-from httpx import delete
 from matplotlib.pyplot import title
 from models import firebase_models, order_models
-from routers.product_routers import delete_product
 from schemas import firebase_schemas, user_schemas
 from sqlalchemy.orm import Session
-from sqlalchemy.sql.expression import null
 
 
 def push_notification_in_firebase(data):

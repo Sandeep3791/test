@@ -1,7 +1,5 @@
-from logging import debug
 # from pydantic.tools import T
 import uvicorn
-from fastapi.logger import logger
 async def app(scope, receive, send):
     ...
 

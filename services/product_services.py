@@ -1,25 +1,12 @@
-from ast import Constant
-from fastapi.exceptions import HTTPException
-from fastapi.param_functions import Depends
-from fastapi.responses import FileResponse
-from sqlalchemy.sql.expression import null
-from urllib3 import Retry
 import constants
-import random
-import logging.config
 import logging
 from models import user_models,product_models
 from schemas import user_schemas,product_schemas
-from services import common_services,user_services
-from fastapi import FastAPI, Depends, status
+from services import user_services
+from fastapi import FastAPI, status
 from fastapi_jwt_auth import AuthJWT
-from sqlalchemy.orm import Session, session
-import random as r
-from datetime import timedelta, datetime
+from sqlalchemy.orm import Session
 import uuid
-import os
-import random
-import datetime as DT
 
 
 app = FastAPI()

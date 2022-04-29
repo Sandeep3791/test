@@ -1,8 +1,4 @@
-import imp
 from constants import Database_name, IMAGES_DIR_PATH
-from sqlalchemy.orm import Session
-from fastapi import Depends
-import database
 
 
 class Product:

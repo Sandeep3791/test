@@ -1,34 +1,21 @@
 
-import jwt
-from fastapi.exceptions import HTTPException
 from fastapi.param_functions import Depends
-from fastapi.responses import FileResponse
-from sqlalchemy.sql.expression import null
-from urllib3 import Retry
 import constants
 import random
-import logging.config
 import logging
 from models import user_models,firebase_models
 from schemas import user_schemas
 from services import common_services
 from fastapi import FastAPI, Depends, status
 from fastapi_jwt_auth import AuthJWT
-from sqlalchemy.orm import Session, session
-import random as r
+from sqlalchemy.orm import Session
 from datetime import timedelta, datetime
-import uuid
 import os
 import random
-import datetime as DT
-import googlemaps
-import json
-import requests
 from fastapi import Depends, FastAPI, status
 from fastapi.param_functions import Depends
 from fastapi_jwt_auth import AuthJWT
 from sqlalchemy.orm import Session
-from sqlalchemy.sql.expression import null
 
 
 app = FastAPI()

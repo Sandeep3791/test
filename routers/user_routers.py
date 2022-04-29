@@ -1,5 +1,4 @@
 from fastapi_jwt_auth import AuthJWT
-from pydantic.schema import schema
 from starlette import status
 from schemas import user_schemas
 from fastapi import APIRouter, Depends, UploadFile, File

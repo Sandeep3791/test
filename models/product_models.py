@@ -1,12 +1,6 @@
-from sqlalchemy import Column, Integer, String, Float, BigInteger, BLOB, DateTime, ForeignKey
-from sqlalchemy.dialects.mysql import LONGTEXT
-from sqlalchemy.sql.sqltypes import Boolean
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Integer, String, Float, DateTime
 from database import Base
 from datetime import datetime, date
-import uuid
-import datetime as DT
-from sqlalchemy.sql import func
 
 class FavoriteProduct(Base):
     __tablename__ = 'Favorite_Product'

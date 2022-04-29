@@ -1,13 +1,5 @@
-from datetime import datetime
-from typing import Optional
-from fastapi.openapi.models import Contact
-from matplotlib.pyplot import cla
-from numpy import float64, product
 from pydantic import BaseModel
-from typing import Optional, List
-from sqlalchemy.dialects.mysql.types import LONGBLOB
-from sqlalchemy.orm.sync import update
-from sqlalchemy.sql.sqltypes import BLOB
+from typing import List
 from starlette import status
 
 

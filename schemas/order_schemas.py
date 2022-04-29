@@ -1,16 +1,8 @@
 
-from datetime import datetime
 from typing import Optional
-from fastapi.openapi.models import Contact
-from matplotlib.pyplot import cla
-from numpy import product
 from pydantic import BaseModel
 from typing import Optional, List
-from sqlalchemy.dialects.mysql.types import LONGBLOB
-from sqlalchemy.orm.sync import update
-from sqlalchemy.sql.sqltypes import BLOB
 from starlette import status
-from services.user_services import refresh_token
 
 
 class Settings(BaseModel):

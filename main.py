@@ -1,13 +1,10 @@
-from typing import List
-from sqlalchemy.orm import Session
-from fastapi import Depends, FastAPI, HTTPException, Request
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi_jwt_auth import AuthJWT
 from fastapi_jwt_auth.exceptions import AuthJWTException
 from database import engine
 from starlette.middleware.cors import CORSMiddleware
 from fastapi.middleware import Middleware
-from sqlalchemy.orm import Session
 from models import user_models,firebase_models,order_models,product_models
 from routers import cart_routers,common_routers,firebase_routers,grocery_routers,order_routers,product_routers,user_address_routers,user_routers
 from schemas import user_schemas

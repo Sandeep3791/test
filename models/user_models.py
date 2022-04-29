@@ -1,12 +1,9 @@
-from sqlalchemy import Column, Integer, String, Float, BigInteger, BLOB, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, BigInteger, DateTime, ForeignKey
 from sqlalchemy.dialects.mysql import LONGTEXT
 from sqlalchemy.sql.sqltypes import Boolean
-from sqlalchemy.orm import relationship
 from database import Base
-from datetime import datetime, date
+from datetime import datetime
 import uuid
-import datetime as DT
-from sqlalchemy.sql import func
 
 class Business_type(Base):
     __tablename__ = 'business_type'

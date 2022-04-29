@@ -1,6 +1,5 @@
 from fastapi_jwt_auth import AuthJWT
-from pydantic.schema import schema
-from fastapi import APIRouter, Depends, UploadFile, File
+from fastapi import APIRouter, Depends
 import database
 from sqlalchemy.orm import Session
 from services import firebase_services

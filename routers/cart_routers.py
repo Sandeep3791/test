@@ -1,7 +1,7 @@
 
 from fastapi_jwt_auth import AuthJWT
 from schemas import cart_schemas, user_schemas
-from fastapi import APIRouter, Depends, UploadFile, File
+from fastapi import APIRouter, Depends
 import database
 from sqlalchemy.orm import Session
 from services import cart_services

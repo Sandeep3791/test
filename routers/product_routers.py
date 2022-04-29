@@ -1,8 +1,6 @@
 from fastapi_jwt_auth import AuthJWT
-from pydantic.schema import schema
-from starlette import status
 from schemas import product_schemas
-from fastapi import APIRouter, Depends, UploadFile, File
+from fastapi import APIRouter, Depends
 import database
 from typing import Optional
 from sqlalchemy.orm import Session

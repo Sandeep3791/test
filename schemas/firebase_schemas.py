@@ -1,10 +1,7 @@
 
-from datetime import datetime
 from time import time
 from typing import Optional,List
-from h11 import Data
 from pydantic import BaseModel
-from sqlalchemy import Integer
 
 class Settings(BaseModel):
     authjwt_secret_key: str = "secret"

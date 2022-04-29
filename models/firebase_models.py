@@ -1,11 +1,6 @@
-import datetime as DT
-import uuid
-from datetime import date, datetime
+from datetime import datetime
 from database import Base
-from sqlalchemy import (BLOB, BigInteger, Column, DateTime, Float, ForeignKey,Integer, String)
-from sqlalchemy.dialects.mysql import LONGTEXT
-from sqlalchemy.orm import relationship
-from sqlalchemy.sql import func
+from sqlalchemy import (BigInteger, Column, DateTime, ForeignKey,Integer, String)
 from sqlalchemy.sql.sqltypes import Boolean
 
 

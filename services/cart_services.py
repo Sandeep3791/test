@@ -1,24 +1,11 @@
-from fastapi.exceptions import HTTPException
-from fastapi.param_functions import Depends
-from fastapi.responses import FileResponse
-from sqlalchemy.sql.expression import null
-from urllib3 import Retry
 import constants
-import random
-import logging.config
 import logging
 from models import order_models
 from schemas import user_schemas,cart_schemas
-from services import cart_services
-from fastapi import FastAPI, Depends, status
+from fastapi import FastAPI, status
 from fastapi_jwt_auth import AuthJWT
-from sqlalchemy.orm import Session, session
-import random as r
-from datetime import timedelta, datetime
-import uuid
-import os
-import random
-import datetime as DT
+from sqlalchemy.orm import Session
+from datetime import datetime
 
 
 app = FastAPI()
@@ -100,6 +87,7 @@ def get_cart_product(customer_id, authorize: AuthJWT, db: Session):
             final_qty = qty
             data2 = cart_schemas.GetCartProducts(cart_id=var.id, product_id=var.product_id, product_quantity=var.product_quantity, stock_quantity=final_qty, name=i.name, SKU=i.SKU, mfr_name=i.mfr_name, description=i.description,
                                                  quantity_unit=j[0], threshold=qty_thresold, weight=i.weight, weight_unit=k[0], price=updated_price, discount=i.discount, discount_unit=i.dis_abs_percent, primary_image=image_path, images=image_list, rating=result)
+        
         cart_list.append(data2)
     response = cart_schemas.GetCartResponse(
         status=status.HTTP_200_OK, message="All Cart Products!", customer_id=customer_id, data=cart_list)
