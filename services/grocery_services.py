@@ -6,7 +6,9 @@ from fastapi import FastAPI, status
 from fastapi_jwt_auth import AuthJWT
 from sqlalchemy.orm import Session
 from datetime import datetime
-
+import constants
+from pytz import timezone
+now_utc = datetime.now(timezone('UTC'))
 
 app = FastAPI()
 
@@ -61,7 +63,7 @@ def update_user_grocery(request, authorize: AuthJWT, db: Session):
     update_grocery.grocery_name = request.grocery_name
     update_grocery.description = request.description
     update_grocery.address_id = request.address_id
-    update_grocery.updated_at = datetime.now()
+    update_grocery.updated_at = now_utc.astimezone(timezone({constants.Default_time_zone}))
     db.merge(update_grocery, update_grocery.updated_at)
     db.commit()
     res_data = grocery_schemas.UpdateGrocerySchemas(

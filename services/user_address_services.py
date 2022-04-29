@@ -6,7 +6,9 @@ from fastapi import FastAPI, status
 from fastapi_jwt_auth import AuthJWT
 from sqlalchemy.orm import Session
 from datetime import datetime
-
+import constants
+from pytz import timezone
+now_utc = datetime.now(timezone('UTC'))
 
 app = FastAPI()
 
@@ -46,7 +48,7 @@ def add_address_details(request, authorize: AuthJWT, db: Session):
         data3.delivery_town_city = request.town_city
         data3.deliveryAddress_latitude = request.deliveryAddress_latitude
         data3.deliveryAddress_longitude = request.deliveryAddress_longitude
-        data3.updated_at = datetime.now()
+        data3.updated_at = now_utc.astimezone(timezone({constants.Default_time_zone}))
         db.merge(data3, data3.updated_at)
         db.commit()
 
@@ -118,7 +120,7 @@ def update_address(request, authorize: AuthJWT, db: Session):
             user_default_address.deliveryAddress_latitude = request.deliveryAddress_latitude
             user_default_address.deliveryAddress_longitude = request.deliveryAddress_longitude
             user_default_address.is_default = True
-            user_default_address.updated_at = datetime.now()
+            user_default_address.updated_at = now_utc.astimezone(timezone({constants.Default_time_zone}))
             db.merge(user_default_address, user_default_address.updated_at)
             db.commit()
 
@@ -132,7 +134,7 @@ def update_address(request, authorize: AuthJWT, db: Session):
             data3.delivery_town_city = request.town_city
             data3.deliveryAddress_latitude = request.deliveryAddress_latitude
             data3.deliveryAddress_longitude = request.deliveryAddress_longitude
-            data3.updated_at = datetime.now()
+            data3.updated_at = now_utc.astimezone(timezone({constants.Default_time_zone}))
             db.merge(data3, data3.updated_at)
             db.commit()
 
@@ -140,7 +142,7 @@ def update_address(request, authorize: AuthJWT, db: Session):
             old_default_address = db.query(user_models.CustomerAddresses).filter(
                 user_models.CustomerAddresses.customer_id == request.customer_id, user_models.CustomerAddresses.is_default == True).first()
             old_default_address.is_default = False
-            old_default_address.updated_at = datetime.now()
+            old_default_address.updated_at = now_utc.astimezone(timezone({constants.Default_time_zone}))
             db.merge(old_default_address, old_default_address.updated_at)
             db.commit()
 
@@ -155,7 +157,7 @@ def update_address(request, authorize: AuthJWT, db: Session):
             db_user_update.deliveryAddress_latitude = request.deliveryAddress_latitude
             db_user_update.deliveryAddress_longitude = request.deliveryAddress_longitude
             db_user_update.is_default = True
-            db_user_update.updated_at = datetime.now()
+            db_user_update.updated_at = now_utc.astimezone(timezone({constants.Default_time_zone}))
             db.merge(db_user_update, db_user_update.updated_at)
             db.commit()
 
@@ -169,7 +171,7 @@ def update_address(request, authorize: AuthJWT, db: Session):
             data3.delivery_town_city = request.town_city
             data3.deliveryAddress_latitude = request.deliveryAddress_latitude
             data3.deliveryAddress_longitude = request.deliveryAddress_longitude
-            data3.updated_at = datetime.now()
+            data3.updated_at = now_utc.astimezone(timezone({constants.Default_time_zone}))
             db.merge(data3, data3.updated_at)
             db.commit()
 
@@ -186,7 +188,7 @@ def update_address(request, authorize: AuthJWT, db: Session):
         db_user_update.deliveryAddress_latitude = request.deliveryAddress_latitude
         db_user_update.deliveryAddress_longitude = request.deliveryAddress_longitude
         db_user_update.is_default = False
-        db_user_update.updated_at = datetime.now()
+        db_user_update.updated_at = now_utc.astimezone(timezone({constants.Default_time_zone}))
         db.merge(db_user_update, db_user_update.updated_at)
         db.commit()
         res_data = user_schemas.UpdateCustomerAddress(customer_id=request.customer_id, address_id=db_user_update.id, full_name=request.full_name, contact=request.contact, house_no_building_name=request.house_no_building_name, road_name_Area=request.road_name_Area,
@@ -239,7 +241,7 @@ def update_billing_address(request, authorize: AuthJWT, db: Session):
     db_user_update.billing_town_city = request.billing_town_city
     db_user_update.billlingAddress_Latitude = request.billlingAddress_Latitude
     db_user_update.billingAddress_longitude = request.billingAddress_longitude
-    db_user_update.updated_at = datetime.now()
+    db_user_update.updated_at = now_utc.astimezone(timezone({constants.Default_time_zone}))
     db.merge(db_user_update, db_user_update.updated_at)
     db.commit()
     res_data = user_schemas.BillingAddressUpdate(customer_id=request.customer_id, billing_house_no_building_name=request.billing_house_no_building_name, billing_road_name_Area=request.billing_road_name_Area, billing_landmark=request.billing_landmark,

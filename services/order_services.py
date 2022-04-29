@@ -12,7 +12,9 @@ from sqlalchemy.orm import Session
 from datetime import  datetime
 import random ,googlemaps
 import datetime as DT
-
+import constants
+from pytz import timezone
+now_utc = datetime.now(timezone('UTC'))
 
 app = FastAPI()
 
@@ -73,7 +75,7 @@ def create_order(request, authorize: AuthJWT, db: Session):
             order_email=request.email,
             order_type=24,
             delivery_charge=request.delivery_fees,
-            order_date=datetime.now()
+            order_date=now_utc.astimezone(timezone({constants.Default_time_zone}))
         )
         db.merge(order)
         db.commit()
@@ -169,7 +171,7 @@ def create_order(request, authorize: AuthJWT, db: Session):
             db.commit()
 
             inventory = order_models.Inventory(
-                order_id=order_id, quantity=product_qty, inventory_type_id=3, product_id=product_id, warehouse_id=1, order_status="ordered", created_at=datetime.now())
+                order_id=order_id, quantity=product_qty, inventory_type_id=3, product_id=product_id, warehouse_id=1, order_status="ordered", created_at=now_utc.astimezone(timezone({constants.Default_time_zone})))
             db.merge(inventory)
             db.commit()
             # Inverntory Update start
@@ -194,7 +196,7 @@ def create_order(request, authorize: AuthJWT, db: Session):
                             inventory_received = quantity
                         else:
                             inventory_cancelled = quantity
-                timestamp = str(DT.datetime.now())
+                timestamp = str(now_utc.astimezone(timezone({constants.Default_time_zone})))
                 update_query = f"UPDATE {constants.Database_name}.products_master SET `quantity` = {total_quantity},`updated_at` = '{timestamp}',`inventory_starting` = {inventory_starting},`inventory_received` = {inventory_received},`inventory_shipped` = {inventory_shipped},`inventory_cancelled` = {inventory_cancelled},`inventory_onhand` = {total_quantity} WHERE `id` = {product_id};"
                 db.execute(update_query)
                 db.commit()
@@ -213,7 +215,7 @@ def create_order(request, authorize: AuthJWT, db: Session):
         db.commit()
 
         order_delivery_logs = order_models.OrderDeliveryLogs(
-            order_id=order_id, order_status_id=1, order_status_details="Order is confirmed", user_id=1, customer_view=1, log_date=datetime.now())
+            order_id=order_id, order_status_id=1, order_status_details="Order is confirmed", user_id=1, customer_view=1, log_date=now_utc.astimezone(timezone({constants.Default_time_zone})))
         db.merge(order_delivery_logs)
         db.commit()
 
@@ -307,7 +309,7 @@ def create_order(request, authorize: AuthJWT, db: Session):
 
                 if notf:
                     fire = order_models.CustomerNotification(
-                        customer_id=request.customer_id, order_id=order_id, title=notf.title, message=notf.message, created_at=datetime.now())
+                        customer_id=request.customer_id, order_id=order_id, title=notf.title, message=notf.message, created_at=now_utc.astimezone(timezone({constants.Default_time_zone})))
                     db.merge(fire)
                     db.commit()
         except:

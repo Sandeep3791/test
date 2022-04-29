@@ -3,7 +3,9 @@ from sqlalchemy.sql.sqltypes import Boolean
 from database import Base
 from datetime import datetime
 import datetime as DT
-
+import constants
+from pytz import timezone
+now_utc = datetime.now(timezone('UTC'))
 
 
 class Orders(Base):
@@ -36,7 +38,7 @@ class Orders(Base):
     order_ship_longitude = Column(String(255)) 
     order_phone = Column(String(255))
     order_email = Column(String(255))
-    order_date = Column(DateTime, nullable=False, default=datetime.now())
+    order_date = Column(DateTime, nullable=False, default=now_utc.astimezone(timezone({constants.Default_time_zone})))
     order_shipped = Column(Integer)
     order_tracking_number = Column(String(255))
     content = Column(String(255))
@@ -67,7 +69,7 @@ class OrderDeliveryLogs(Base):
     order_status_id = Column(Integer)
     user_id = Column(Integer)
     order_status_details = Column(String(255))
-    log_date = Column(DateTime, nullable=False, default=datetime.now())
+    log_date = Column(DateTime, nullable=False, default=now_utc.astimezone(timezone({constants.Default_time_zone})))
     customer_view = Column(Integer)
 
 
@@ -82,8 +84,8 @@ class OrderTransactions(Base):
     payment_mode_id = Column(Integer, nullable=True)
     payment_status_id = Column(Integer, nullable=True)
     invoices_id = Column(Integer)
-    created_at = Column(DateTime, nullable=False, default=datetime.now())
-    updated_at = Column(DateTime, nullable=False, default=datetime.now())
+    created_at = Column(DateTime, nullable=False, default=now_utc.astimezone(timezone({constants.Default_time_zone})))
+    updated_at = Column(DateTime, nullable=False, default=now_utc.astimezone(timezone({constants.Default_time_zone})))
     content = Column(String(255), nullable=True)
 
 
@@ -96,8 +98,8 @@ class Inventory(Base):
     quantity = Column(Integer)
     inventory_type_id = Column(String(255))
     order_status = Column(String(255))
-    created_at = Column(DateTime, nullable=False, default=datetime.now())
-    updated_at = Column(DateTime, nullable=False, default=datetime.now())
+    created_at = Column(DateTime, nullable=False, default=now_utc.astimezone(timezone({constants.Default_time_zone})))
+    updated_at = Column(DateTime, nullable=False, default=now_utc.astimezone(timezone({constants.Default_time_zone})))
 
 
 class CustomerCart(Base):
@@ -106,8 +108,8 @@ class CustomerCart(Base):
     customer_id = Column(Integer)
     product_id = Column(Integer)
     product_quantity = Column(Integer)
-    created_at = Column(DateTime, nullable=False, default=datetime.now())
-    updated_at = Column(DateTime, nullable=False, default=datetime.now())
+    created_at = Column(DateTime, nullable=False, default=now_utc.astimezone(timezone({constants.Default_time_zone})))
+    updated_at = Column(DateTime, nullable=False, default=now_utc.astimezone(timezone({constants.Default_time_zone})))
 
 class UserGrocery(Base):
     __tablename__ = 'grocery_master'
@@ -116,8 +118,8 @@ class UserGrocery(Base):
     description = Column(String(1000))
     customer_id = Column(ForeignKey('customers_master.id'))
     address_id = Column(ForeignKey('customer_addresses.id'))
-    created_at = Column(DateTime, nullable=False, default=datetime.now())
-    updated_at = Column(DateTime, nullable=False, default=datetime.now())
+    created_at = Column(DateTime, nullable=False, default=now_utc.astimezone(timezone({constants.Default_time_zone})))
+    updated_at = Column(DateTime, nullable=False, default=now_utc.astimezone(timezone({constants.Default_time_zone})))
 
 
 class GroceryProducts(Base):
@@ -146,5 +148,5 @@ class RecurrenceGrocery(Base):
         String(255), nullable=False, default=DT.date.today())
     recurrence_nextdate = Column(String(255), nullable=False)
     status = Column(Boolean, default=True)
-    created_at = Column(DateTime, nullable=False, default=datetime.now())
-    updated_at = Column(DateTime, nullable=False, default=datetime.now())
+    created_at = Column(DateTime, nullable=False, default=now_utc.astimezone(timezone({constants.Default_time_zone})))
+    updated_at = Column(DateTime, nullable=False, default=now_utc.astimezone(timezone({constants.Default_time_zone})))

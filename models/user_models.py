@@ -4,6 +4,9 @@ from sqlalchemy.sql.sqltypes import Boolean
 from database import Base
 from datetime import datetime
 import uuid
+import constants
+from pytz import timezone
+now_utc = datetime.now(timezone('UTC'))
 
 class Business_type(Base):
     __tablename__ = 'business_type'
@@ -48,8 +51,8 @@ class User(Base):
     billlingAddress_Latitude = Column(String(255))
     billingAddress_longitude = Column(String(255))
     verification_status = Column(String(255), default="waiting for approval")
-    created_at = Column(DateTime, nullable=False, default=datetime.now())
-    updated_at = Column(DateTime, nullable=False, default=datetime.now())
+    created_at = Column(DateTime, nullable=False, default=now_utc.astimezone(timezone({constants.Default_time_zone})))
+    updated_at = Column(DateTime, nullable=False, default=now_utc.astimezone(timezone({constants.Default_time_zone})))
 
 
 class OtpVerification(Base):
@@ -58,7 +61,7 @@ class OtpVerification(Base):
     email = Column(String(255))
     otp = Column(Integer)
     verified = Column(Boolean, default=False)
-    created_at = Column(DateTime, nullable=False, default=datetime.now())
+    created_at = Column(DateTime, nullable=False, default=now_utc.astimezone(timezone({constants.Default_time_zone})))
 
 
 class Customerotp(Base):
@@ -66,7 +69,7 @@ class Customerotp(Base):
     id = Column(String(255), primary_key=True, default=uuid.uuid4)
     otp = Column(Integer)
     email = Column(String(255))
-    created_at = Column(DateTime, nullable=False, default=datetime.now())
+    created_at = Column(DateTime, nullable=False, default=now_utc.astimezone(timezone({constants.Default_time_zone})))
 
 
 class CustomerAddresses(Base):
