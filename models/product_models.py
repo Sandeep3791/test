@@ -19,7 +19,7 @@ class RatingReview(Base):
     product_id = Column(Integer)
     rating = Column(Integer)
     review = Column(String(200))
-    date = Column(DateTime, nullable=False, default=now_utc.astimezone(timezone({constants.Default_time_zone})))
+    date = Column(DateTime, nullable=False, default=now_utc.astimezone(timezone(constants.Default_time_zone)))
 
 
 class ProductRating(Base):

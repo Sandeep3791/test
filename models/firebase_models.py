@@ -15,7 +15,7 @@ class CustomerDevice(Base):
     device_id = Column(String(255))
     device_type = Column(String(255))
     is_active = Column(Boolean,default=True)
-    created_at = Column(DateTime(timezone=True),default=now_utc.astimezone(timezone({constants.Default_time_zone})) )
+    created_at = Column(DateTime(timezone=True),default=now_utc.astimezone(timezone(constants.Default_time_zone)) )
 
 class CustomerNotification(Base):
     __tablename__ = 'customer_notification'
@@ -25,6 +25,6 @@ class CustomerNotification(Base):
     order_id = Column(BigInteger(),ForeignKey('orders.id'))
     title = Column(String(255))
     message = Column(String(255))
-    created_at = Column(DateTime(timezone=True),default=now_utc.astimezone(timezone({constants.Default_time_zone})) )
+    created_at = Column(DateTime(timezone=True),default=now_utc.astimezone(timezone(constants.Default_time_zone)) )
 
 

@@ -63,7 +63,7 @@ def update_user_grocery(request, authorize: AuthJWT, db: Session):
     update_grocery.grocery_name = request.grocery_name
     update_grocery.description = request.description
     update_grocery.address_id = request.address_id
-    update_grocery.updated_at = now_utc.astimezone(timezone({constants.Default_time_zone}))
+    update_grocery.updated_at = now_utc.astimezone(timezone(constants.Default_time_zone))
     db.merge(update_grocery, update_grocery.updated_at)
     db.commit()
     res_data = grocery_schemas.UpdateGrocerySchemas(

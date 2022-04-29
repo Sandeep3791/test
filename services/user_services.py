@@ -413,7 +413,7 @@ def update_profile(request, authorize: AuthJWT, db: Session):
     db_user_update.deliveryAddress_longitude = request.deliveryAddress_longitude
     db_user_update.billlingAddress_Latitude = request.billlingAddress_Latitude
     db_user_update.billingAddress_longitude = request.billingAddress_longitude
-    db_user_update.updated_at = now_utc.astimezone(timezone({constants.Default_time_zone}))
+    db_user_update.updated_at = now_utc.astimezone(timezone(constants.Default_time_zone))
     db.merge(db_user_update, db_user_update.updated_at)
     db.commit()
 
@@ -506,7 +506,7 @@ def reset_password(request, authorize: AuthJWT, db: Session):
 
     if request.new_password == request.confirm_password:
         user.password = request.new_password
-        user.updated_at = now_utc.astimezone(timezone({constants.Default_time_zone}))
+        user.updated_at = now_utc.astimezone(timezone(constants.Default_time_zone))
         db.merge(user, user.updated_at)
         db.commit()
         common_msg = user_schemas.ResponseCommonMessage(

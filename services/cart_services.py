@@ -103,7 +103,7 @@ def update_cart_product(request, authorize: AuthJWT, db: Session):
         order_models.CustomerCart.id == request.cart_id).first()
 
     db_cart_update.product_quantity = request.product_quantity
-    db_cart_update.updated_at = now_utc.astimezone(timezone({constants.Default_time_zone}))
+    db_cart_update.updated_at = now_utc.astimezone(timezone(constants.Default_time_zone))
     db.merge(db_cart_update, db_cart_update.updated_at)
     db.commit()
     res_data = cart_schemas.UpdateCartProducts(
