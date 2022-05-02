@@ -1,9 +1,7 @@
 from sqlalchemy import Column, Integer, String, Float, DateTime
 from database import Base
-from datetime import datetime, date
-import constants
-from pytz import timezone
-now_utc = datetime.now(timezone('UTC'))
+from services import common_services
+
 
 class FavoriteProduct(Base):
     __tablename__ = 'Favorite_Product'
@@ -19,7 +17,7 @@ class RatingReview(Base):
     product_id = Column(Integer)
     rating = Column(Integer)
     review = Column(String(200))
-    date = Column(DateTime, nullable=False, default=now_utc.astimezone(timezone(constants.Default_time_zone)))
+    date = Column(DateTime, nullable=False, default=common_services.get_time())
 
 
 class ProductRating(Base):

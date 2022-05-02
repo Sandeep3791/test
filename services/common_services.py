@@ -1,13 +1,14 @@
 import constants,jwt
 from sqlalchemy.orm import Session
 from mailersend import emails
-import constants
 import logging
 from schemas import common_schemas,user_schemas
 from fastapi import FastAPI, status
 from fastapi_jwt_auth import AuthJWT
 from sqlalchemy.orm import Session
-
+import constants
+from datetime import datetime
+from pytz import timezone
 
 app = FastAPI()
 
@@ -15,25 +16,11 @@ logger = logging.getLogger(__name__)
 
 
 
+def get_time():
+    now_utc = datetime.now(timezone('UTC'))
+    time_now = now_utc.astimezone(timezone(constants.Default_time_zone))
+    return time_now
 
-# def send_otp(to, subject, body, request, db: Session):
-#     message = Mail(
-#         from_email=constants.MY_EMAIL,
-#         to_emails=to,
-#         subject=subject,
-#         html_content=body)
-#     try:
-#         sg = SendGridAPIClient(
-#             constants.SENDGRID_API_KEY)
-#         response = sg.send(message)
-#         print(response.status_code)
-#         print(response.body)
-#         print(response.headers)
-#         print("Email Sent Successfully!!")
-#     except Exception as e:
-#         print("Email not sent!!")
-#         print(e)
-#         print(e.body)
 
 def send_otp(to, subject, body, request, db: Session):
     api_key = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNTIwY2IyZGRjMzI1ZDdjM2FjYjBlNjdlMDkxNDA2MjU1ZmQzNjAwNGNiZDIxZDdhZDE1YTc2MjkyZjhmNmZiZmY1MDNlOTg1NDllNjEyYWQiLCJpYXQiOjE2NDYzODg1MDcuNjU2MDM4LCJuYmYiOjE2NDYzODg1MDcuNjU2MDQxLCJleHAiOjQ4MDIwNjIxMDcuNjQ3Mzk1LCJzdWIiOiIyMjI3NyIsInNjb3BlcyI6WyJlbWFpbF9mdWxsIiwiZG9tYWluc19mdWxsIiwiYWN0aXZpdHlfZnVsbCIsImFuYWx5dGljc19mdWxsIiwidG9rZW5zX2Z1bGwiLCJ3ZWJob29rc19mdWxsIiwidGVtcGxhdGVzX2Z1bGwiLCJzdXBwcmVzc2lvbnNfZnVsbCJdfQ.n2M_k8A5451zVfTULF-xj_AQP6hE10rEG5NrBpk-iG_rySVTmQRYRtjPJUdkhrl1DzG3Ykt61y_BVTIoYVlUiza0F0HsBxrjzvYqHlBWV73lBUj1MyAeKf2jkhYpPgSHq7ZO6cLO0jVKw1oKy9Fr4Ijh72o15qJjjILIkcPF2yCfz_jnO7q21p9BokZfM_y1wAFHivXUKrjJt59TMt_I4A8zw3RiKbcd6gz8UItO1hRvaQ00zNTid-zL17stqPE63ieEOz14cLpN_IHCIQXZ_xrFOOp59xR7tHil1JQYlZ76__QJw4wj4MGhA7n0ap0GXQk98E4h14tiDZcf0PeNRD6nI_uC6nZK-S1ZziNaAWMF9fi-P1GwFMn-lXdf510RawzWsOI_F3SYVLRfN5B2iiID-QmEzXD-r7BuRNWAoGVCUP_h5ONLcP5qzpL8zQOH7nd6varQ3Luduphz8HdjaGoNRXJGoUjYJQ96X9ejlRcs8PJsiRx6O2Dtr6fiHozn5NSk_wM-f9DFFJxgzp51wBiL0fWaVJYFKa0c0dtY0087_RjRtjAzXrlE-uuUlEA0TzjCl12qZRAUOSZxABkKeBDRPDmFk44ElKGMgObD47HNwEq8RI2sKiubtUjP9RuVybaHvvfarqdSylqkvAjjVhgS6JK2YEbF3dM2Mrt-rcg"
@@ -153,3 +140,4 @@ def get_business_type(authorize: AuthJWT, db: Session):
         common_msg = user_schemas.ResponseCommonMessage(
             status=status.HTTP_404_NOT_FOUND, message="No data found!")
         return common_msg
+

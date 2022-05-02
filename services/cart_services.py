@@ -1,19 +1,15 @@
 import constants
 import logging
 from models import order_models
+from services import common_services
 from schemas import user_schemas,cart_schemas
 from fastapi import FastAPI, status
 from fastapi_jwt_auth import AuthJWT
 from sqlalchemy.orm import Session
-from datetime import datetime
-import constants
-from pytz import timezone
-now_utc = datetime.now(timezone('UTC'))
 
 app = FastAPI()
 
 logger = logging.getLogger(__name__)
-
 
 
 def create_cart(request, authorize: AuthJWT, db: Session):
@@ -103,7 +99,7 @@ def update_cart_product(request, authorize: AuthJWT, db: Session):
         order_models.CustomerCart.id == request.cart_id).first()
 
     db_cart_update.product_quantity = request.product_quantity
-    db_cart_update.updated_at = now_utc.astimezone(timezone(constants.Default_time_zone))
+    db_cart_update.updated_at = common_services.get_time()
     db.merge(db_cart_update, db_cart_update.updated_at)
     db.commit()
     res_data = cart_schemas.UpdateCartProducts(

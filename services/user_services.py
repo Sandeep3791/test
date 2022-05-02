@@ -16,9 +16,6 @@ from fastapi import Depends, FastAPI, status
 from fastapi.param_functions import Depends
 from fastapi_jwt_auth import AuthJWT
 from sqlalchemy.orm import Session
-import constants
-from pytz import timezone
-now_utc = datetime.now(timezone('UTC'))
 
 app = FastAPI()
 
@@ -413,7 +410,7 @@ def update_profile(request, authorize: AuthJWT, db: Session):
     db_user_update.deliveryAddress_longitude = request.deliveryAddress_longitude
     db_user_update.billlingAddress_Latitude = request.billlingAddress_Latitude
     db_user_update.billingAddress_longitude = request.billingAddress_longitude
-    db_user_update.updated_at = now_utc.astimezone(timezone(constants.Default_time_zone))
+    db_user_update.updated_at = common_services.get_time()
     db.merge(db_user_update, db_user_update.updated_at)
     db.commit()
 
@@ -506,7 +503,7 @@ def reset_password(request, authorize: AuthJWT, db: Session):
 
     if request.new_password == request.confirm_password:
         user.password = request.new_password
-        user.updated_at = now_utc.astimezone(timezone(constants.Default_time_zone))
+        user.updated_at = common_services.get_time()
         db.merge(user, user.updated_at)
         db.commit()
         common_msg = user_schemas.ResponseCommonMessage(

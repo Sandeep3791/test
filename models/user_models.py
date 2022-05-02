@@ -2,11 +2,9 @@ from sqlalchemy import Column, Integer, String, BigInteger, DateTime, ForeignKey
 from sqlalchemy.dialects.mysql import LONGTEXT
 from sqlalchemy.sql.sqltypes import Boolean
 from database import Base
-from datetime import datetime
 import uuid
-import constants
-from pytz import timezone
-now_utc = datetime.now(timezone('UTC'))
+from services import common_services
+
 
 class Business_type(Base):
     __tablename__ = 'business_type'
@@ -51,8 +49,8 @@ class User(Base):
     billlingAddress_Latitude = Column(String(255))
     billingAddress_longitude = Column(String(255))
     verification_status = Column(String(255), default="waiting for approval")
-    created_at = Column(DateTime, nullable=False, default=now_utc.astimezone(timezone(constants.Default_time_zone)))
-    updated_at = Column(DateTime, nullable=False, default=now_utc.astimezone(timezone(constants.Default_time_zone)))
+    created_at = Column(DateTime, nullable=False, default=common_services.get_time())
+    updated_at = Column(DateTime, nullable=False, default=common_services.get_time())
 
 
 class OtpVerification(Base):
@@ -61,7 +59,7 @@ class OtpVerification(Base):
     email = Column(String(255))
     otp = Column(Integer)
     verified = Column(Boolean, default=False)
-    created_at = Column(DateTime, nullable=False, default=now_utc.astimezone(timezone(constants.Default_time_zone)))
+    created_at = Column(DateTime, nullable=False, default=common_services.get_time())
 
 
 class Customerotp(Base):
@@ -69,7 +67,7 @@ class Customerotp(Base):
     id = Column(String(255), primary_key=True, default=uuid.uuid4)
     otp = Column(Integer)
     email = Column(String(255))
-    created_at = Column(DateTime, nullable=False, default=now_utc.astimezone(timezone(constants.Default_time_zone)))
+    created_at = Column(DateTime, nullable=False, default=common_services.get_time())
 
 
 class CustomerAddresses(Base):

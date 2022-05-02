@@ -2,9 +2,18 @@ from datetime import datetime
 from database import Base
 from sqlalchemy import (BigInteger, Column, DateTime, ForeignKey,Integer, String)
 from sqlalchemy.sql.sqltypes import Boolean
+from services import common_services
+
 import constants
+from datetime import datetime
 from pytz import timezone
-now_utc = datetime.now(timezone('UTC'))
+
+def get_time():
+    now_utc = datetime.now(timezone('UTC'))
+    time_now = now_utc.astimezone(timezone(constants.Default_time_zone))
+    return time_now
+
+
 
 
 class CustomerDevice(Base):
@@ -15,7 +24,7 @@ class CustomerDevice(Base):
     device_id = Column(String(255))
     device_type = Column(String(255))
     is_active = Column(Boolean,default=True)
-    created_at = Column(DateTime(timezone=True),default=now_utc.astimezone(timezone(constants.Default_time_zone)) )
+    created_at = Column(DateTime(timezone=True),default=get_time())
 
 class CustomerNotification(Base):
     __tablename__ = 'customer_notification'
@@ -25,6 +34,6 @@ class CustomerNotification(Base):
     order_id = Column(BigInteger(),ForeignKey('orders.id'))
     title = Column(String(255))
     message = Column(String(255))
-    created_at = Column(DateTime(timezone=True),default=now_utc.astimezone(timezone(constants.Default_time_zone)) )
+    created_at = Column(DateTime(timezone=True),default=get_time() )
 
 
