@@ -112,11 +112,10 @@ class OrderDeliveryLogs(models.Model):
     order_status = models.ForeignKey('StatusMaster', models.DO_NOTHING)
     order_status_details = models.TextField(blank=True, null=True)
     log_date = models.DateTimeField()
-    user = models.ForeignKey('wayrem_admin.User', models.DO_NOTHING)
+    user = models.ForeignKey('users.Users', models.DO_NOTHING)
     customer_view = models.IntegerField(blank=True, null=True)
 
     class Meta:
-        app_label = "wayrem_admin"
         db_table = 'order_delivery_logs'
 
 

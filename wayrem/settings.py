@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'wayrem_admin.users',
     'rest_framework',
     'ckeditor',
     'wayrem_admin',
@@ -59,6 +60,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'wayrem_admin.users.context_processors.show_menu',
             ],
             'libraries': {
                 'util_tags': 'wayrem_admin.templatetags.util_tags',
@@ -72,28 +74,13 @@ WSGI_APPLICATION = 'wayrem.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'wayrem_stg_v1',
-        'USER': 'wayremdb_adminuser',
-        'PASSWORD': 'r2wXJfUs78NczMFWRXcV',
-        'HOST': '15.185.103.226',
-        'PORT': '3306',
-        'OPTIONS': {
-            "init_command": "SET foreign_key_checks = 0;",
-            "init_command": "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));"
-        },
-    }
-}
-
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
 #         'NAME': 'wayrem_stg_v1',
-#         'USER': 'root',
-#         'PASSWORD': 'root1234',
-#         'HOST': 'localhost',
+#         'USER': 'wayremdb_adminuser',
+#         'PASSWORD': 'r2wXJfUs78NczMFWRXcV',
+#         'HOST': '15.185.103.226',
 #         'PORT': '3306',
 #         'OPTIONS': {
 #             "init_command": "SET foreign_key_checks = 0;",
@@ -101,6 +88,21 @@ DATABASES = {
 #         },
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'wayrem_v5',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': 'localhost',
+        'PORT': '3306',
+        'OPTIONS': {
+            "init_command": "SET foreign_key_checks = 0;",
+            "init_command": "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));"
+        },
+    }
+}
 
 # DATABASES = {
 #     'default': {
@@ -138,7 +140,12 @@ STATIC_ROOT = 'static/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-AUTH_USER_MODEL = 'wayrem_admin.User'
+#AUTH_USER_MODEL = 'wayrem_admin.User'
+#AUTH_USER_MODEL = 'wayrem_admin.User'
+AUTH_USER_MODEL = 'users.Users'
+AUTHENTICATION_BACKENDS = ('wayrem_admin.users.backends.MyAuthBackend',)
+
+
 MESSAGE_TAGS = {messages_s.ERROR: 'danger'}
 # ! Media Files Local settings
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -202,7 +209,9 @@ CKEDITOR_CONFIGS = {
 # MAINTENANCE_MODE = True
 # MAINTENANCE_MODE_IGNORE_IP_ADDRESSES = ("49.36.40.132")
 
-
+FLAG_SSL = True
+LOGIN_URL = '/'
+BASE_URL = 'http://localhost:8000'
 # celery
 CELERY_BROKER_URL = 'redis://redis-server:6379'
 CELERY_RESULT_BACKEND = 'redis://redis-server:6379'

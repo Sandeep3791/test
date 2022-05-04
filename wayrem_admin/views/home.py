@@ -11,7 +11,7 @@ from django.db.models.functions import (
     TruncDate, TruncDay, TruncHour, TruncMinute, TruncSecond, TruncWeek, TruncMonth)
 from django.db.models import Count
 from dateutil import relativedelta
-
+from wayrem_admin.users.models import Users
 
 class RootUrlView(RedirectView):
 
@@ -23,7 +23,7 @@ class RootUrlView(RedirectView):
 
 @ login_required(login_url='wayrem_admin:root')
 def dashboard(request):
-    subadmins = User.objects.exclude(is_superuser=True).count()
+    subadmins = Users.objects.exclude(is_superuser=True).count()
     suppliers = Supplier.objects.count()
     products = Products.objects.count()
     active_po = PurchaseOrder.objects.filter(status="accept").values(

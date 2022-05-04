@@ -17,6 +17,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import check_password, make_password
 from wayrem_admin.services import send_email
 import random
+from wayrem_admin.users.models import Users
 
 
 class LoginView(View):
@@ -32,7 +33,7 @@ class LoginView(View):
         username = request.POST['username']
         password = request.POST['password']
 
-        user = User.objects.filter(username=username).first(
+        user = Users.objects.filter(username=username).first(
         )
         if user is None:
             messages.error(request, "Invalid credentials. Please try again!")
