@@ -9,7 +9,7 @@
       <div class="breadcrumb-section">
           <nav aria-label="breadcrumb">
               <ol class="breadcrumb padding-left-0">
-                  <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:role-permission' 2 1 %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span>Role Permission</a></li>         
+                  <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:role-permission' id_param %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span>Role Permission</a></li>         
               </ol>
           </nav>
       </div>
@@ -54,6 +54,7 @@ $(document).on('submit',"#newFrm", function(e) {
 
          var alert_message='<div class="alert-container alert alert-success alert-dismissible fade show" role="alert" ><strong>'+message+'</strong><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
          $(".alert-container").html(alert_message);
+         location.reload();
        }
 });
 

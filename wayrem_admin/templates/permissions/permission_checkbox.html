@@ -3,9 +3,10 @@
 <div class="row permission-block" id="permission-user-{{parent_id}}">
   <div class="col-sm-12">
     {% if menu_list.menu%}
+
     <div class="checkbox checkbox-primary">
       <input id="chkAll_{{parent_id}}" class="styled" type="checkbox" name="permission" value="{{menu_list.menu.id}}" onclick="check_unCheckAllByName('permission-user-{{menu_list.menu.id}}',this.checked )" {%if menu_list.menu.id in exist_permission%} checked {%endif%}>
-      <label for="checkbox1">
+      <label for="chkAll_{{parent_id}}">
       <h5>{{menu_list.menu.function_name}}</h5>
       </label>
     </div>
@@ -15,9 +16,9 @@
     <div class="row mt-1">
       {% for sub in menu_list.submenu%}
       <div class="col-lg-3 col-md-4 col-sm-6 col-xs-6 ">
-        <div class="checkbox checkbox-default">
-          <input class="styled" type="checkbox" name="permission" value="{{sub.id}}" onclick="changeCheckAllByName('permission-user-{{sub.parent_id}}','chkAll_{{sub.parent_id}}')" {%if sub.id in exist_permission%} checked {%endif%}>
-          <label for="checkbox1a">
+        <div class="checkbox checkbox-default form-check">
+          <input id="chkAll_{{sub.id}}" class="styled" type="checkbox" name="permission" value="{{sub.id}}" onclick="changeCheckAllByName('permission-user-{{sub.parent_id}}','chkAll_{{sub.parent_id}}')" {%if sub.id in exist_permission%} checked {%endif%}>
+          <label  for="chkAll_{{sub.id}}">
           <p>{{sub.function_name}}</p>
           </label>
         </div>

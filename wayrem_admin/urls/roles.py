@@ -7,5 +7,5 @@ urlpatterns = [
     path('update/', views.cupdateRoles, name='roles_update'),
     path('view/', views.viewRoles, name='roles_view'),
     path('activeUnactive/', views.activeUnactiveRoles,name='roles_active_unactive'),
-    path('role/<int:id>/<int:module_id>', views.RolePermissionView.as_view(), name='role-permission'),
+    path('role/<int:id>/', views.RolePermissionView.as_view(), name='role-permission'),
 ]

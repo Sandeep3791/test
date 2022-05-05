@@ -17,7 +17,6 @@ class RolePermissionView(View):
     template_name = 'permissions/role_permission.html'
     def get(self, request, *args, **kwargs):
         role_id = self.kwargs['id']
-        module_id = self.kwargs['module_id']        
         role = get_object_or_404(Roles, pk=role_id)
         exist_permission = RolePermissions.objects.filter(role_id=role.id).all()
         exist_permission = list(exist_permission.values_list('function_id', flat=True))
@@ -45,8 +44,7 @@ class RolePermissionView(View):
                     menu_dict['submenu']  = sub_list.copy()                
                 pages_menu_dict[function_id] = menu_dict
                 sub_list.clear()
-        ctx = {'function_list':pages_menu_dict, 'exist_permission':exist_permission,'id_param':role_id,'module_id':module_id}       
-        
+        ctx = {'function_list':pages_menu_dict, 'exist_permission':exist_permission,'id_param':role_id}       
         return render(request, self.template_name, ctx)
     
     def post(self, request, *args, **kwargs):

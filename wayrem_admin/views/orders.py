@@ -42,6 +42,7 @@ import json
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
+from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
 
 @method_decorator(csrf_exempt, name='dispatch')
 class OrderReferenceExport(View):
@@ -126,17 +127,14 @@ class OrderExportView(View):
         return response
 
 
-class OrdersList(LoginRequiredMixin, ListView):
+class OrdersList(LoginPermissionCheckMixin, ListView):
+    permission_required = 'order.view'
     login_url = 'wayrem_admin:root'
     model = Orders
     template_name = "orders/list.html"
     context_object_name = 'orders'
     paginate_by = RECORDS_PER_PAGE
     success_url = reverse_lazy('wayrem_admin:orderlist')
-
-    @method_decorator(role_required('Customer Order View'))
-    def dispatch(self, *args, **kwargs):
-        return super(OrdersList, self).dispatch(*args, **kwargs)
 
     def get_queryset(self):
         qs = Orders.objects.filter().order_by("-id")

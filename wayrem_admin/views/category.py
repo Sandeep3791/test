@@ -17,6 +17,7 @@ from wayrem_admin.services import inst_Category
 from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+from django.contrib.auth.decorators import permission_required
 
 def categories_excel(request):
     return generate_excel("categories_master", "categories")
@@ -137,8 +138,7 @@ class DeleteCategories(View):
         return redirect('wayrem_admin:categorieslist')
 
 
-@login_required(login_url='wayrem_admin:root')
-@role_required('Categories Add')
+@permission_required('categories.list',raise_exception=True)
 def add_category(request):
     context = {}
     form = CategoryForm(request.POST or None, request.FILES or None)
