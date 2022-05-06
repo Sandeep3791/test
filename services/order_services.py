@@ -142,7 +142,7 @@ def create_order(request, authorize: AuthJWT, db: Session):
                 db.delete(order_intial_data)
                 db.commit()
                 result = order_schemas.OrderResponse1(
-                    status=status.HTTP_200_OK, message="Price Decreased for this product", data=data1)
+                    status=status.HTTP_401_UNAUTHORIZED, message="Price Decreased for this product", data=data1)
                 return result
 
             if req_product_price < product_with_margin_price:
@@ -153,7 +153,7 @@ def create_order(request, authorize: AuthJWT, db: Session):
                 db.delete(order_intial_data)
                 db.commit()
                 result = order_schemas.OrderResponse1(
-                    status=status.HTTP_200_OK, message="Price Increased for this product", data=data)
+                    status=status.HTTP_401_UNAUTHORIZED, message="Price Increased for this product", data=data)
                 return result
 
             order_details = order_models.OrderDetails(
