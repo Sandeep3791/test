@@ -28,6 +28,8 @@
                 {% if 'User Edit' in request.user.role.permission or request.user.is_superuser %}
                 {% if user.verification_status == "waiting for approval" %}
                 waiting for approval
+                {% elif user.verification_status == "rejected" %}
+                <span class="text-danger">Rejected</span>
                 {% elif user.verification_status == "active" %}
                  <a href="{% url 'wayrem_admin:customer_verification' user.id %}?status=inactive"
                     class="btn-sm text-success"><i class="fas fa-toggle-on text-success"> Active</i></a> 

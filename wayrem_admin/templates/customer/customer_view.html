@@ -381,7 +381,7 @@
                             {% if user.marrof_docs_path %}
                             <div class="col-md-4">
                                 <div class="form-group mb-4 text-left">
-                                    <label class="" for="email">Marrof Document:</label>
+                                    <label class="" for="email">Maroof Document:</label>
                                     <div class="input-group">
                                         <a href="http://admin-stg.wayrem.com/media/common_folder/{% image_tag user.marrof_docs_path %}">View</a>
                                     </div>                                            
@@ -393,6 +393,9 @@
                             <a href="{% url 'wayrem_admin:customerslist' %}" class="btn btn-block btn-primary">Cancel</a>
                             {% if user.verification_status == "waiting for approval" %} 
                             <a href="{% url 'wayrem_admin:customer_verification' user.id %}?status=active" class="btn btn-block btn-success">Approve</a>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                                Reject
+                            </button>
                             {% endif %}
                         </div>
                     </div>                                                        
@@ -402,7 +405,30 @@
     </div>
 </div>
 
-
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" data-bs-backdrop="static" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">{{user.first_name|title}} {{user.last_name|title}}</h5>
+          <button type="button" class="btn-close"  data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <form action="{% url 'wayrem_admin:customer_verification' user.id %}" id="rejectForm" method="post">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="exampleInputPassword1" class="form-label">Reason<span class="text-danger">*</span></label>
+                    <input type="text" name="reason" class="form-control" required>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+          <button type="submit" form="rejectForm" class="btn btn-danger">Reject</button>
+        </div>
+      </div>
+    </div>
+  </div>
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->

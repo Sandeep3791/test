@@ -82,12 +82,51 @@ def customer_details(request, id=None):
 @role_required('Customer Profile View')
 def customer_verification(request, id=None):
     status = request.GET.get('status')
+    print(status)
     user = Customer.objects.filter(id=id).first()
     customer_id = user.id
     email_id = user.email
     full_name = f"{user.first_name} {user.last_name}"
-    user.verification_status = status
-    user.save()
+    if status:
+        user.verification_status = status
+        user.save()
+    else:
+        user.verification_status = "rejected"
+        user.save()
+        reason = request.POST.get('reason')
+        email_template = EmailTemplateModel.objects.get(
+            key="customer_rejected")
+        subject = email_template.subject
+        values = {
+            "customer": full_name,
+            "reason": reason
+        }
+        body = email_template.message_format.format(**values)
+        send_email(to=email_id, subject=subject, body=body)
+        try:
+            devices = CustomerDevice.objects.filter(
+                customer=customer_id, is_active=True)
+            setting_key = "notification_customer_rejected"
+            setting_msg = Settings.objects.get(key=setting_key)
+            message = setting_msg.value
+            print(devices)
+            if not devices:
+                print("No device found!!")
+            else:
+                for device in devices:
+                    device_token = device.device_id
+                    notf = {
+                        "title": "Rejected",
+                        "message": message,
+                        "device_token": device_token,
+                        "order_id": None,
+                        "grocery_id": None
+                    }
+                    FirebaseLibrary().push_notification_in_firebase(notf)
+        except:
+            pass
+        messages.success(request, f"{user.first_name} is now Rejected")
+        return redirect('wayrem_admin:customerdetails', id)
     if status == "active":
         email_template = EmailTemplateModel.objects.get(
             key="customer_approved")
@@ -124,6 +163,7 @@ def customer_verification(request, id=None):
         messages.error(request, f"{user.first_name} is now Inactive")
     return redirect('wayrem_admin:customerslist')
 
+
 def customer_email_update(request, id=None):
     customer = Customer.objects.get(id=id)
     email_id = customer.email
@@ -131,11 +171,11 @@ def customer_email_update(request, id=None):
     if request.method == "POST":
         # kwargs = { 'data' : request.POST }
         form = CustomerEmailUpdateForm(request.POST or None, instance=customer)
-        if form.is_valid():            
-            form.save()            
+        if form.is_valid():
+            form.save()
             new_email = form.data['email']
             email_template = EmailTemplateModel.objects.get(
-            key="customer_email_update")
+                key="customer_email_update")
             subject = email_template.subject
             values = {
                 # "customer": full_name,
