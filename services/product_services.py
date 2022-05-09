@@ -747,7 +747,7 @@ def search_filter_products(offset ,customer_id, authorize: AuthJWT, start_price,
     for value in limit_value:
         limit_val = int(value[0])
 
-    query = f"select * from {constants.Database_name}.products_master where publish = {True} "
+    query = f"select * from {constants.Database_name}.products_master where {True} "
     if start_price:
         query += f" and price > {start_price}"
     if end_price:
@@ -762,11 +762,13 @@ def search_filter_products(offset ,customer_id, authorize: AuthJWT, start_price,
         query += f" and id in (select products_id from {constants.Database_name}.products_master_category where categories_id in ({category}))"
     if newest:
         query += f" order by updated_at ASC"
+
     rating_request = rating
     result = None
-    data = db.execute(query)
-
+    
     query += f" limit {offset_int},{limit_val}"
+
+    data = db.execute(query)
 
     fav_product_data = db.execute(
         f"SELECT t1.SKU, t2.id,t2.customer_id,t2.product_id FROM {constants.Database_name}.products_master t1 inner join {constants.Database_name}.Favorite_Product t2 on t2.product_id = t1.id where t2.customer_id = {customer_id} ;")
