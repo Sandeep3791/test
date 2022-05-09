@@ -397,6 +397,14 @@
                                 Reject
                             </button>
                             {% endif %}
+                            {% if user.verification_status == "rejected" %}
+                            <div class="mt-3">
+                                <h6 class="mb-1 text-danger">Rejected!!</h6>
+                                {% if user.reject_reason %}
+                                <p>{{user.reject_reason}}</p>
+                                {% endif %}
+                            </div>
+                            {% endif %}
                         </div>
                     </div>                                                        
                 </div>

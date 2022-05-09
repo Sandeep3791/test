@@ -463,6 +463,7 @@ class Customer(models.Model):
     # address = models.TextField(null=True)
     profile_pic = models.CharField(max_length=500, null=True)
     about = models.TextField(null=True)
+    reject_reason = models.CharField(max_length=500, null=True)
     status = models.BooleanField(default=False)
     verification_status = models.CharField(
         max_length=100, choices=customer_status, null=True, default='waiting for approval')

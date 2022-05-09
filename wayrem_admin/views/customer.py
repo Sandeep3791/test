@@ -89,11 +89,13 @@ def customer_verification(request, id=None):
     full_name = f"{user.first_name} {user.last_name}"
     if status:
         user.verification_status = status
+        user.reject_reason = None
         user.save()
     else:
         user.verification_status = "rejected"
-        user.save()
         reason = request.POST.get('reason')
+        user.reject_reason = reason
+        user.save()
         email_template = EmailTemplateModel.objects.get(
             key="customer_rejected")
         subject = email_template.subject
@@ -125,7 +127,7 @@ def customer_verification(request, id=None):
                     FirebaseLibrary().push_notification_in_firebase(notf)
         except:
             pass
-        messages.success(request, f"{user.first_name} is now Rejected")
+        # messages.success(request, f"{user.first_name} is now Rejected")
         return redirect('wayrem_admin:customerdetails', id)
     if status == "active":
         email_template = EmailTemplateModel.objects.get(
