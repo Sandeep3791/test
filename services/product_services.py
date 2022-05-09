@@ -738,8 +738,15 @@ def create_product_rating(authorize: AuthJWT, request, db: Session):
     return response
 
 
-def search_filter_products(customer_id, authorize: AuthJWT, start_price, end_price, discount, featured, rating, newest, category, db: Session):
+def search_filter_products(offset ,customer_id, authorize: AuthJWT, start_price, end_price, discount, featured, rating, newest, category, db: Session):
     authorize.jwt_required()
+
+    offset_int = int(offset)
+    limit_value = db.execute(
+        f"select value from {constants.Database_name}.settings where id = 15 ;")
+    for value in limit_value:
+        limit_val = int(value[0])
+
     query = f"select * from {constants.Database_name}.products_master where publish = {True} "
     if start_price:
         query += f" and price > {start_price}"
@@ -758,6 +765,9 @@ def search_filter_products(customer_id, authorize: AuthJWT, start_price, end_pri
     rating_request = rating
     result = None
     data = db.execute(query)
+
+    query += f" limit {offset_int},{limit_val}"
+
     fav_product_data = db.execute(
         f"SELECT t1.SKU, t2.id,t2.customer_id,t2.product_id FROM {constants.Database_name}.products_master t1 inner join {constants.Database_name}.Favorite_Product t2 on t2.product_id = t1.id where t2.customer_id = {customer_id} ;")
 
@@ -878,9 +888,16 @@ def search_filter_products(customer_id, authorize: AuthJWT, start_price, end_pri
     return common_msg
 
 
-def search_products_name(authorize: AuthJWT, customer_id, name, db: Session):
+def search_products_name(offset,authorize: AuthJWT, customer_id, name, db: Session):
     authorize.jwt_required()
-    query = f"SELECT * FROM  {constants.Database_name}.products_master where meta_key REGEXP '{name}$' or name LIKE '%{name}%' "
+
+    offset_int = int(offset)
+    limit_value = db.execute(
+        f"select value from {constants.Database_name}.settings where id = 15 ;")
+    for value in limit_value:
+        limit_val = int(value[0])
+
+    query = f"SELECT * FROM  {constants.Database_name}.products_master where meta_key REGEXP '{name}$' or name LIKE '%{name}%' limit {offset_int},{limit_val} "
     data = db.execute(query)
 
     fav_product_data = db.execute(

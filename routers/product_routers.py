@@ -93,13 +93,13 @@ def create_product_rating(request: product_schemas.CreateRating, authorize: Auth
     return create_rating
 
 @router.get('/product/search/filter')
-def search_filter_products(customer_id: int,authorize: AuthJWT = Depends(), start_price: Optional[str] = None, end_price: Optional[str] = None, discount: Optional[str] = None, featured: Optional[bool] = None, rating: Optional[bool] = None, newest: Optional[str] = None, category: Optional[str] = None,db: Session = Depends(database.get_db)):
-    data = product_services.search_filter_products(customer_id,
+def search_filter_products(offset:str,customer_id: int,authorize: AuthJWT = Depends(), start_price: Optional[str] = None, end_price: Optional[str] = None, discount: Optional[str] = None, featured: Optional[bool] = None, rating: Optional[bool] = None, newest: Optional[str] = None, category: Optional[str] = None,db: Session = Depends(database.get_db)):
+    data = product_services.search_filter_products(offset,customer_id,
         authorize, start_price, end_price, discount, featured, rating, newest, category, db)
     return data
 
 @router.get('/product/name/search')
-def search_products_name(customer_id: int,name: str, authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
-    data = product_services.search_products_name(authorize, customer_id,name, db)
+def search_products_name(offset:str,customer_id: int,name: str, authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
+    data = product_services.search_products_name(offset,authorize, customer_id,name, db)
     return data
 
