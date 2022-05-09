@@ -1,6 +1,6 @@
 from django import forms
 from django.template.defaultfilters import default
-from wayrem_admin.models import Categories, SubCategories
+from wayrem_admin.models import Categories
 
 
 class CategoryCreateForm(forms.ModelForm):
@@ -9,12 +9,11 @@ class CategoryCreateForm(forms.ModelForm):
         fields = ("name", "image", "tag", "margin")
 
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control', 'maxlength':35 }),
+            'name': forms.TextInput(attrs={'class': 'form-control', 'maxlength': 35}),
             'margin': forms.TextInput(attrs={'class': 'form-control'}),
             'image': forms.FileInput(attrs={'class': 'form--control-select'}),
             'tag': forms.Textarea(attrs={'class': 'form-control', 'rows': '3'})
         }
-    
 
 
 UNIT = (
@@ -33,43 +32,6 @@ def get_category():
 
 
 choices_role = get_category
-
-
-class CategoryForm(forms.Form):
-    name = forms.CharField(widget=forms.TextInput(
-        attrs={'class': "form-control", 'maxlength': 35}))
-    margin = forms.CharField(widget=forms.NumberInput(
-        attrs={'class': "form-control"}), initial=0)
-    unit = forms.CharField(widget=forms.Select(choices=UNIT, attrs={
-                           'class': 'form-select'}), required=True)
-    tag = forms.CharField(
-        widget=forms.Textarea(attrs={'class': "form-control", 'rows': '3'}), required=False)
-    image = forms.ImageField(widget=forms.FileInput(
-        attrs={'class': "form-file-input"}), required=False)
-
-    parent_category = forms.ChoiceField(
-        choices=choices_role, widget=forms.Select(attrs={'class': 'form-select'}), required=False)
-
-    def clean(self):
-        form_data = self.cleaned_data
-        if 'name' in form_data:
-            name = form_data['name']
-            obj = Categories.objects.filter(name=name).first()
-            obj_sub = SubCategories.objects.filter(name=name).first()
-            try:
-                if name in obj.name:
-                    # Will raise a error message
-                    self._errors["name"] = "Name already exists!"
-                    del form_data['name']
-            except:
-                pass
-            try:
-                if name in obj_sub.name:
-                    self._errors["name"] = "Name already exists!"
-                    del form_data['name']
-            except:
-                pass
-        return form_data
 
 
 class CategoryUpdateForm(forms.ModelForm):

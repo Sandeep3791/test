@@ -1,6 +1,7 @@
 from django.db.models import Q
 import django_filters
-from wayrem_admin.users.models import Users
+from wayrem_admin.models.users import Users
+
 
 class UserFilter(django_filters.FilterSet):
     user = django_filters.CharFilter(

@@ -7,7 +7,6 @@ urlpatterns = [
     path('auth/', include('wayrem_admin.urls.auth')),
     path('account/', include('wayrem_admin.urls.account')),
     path('category/', include('wayrem_admin.urls.category')),
-    path('subcategory/', include('wayrem_admin.urls.subcategory')),
     path('customer/', include('wayrem_admin.urls.customer')),
     path('home/', include('wayrem_admin.urls.home')),
     path('ingredient/', include('wayrem_admin.urls.ingredients')),

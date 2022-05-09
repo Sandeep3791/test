@@ -8,6 +8,7 @@ class UserAdmin(admin.ModelAdmin):
     list_display = ['id', 'username', 'email', 'contact', 'role']
 '''
 
+
 @admin.register(Roles)
 class UserAdmin(admin.ModelAdmin):
     list_display = ['id', 'role']
@@ -36,8 +37,3 @@ class ProductAdmin(admin.ModelAdmin):
 @admin.register(Unit)
 class UnitAdmin(admin.ModelAdmin):
     list_display = ['id', "unit_name"]
-
-
-@admin.register(SubCategories)
-class SubCategoriesAdmin(admin.ModelAdmin):
-    list_display = ['id', "name", "tag"]

@@ -1,6 +1,5 @@
 from django import forms
-from wayrem_admin.users.models import Users
-
+from wayrem_admin.models.users import Users
 
 
 from django.contrib.auth.forms import UserCreationForm

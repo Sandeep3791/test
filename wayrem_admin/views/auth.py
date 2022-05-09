@@ -17,7 +17,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import check_password, make_password
 from wayrem_admin.services import send_email
 import random
-from wayrem_admin.users.models import Users
+from wayrem_admin.models.users import Users
 
 
 class LoginView(View):

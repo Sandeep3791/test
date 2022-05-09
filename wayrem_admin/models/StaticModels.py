@@ -8,7 +8,7 @@ import os
 from django.core.validators import MinValueValidator
 from django.core.files.storage import FileSystemStorage
 from django.db import models
-from django.contrib.auth.models import (AbstractUser,AbstractBaseUser)
+from django.contrib.auth.models import (AbstractUser, AbstractBaseUser)
 from django.db.models.base import Model
 from django.utils.translation import ugettext_lazy as _
 from datetime import datetime
@@ -137,16 +137,19 @@ class User(AbstractBaseUser):
     username = models.CharField(unique=True, max_length=150)
     first_name = models.CharField(max_length=150, null=True, blank=True)
     last_name = models.CharField(max_length=150, null=True, blank=True)
-    is_superuser = models.IntegerField(null=True, blank=True,default=1)
-    is_active = models.IntegerField(null=True, blank=True,default=1)
-    contact = models.CharField(max_length=12, null=True, unique=True, blank=False)
-    role = models.ForeignKey(Roles, on_delete=models.CASCADE, null=True, blank=True)
+    is_superuser = models.IntegerField(null=True, blank=True, default=1)
+    is_active = models.IntegerField(null=True, blank=True, default=1)
+    contact = models.CharField(
+        max_length=12, null=True, unique=True, blank=False)
+    role = models.ForeignKey(
+        Roles, on_delete=models.CASCADE, null=True, blank=True)
     dob = models.DateField(null=True, blank=True)
-    gender = models.CharField(max_length=1, choices=GENDER_CHOICES, default='M', null=True, blank=True)
+    gender = models.CharField(
+        max_length=1, choices=GENDER_CHOICES, default='M', null=True, blank=True)
     address = models.CharField(max_length=500, null=True, blank=True)
     city = models.CharField(max_length=20, null=True, blank=True)
     zip_code = models.CharField(max_length=15, null=True, blank=True)
-    
+
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = []
 
@@ -465,6 +468,7 @@ class Customer(models.Model):
     # address = models.TextField(null=True)
     profile_pic = models.CharField(max_length=500, null=True)
     about = models.TextField(null=True)
+    reject_reason = models.CharField(max_length=500, null=True)
     status = models.BooleanField(default=False)
     verification_status = models.CharField(
         max_length=100, choices=customer_status, null=True, default='waiting for approval')

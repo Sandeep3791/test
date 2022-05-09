@@ -27,10 +27,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'wayrem_admin.users',
     'rest_framework',
     'ckeditor',
     'wayrem_admin',
+    'wayrem_admin.users',
     'widget_tweaks',
     #    'maintenance_mode',
     'django_celery_beat',
@@ -92,9 +92,9 @@ WSGI_APPLICATION = 'wayrem.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'wayrem_v5',
+        'NAME': 'new_wayrem',
         'USER': 'root',
-        'PASSWORD': '',
+        'PASSWORD': 'root1234',
         'HOST': 'localhost',
         'PORT': '3306',
         'OPTIONS': {
@@ -142,7 +142,7 @@ STATIC_ROOT = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 #AUTH_USER_MODEL = 'wayrem_admin.User'
 #AUTH_USER_MODEL = 'wayrem_admin.User'
-AUTH_USER_MODEL = 'users.Users'
+AUTH_USER_MODEL = 'wayrem_admin.Users'
 AUTHENTICATION_BACKENDS = ('wayrem_admin.users.backends.MyAuthBackend',)
 
 

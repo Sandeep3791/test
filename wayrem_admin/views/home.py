@@ -11,7 +11,8 @@ from django.db.models.functions import (
     TruncDate, TruncDay, TruncHour, TruncMinute, TruncSecond, TruncWeek, TruncMonth)
 from django.db.models import Count
 from dateutil import relativedelta
-from wayrem_admin.users.models import Users
+from wayrem_admin.models.users import Users
+
 
 class RootUrlView(RedirectView):
 

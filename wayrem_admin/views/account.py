@@ -19,7 +19,7 @@ from django.views.generic import ListView
 from django.urls import reverse_lazy
 from wayrem_admin.filters.user_filters import UserFilter
 
-from wayrem_admin.users.models import Users
+from wayrem_admin.models.users import Users
 
 
 def user_excel(request):
@@ -66,6 +66,7 @@ def user_signup(request):
     else:
         return redirect('wayrem_admin:dashboard')
 
+
 class UsersList(ListView):
     model = Users
     template_name = "users/list.html"
@@ -82,9 +83,6 @@ class UsersList(ListView):
         context = super(UsersList, self).get_context_data(**kwargs)
         context['filter_form'] = UserSearchFilter(self.request.GET)
         return context
-
-
-
 
 
 @role_required('User View')

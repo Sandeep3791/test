@@ -50,7 +50,8 @@ class Orders(models.Model):
         max_length=80, blank=True, null=True)
     content = models.TextField(blank=True, null=True)
     order_shipping_response = models.TextField(blank=True, null=True)
-    order_type = models.ForeignKey('StatusMaster', models.DO_NOTHING, db_column='order_type', blank=True, null=True)
+    order_type = models.ForeignKey(
+        'StatusMaster', models.DO_NOTHING, db_column='order_type', blank=True, null=True)
     delivery_charge = models.CharField(max_length=100, null=True)
 
     def __str__(self):
@@ -112,10 +113,11 @@ class OrderDeliveryLogs(models.Model):
     order_status = models.ForeignKey('StatusMaster', models.DO_NOTHING)
     order_status_details = models.TextField(blank=True, null=True)
     log_date = models.DateTimeField()
-    user = models.ForeignKey('users.Users', models.DO_NOTHING)
+    user = models.ForeignKey('wayrem_admin.Users', models.DO_NOTHING)
     customer_view = models.IntegerField(blank=True, null=True)
 
     class Meta:
+        app_label = "wayrem_admin"
         db_table = 'order_delivery_logs'
 
 
@@ -275,6 +277,7 @@ class OrderLoginextShipment(models.Model):
     class Meta:
         app_label = "wayrem_admin"
         db_table = 'order_loginext_shipment'
+
 
 class CustomerNotification(models.Model):
     id = models.AutoField(primary_key=True, unique=True)

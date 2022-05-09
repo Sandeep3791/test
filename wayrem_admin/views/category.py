@@ -11,13 +11,14 @@ from wayrem_admin.forms import CategoryCreateForm
 from django.views import View
 from django.utils.decorators import method_decorator
 from wayrem_admin.forms.categories import CategoryForm, CategorySearchFilter, CategoryUpdateForm
-from wayrem_admin.models import Categories, SubCategories
+from wayrem_admin.models import Categories
 from wayrem_admin.export import generate_excel
 from wayrem_admin.services import inst_Category
 from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from django.contrib.auth.decorators import permission_required
+
 
 def categories_excel(request):
     return generate_excel("categories_master", "categories")
@@ -117,10 +118,10 @@ def update_categories(request, id=None, *args, **kwargs):
             print("Here")
             return redirect('wayrem_admin:categorieslist')
     user = Categories.objects.get(id=id)
-    form = CategoryUpdateForm(instance=user, initial={                              
-                              'parent_category': user.parent                              
+    form = CategoryUpdateForm(instance=user, initial={
+                              'parent_category': user.parent
                               })
-    return render(request, 'update_category.html', {'form': form, 'id': user.id, 'user':user})
+    return render(request, 'update_category.html', {'form': form, 'id': user.id, 'user': user})
 
 
 @role_required('Categories View')
@@ -138,7 +139,7 @@ class DeleteCategories(View):
         return redirect('wayrem_admin:categorieslist')
 
 
-@permission_required('categories.list',raise_exception=True)
+@permission_required('categories.list', raise_exception=True)
 def add_category(request):
     context = {}
     form = CategoryForm(request.POST or None, request.FILES or None)
