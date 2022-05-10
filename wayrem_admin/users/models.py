@@ -1,4 +1,4 @@
-# from wayrem_admin.models.StaticModels import User
+# from wayrem_admin.models import User
 # from django.contrib.auth.models import (BaseUserManager,_user_has_perm)
 
 # class MyUserManager(BaseUserManager):

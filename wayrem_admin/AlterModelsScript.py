@@ -36,7 +36,7 @@ from django.db import models
 from datetime import datetime
 import uuid
 from django.core.files.storage import FileSystemStorage
-from wayrem_admin.models.StaticModels import Products, SupplierProducts, Supplier
+from wayrem_admin.models import Products, SupplierProducts, Supplier
 
 
 status = (("Active", "Active"), ("Inactive", "Inactive"))

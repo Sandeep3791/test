@@ -1,5 +1,6 @@
 from django.core.validators import MinValueValidator
-from wayrem_admin.models import PurchaseOrder, Products
+from wayrem_admin.models.purchase_order import PurchaseOrder
+from wayrem_admin.models.products import Products
 import imp
 from django.db import models
 from django.utils.translation import ugettext_lazy as _

@@ -3,7 +3,9 @@ from django.db import models
 from datetime import datetime
 import uuid
 from django.core.files.storage import FileSystemStorage
-from wayrem_admin.models.StaticModels import Products, SupplierProducts, Supplier
+from wayrem_admin.models.products import Products
+from wayrem_admin.models.suppliers import SupplierProducts, Supplier
+from wayrem.constant import upload_storage
 
 
 status = (("Active", "Active"), ("Inactive", "Inactive"))
@@ -51,6 +53,3 @@ TYPE = (
     ('text', 'Text'),
     ('textarea', 'Textarea'),
 )
-
-upload_storage = FileSystemStorage(
-    location='/opt/app/wayrem-admin-backend/media/common_folder')

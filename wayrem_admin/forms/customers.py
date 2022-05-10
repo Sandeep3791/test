@@ -1,5 +1,6 @@
 from django import forms
-from wayrem_admin.models.StaticModels import Customer
+from wayrem_admin.models import Customer
+
 
 class CustomerSearchFilter(forms.Form):
     customer = forms.CharField(widget=forms.TextInput(
@@ -13,5 +14,5 @@ class CustomerEmailUpdateForm(forms.ModelForm):
         fields = ("email",)
 
         widgets = {
-            'email': forms.EmailInput(attrs={'class': 'form-control'}),            
+            'email': forms.EmailInput(attrs={'class': 'form-control'}),
         }

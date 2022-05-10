@@ -32,7 +32,7 @@ INSTALLED_APPS = [
     'wayrem_admin',
     'wayrem_admin.users',
     'widget_tweaks',
-    #    'maintenance_mode',
+    'maintenance_mode',
     'django_celery_beat',
 ]
 MIDDLEWARE = [
@@ -92,7 +92,7 @@ WSGI_APPLICATION = 'wayrem.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'new_wayrem',
+        'NAME': 'wayrem_uat_v2',
         'USER': 'root',
         'PASSWORD': 'root1234',
         'HOST': 'localhost',

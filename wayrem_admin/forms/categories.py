@@ -34,6 +34,36 @@ def get_category():
 choices_role = get_category
 
 
+class CategoryForm(forms.Form):
+    name = forms.CharField(widget=forms.TextInput(
+        attrs={'class': "form-control", 'maxlength': 35}))
+    margin = forms.CharField(widget=forms.NumberInput(
+        attrs={'class': "form-control"}), initial=0)
+    unit = forms.CharField(widget=forms.Select(choices=UNIT, attrs={
+                           'class': 'form-select'}), required=True)
+    tag = forms.CharField(
+        widget=forms.Textarea(attrs={'class': "form-control", 'rows': '3'}), required=False)
+    image = forms.ImageField(widget=forms.FileInput(
+        attrs={'class': "form-file-input"}), required=False)
+
+    parent_category = forms.ChoiceField(
+        choices=choices_role, widget=forms.Select(attrs={'class': 'form-select'}), required=False)
+
+    def clean(self):
+        form_data = self.cleaned_data
+        if 'name' in form_data:
+            name = form_data['name']
+            obj = Categories.objects.filter(name=name).first()
+            try:
+                if name in obj.name:
+                    # Will raise a error message
+                    self._errors["name"] = "Name already exists!"
+                    del form_data['name']
+            except:
+                pass
+        return form_data
+
+
 class CategoryUpdateForm(forms.ModelForm):
 
     parent_category = forms.ChoiceField(

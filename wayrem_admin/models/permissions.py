@@ -27,10 +27,10 @@ class RolePermissions(models.Model):
         db_table = 'role_permissions'
 
 
-class UserPermissions(models.Model):
-    user_id = models.BigIntegerField()
-    function = models.ForeignKey('FunctionMaster', models.DO_NOTHING)
+# class UserPermissions(models.Model):
+#     user_id = models.BigIntegerField()
+#     function = models.ForeignKey('FunctionMaster', models.DO_NOTHING)
 
-    class Meta:
-        app_label = "wayrem_admin"
-        db_table = 'users_master_user_permissions'
+#     class Meta:
+#         app_label = "wayrem_admin"
+#         db_table = 'users_master_user_permissions'

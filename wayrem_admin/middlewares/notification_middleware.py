@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404
 from wayrem_admin.models import Notification
 import datetime
 from wayrem_admin.models_orders import Orders
-from wayrem_admin.models.StaticModels import Customer
+from wayrem_admin.models import Customer
 
 
 class NotificationMiddleWare(object):
@@ -19,9 +19,10 @@ class NotificationMiddleWare(object):
                 this_day = datetime.datetime.now().day
                 request.order_today = Orders.objects.filter(
                     order_date__day=this_day, status__id=16).count()
-                
-            request.new_order=Orders.objects.filter(status__id=16).count()
-            request.new_customer=Customer.objects.exclude(verification_status="active").count()
+
+            request.new_order = Orders.objects.filter(status__id=16).count()
+            request.new_customer = Customer.objects.exclude(
+                verification_status="active").count()
             response = self.get_response(request)
         else:
             response = self.get_response(request)

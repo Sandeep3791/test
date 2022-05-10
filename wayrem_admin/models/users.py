@@ -1,7 +1,8 @@
-from wayrem_admin.models.StaticModels import User
+from django.apps import apps
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import (BaseUserManager, _user_has_perm)
 from django.db import models
-from django.contrib.auth.models import AbstractBaseUser
+from django.contrib.auth.models import AbstractBaseUser, AbstractUser
 from django.utils.translation import ugettext_lazy as _
 from wayrem_admin.utils.constants import *
 #from models_orders import Orders,OrderDetails
@@ -25,6 +26,12 @@ class User(AbstractBaseUser):
     last_name = models.CharField(max_length=150, null=True, blank=True)
     is_superuser = models.IntegerField(null=True, blank=True, default=1)
     is_active = models.IntegerField(null=True, blank=True, default=1)
+    is_staff = models.BooleanField(
+        _('staff status'),
+        default=False,
+        help_text=_(
+            'Designates whether the user can log into this admin site.'),
+    )
     contact = models.CharField(
         max_length=12, null=True, unique=True, blank=False)
     role = models.ForeignKey(
@@ -45,45 +52,39 @@ class User(AbstractBaseUser):
 
 
 class MyUserManager(BaseUserManager):
-    def create_user(self, first_name, last_name, email, password=None):
+    def _create_user(self, username, email, password, **extra_fields):
         """
-        Creates and saves a User with the given email, first name, last name and password.
+        Create and save a user with the given username, email, and password.
         """
-        if not first_name:
-            raise ValueError('Users must have first name')
-        if not last_name:
-            raise ValueError('Users must have last name')
-
-        if not email:
-            raise ValueError('Users must have an email address')
-
-        user = self.model(
-            first_name=first_name,
-            last_name=last_name,
-            email=self.normalize_email(email),
-        )
-        user.role_id = 1
-        user.is_active = 1
-        user.set_password(password)
-        user.is_superuser = 0
+        if not username:
+            raise ValueError('The given username must be set')
+        email = self.normalize_email(email)
+        # Lookup the real model class from the global app registry so this
+        # manager method can be used in migrations. This is fine because
+        # managers are by definition working on the real model.
+        GlobalUserModel = apps.get_model(
+            self.model._meta.app_label, self.model._meta.object_name)
+        username = GlobalUserModel.normalize_username(username)
+        user = self.model(username=username, email=email, **extra_fields)
+        user.password = make_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, first_name, last_name, email, password):
-        """
-        Creates and saves a superuser with the given email,first name, last name and password.
-        """
-        user = self.create_user(
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
-            password=password,
-        )
-        user.role_id = 1
-        user.is_active = 1
-        user.is_superuser = 1
-        user.save(using=self._db)
-        return user
+    def create_user(self, username, email=None, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', False)
+        extra_fields.setdefault('is_superuser', False)
+        return self._create_user(username, email, password, **extra_fields)
+
+    def create_superuser(self, username, email=None, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+
+        if extra_fields.get('is_staff') is not True:
+            raise ValueError('Superuser must have is_staff=True.')
+        if extra_fields.get('is_superuser') is not True:
+            raise ValueError('Superuser must have is_superuser=True.')
+
+        return self._create_user(username, email, password, **extra_fields)
 
 
 class Users(User):
