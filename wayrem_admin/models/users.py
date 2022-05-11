@@ -4,6 +4,7 @@ from django.contrib.auth.models import (BaseUserManager, _user_has_perm)
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, AbstractUser
 from django.utils.translation import ugettext_lazy as _
+from django.utils import timezone
 from wayrem_admin.utils.constants import *
 #from models_orders import Orders,OrderDetails
 
@@ -42,6 +43,7 @@ class User(AbstractBaseUser):
     address = models.CharField(max_length=500, null=True, blank=True)
     city = models.CharField(max_length=20, null=True, blank=True)
     zip_code = models.CharField(max_length=15, null=True, blank=True)
+    date_joined = models.DateTimeField(_('date joined'), default=timezone.now)
 
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = []
@@ -90,7 +92,6 @@ class MyUserManager(BaseUserManager):
 class Users(User):
     objects = MyUserManager()
     USERNAME_FIELD = 'username'
-    #REQUIRED_FIELDS = ['first_name', 'last_name']
 
     def __str__(self):
         return self.username

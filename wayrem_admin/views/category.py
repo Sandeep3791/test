@@ -6,7 +6,6 @@ from wayrem_admin.utils.constants import *
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from wayrem_admin.decorators import role_required
 from wayrem_admin.forms import CategoryCreateForm
 from django.views import View
 from django.utils.decorators import method_decorator
@@ -25,7 +24,6 @@ def categories_excel(request):
 
 
 @login_required(login_url='wayrem_admin:root')
-@role_required('Categories Add')
 def create_category(request):
     context = {}
     form = CategoryCreateForm(request.POST or None, request.FILES or None)
@@ -63,7 +61,6 @@ class CategoriesList(ListView):
 #     template_name = "categorieslist.html"
 
 #     @method_decorator(login_required(login_url='wayrem_admin:root'))
-#     @method_decorator(role_required('Categories View'))
 #     def get(self, request, format=None):
 #         categorieslist = Categories.objects.all()
 #         paginator = Paginator(categorieslist, 5)
@@ -88,7 +85,6 @@ class CategoriesList(ListView):
 
 
 @login_required(login_url='wayrem_admin:root')
-@role_required('Categories Edit')
 def update_categories(request, id=None, *args, **kwargs):
     print(id)
     if request.method == "POST":
@@ -124,14 +120,12 @@ def update_categories(request, id=None, *args, **kwargs):
     return render(request, 'update_category.html', {'form': form, 'id': user.id, 'user': user})
 
 
-@role_required('Categories View')
 def category_details(request, id=None):
     cate = Categories.objects.filter(id=id).first()
     return render(request, 'category_popup.html', {'catedata': cate})
 
 
 class DeleteCategories(View):
-    @method_decorator(role_required('Categories Delete'))
     def post(self, request):
         categoriesid = request.POST.get('category_id')
         categories = Categories.objects.get(id=categoriesid)

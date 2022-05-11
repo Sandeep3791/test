@@ -1,6 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from wayrem_admin.models import Roles
-from wayrem_admin.decorators import role_required
 from wayrem_admin.forms import RoleForm, RoleViewForm
 from django.contrib import messages
 from django.core.paginator import Paginator
@@ -78,7 +77,6 @@ class RolePermissionView(View):
         return HttpResponse("Menu Permission Set")
 
 
-@role_required('Roles View')
 def rolesList(request):
     context = {}
     roles = Roles.objects.all().order_by('-pk')
@@ -96,7 +94,6 @@ def rolesList(request):
     return render(request, 'roles_crud_pages/rolesList.html', context)
 
 
-@role_required('Roles Add')
 def createRoles(request):
     if request.method == 'POST':
         form = RoleForm(request.POST)
@@ -111,7 +108,6 @@ def createRoles(request):
     return render(request, 'roles_crud_pages/createRoles.html', {"form": form})
 
 
-@role_required('Roles Edit')
 def cupdateRoles(request):
     context = {}
     role = get_object_or_404(Roles, id=request.GET.get('id'))
@@ -131,7 +127,6 @@ def cupdateRoles(request):
     return render(request, 'roles_crud_pages/createRoles.html', context)
 
 
-@role_required('Roles Delete')
 def activeUnactiveRoles(request):
     context = {}
     role = get_object_or_404(Roles, id=request.GET.get('id'))

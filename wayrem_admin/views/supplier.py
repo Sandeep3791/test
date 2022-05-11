@@ -15,7 +15,6 @@ from wayrem_admin.export import generate_excel
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from wayrem_admin.models import Supplier, SupplierProducts, BestProductsSupplier
-from wayrem_admin.decorators import role_required
 from django.views import View
 from django.db import connection
 from django.core.paginator import Paginator
@@ -41,7 +40,6 @@ def supplier_excel(request):
 
 
 @login_required(login_url='wayrem_admin:root')
-@role_required('Supplier Add')
 def supplier_register(request):
 
     if request.user.is_authenticated:
@@ -100,7 +98,6 @@ def supplier_register(request):
 #     template_name = "supplierlist.html"
 
 #     @method_decorator(login_required(login_url='wayrem_admin:root'))
-#     @method_decorator(role_required('Supplier View'))
 #     def get(self, request, format=None):
 #         supplierlist = Supplier.objects.all()
 #         paginator = Paginator(supplierlist, RECORDS_PER_PAGE)
@@ -136,7 +133,6 @@ class SupplierList(ListView):
 
 class DeleteSupplier(View):
 
-    @method_decorator(role_required('Supplier Delete'))
     def post(self, request):
         supplierid = request.POST.get('supplier_id')
         user = Supplier.objects.get(pk=supplierid)
@@ -148,7 +144,6 @@ class DeleteSupplier(View):
 class Active_BlockSupplier(View):
 
     @method_decorator(login_required(login_url='wayrem_admin:root'))
-    @method_decorator(role_required('Supplier Edit'))
     def get(self, request, id):
         user = Supplier.objects.get(pk=id)
         if user.is_active:
@@ -159,7 +154,6 @@ class Active_BlockSupplier(View):
         return redirect('wayrem_admin:supplierlist')
 
 
-@role_required('Supplier Edit')
 def update_supplier(request, id=None):
     print(id)
     if request.method == "POST":
@@ -183,7 +177,6 @@ def update_supplier(request, id=None):
     return render(request, 'update_supplier.html', {'form': form, 'id': suppl.id})
 
 
-@role_required('Supplier View')
 def supplier_details(request, id=None):
     suppl = Supplier.objects.filter(id=id).first()
     return render(request, 'supplier_popup.html', {'suppldata': suppl})
@@ -191,7 +184,8 @@ def supplier_details(request, id=None):
 
 def allproductsupplier(request):
     supplierid = request.GET.get('supplierid')
-    products = SupplierProducts.objects.filter(supplier_id_id=supplierid, product_id__is_deleted=False)
+    products = SupplierProducts.objects.filter(
+        supplier_id_id=supplierid, product_id__is_deleted=False)
     product_list = []
     for product in products:
         product_list.append(product.product_id)

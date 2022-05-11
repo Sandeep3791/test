@@ -15,15 +15,14 @@ from django.views.generic import ListView
 from wayrem_admin.forms import EmailtemplatesForm, EmailtemplatesViewForm
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
-from wayrem_admin.decorators import role_required
-from wayrem_admin.utils.constants import * 
+from wayrem_admin.utils.constants import *
+
 
 class EmailtemplatesList(View):
     template_name = "emailtemplate/list.html"
     form = SettingsForm()
 
     @method_decorator(login_required(login_url='wayrem_admin:root'))
-    @method_decorator(role_required('Email Template View'))
     def get(self, request, format=None):
         userlist = EmailTemplateModel.objects.all()
         paginator = Paginator(userlist, RECORDS_PER_PAGE)
@@ -46,7 +45,6 @@ class EmailtemplatesCreate(CreateView):
     success_url = reverse_lazy('wayrem_admin:emailtemplates')
 
     @method_decorator(login_required(login_url='wayrem_admin:root'))
-    @method_decorator(role_required('Email Template Add'))
     def dispatch(self, *args, **kwargs):
         return super(EmailtemplatesCreate, self).dispatch(*args, **kwargs)
 
@@ -58,7 +56,6 @@ class EmailtemplatesUpdate(UpdateView):
     pk_url_kwarg = 'emailtemplate_pk'
 
     @method_decorator(login_required(login_url='wayrem_admin:root'))
-    @method_decorator(role_required('Email Template Edit'))
     def dispatch(self, *args, **kwargs):
         return super(EmailtemplatesUpdate, self).dispatch(*args, **kwargs)
 
@@ -79,7 +76,6 @@ class EmailtemplatesView(UpdateView):
     pk_url_kwarg = 'emailtemplate_pk'
 
     @method_decorator(login_required(login_url='wayrem_admin:root'))
-    @method_decorator(role_required('Email Template View'))
     def dispatch(self, *args, **kwargs):
         return super(EmailtemplatesView, self).dispatch(*args, **kwargs)
 

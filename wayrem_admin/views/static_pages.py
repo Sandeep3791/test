@@ -8,7 +8,6 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic.edit import CreateView, UpdateView
 from wayrem_admin.forms import StaticpagesForm, StaticpagesViewForm
 from django.urls import reverse_lazy
-from wayrem_admin.decorators import role_required
 from wayrem_admin.utils.constants import *
 from django.urls import reverse_lazy
 from wayrem_admin.filters.static_pages import StaticPageFilter
@@ -21,7 +20,6 @@ from wayrem_admin.forms.static_pages import StaticPageSearchFilter
 #     form = SettingsForm()
 
 #     @method_decorator(login_required(login_url='wayrem_admin:root'))
-#     @method_decorator(role_required('Static Pages View'))
 #     def get(self, request, format=None):
 #         userlist = StaticPages.objects.all()
 #         paginator = Paginator(userlist, RECORDS_PER_PAGE)
@@ -51,7 +49,7 @@ class StaticpagesList(ListView):
     def get_context_data(self, **kwargs):
         context = super(StaticpagesList, self).get_context_data(**kwargs)
         context['filter_form'] = StaticPageSearchFilter(self.request.GET)
-        return context   
+        return context
 
 
 class StaticpagesCreate(CreateView):
@@ -61,7 +59,6 @@ class StaticpagesCreate(CreateView):
     success_url = reverse_lazy('wayrem_admin:staticpages')
 
     @method_decorator(login_required(login_url='wayrem_admin:root'))
-    @method_decorator(role_required('Static Pages Add'))
     def dispatch(self, *args, **kwargs):
         return super(StaticpagesCreate, self).dispatch(*args, **kwargs)
 
@@ -73,7 +70,6 @@ class StaticpagesUpdate(UpdateView):
     pk_url_kwarg = 'static_pages_pk'
 
     @method_decorator(login_required(login_url='wayrem_admin:root'))
-    @method_decorator(role_required('Static Pages Edit'))
     def dispatch(self, *args, **kwargs):
         return super(StaticpagesUpdate, self).dispatch(*args, **kwargs)
 
@@ -94,7 +90,6 @@ class StaticpagesView(UpdateView):
     pk_url_kwarg = 'static_pages_pk'
 
     @method_decorator(login_required(login_url='wayrem_admin:root'))
-    @method_decorator(role_required('Static Pages View'))
     def dispatch(self, *args, **kwargs):
         return super(StaticpagesView, self).dispatch(*args, **kwargs)
 
@@ -110,7 +105,6 @@ class StaticpagesView(UpdateView):
 
 class DeleteStaticpages(View):
 
-    @method_decorator(role_required('Static Pages Delete'))
     def post(self, request):
         pageid = request.POST.get('pageid')
         user = StaticPages.objects.get(pk=pageid)

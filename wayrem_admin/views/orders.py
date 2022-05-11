@@ -23,7 +23,6 @@ from django.views.generic import ListView, DetailView
 from wayrem_admin.forms import OrderStatusUpdatedForm, OrderAdvanceFilterForm, OrderStatusDetailForm, OrderUpdatedPaymentStatusForm, OrderStatusFilter
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
-from wayrem_admin.decorators import role_required
 from wayrem_admin.utils.constants import *
 from wayrem_admin.filters.order_filters import OrderFilter
 from django.db.models import Sum, Case, CharField, Value, When
@@ -102,7 +101,6 @@ class OrderReferenceExport(View):
 class OrderExportView(View):
 
     @method_decorator(login_required(login_url='wayrem_admin:root'))
-    @method_decorator(role_required('Customer Order View'))
     def get(self, request, **kwargs):
         qs = Orders.objects.annotate(OrderReference=F('ref_number'), OrderDate=F('order_date'), Customer=F('customer__first_name'), Mobile=F('order_phone'), Status=F(
             'status__name'), Items=Value('', output_field=CharField()), Total=F('grand_total')).values('id', 'OrderReference', 'OrderDate', 'Customer', 'Mobile', 'Status', 'Items', 'Total')
@@ -175,7 +173,6 @@ class OrderStatusUpdated(LoginRequiredMixin, UpdateView):
     template_name = "orders/update_order_status.html"
     pk_url_kwarg = 'id'
 
-    @method_decorator(role_required('Customer Order Edit'))
     def dispatch(self, *args, **kwargs):
         return super(OrderStatusUpdated, self).dispatch(*args, **kwargs)
 
@@ -271,7 +268,6 @@ class OrderPaymentStatusUpdated(LoginRequiredMixin, UpdateView):
     template_name = "orders/update_order_status.html"
     pk_url_kwarg = 'id'
 
-    @method_decorator(role_required('Customer Order Edit'))
     def dispatch(self, *args, **kwargs):
         return super(OrderPaymentStatusUpdated, self).dispatch(*args, **kwargs)
 
@@ -297,7 +293,6 @@ class OrderInvoiceView(LoginRequiredMixin, View):
         img_str = base64.b64encode(buff.getvalue())
         return img_str.decode("utf-8")
 
-    @method_decorator(role_required('Customer Order View'))
     def get(self, request, id):
         context = {}
         context['currency'] = CURRENCY
@@ -341,7 +336,6 @@ class OrderUpdateView(LoginRequiredMixin, DetailView):
     context_object_name = 'order'
     KEY = 'setting_vat'
 
-    @method_decorator(role_required('Customer Order Edit'))
     def dispatch(self, *args, **kwargs):
         return super(OrderUpdateView, self).dispatch(*args, **kwargs)
 

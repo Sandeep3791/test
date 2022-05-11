@@ -12,7 +12,6 @@ from django.contrib.auth.decorators import login_required
 from django.views import View
 from django.utils.decorators import method_decorator
 from wayrem_admin.models import Customer, EmailTemplateModel, CustomerDevice, Settings
-from wayrem_admin.decorators import role_required
 from wayrem_admin.export import generate_pdf, generate_excel
 from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -44,7 +43,6 @@ class CustomersList(ListView):
 #     template_name = "customerlist.html"
 
 #     @method_decorator(login_required(login_url='wayrem_admin:root'))
-#     @method_decorator(role_required('Customer Profile View'))
 #     def get(self, request, format=None):
 #         userlist = Customer.objects.all()
 #         paginator = Paginator(userlist, 5)
@@ -62,7 +60,6 @@ class CustomersList(ListView):
 
 class Active_BlockCustomer(View):
     @method_decorator(login_required(login_url='wayrem_admin:root'))
-    @method_decorator(role_required('Customer Profile Edit'))
     def get(self, request, id):
         user = Customer.objects.filter(id=id).first()
         if user.status:
@@ -73,13 +70,11 @@ class Active_BlockCustomer(View):
         return redirect('wayrem_admin:customerslist')
 
 
-@role_required('Customer Profile View')
 def customer_details(request, id=None):
     user = Customer.objects.filter(id=id).first()
     return render(request, 'customer/customer_view.html', {'user': user})
 
 
-@role_required('Customer Profile View')
 def customer_verification(request, id=None):
     status = request.GET.get('status')
     print(status)
