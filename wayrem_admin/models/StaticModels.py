@@ -786,3 +786,20 @@ class BusinessType(models.Model):
 
     class Meta:
         db_table = 'business_type'
+
+
+class PaymentTransaction(models.Model):
+    id = models.AutoField(primary_key=True, unique=True)
+    order_id = models.IntegerField(null=True, blank=True)
+    transaction_id = models.TimeField(null=True, blank=True)
+    checkout_id = models.TextField(null=True, blank=True)
+    response_body = models.TextField(null=True, blank=True)
+    payment_type = models.CharField(max_length=255, null=True, blank=True)
+    payment_brand = models.CharField(max_length=255, null=True, blank=True)
+    amount = models.CharField(max_length=255, blank=True, default=0.00)
+    status = models.CharField(max_length=255, blank=True, default="PAID")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'payment_transactions'
