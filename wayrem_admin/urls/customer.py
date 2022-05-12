@@ -1,5 +1,6 @@
 from django.urls import path
 from wayrem_admin import views
+from wayrem_admin.views.customer import PaymentForm
 
 urlpatterns = [
     path('customers-list/', views.CustomersList.as_view(), name='customerslist'),
@@ -10,6 +11,9 @@ urlpatterns = [
          views.customer_details, name='customerdetails'),
     path('customer-verify/<str:id>/',
          views.customer_verification, name='customer_verification'),
-    path('customer-email-update/<str:id>/', views.customer_email_update, name='customer_email_update')
+    path('customer-email-update/<str:id>/',
+         views.customer_email_update, name='customer_email_update'),
+    path('customer-payment/',
+         views.PaymentForm.as_view(), name='customer_payment'),
 
 ]

@@ -190,3 +190,11 @@ def customer_email_update(request, id=None):
     else:
         form = CustomerEmailUpdateForm(instance=customer)
     return render(request, 'customer_email_update.html', {'form': form, 'id': customer.id})
+
+
+class PaymentForm(View):
+    template_name = "customer/payment_form.html"
+
+    def get(self, request):
+        checkout_id = request.GET.get("id")
+        return render(self.request, self.template_name, {"checkoutId": checkout_id})
