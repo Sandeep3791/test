@@ -6,7 +6,7 @@ from database import engine
 from starlette.middleware.cors import CORSMiddleware
 from fastapi.middleware import Middleware
 from models import user_models,firebase_models,order_models,product_models
-from routers import cart_routers,common_routers,firebase_routers,grocery_routers,order_routers,product_routers,user_address_routers,user_routers
+from routers import cart_routers,common_routers,firebase_routers,grocery_routers,order_routers,product_routers,user_address_routers,user_routers,payment_routers
 from schemas import user_schemas
 from fastapi_jwt_auth.exceptions import AuthJWTException
 from fastapi.responses import JSONResponse
@@ -28,6 +28,7 @@ app.include_router(product_routers.router)
 app.include_router(order_routers.router)
 app.include_router(common_routers.router)
 app.include_router(firebase_routers.router)
+app.include_router(payment_routers.router)
 
 
 
