@@ -2,9 +2,11 @@ from wayrem_admin.models.categories import *
 from wayrem_admin.models.customers import *
 from wayrem_admin.models.ingredients import *
 from wayrem_admin.models.inventory import *
+from wayrem_admin.models.orders import *
 from wayrem_admin.models.permissions import *
 from wayrem_admin.models.products import *
 from wayrem_admin.models.purchase_order import *
+from wayrem_admin.models.recurrence import *
 from wayrem_admin.models.roles import *
 from wayrem_admin.models.settings import *
 from wayrem_admin.models.SupplierModels import *

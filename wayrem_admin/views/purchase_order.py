@@ -26,7 +26,7 @@ from django.http import HttpResponse
 from django.template.loader import render_to_string
 from weasyprint import HTML
 import tempfile
-from wayrem_admin.models_recurrence import ForecastJobtype
+from wayrem_admin.models import ForecastJobtype
 from django.core import serializers
 
 

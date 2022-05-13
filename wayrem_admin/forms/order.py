@@ -2,7 +2,7 @@ from ckeditor.widgets import CKEditorWidget
 from django.forms import Textarea, ModelChoiceField, CharField
 from django import forms
 from django.forms import widgets
-from wayrem_admin.models_orders import Orders, OrderTransactions, StatusMaster
+from wayrem_admin.models import Orders, OrderTransactions, StatusMaster
 from django.forms import ModelForm
 from wayrem_admin.utils.constants import *
 

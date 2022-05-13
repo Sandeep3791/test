@@ -1,5 +1,4 @@
 from django.db import models
-from .models import *
 
 
 class RecurrentType(models.Model):

@@ -2,7 +2,7 @@ import imp
 from django.shortcuts import get_object_or_404
 from wayrem_admin.models import Notification
 import datetime
-from wayrem_admin.models_orders import Orders
+from wayrem_admin.models import Orders
 from wayrem_admin.models import Customer
 
 

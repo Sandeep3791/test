@@ -1,6 +1,6 @@
 from tracemalloc import start
 from wayrem_admin.models import Customer, Notification, User, Supplier, Products, PurchaseOrder
-from wayrem_admin.models_orders import OrderTransactions, Orders
+from wayrem_admin.models import OrderTransactions, Orders
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.views.generic import RedirectView

@@ -1,5 +1,5 @@
 import django_filters
-from wayrem_admin.models_orders import Orders
+from wayrem_admin.models import Orders
 from wayrem_admin.models import BusinessType, Customer
 from wayrem_admin.utils.constants import *
 

@@ -15,7 +15,7 @@ from wayrem_admin.forms import SettingsForm
 from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from wayrem_admin.export import generate_excel
-from wayrem_admin.models_orders import Orders, OrderDetails, StatusMaster, OrderDeliveryLogs, OrderTransactions
+from wayrem_admin.models import Orders, OrderDetails, StatusMaster, OrderDeliveryLogs, OrderTransactions
 from wayrem_admin.models import Inventory
 from wayrem_admin.models import Settings
 from django.views.generic.edit import CreateView, UpdateView

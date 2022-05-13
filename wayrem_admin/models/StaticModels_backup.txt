@@ -648,7 +648,7 @@ class Inventory(models.Model):
 
     def order_inventory_process(self, order_id):
         # When we place order inventory process to shipping
-        from wayrem_admin.models_orders import Orders, OrderDetails
+        from wayrem_admin.models import Orders, OrderDetails
         orders = Orders.objects.filter(id=order_id).first()
         order_status = orders.status.id
         order_details = OrderDetails.objects.filter(order=order_id)

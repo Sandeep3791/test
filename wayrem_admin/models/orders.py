@@ -1,5 +1,5 @@
 from django.db import models
-from .models import *
+# from wayrem_admin.models import *
 import random
 
 
@@ -281,7 +281,8 @@ class OrderLoginextShipment(models.Model):
 
 class CustomerNotification(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
-    customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
+    customer = models.ForeignKey(
+        'wayrem_admin.Customer', on_delete=models.CASCADE)
     order = models.ForeignKey('wayrem_admin.Orders', models.CASCADE, null=True)
     title = models.CharField(max_length=255, null=True)
     message = models.CharField(max_length=255, null=True)

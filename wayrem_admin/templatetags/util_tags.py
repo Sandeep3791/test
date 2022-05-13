@@ -5,8 +5,8 @@ from wayrem_admin.services import inst_SupplierProduct
 from django import template
 from django.template import Context
 from datetime import date, datetime
-from wayrem_admin.models_orders import OrderDetails, OrderTransactions, OrderDetails
-from wayrem_admin.models_recurrence import ForecastProduct
+from wayrem_admin.models import OrderDetails, OrderTransactions, OrderDetails
+from wayrem_admin.models import ForecastProduct
 from django.db.models import Sum
 register = template.Library()
 

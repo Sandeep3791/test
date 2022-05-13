@@ -1,7 +1,7 @@
 from wayrem_admin.loginext.liberary.api_base import ApiBase
 from wayrem_admin.loginext.liberary.order import Order
-from wayrem_admin.models_orders import Orders, ShippingLoginextNotification
-from wayrem_admin.models_recurrence import ForecastJobtype, ForecastProduct, GroceryProducts, ForecastProduct
+from wayrem_admin.models import Orders, ShippingLoginextNotification
+from wayrem_admin.models import ForecastJobtype, ForecastProduct, GroceryProducts, ForecastProduct
 from wayrem_admin.models import Settings
 from wayrem_admin.utils.constants import *
 from datetime import timedelta, date, datetime
