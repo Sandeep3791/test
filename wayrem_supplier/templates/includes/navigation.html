@@ -1,0 +1,82 @@
+{% load static %}
+    <nav class="navbar navbar-main navbar-expand-lg px-0 mx-4 shadow-none border-radius-xl" id="navbarBlur" navbar-scroll="true">
+      <div class="container-fluid py-1 px-3">
+        <nav aria-label="breadcrumb">
+          <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
+            {% comment %} <li class="breadcrumb-item text-sm"><a class="opacity-5 text-dark" href="/">HOME</a></li>
+            <li class="breadcrumb-item text-sm text-dark active" aria-current="page">Dashboard</li> {% endcomment %}
+          </ol>
+          {% comment %} <h6 class="font-weight-bolder mb-0">Dashboard</h6> {% endcomment %}
+        </nav>
+        <div class="collapse navbar-collapse mt-sm-0 mt-2 me-md-0 me-sm-4" id="navbar">
+          <div class="ms-md-auto pe-md-3 d-flex align-items-center">
+            {% comment %} <div class="input-group">
+              <span class="input-group-text text-body"><i class="fas fa-search" aria-hidden="true"></i></span>
+              <input type="text" class="form-control" placeholder="Type here...">
+            </div> {% endcomment %}
+          </div>
+          <ul class="navbar-nav  justify-content-end">
+            <li class="nav-item d-flex align-items-center">
+              <a href="{% url 'wayrem_supplier:supplier_profile' %}" class="nav-link text-body font-weight-bold px-0">
+                <i class="fa fa-user me-sm-1" style="color: #344767"></i>&nbsp;
+                <span class="d-sm-inline d-none" style="color: #344767">{{request.session.supplier|title}}</span>
+              </a>
+            </li>
+            {% comment %} <li class="nav-item d-xl-none ps-3 d-flex align-items-center">
+              <a href="javascript:;" class="nav-link text-body p-0" id="iconNavbarSidenav">
+                <div class="sidenav-toggler-inner">
+                  <i class="sidenav-toggler-line"></i>
+                  <i class="sidenav-toggler-line"></i>
+                  <i class="sidenav-toggler-line"></i>
+                </div>
+              </a>
+            </li> {% endcomment %}
+            <li class="nav-item px-3 d-flex align-items-center">
+              {% comment %} <a href="javascript:;" class="nav-link text-body p-0">
+                <i class="fa fa-cog fixed-plugin-button-nav cursor-pointer"></i>
+              </a> {% endcomment %}
+            </li>
+            {% comment %} {% if request.notifications %} {% endcomment %}
+            <li class="nav-item dropdown pe-2 d-flex align-items-center">
+              <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                <i class="fa fa-bell cursor-pointer" style="color: #344767"></i>
+                {% if request.notifications %}
+                  <span class="icon-badge rounded-circle unread-notifications" style="display: block;"></span>
+                {% endif %}
+              </a>
+              <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4 notification_lists" aria-labelledby="dropdownMenuButton">
+                <a href="#" class="text-center text-dark fw-bold border-bottom border-light py-3">Notifications</a>
+                {% if request.notifications %}
+                <li class="mb-2">              
+                  {% for notification in request.notifications %}
+                  <a class="dropdown-item border-radius-md" href="{% url 'wayrem_supplier:notification-seen' notification.id %}">
+                    <div class="d-flex py-1">
+                      <!-- <div class="my-auto">
+                        <img src="{% static '/assets/img/team-2.jpg' %}" class="avatar avatar-sm  me-3 ">
+                      </div> -->
+                      <div class="d-flex flex-column justify-content-center">
+                        <h6 class="text-sm font-weight-normal mb-1">
+                          <span class="font-weight-bold notificationtxt">{{notification.message}}</span>
+                        </h6>
+                        <p class="text-xs text-secondary mb-0">
+                          <i class="fa fa-clock me-1"></i>
+                          {{notification.created_at|date:"h:i:s a"}}
+                        </p>
+                      </div>
+                    </div>
+                  </a>                 
+                  {% endfor %}
+                </li>
+                {% else %}
+                <div class= "">
+                  <p class="text-center my-2">No Notifications</p>
+                </div>
+                {% endif %}
+                
+              </ul>
+              {% comment %} {% endif %} {% endcomment %}
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>

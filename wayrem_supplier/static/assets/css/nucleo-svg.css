@@ -1,0 +1,561 @@
+/* Generated using nucleoapp.com */
+/* --------------------------------
+
+Icon colors
+
+-------------------------------- */
+
+.icon {
+  display: inline-block;
+  /* icon primary color */
+  color: #111111;
+  height: 1em;
+  width: 1em;
+}
+
+.icon use {
+  /* icon secondary color - fill */
+  fill: #7ea6f6;
+}
+
+.icon.icon-outline use {
+  /* icon secondary color - stroke */
+  stroke: #7ea6f6;
+}
+
+/* --------------------------------
+
+Change icon size
+
+-------------------------------- */
+
+.icon-xs {
+  height: 0.5em;
+  width: 0.5em;
+}
+
+.icon-sm {
+  height: 0.8em;
+  width: 0.8em;
+}
+
+.icon-lg {
+  height: 1.6em;
+  width: 1.6em;
+}
+
+.icon-xl {
+  height: 2em;
+  width: 2em;
+}
+
+/* -------------------------------- 
+
+Align icon and text 
+
+-------------------------------- */
+
+.icon-text-aligner {
+  /* add this class to parent element that contains icon + text */
+  display: flex;
+  align-items: center;
+}
+
+.icon-text-aligner .icon {
+  color: inherit;
+  margin-right: 0.4em;
+}
+
+.icon-text-aligner .icon use {
+  color: inherit;
+  fill: currentColor;
+}
+
+.icon-text-aligner .icon.icon-outline use {
+  stroke: currentColor;
+}
+
+/* -------------------------------- 
+
+Icon reset values - used to enable color customizations
+
+-------------------------------- */
+
+.icon {
+  fill: currentColor;
+  stroke: none;
+}
+
+.icon.icon-outline {
+  fill: none;
+  stroke: currentColor;
+}
+
+.icon use {
+  stroke: none;
+}
+
+.icon.icon-outline use {
+  fill: none;
+}
+
+/* -------------------------------- 
+
+Stroke effects - Nucleo outline icons
+
+- 16px icons -> up to 1px stroke (16px outline icons do not support stroke changes)
+- 24px, 32px icons -> up to 2px stroke
+- 48px, 64px icons -> up to 4px stroke
+
+-------------------------------- */
+
+.icon-outline.icon-stroke-1 {
+  stroke-width: 1px;
+}
+
+.icon-outline.icon-stroke-2 {
+  stroke-width: 2px;
+}
+
+.icon-outline.icon-stroke-3 {
+  stroke-width: 3px;
+}
+
+.icon-outline.icon-stroke-4 {
+  stroke-width: 4px;
+}
+
+.icon-outline.icon-stroke-1 use,
+.icon-outline.icon-stroke-3 use {
+  -webkit-transform: translateX(0.5px) translateY(0.5px);
+  -moz-transform: translateX(0.5px) translateY(0.5px);
+  -ms-transform: translateX(0.5px) translateY(0.5px);
+  -o-transform: translateX(0.5px) translateY(0.5px);
+  transform: translateX(0.5px) translateY(0.5px);
+}
+
+
+/*========================sachin css==================================*/
+
+.navbar-vertical.navbar-expand-xs .navbar-collapse {
+  height:auto!important;
+}
+
+
+.sidebar_border{
+  border-right: solid 1px #dbdbdb;
+  background-color: white;
+}
+
+.sidebar_hover:hover{
+  background-color:#f2e600;
+  transition: 0.5s !important;
+  border-radius: 10px !important;
+  color: #252f40!important;
+}
+
+.sidebar_hover{
+  border-radius: 20px !important;
+  transition: 0.5s !important;
+  margin-left: 0px!important;
+  margin-right: 0px!important;
+}
+
+.navbar_border{
+  border-bottom: solid 1px #dbdbdb;
+}
+
+.navbar_border{
+  position: fixed;
+  height: 100%;
+  background: white;
+  transition: 0.5s;
+  overflow: hidden;
+}
+
+.nav_search{
+  width: 300px !important;
+}
+
+
+.user_style i{
+  background: #252f40;
+  padding: 7px;
+  border-radius: 10px;
+  color: white;
+}
+
+.main_content{
+  position: absolute;
+  width: calc(100% - 250px) !important;
+  left: 250px !important;
+  min-height: 100 vh;
+  transition: 0.5s;
+  margin: 0 !important;
+}
+
+.product_search{
+  width: 100%;
+  height: 45px;
+  border: #ced4da solid 1px;
+  border-radius: 10px;
+  padding: 5px 10px;
+  outline: none;
+}
+
+.export_file{
+  border: none;
+  border-radius: 8px;
+  background: #0aaaca;
+  color: #ffffff;
+  padding: 9px 16px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-weight: 500;
+  font-size: 16px;
+}
+
+.export_file:hover{
+  color: white!important;
+}
+
+.dropdown-item:hover, .dropdown-item:focus {
+  color: #252f40!important;
+}
+
+.filter_select{
+  height: 45px;
+}
+
+.add_new{
+  background-color: rgb(0 198 107)!important;
+  border-radius: 8px!important;
+  font-weight: 500!important;
+  margin-bottom: 0px!important;
+  color: white!important;
+}
+
+.filter_btn{
+  background-color: rgb(255, 255, 255)!important;
+  border-radius: 8px!important;
+  border: #ced4da solid 1px!important;
+  font-weight: 500!important;
+  margin-bottom: 0px!important;
+  box-shadow:none!important;
+  color: rgb(0, 0, 0)!important;
+}
+
+.apply_btn{
+  background-color:#17c1e8!important;
+  border-radius: 8px!important;
+  font-weight: 500!important;
+  margin-bottom: 0px!important;
+  color: white!important
+}
+
+.cancel_btn{
+  background-color:tomato!important;
+  border-radius: 8px!important;
+  font-weight: 500!important;
+  margin-bottom: 0px!important;
+  color: white!important
+}
+
+.tbody_back{
+  background-color: white;
+}
+
+.tbody_back tr:hover{
+  box-shadow: 0px 14px 20px 0px #00000014;
+  transition: 0.7s;
+}
+
+.action_btn{
+  border-radius:8px;
+  background-color: rgba(255, 99, 71, 0.13);
+  color: tomato;
+}
+
+.edit_action_btn{
+  border-radius:8px;
+  background-color:#17c2e81a ;
+  color:#17c1e8 ;
+}
+
+.view_action_btn{
+  border-radius:8px;
+  background-color:#83d61625;
+  color:#82d616;
+}
+
+.btn_danger{
+  background-color: #fb3a5b!important;
+}
+
+.row{
+  margin-left: 0!important;
+  margin-right: 0!important;
+}
+
+.sidenav {
+  z-index:0 !important;
+}
+
+.scroll_style{
+  overflow-x: scroll;
+}
+
+.table_head{
+  border-radius: 10px;
+}
+
+.table_head tr{
+  border-radius: 10px;
+}
+
+.table_head tr th:first-child{
+  border-radius: 10px 0px 0px 10px;
+}
+
+.table_head tr th:last-child{
+  border-radius: 0px 10px 10px 0px;
+}
+
+
+.table_shadow{
+  box-shadow: 0px 14px 20px 0px #00000014;
+}
+
+/*-----------edit profile --------------*/
+
+.profile_img{
+  border: solid 2px white;
+  width: 10rem;
+  height: 10rem;
+} 
+
+.profile-cover {
+  border-radius: 1rem 1rem 0px 0px;
+  background-repeat: no-repeat;
+  background-position: top center;
+  background-size: cover;
+  height: 200px;
+}
+
+/*----------------add product----------------------*/
+.input_bar input.form-control{
+  background: white!important;
+}
+
+/*==============filter======================*/
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+.dropdown-content{
+  display: none;
+  position: absolute;
+  background-color: white;
+  min-width: 810px;
+  box-shadow: 0px 8px 16px 0px rgb(0 0 0 / 20%);
+  padding: 12px 16px;
+  z-index: 1;
+  top: 50px;
+  left: -417px;
+  border-radius: 10px;
+}
+
+/*------------------sidebar_cancel_icon--------------------*/
+
+.sidebar_cancel_icon i{
+  display: none;
+}
+
+
+
+
+
+/*===================media query===============================*/
+
+@media only screen and (max-width: 768px) {
+
+  .main_content{
+    width: 100%!important;
+    left: 0 !important;
+  }
+
+  .sidebar_cancel_icon i{
+    display: block;
+    font-size: 1.5rem;
+  }
+
+  .nav_search{
+    width: 300px !important;
+  }
+
+  .burger_icon{
+    width: 50px!important;
+  }
+  
+
+}
+
+
+@media only screen and (max-width: 990px) {
+
+  .profile{
+    display: none;
+  }
+
+}
+
+
+
+.approved_po {
+  display: block;
+  background: #00c66b1c;
+  padding: 1rem;
+  border-radius: 10px;
+  color: #00c66b !important;
+}
+
+.declined_po {
+  display: block;
+  background: #e727512c;
+  padding: 1rem;
+  border-radius: 10px;
+  color: #e72751 !important;
+}
+
+.approval_btn {
+  background-color: #00c66b!important;
+  color: #fff!important;
+}
+
+.decline_btn {
+  background-color: #e72751!important;
+  color: #fff!important;
+}
+
+.invoice {
+  cursor: pointer!important;
+}
+
+.invoice input {
+  display: none;
+  cursor: pointer!important;
+}
+
+.invoice label {
+  display: block;
+  padding: 0.8rem;
+  background-color: #252f4010;
+  color: #252f40;
+  border-radius: 10px;
+  font-size: 1.2rem;
+  cursor: pointer!important;
+  margin: 0;
+  text-align: center;
+}
+
+.uploaded_invoice {
+  display: flex;
+  justify-content: space-between;
+}
+
+.uploaded_invoice span {
+  background: #e3f9ef;
+  padding: .6rem;
+  border-radius: 10px;
+  color: #00c66b !important;
+  width: 100%;
+}
+
+.uploaded_invoice div {
+  display: flex;
+  justify-content: center;
+  background-image: linear-gradient( 310deg, #141727 0%, #3A416F 100%);
+  width: auto;
+  padding: 0rem 2rem;
+  border-radius: 10px;
+  color: #fff;
+  align-items: center;
+  cursor: pointer;
+}
+
+
+/* Timeline */
+
+.timeline_area {
+  border-left: 2px solid #e0e0e0;
+  padding: 0 20px;
+  margin: 15px;
+}
+
+.timline_status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  font-size: 1rem;
+  /* border: 1px solid #f1f2f3; */
+  position: relative;
+  margin: 10px auto;
+}
+
+.timline_status span {
+  font-size: .8rem;
+}
+
+.timline_status:before {
+  content: '';
+  display: block;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-color: #fff;
+  border: 2px solid #e0e0e0;
+  position: absolute;
+  top: 23px;
+  left: -28px;
+}
+
+.fill_status_comp {
+  padding: 10px 0;
+}
+
+.fill_status_comp:before {
+  background-color: #272c4a!important;
+  border: 1px solid #272c4a!important;
+  top: 25px;
+}
+
+.comp_status {
+  /* background: #00c66b1c; */
+  width: 200px;
+  padding: 0.5rem 1rem;
+  /* border-radius: 10px; */
+  /* font-weight: 600; */
+  color: #272c4a;
+}
+
+.fill_status_current:before {
+  background-color: #00c66b!important;
+  border: 2px solid #272c4a!important;
+  top: 25px;
+}
+
+.current_status, .fill_status_current .tstatus, .fill_status_comp .tstatus{
+  color: #252f40;
+  padding: .4rem;
+  font-weight: 700;
+}
+
+ 
+
+.status {
+  padding: .4rem;
+  font-weight: 300;
+  font-size: .9rem;
+}

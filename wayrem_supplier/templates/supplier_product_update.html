@@ -1,0 +1,186 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %} Update Product {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js" integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.css" integrity="sha512-p209YNS54RKxuGVBVhL+pZPTioVDcYPZPYYlKWS9qVvQwrlzxBxkR8/48SCP58ieEuBosYiPUS970ixAfI/w/A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+
+
+<script type="text/javascript">
+       $(document).ready(function () {
+            $('#id_product_category').select2({
+            placeholder: 'Select Category',
+            })
+            $('#id_supplier_name').select2({
+            placeholder: 'Select Supplier',
+            });
+     });
+</script>
+<div class="topbar_pages px-4 py-1">
+    <h5 class="font-weight-bolder mb-0">Update Products for Pricing</h5>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
+          <li class="breadcrumb-item text-sm"><a href="{% url 'wayrem_supplier:supplier_profile' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
+          <li class="breadcrumb-item text-sm"><a href="{% url 'wayrem_supplier:supplier_product_list' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Product Pricing</a></li>
+          <li class="breadcrumb-item active text-sm" aria-current="page">Update Products for Pricing</li>
+        </ol>
+    </nav>
+</div>
+{% if messages %}
+    {% for message in messages %}
+        <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
+            <strong> {{ message }}</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<div class="card mt-5">
+    <div class="card-header pb-0 px-3"><h6 class="mb-0">Edit Products Pricing</h6></div>
+    <div class="card-body pt-4 p-3">
+        {% if form.non_field_errors %}
+            {% for error in form.non_field_errors %}
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    {{error}}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </div>
+            {% endfor %}
+        {% endif %}
+        <form method="post" action="{% url 'wayrem_supplier:supplierproductupdate' id %}" class="submit_validation_form" enctype="multipart/form-data" >
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="row">
+                <!-- Form -->
+                <div class="col-lg-6">
+                    <div class="form-group mb-4">
+                        <label for="name">SKU <span class="text-danger"></span> <span class="text-danger"><em> {{form.SKU.errors | striptags}}
+                        </em></span></label>
+                        <div class="input_bar" >   
+                            {{form.SKU}}
+                            {{form.supplier_id}}
+                        </div>                                            
+                    </div>
+                </div>
+                <!-- End of Form -->
+
+                <!-- Form -->
+                <div class="col-lg-6">
+                    <div class="form-group mb-4">
+                        <label for="product_name">Product Name <span class="text-danger"></span> <span class="text-danger"> <em> {{form.product_name.errors | striptags}}
+                        </em> </span></label>
+                        <div class="input-group input_bar">                                                
+                            {{form.product_name}}
+                        </div>                                            
+                    </div>
+                </div>
+                <!-- End of Form -->
+            </div>
+            <div class="row">
+                
+                <!-- Form -->
+                <div class="col-lg-6">
+                    <div class="form-group mb-4">
+                        <label for="quantity">Quantity <span class="text-danger">* <em> {{form.quantity.errors | striptags}}
+                        </em> </span></label>
+                        <div class="input-group">                                                
+                            {{form.quantity}}
+                        </div>                                           
+                    </div>
+                </div>
+                <!-- End of Form -->
+                    <!-- Form -->
+                    <div class="col-lg-6">
+                    <div class="form-group mb-4">                                        
+                        <label for="price">Price <span class="text-danger">*</span> <span class="text-danger">
+                            <em> {{form.price.errors | striptags}}
+                            </em>
+                        </span></label>
+                        <div class="input-group">                                                
+                            {{form.price}}
+                            <span class="currencyfield">SAR</span>
+                        </div>                                            
+                    </div>
+                </div>
+                <!-- End of Form -->                                    
+            </div>
+                                        
+            <div class="row">
+                
+
+                <!-- Form -->
+                    <div class="col-lg-6">
+                    <div class="form-group mb-4">
+                        <label for="deliverable_days">Deliverable Days  <span class="text-danger">*</span>  <span class="text-danger"> <em> {{form.deliverable_days.errors | striptags}}
+                            </em>
+                            </span>
+                        </label>
+                        <div class="input-group">                                               
+                            {{form.deliverable_days}}
+                        </div>      
+                        <div class="input-group error_field_msg" style="color: #d12525; display: none;">Please Select Deliverable Days</div>
+                    </div>
+                </div> 
+                <!-- End of Form -->
+                <!-- Form -->
+                <div class="col-lg-6">
+                    <div class="form-group my-4 ">
+                        
+                        <div class="form-check ">                                                
+                            {{form.available}}
+                            <label for="available" class="form-check-label fw-normal mb-0">Available 
+                                <em> {{form.available.errors | striptags}}
+                                </em>
+                            </span></label>  
+                        </div>       
+                                                           
+                    </div>
+                </div>
+                <!-- End of Form -->
+                <div class="mt-1">
+                    <!-- <a  href="#" class="btn  btn-success btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Send</a> -->
+                    <a href="{% url 'wayrem_supplier:supplier_product_list' %}"
+                        class="btn  btn-danger btn-block">Cancel</a>
+                    <button type="submit" class="btn btn-dark" >Update Product Pricing</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<script>
+    jQuery('.submit_validation_form').submit(function(){
+        if(validateformbyid('#id_quantity') == 0){
+            return false;
+        }
+        if(validateformbyid('#id_price') == 0){
+            return false;
+        }
+        if(validateformbyid('#id_deliverable_days') == 0){
+            return false;
+        }
+    });
+    function validateformbyid(id) {
+        var valid = 1;
+        
+        if($(id).val()==""){
+            $(id).parent('.input-group').next('.error_field_msg').show();  
+            valid = 0;
+        } else { $(id).parent('.input-group').next('.error_field_msg').hide(); valid = 1;}
+        return valid;
+    }
+
+</script>
+{% endblock javascripts %}
+
+

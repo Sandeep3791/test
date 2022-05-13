@@ -1,0 +1,94 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+
+{% block title %}Purchase Order{% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+
+{% block content %}
+
+
+<main class="  align-items-center admin_login_lg">
+    <!-- Section -->
+    <section class="d-flex align-items-center my-5 mt-lg-6 mb-lg-5">
+        <div class="container">
+            <div class="row justify-content-center form-bg-image">
+                <div class="col-12 d-flex align-items-center justify-content-center">
+                    <div class="bg-white table_shadow rounded-3 pt-3 ps-4 pe-4 pb-4 w-100" >
+                        <div class="text-center text-md-center mb-4 mt-md-0">
+                            <h1 class="mb-0 h3">                                
+                            </h1>
+                            <p>
+                                {% if messages %}
+                                {% for message in messages %}
+                            <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show"
+                                {% endif %} role="alert">
+                                <strong> {{ message }}</strong>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+                            </p>
+                            <div class="row">
+                                <div class="col">
+                                    <h5>Purchase Order</h5>
+                                    <p>{{po.po_name}}</p>
+                                </div>   
+                                <hr>                            
+                            </div>
+                            <div class="container mt-4">
+                                <table class="table">
+                                    <thead class="table-dark table_head">
+                                        <tr>
+                                            <th scope="col">S. No.</th>
+                                            <th scope="col">Product</th>
+                                            <th scope="col">Quantity</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% for i in polist %}
+                                        <tr>
+                                            <th scope="row">{{forloop.counter}}</th>
+                                            <td>
+                                            {{i.product_name.product_name}}</td>
+                                            <td>{{i.product_qty}}</td>
+                                            
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                <div class="text-right">
+                                <a href="{% url 'wayrem_supplier:poinvoicelist' %}" class="btn btn-dark my-3" >Back</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<script src="https://code.jquery.com/jquery-2.2.4.js"></script>
+<script>
+
+    $('#code').keyup(function () {
+        if (this.value.length >= 12) {
+            $('#subHere').click();
+        }
+    });
+</script>
+
+<script>
+    document.addEventListener('keydown', function (event) {
+        if (event.keyCode == 13 || event.keyCode == 17 || event.keyCode == 74)
+            event.preventDefault();
+    });
+</script>
+{% endblock javascripts %}

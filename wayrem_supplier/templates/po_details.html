@@ -1,0 +1,503 @@
+{% extends "layouts/base.html" %} {% load static %} {% block title %}Purchase Order{% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %} {% block content %}
+
+<div class="topbar_pages padding-0">
+    <div class="">
+        <h4 class="text-title">Purchase Order Management</h2>
+            <div class="breadcrumb-section">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url 'wayrem_supplier:supplier_profile' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Purchase Order Management</li>
+                    </ol>
+                </nav>
+            </div>
+    </div>
+</div>
+
+<div class="subheader mt-3 mb-3">
+
+    <div class="col-xl-12 col-lg-12 col-md-12">
+        <div class="d-flex justify-content-between mb-2">
+            <h6 class="m-0">Purchase Order Details</h6>
+        </div>
+
+        <div class="bg-white table_shadow rounded-3 pt-3 ps-3 pe-3 pb-4 w-100">
+
+            <div class="d-flex justify-content-between">
+                <div>
+                    <h4>#{{polist.0.po_name}}</h4>
+                    <span class="font-weight-bold text-dark">{{polist.0.created_at|date:"d M Y"}}</span> at
+                    <span class="font-weight-bold text-dark">{{polist.0.created_at|date:"h:i a"}}</span><br>
+                    {% comment %} {% if 'declined' not in polist.0.status and 'approved' not in polist.0.status %} {% endcomment %}
+                    {% if 'declined' not in polist.0.status and 'approved' not in polist.0.status and 'preparing order' not in polist.0.status and 'shipping order' not in polist.0.status and 'delivered' not in polist.0.status %}
+                        <span class="font-weight-bold text-gray bg-gradient-danger badge badge-sm py-3">Your Purchase Order need your Approval</span>
+                    {% elif 'approved' in polist.0.status or 'preparing order' in polist.0.status or 'shipping order' in polist.0.status %}
+                        <span class="font-weight-bold text-gray bg-gradient-info badge badge-sm py-3"><b>Your Purchase Order is Approved Please Raise Invoice</b></span>
+                    {% endif %}
+                </div>
+
+                <div class="d-flex flex-column justify-content-end align-items-end">
+                    <a target="_blank" href="{% url 'wayrem_supplier:pdf_po' %}?po_id={{polist.0.po_id}}" class="btn btn-info mb-2" type="button"><i class="fa fa-download" aria-hidden="true"></i>  Download Purchase Order</a>
+                    <span class="font-weight-bold text-dark">{{polist.0.supplier_name.company_name|title}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+<main class="  align-items-center admin_login_lg">
+    <!-- Section -->
+    <section class="align-items-center my-5 mt-lg-4 mb-lg-5">
+        <div class="">
+            <div class="row justify-content-center form-bg-image">
+                <div class="col-8 d-flex align-items-center flex-column px-0">
+                    <div class="bg-white table_shadow rounded-3 pt-3 ps-3 pe-3 pb-4 w-100">
+                        <div class="text-center text-md-center mb-4 mt-md-0">
+                            <h1 class="mb-0 h3">
+                                {% comment %} <img src="{% static '/assets/img/logo/Wayrem_logo..svg'%}" style="width:80%" alt=""> {% endcomment %}
+                            </h1>
+                            <p class="m-0 text-left">
+                                {% if messages %} {% for message in messages %}
+                                <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
+                                    <strong> {{ message }}</strong>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                                {% endfor %} {% endif %}
+                            </p>
+                            <!-- <div class="row">
+                                <div class="col">
+                                    <h5>Purchase Order</h5>
+                                    <p>{{po.po_name}}</p>
+                                </div>
+                                <hr>
+                            </div> -->
+                            <div class="container p-0">
+                                <table class="table">
+                                    <thead class="table-dark table_head">
+                                        <tr>
+                                            <th scope="col">#</th>
+                                            <th scope="col">SKU</th>
+                                            <th scope="col">Product</th>
+                                            <th scope="col">Qty</th>
+                                            <th scope="col">Price</th>
+                                            {% if polist.0.status ==  'waiting for approval' %}
+                                                <th scope="col">Availability</th>
+                                                {% else %}
+                                            {% endif %}
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <form action="{% url 'wayrem_supplier:po_status' id %}" id="form_po" method="post">
+                                            {% csrf_token %}
+                                            {% for i in polist %}
+                                                <tr>
+                                                    <th scope="row">{{forloop.counter}}</th> 
+                                                    <td>{{i.product_name.SKU}}</td>
+                                                    <td>{{i.product_name|truncatechars:9 }}</td>
+                                                    <td>{{i.product_qty}}</td>
+                                                    <td>SAR {{i.supplier_product.price}}</td>
+                                                    {% if i.status == 'waiting for approval' %}
+                                                        <th><input class="" type="checkbox" checked value="{{i.id}}" name="available{{forloop.counter}}" style="width:18px; height:18px; cursor:pointer;"></th>
+                                                    {% else %}
+                                                    {% endif %}
+                                                    {% comment %} <td></td> {% endcomment %}
+                                                </tr>
+                                            {% endfor %}
+                                        </form>
+                                    </tbody>
+                                </table>
+                                <div class="text-right">
+                                    {% comment %} <button class="btn btn-dark my-3" id="accept_btn">Accept</button> {% endcomment %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white table_shadow rounded-3 pt-3 ps-3 pe-3 pb-4 w-100 mt-4">
+                        Purchase order progress
+                        <section class="timeline_area">
+                            <div class="timline_status {% if 'approved' in polist.0.status %} fill_status_current {% endif %} pe-0 {% if 'preparing order' in polist.0.status or 'shipping order' in polist.0.status or 'delivered' in polist.0.status%} fill_status_comp {% endif %}">
+                                {% if 'waiting for approval' in polist.0.status %}
+                                    <div class="tstatus">Waiting for Approval</div>
+                                {% else %}
+                                    <div class="tstatus">Approved</div>
+                                {% endif %}
+                                <div class="d-flex align-items-end flex-column statusdate">
+                                    <span>{{polog.0.created_at|date:"d M Y"}}</span>
+                                    <span>{{polog.0.created_at|time:"h:i a"}}</span>                                    
+                                </div>
+                            </div>
+                            <div class="timline_status {% if 'preparing order' in polist.0.status %} fill_status_current {% endif %} pe-0 {% if 'shipping order' in polist.0.status or 'delivered' in polist.0.status%} fill_status_comp {% endif %}" value="preparing order">
+                                {% if 'delivered' in polist.0.status or 'shipping order' in polist.0.status %}
+                                <div class="tstatus">Prepared</div>
+                                {% else %}
+                                <div class="tstatus">Preparing Ongoing</div>
+                                {% endif %}
+                                    <div class="d-flex align-items-end flex-column statusdate">                                        
+                                        <span>{{polog.1.created_at|date:"d M Y"}}</span>
+                                        <span>{{polog.1.created_at|time:"h:i a"}}</span> 
+                                    </div>                                
+                            </div>
+                            <div class="timline_status {% if 'shipping order' in polist.0.status %} fill_status_current {% endif %} pe-0 {% if 'delivered' in polist.0.status%} fill_status_comp {% endif %}" value="shipping order">
+                                {% if 'delivered' in polist.0.status%}      
+                                <div class="tstatus">Shipped</div>
+                                {% else %}
+                                <div class="tstatus">Shipping Ongoing</div>
+                                {% endif %}
+                                    <div class="d-flex align-items-end flex-column statusdate">
+                                        <span>{{polog.2.created_at|date:"d M Y"}}</span>
+                                        <span>{{polog.2.created_at|time:"h:i a"}}</span> 
+                                    </div>
+                                </div>
+                            <div class="timline_status {% if 'delivered' in polist.0.status %} fill_status_current {% endif %} pe-0" value="delivered">
+                                <div class="tstatus">Delivered</div>
+                                    <div class="d-flex align-items-end flex-column statusdate">
+                                        <span>{{polog.3.created_at|date:"d M Y"}}</span>
+                                        <span>{{polog.3.created_at|time:"h:i a"}}</span> 
+                                    </div>                                
+                            </div>
+
+                        </section>
+                    </div>
+                </div>
+
+                <div class="col-4">
+                    {% if 'declined' not in polist.0.status and 'approved' not in polist.0.status and 'preparing order' not in polist.0.status and 'shipping order' not in polist.0.status and 'delivered' not in polist.0.status %}
+                        <div class="bg-white table_shadow rounded-3 p-3 w-100">        
+                            <span>{{polist.0.status|title}}</span>
+                            <div class="d-flex justify-content-between my-2">
+                                <div class="text-right">                                
+                                    <a id="accept_btn" class="btn my-auto approval_btn" ><i class="fa fa-check" aria-hidden="true"></i> Approve</a>
+                                </div>
+                                <div class="text-right">
+                                    <a class="btn decline_btn my-auto" data-bs-toggle="modal" data-bs-target="#denyModal{{polist.0.po_id}}" value="{% if 'declined' in polist.0.status %}Declined{% else %}Decline{% endif %}"><i class="fa fa-times" aria-hidden="true" ></i>  Decline  </a>
+                                </div>
+                                <!-- Modal -->
+                                    <div class="modal fade deny-modal" id="denyModal{{polist.0.po_id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="exampleModalLabel"> {{polist.0.po_name|title}}</h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+                                                <form method="POST" action="{% url 'wayrem_supplier:deny_comment' polist.0.po_id %}">
+                                                    <div class="modal-body">
+                                                        {% csrf_token %}
+                                                        <label for="tags"><h6>Are you sure want to decline Purchase Order ?</h6></label>
+                                                        <input type="text" id="tags" name="deny_comment_box" placeholder="Reason to decline the Purchase Order " class="form-control" required>                            
+                                                    </div>
+                                                    <div class="modal-footer">
+                                                        <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>                        
+                                                        <button type="submit" class="btn btn-danger">Decline</button>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                <!--End Modal -->
+                            </div>
+                        </div>
+                    {% endif %}
+                    {% comment %} {% if 'waiting for approval' in polist.0.status %} {% endcomment %}
+                    
+                    {% if 'approved' in polist.0.status or 'preparing order' in polist.0.status  or 'shipping order' in polist.0.status or 'delivered' in polist.0.status %}
+                        <div class="bg-white table_shadow rounded-3 p-3 w-100">
+                            {% if 'delivered' in polist.0.status %}
+                            <div class="approved_po"><i class="fa fa-check" aria-hidden="true"></i> Order has been Delivered!</div>
+                            {% elif 'approved' in polist.0.status %}
+                            <div class="approved_po"><i class="fa fa-check" aria-hidden="true"></i> Order has been Approved!</div>
+                            {% else %}
+                            <div class="approved_po"><i class="fa fa-check" aria-hidden="true"></i> Order has been Progressing!</div>
+                            {% endif %}
+                            <div class="d-flex justify-content-between flex-column">
+                                <span class="my-2">Purchase Order Status</span>
+
+                                <select name="d_status" id="delivered_box" class="form-select form-select-sm delivered_box" style="font-size: 1rem; height: 50px;" dataid="{{polist.0.po_id}}" {% if 'delivered' in polist.0.status %}disabled{% endif %}>
+                                    <option selected value="{{polist.0.status}}">{{polist.0.status|title}}</option>                                    
+                                    {% comment %} <option value="approved">Approved</option> {% endcomment %}
+                                    {% if 'approved' in polist.0.status %}                                    
+                                        {% if not 'preparing order' in polist.0.status %}
+                                            <option value="preparing order">Preparing Order</option>
+                                        {% endif %}
+                                    {% elif 'preparing order' in polist.0.status %}                                    
+                                        {% if not 'shipping order' in polist.0.status %}
+                                            <option value="shipping order">Shipping Order</option>
+                                        {% endif %}                              
+                                    {% elif 'shipping order' in polist.0.status %}                                        
+                                        {% if not 'delivered' in polist.0.status %}
+                                            <option value="delivered">Delivered</option>
+                                        {% endif %}                            
+                                    {% endif %}                                      
+                                </select>
+                            </div>
+                        </div>
+                    {% elif 'declined' in polist.0.status  %}
+                        <div class="bg-white table_shadow rounded-3 p-3 w-100">
+                            <span class="declined_po">
+                                <!-- <i class="fa fa-times" aria-hidden="true"></i>  -->
+                                Order has been Declined!</span>
+                        </div>
+                    {% endif %}
+                    
+                    {% comment %} {% if 'waiting for approval' in polist.0.status %}
+                    {% else %} {% endcomment %}
+                    <!-- Invoice Section -->
+                    <div class="bg-white table_shadow rounded-3 p-3 w-100 mt-3">
+                        <div>
+                            <span>Raise Invoice for Wayrem</span>
+                            <div class="row my-2 ">
+                                <div class="invoice col-12 p-0 ">
+                                    <form method="POST" action="{% url 'wayrem_supplier:uploadinvoice' %}" enctype="multipart/form-data" id="form-id">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="po_name" value="{{polist.0.po_name}}" />
+                                        <input type="file" id="file" name="myFileInput" aria-label="File browser example" required accept="application/pdf" value="{{polist.0.po_name}}" data-id="{{polist.0.po_name}}"  class="invoice_upload" {% if 'waiting for approval' in polist.0.status or 'declined' in polist.0.status %} disabled {% endif %}>
+                                        <label for="file" class="invoice_text text-secondary"><i class="fa fa-file-text-o" aria-hidden="true"></i> Choose File</label>
+                                        <span class="input-group submit" id="error1" style="color: #d12525;"></span>  
+                                    </form>                                       
+                                </div>
+                            </div>
+                            {% if 'po_name' in invo.0.po_name %}
+                                <div class="uploaded_invoice"><span>Your invoice has been uploded!</span></div>
+                            {% endif %}
+
+                            <!-- <div class="uploaded_invoice mb-4"><span>Your invoice has been uploded!</span>
+                                <div> <i class="fa fa-download" aria-hidden="true"></i></div>
+                            </div> -->
+                        </div>
+                        <div class="d-flex justify-content-between mt-3">
+                            <div class="text-right">
+                                <a class="btn bg-gradient-dark mb-0 px-5 Download_invoice {% if 'waiting for approval' in polist.0.status or 'declined' in polist.0.status %} disabled {% endif %}" data-id="{{polist.0.po_name}}" href="javascript:void(0)" data-href="{% url 'wayrem_supplier:downloadinvoice' %}?invoice_no={{polist.0.po_name}}" > <i class="fa fa-download" aria-hidden="true" ></i></a>
+                            </div>
+                            <div class="text-right">
+                                <a class="btn bg-gradient-dark mb-0 px-3 {% if 'waiting for approval' in polist.0.status or 'declined' in polist.0.status %} disabled {% endif %}" id="upload-btn" >Upload Invoice</a>
+                            </div>
+                        </div>
+                    </div>
+                    {% comment %} {% endif %} {% endcomment %}
+                </div>
+            </div>
+        </div>
+        <ul class="all-status-hidden" style="display: none;">
+            <li value="preparing order">Preparing Order</li>
+            <li value="shipping order">Shipping Order</li>
+            <li value="delivered">Delivered</li>
+          </ul> 
+    </section>
+</main>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<script src="https://code.jquery.com/jquery-2.2.4.js"></script>
+<script>
+    $('#code').keyup(function() {
+        if (this.value.length >= 12) {
+            $('#subHere').click();
+        }
+    });
+</script>
+
+<script>
+    document.addEventListener('keydown', function(event) {
+        if (event.keyCode == 13 || event.keyCode == 17 || event.keyCode == 74)
+            event.preventDefault();
+    });
+</script>
+
+<script>
+$(document).ready(function () { 
+    $('#file').change(function(e) {
+        var file = e.target.files[0].name;
+        $('.invoice_text').html('<i class="fa fa-file-text-o" aria-hidden="true"></i> '+file)
+    });
+
+    function formatAMPM(date) {
+        var hours = date.getHours();
+        var minutes = date.getMinutes();
+        var ampm = hours >= 12 ? 'p.m.' : 'a.m.';
+        hours = hours % 12;
+        hours = hours ? hours : 12; // the hour ‘0’ should be ‘12’
+        minutes = minutes < 10 ? 0+minutes : minutes;
+        if (hours < 9) {  hours = "0" + hours };
+        if (minutes < 9) {  minutes = "0" + minutes };
+        var strTime = hours + ':' + minutes + ' ' + ampm;
+        return strTime;
+      }
+    $('.delivered_box').change(function(){
+        $(this).find('option[value="'+$(this).val()+'"]').prev('option').remove();
+        var nextoption = $('ul.all-status-hidden li[value="'+$(this).val()+'"]').next('li').attr('value');
+        var nextoptiontxt = $('ul.all-status-hidden li[value="'+$(this).val()+'"]').next('li').text();
+        $(this).find('option').after('<option value="'+nextoption+'">'+nextoptiontxt+'</option>');
+
+        $('.timline_status[value="'+$(this).val()+'"]').removeClass('fill_status_current');
+        $('.timline_status[value="'+$(this).val()+'"]').addClass('fill_status_comp'); 
+        $('.timline_status[value="'+$(this).val()+'"]').prev('.timline_status').removeClass('fill_status_current');
+        $('.timline_status[value="'+$(this).val()+'"]').prev('.timline_status').addClass('fill_status_comp');
+
+        $('.timline_status[value="'+$(this).val()+'"]').addClass('fill_status_current');
+        
+          const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+            "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+          ];
+          var dt = new Date();
+          var time = formatAMPM(dt);
+          var month = dt.getMonth();
+          var day = dt.getDate();
+          var output = (day<10 ? '0' : '') + day  + ' '  + monthNames[month] + ' ' + dt.getFullYear();
+          console.log(output+'--'+time);
+          $('.timline_status[value="'+$(this).val()+'"] .statusdate').html('<span>'+output+'</span><span>'+time+'</span>');
+          
+          var textcng = '';
+          if($(this).val()=='preparing order'){}
+          else if($(this).val()=='shipping order'){
+                $('.timline_status[value="preparing order"] .tstatus').text('Prepared');}
+          else if($(this).val()=='delivered'){$('.timline_status[value="shipping order"] .tstatus').text('Shipped');}
+          
+          
+
+    });
+    $('.delivered_box').change(function(){
+        
+        var d_status = $(this).val();
+        var id = $(this).attr('dataid');
+        
+        // console.log(d_status);
+        if(d_status =='delivered') {
+            $(this).parent('form').parent('.col').html('<p class="font-weight-bold text-success"> Delivered </p>')
+            $(this).parent('form').remove();
+        } 
+        var url = "{% url 'wayrem_supplier:delivered_status' %}"
+            $.ajax({                  // initialize an AJAX request
+                url: url,                    // set the url of the request (= /persons/ajax/load-cities/ )
+                data: {
+                    'id' : id,
+                    'd_status': d_status       // add the country id to the GET parameters
+                },
+                success: function (data) { 
+                    
+                }
+            });
+    });    
+    });      
+</script>
+<script src="https://code.jquery.com/jquery-2.2.4.js"></script>
+<script>
+    $('#accept_btn').click(function(){
+        $('#form_po').submit()
+    })
+</script>
+<script>
+
+    $('#code').keyup(function () {
+        if (this.value.length >= 12) {
+            $('#subHere').click();
+        }
+    });
+</script>
+
+<script>
+    document.addEventListener('keydown', function (event) {
+        if (event.keyCode == 13 || event.keyCode == 17 || event.keyCode == 74)
+            event.preventDefault();
+    });
+</script>
+<script>
+{% comment %} var form = document.getElementById("form-id");
+document.getElementById("upload-btn").addEventListener("click", function () {
+  form.submit();
+});  {% endcomment %}
+var form = document.getElementById("form-id");
+document.getElementById("upload-btn").addEventListener("click", function () {
+    if($('.invoice_upload').val() !=='') {
+        form.submit();
+    } else {
+        alert('Please select an invoice file first');
+    }
+});
+</script>
+<script>
+    $('.upload-invoice').click(function(e){
+        e.preventDefault();
+        var acceptchk = $('.accept-action[op-id="'+$(this).attr('data-id')+'"]').attr('status');
+        if(acceptchk=='waiting for approval'){
+          $('.uploaderror.errortable').remove()
+          $(this).after('<span class="uploaderror errortable">Please accept before raise invoice.</span>');
+        } else if(acceptchk=='declined'){
+          $('.uploaderror.errortable').remove();
+          $(this).after('<span class="uploaderror errortable">Already declined this Purchase Order</span>');
+        } else {
+          $('.uploaderror.errortable').remove();
+          $('.myFileInput[data-id="'+$(this).attr('data-id')+'"]').click();
+        }
+        setTimeout(function(){
+          $('.uploaderror.errortable').remove();
+          }, 6000);
+      });
+</script>
+
+<script>
+    $("#file").on("change", function () {
+    
+        var extension = $(this).val().split('.').pop().toLowerCase();
+        var validFileExtensions = ['pdf'];
+        if(this.files[0].size > 2000000) {
+        // alert("Sorry!! Max allowed file size is 2 MB");
+        $("#error1").text("Sorry!! Max allowed file size is 2 MB").show();
+        $(this).val('');
+        }
+        else if ($.inArray(extension, validFileExtensions) == -1) {
+            $("#error1").text("Sorry!! Upload only pdf file").show();
+                    $(this).replaceWith($(this).val('').clone(true));
+                    // $('#submit').prop('disabled', true);
+            }
+        else {
+            $("#error1").text('').hide();
+        // $('#submit').prop('disabled', false);
+        
+        }
+        });
+</script>
+<script>
+    $('.Download_invoice').click(function(e){
+        var status = $(this).attr('status');
+        var thisa = $(this);
+        if(status=='waiting for approval'){
+          e.preventDefault();
+          $('.uploaderror.errortable').remove()
+          $(this).after('<span class="uploaderror errortable">Please raise invoice before download invoice.</span>');
+        } else if(status=='declined'){
+          $('.uploaderror.errortable').remove();
+          $(this).after('<span class="uploaderror errortable">Already declined this Purchase Order</span>');
+        } else {
+          $('.uploaderror.errortable').remove();
+  
+          var url1 = "{% url 'wayrem_supplier:invoice_status' %}"
+          $.ajax({                  // initialize an AJAX request
+              url: url1,                    // set the url of the request (= /persons/ajax/load-cities/ )
+              data: {
+                  'invoice_no': $(this).attr('data-id')       // add the country id to the GET parameters
+              },
+              success: function (result) { 
+                console.log(result);    
+                if(result=='False') {
+                  thisa.after('<span class="uploaderror errortable">Please upload invoice before download invoice.</span>');
+                } else {
+                    window.location.replace(thisa.attr('data-href'));
+                }
+                 
+              }
+          });
+        }
+        setTimeout(function(){
+          $('.uploaderror.errortable').remove();
+          }, 9000);
+      });
+</script>
+{% endblock javascripts %}

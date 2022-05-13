@@ -1,0 +1,186 @@
+{% extends "layouts/base.html" %}
+{% load static %}
+{% block title %}Invoice List {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+{% block head %}
+
+{% endblock head %}
+
+{% block content %}
+<div class="topbar_pages px-4 py-1">
+    <h5 class="font-weight-bolder mb-0">Submitted Invoices</h5>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
+          <li class="breadcrumb-item text-sm"><a href="{% url 'wayrem_supplier:supplier_profile' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
+          <li class="breadcrumb-item active text-sm" aria-current="page">All Submitted Invoices</li>
+        </ol>
+    </nav>
+</div>
+<div class="subheader row mt-5">
+    <div class="add_btn col-xl-7 col-lg-7 col-md-8"></div>
+    <div class="col-xl-5 col-lg-5 px-0 py-3">
+        <div class="row d-flex align-items-right">
+            <div class="col-xl-7 col-lg-7 col-md-7" style="height:40px;">
+                <div class="input-group table_shadow">
+                    <span class="input-group-text text-body"><i aria-hidden="true" class="fas fa-search"></i></span>
+                    <input class="form-control product_search" placeholder="Search" type="search" id="table_search">
+                </div>
+            </div>
+            <div class="col-xl-5 col-lg-5 col-md-5 px-2">
+                <a class=" w-100 anchor_btn ps-0 pe-0" href="{% url 'wayrem_supplier:poinvoicelist' %}">
+                    <button class="btn bg-gradient-dark mb-0" type="button">Create Invoice</button>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% if messages %}
+    {% for message in messages %}
+        <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
+            <strong> {{ message }}!</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+<div class="card mb-4">
+    <div class="card-body px-0 pt-0 pb-2">
+        <div class="table-responsive p-3">
+            <table class="table align-items-center mb-0" id="filtertable">
+                <thead>
+                    <tr>          
+                    <th class="text-secondary text-sm font-weight-bolder opacity-7">Purchase Order</th>   
+                    <th class="text-secondary text-sm font-weight-bolder opacity-7">Date</th>
+                    <th class="text-secondary text-sm font-weight-bolder opacity-7">Invoices</th>
+                    <th class="text-secondary text-sm font-weight-bolder opacity-7 text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item1 in recd %}
+                        <tr>            
+                            <td class="text-sm font-weight-bold p-4">{{item1.1}}</td>                  
+                            {% comment %} <td class="text-sm font-weight-bold p-4">
+                                <form method="post" action="{% url 'wayrem_supplier:statusinvoice' %}?id={{item1.0}}">
+                                    {% csrf_token %}
+                                    <select class="form-select form-select-sm" name="status" onchange='this.form.submit()' aria-label=".form-select-sm example">
+                                        <option selected>{{item1.2|title}}</option>
+                                        <option value="released">Released</option>
+                                        <option value="complete">Complete</option>
+                                        <option value="cancel">Cancel</option>
+                                    </select>
+                                </form>
+                            </td>      {% endcomment %}
+                            <td class="text-sm font-weight-bold p-4">{{item1.3|date:"d M Y  h:i a" }}</td> 
+                            <td>
+                                <a type="button" target="_blank"  title="Download Invoice" class="text-dark" href="{% url 'wayrem_supplier:downloadinvoice' %}?invoice_no={{item1.1}}">
+                                    <i class="p-2 fas fa fa-download " aria-hidden="true" ></i>
+                                </a> 
+                            </td>
+                            <td class="text-sm font-weight-bold p-4 text-center">                            
+                                
+                                <a aria-expanded="true" class="nav-link text-body p-0 show" data-bs-toggle="dropdown" href="javascript:;" id="dropdownMenuButton">
+                                    <i class="fa fa-ellipsis-v text-xs" aria-hidden="true"></i>
+                                </a>
+                                <ul aria-labelledby="dropdownMenuButton" class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4 table_shadow" data-bs-popper="none">
+                                    <li class="mb-2">
+                                        <a type="button" class="p-1 btn-sm" data-bs-toggle="modal" data-bs-target="#deleteModal{{item1.0 |slugify  }}" title="delete">
+                                            <i class="p-2 fas fa-trash action_btn me-3" aria-hidden="true"></i> Delete
+                                        </a> 
+                                    </li>
+                                </ul>
+                                
+                                <div class="modal fade" id="deleteModal{{item1.0 |slugify  }}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="exampleModalLabel">Delete {{item1.0 | title}}</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body text-left">  Are you sure want to remove {{item1.0 | title}} ? </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
+                                                <form method="POST" action="{% url 'wayrem_supplier:deleteinvoice' %}">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" value="{{item1.0}}" name="invo_id">
+                                                    <button type="submit" class="btn btn_danger btn-danger">Delete</button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>             
+                            </td>
+                            
+                        </tr>
+                    {% endfor %} 
+                </tbody>
+            </table>
+            <nav class= "pt-3" aria-label="...">
+                <ul class="pagination">
+                    <li class="page-item {% if not recd.has_previous %}disabled{% endif %}">
+                        <a class="page-link" {% if recd.has_previous %} href="?page={{ recd.previous_page_number }}"  {% endif %}>Previous</a>
+                    </li>
+                    {% if recd.number|add:'-4' > 1 %}
+                        <li class="page-item"><a class="page-link" href="?page={{ recd.number|add:'-5' }}">&hellip;</a></li>
+                    {% endif %}
+        
+                    {% for num in recd.paginator.page_range %}
+                        {% if num == recd.number %}
+                            <li class="page-item active" aria-current="page">
+                                <a class="page-link" href="#">{{ num }}</a>
+                            </li>
+                        {% elif num > recd.number|add:'-5' and num < recd.number|add:'5' %}
+                            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                        {% else %}
+                            <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li> 
+                        {% endif %} 
+                    {% endfor %}
+        
+                    {% if recd.paginator.num_pages > recd.number|add:'4' %}
+                        <li class="page-item"><a class="page-link" href="?page={{ recd.number|add:'5' }}">&hellip;</a></li>
+                    {% endif %}
+        
+                    <li class="page-item {% if not recd.has_next %}disabled{% endif %}">
+                        <a class="page-link" {% if recd.has_next %} href="?page={{ recd.next_page_number }}" {% endif %}>Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>            
+
+
+
+<script>
+ $(document).ready(function () {
+        oTable = $('#filtertable').DataTable({
+            dom: 'rtip',
+            'columnDefs': [{ 'orderable': false, 'targets': [3] }],
+            "oLanguage": {
+                "oPaginate": {
+                    "sNext": '<i class="fas fa-arrow-circle-right text-primary"></i>',
+                    "sPrevious": '<i class="fas fa-arrow-circle-left text-primary"></i>'
+                }
+            },
+            "fnDrawCallback": function (oSettings) {
+                if (oSettings._iDisplayLength > oSettings.fnRecordsDisplay()) {
+                    $(oSettings.nTableWrapper).find('.dataTables_paginate').hide();
+                } else {
+                    $(oSettings.nTableWrapper).find('.dataTables_paginate').show();
+                }
+            }
+        });
+        $('#table_search').keyup(function () {
+            oTable.search($(this).val()).draw();
+        })
+        $("#table_search").on(
+          "change keyup paste input", function() {
+           oTable.search($(this).val()).draw();
+          });
+});
+</script>
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}{% endblock javascripts %}
