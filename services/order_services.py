@@ -280,7 +280,7 @@ def create_order(request, authorize: AuthJWT, db: Session):
             to = request.email
             values = {
                 'order_number': ref_no,
-                'link': f"{constants.global_link}/orders/{order_id}"
+                'data': None
             }
 
             body = body.format(**values)
