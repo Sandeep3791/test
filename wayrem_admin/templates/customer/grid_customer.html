@@ -30,6 +30,8 @@
                 waiting for approval
                 {% elif user.verification_status == "rejected" %}
                 <span class="text-danger">Rejected</span>
+                {% elif user.verification_status == "updated" %}
+                <span class="text-warning">Documents updated</span>
                 {% elif user.verification_status == "active" %}
                  <a href="{% url 'wayrem_admin:customer_verification' user.id %}?status=inactive"
                     class="btn-sm text-success"><i class="fas fa-toggle-on text-success"> Active</i></a> 

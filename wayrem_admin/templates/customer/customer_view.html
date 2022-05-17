@@ -391,13 +391,13 @@
                         </div> 
                         <div class="mt-4">
                             <a href="{% url 'wayrem_admin:customerslist' %}" class="btn btn-block btn-primary">Cancel</a>
-                            {% if user.verification_status == "waiting for approval" %} 
+                            {% if user.verification_status == "waiting for approval" or user.verification_status == "updated"  %} 
                             <a href="{% url 'wayrem_admin:customer_verification' user.id %}?status=active" class="btn btn-block btn-success">Approve</a>
                             <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                 Reject
                             </button>
                             {% endif %}
-                            {% if user.verification_status == "rejected" %}
+                            {% if user.verification_status == "rejected" or user.verification_status == "updated" %}
                             <div class="mt-3">
                                 <h6 class="mb-1 text-danger">Rejected!!</h6>
                                 {% if user.reject_reason %}
