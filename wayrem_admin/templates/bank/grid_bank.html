@@ -1,0 +1,60 @@
+ {% load util_tags  %}
+ {% block content %}
+ <table class="table table-hover text-center" id="filtertable">
+        <thead >
+            <tr>
+                <th scope="col">Title</th>
+                <th scope="col">Bank Name</th>
+                <th scope="col">Account Name</th>
+                <th scope="col">City</th>
+                <th scope="col">Branch</th>
+                <th scope="col">iban</th>
+                <th scope="col">Status</th>
+                <th scope="col">Action</th>
+               
+            </tr>
+        </thead>
+        <tbody class="bg-white">
+        {% if banks %}
+        {% for bank in banks %}
+           <tr>
+                <td>{{bank.title}}</td> 
+                <td>{{bank.bank_name}}</td>
+                <td>{{bank.account_name}}</td>
+                <td>{{bank.city}}</td>
+                <td>{{bank.branch}}</td>
+                <td>{{bank.iban}}</td>
+                <td>
+                    {% if bank.status == 1 %}
+                        <i class="fas fa-toggle-on text-success"> Active</i> 
+                    {% else %}
+                        <i class="fas fa-toggle-off"> Inactive</i>
+                    {% endif %}
+                </td>
+                <td>
+                    <div class="btn-group">
+                        <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="icon icon-sm">
+                                <span class="fas fa-ellipsis-h icon-dark"></span>
+                            </span>
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                                    <div class="dropdown-menu">
+                                        <a class="dropdown-item" href="{% url 'wayrem_admin:viewbank' bank.id %}"><span class="fas fa-eye mr-2"></span>View Details</a>
+                                        <a class="dropdown-item" href="{% url 'wayrem_admin:updatebank' bank.id %}"><span class="fas fa-edit mr-2"></span>Edit banks</a>
+                                        <a class="dropdown-item text-danger deletebank" data-id="{{bank.id}}"  href="#"> <span class="fas fa-trash-alt mr-2"></span>Remove</a>
+                                    </div>
+                                </div>
+                    </td>
+                
+           </tr>
+           <tr></tr>
+           {% endfor %}
+           {% else %}
+                <tr class="odd"><td valign="top" colspan="12" class="dataTables_empty">No data available in table</td></tr>
+
+           {% endif %}
+        </tbody>
+    </table>
+    
+{% endblock content %}

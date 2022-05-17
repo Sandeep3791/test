@@ -24,5 +24,6 @@ urlpatterns = [
     path('shipping-rates/', include('wayrem_admin.urls.shippingrates')),
     path('loginext/', include('wayrem_admin.loginext.urls')),
     path('home/pages/', include('wayrem_admin.urls.static_pages')),
+    path('banks/', include('wayrem_admin.urls.banks')),
     path('', views.RootUrlView.as_view(), name='root')
 ]

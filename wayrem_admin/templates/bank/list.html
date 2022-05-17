@@ -1,0 +1,98 @@
+{% extends "layouts/base.html" %}
+{% load static  %}
+{% block title %} Banks Management {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+{% endblock head %}
+{% block content %}
+<div class="dashboard_content_inner">
+    <div class="topbar_pages">
+        <h4 class="text-title">Banks Management</h2>
+        <div class="breadcrumb-section">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb padding-left-0">
+                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>         
+                    <li class="breadcrumb-item active" aria-current="page"> <span class="sidebar-icon"><i class="fas fa-download"></i></span>Banks Management</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <div class="table-settings mb-4">
+          {% include "bank/bank_filter.html" %} 
+    </div>
+    
+    <div class="alert-container"></div>
+    {% if messages %}
+    {% for message in messages %}
+    <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
+        <strong> {{ message }}!</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    <div class="card card-body border-light shadow-sm table-wrapper table-responsive pt-0">
+        {% include "bank/grid_bank.html" %} 
+        {% include "orders/pagination.html" %}
+    </div>
+
+    <div class="modal fade" id="orderpopup" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Update User Shift</h5>
+                </div>
+                <div class="modal-body"></div>
+            </div>     
+        </div>
+    </div>
+    
+</div>
+
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+  <script>
+      function bankstatus(id){
+        url="updatebankstatus/"+id
+        $.ajax({
+	            type: 'GET',
+	            url: url,
+	            cache: false,
+	            success: function (data) {
+                   
+                }});
+        return 1
+      }
+
+      $('.deletebank').on('click', function(){
+        var id=$(this).data("id");
+        $.confirm({
+            title: 'Are you sure you want remove this record.',
+            content: '',
+            buttons: {
+                confirm: function(){
+                    bankstatus(id);
+                    location.reload();
+                },
+                cancel: function(){
+                    // $.alert('You have not taken the action');
+                },
+                
+            }
+        });
+      });
+
+
+</script>
+{% endblock javascripts %}
