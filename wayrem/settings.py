@@ -31,7 +31,7 @@ INSTALLED_APPS = [
     'ckeditor',
     'wayrem_admin',
     'widget_tweaks',
-    #    'maintenance_mode',
+    'maintenance_mode',
     'django_celery_beat',
 ]
 MIDDLEWARE = [
@@ -43,6 +43,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'wayrem_admin.middlewares.notification_middleware.NotificationMiddleWare',
+    "maintenance_mode.middleware.MaintenanceModeMiddleware",
 
 ]
 
