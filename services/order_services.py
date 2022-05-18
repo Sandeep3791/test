@@ -12,7 +12,7 @@ from sqlalchemy.orm import Session
 from datetime import  datetime
 import random ,googlemaps
 import datetime as DT
-import constants
+import constants ,calendar
 
 
 app = FastAPI()
@@ -85,6 +85,9 @@ def create_order(request, authorize: AuthJWT, db: Session):
         sub_total_list = []
         discount_list = []
         margin_list = []
+        order_view_list = []
+        image_list = []
+
         for product in request.products:
             product_id = product.product_id
             product_qty = product.product_quantity
@@ -106,6 +109,10 @@ def create_order(request, authorize: AuthJWT, db: Session):
                 discount_unit = product1.dis_abs_percent
                 product_SKU = product1.SKU
                 product_name = product1.name
+
+                a = product1.primary_image
+                upd_image_path = constants.IMAGES_DIR_PATH + a
+                image_list.append(upd_image_path)
 
             if discount_unit == '%':
                 discount_value = (req_product_price/100)*product_discount
@@ -168,6 +175,7 @@ def create_order(request, authorize: AuthJWT, db: Session):
             )
             db.merge(order_details)
             db.commit()
+            order_view_list.append(order_details)
 
             inventory = order_models.Inventory(
                 order_id=order_id, quantity=product_qty, inventory_type_id=3, product_id=product_id, warehouse_id=1, order_status="ordered", created_at=common_services.get_time())
@@ -278,11 +286,39 @@ def create_order(request, authorize: AuthJWT, db: Session):
                 subject = template.subject
                 body = template.message_format
             to = request.email
+            
+            pro_order_date = str(common_services.get_time())
+            month = calendar.month_name[int(pro_order_date[5:7])] 
+            pro_order_date = month + f" {str(pro_order_date[8:10])}, {str(pro_order_date[0:4])}{str(pro_order_date[10:16])}"
+            pro_order_date = pro_order_date
+
+            pro_status = db.execute(f"SELECT name from {constants.Database_name}.status_master where id=(SELECT payment_status_id from {constants.Database_name}.order_transactions where order_id={order_id}) ")
+            for i in pro_status:
+                pro1 = i[0]
+            pro_order_status = pro1
+
+            pro_pay_type = db.execute(f"SELECT name from {constants.Database_name}.status_master where id=(SELECT payment_mode_id from {constants.Database_name}.order_transactions where order_id={order_id}) ")
+            for i in pro_pay_type:
+                pro2 = i[0]
+            pro_order_pay_type = pro2
+
+            pro_type = db.execute(f"SELECT name from {constants.Database_name}.status_master where id={order.order_type}")
+            for i in pro_type:
+                pro3 = i[0]
+            pro_order_type = pro3
+            
+            ret=format_string(order_view_list,image_list)
+                     
+
             values = {
                 'order_number': ref_no,
-                'data': None
+                'order_date_time': pro_order_date,
+                'order_type': pro_order_type,
+                'order_status': pro_order_status,
+                'order_payment_type': pro_order_pay_type,
+                'datas': ret
             }
-
+            
             body = body.format(**values)
             common_services.send_otp(to, subject, body, request, db)
 
@@ -848,3 +884,28 @@ def get_filters_orders(offset, customer_id, filter_id, authorize: AuthJWT, db: S
             status=status.HTTP_404_NOT_FOUND, message="No Orders found!")
         return common_msg
 
+
+def format_string(view_list,image_list):
+    x = f""
+    for i,j in zip(view_list,image_list):
+        pro_name = i.product_name
+        pro_qty = i.quantity
+        pro_price = i.price
+        pro_image_path = j
+        x+=f"""<tr>
+                                        <td width="20%">
+                                            <img src="{pro_image_path}" alt="" style="width: 100px;height: 100px;object-fit: cover;border-radius: 16px;">
+                                        </td>
+                                        <td width="60%" style="    padding-left: 0.5rem;">
+                                            <div>
+                                                <p style="margin: 0;    color: #152F50;">{pro_name}</p>
+                                            </div>
+                                            <div><span style="color: #A8A8A8;font-size: .8rem;">Wayrem Supplier</span></div>
+                                            <div><span style="font-weight:600;    color: #152F50;">{pro_price}sr</span></div>
+                                        </td>
+                                        <td style="min-width: 100px; text-align: end;" <div>X {pro_qty}.0</div>
+
+                                        </td>
+                                    </tr>
+                                """
+    return x
