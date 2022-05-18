@@ -130,6 +130,8 @@ def create_purchase_order(request):
             form = POFormOne(
                 initial={'supplier_name': request.session.get('supplier_company', None)})
     po = request.session.get('products', None)
+    if not po:
+        request.session['products'] = list()
     forecast_day = ForecastJobtype.objects.filter(status=1)
     return render(request, "po_step1.html", {'form': form, "po": po, 'forecast_day': forecast_day})
 
@@ -398,7 +400,8 @@ def po_pdf(request):
 
 def load_supplier_products(request):
     supplier = request.GET.get('supplier')
-    products = SupplierProducts.objects.filter(supplier_id=supplier, product_id__is_deleted=False)
+    products = SupplierProducts.objects.filter(
+        supplier_id=supplier, product_id__is_deleted=False)
     return render(request, 'po_supplier_products.html', {'products': products})
 
 
