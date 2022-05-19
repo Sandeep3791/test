@@ -1,15 +1,15 @@
 
 {% extends "layouts/base.html" %}
 
-{% block title %} View Bank Management {% endblock %} 
+{% block title %} View Bank {% endblock %} 
 {%load widget_tweaks %}
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
 {% block content %}
-{{form.media}}
+<div class="dashboard_content_inner">
 <div class="topbar_pages padding-0">
     <div class="container ">
-        <h4 class="text-title">View Bank Management</h2>
+        <h4 class="text-title">View Bank </h2>
         <div class="breadcrumb-section">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb padding-left-0">
@@ -96,6 +96,7 @@
             </form>
         </div>
     </div>
+</div>
 </div>
 {% endblock content %}
 

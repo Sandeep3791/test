@@ -18,7 +18,7 @@ class BankUpdatedForm(ModelForm):
     iban=forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control'}), required=False)
 
     choice_status = (("1", "Active"), ("0", "In Active"))
-    status = forms.ChoiceField(choices=choice_status, widget=forms.Select(attrs={'class': 'form-select', }))
+    status = forms.ChoiceField(choices=choice_status, widget=forms.Select(attrs={'class': 'form-control form-control-select', }))
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -30,7 +30,7 @@ class BankViewForm(forms.ModelForm):
     get_status_dict = {0: 'In Active', 1: 'Active'}
     status_choices = list(get_status_dict.items())
     #status_choices.insert(0,('','Select Status'))
-    status = forms.ChoiceField(choices=status_choices, widget=forms.Select(attrs={'class': 'form-select'}))
+    status = forms.ChoiceField(choices=status_choices, widget=forms.Select(attrs={'class': 'form-control form-control-select'}))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

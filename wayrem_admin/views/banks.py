@@ -19,7 +19,7 @@ class BanksList(LoginRequiredMixin, ListView):
     model = Banks
     template_name = "bank/list.html"
     context_object_name = 'banks'
-    paginate_by = 25
+    paginate_by = RECORDS_PER_PAGE
     success_url = reverse_lazy('wayrem_admin:banklist')
 
     def get_queryset(self):
@@ -31,8 +31,8 @@ class BanksList(LoginRequiredMixin, ListView):
         context = super(BanksList, self).get_context_data(**kwargs)
         context['filter_form'] = BankFilterForm(self.request.GET)
         return context
+
 class BankView(LoginRequiredMixin,UpdateView):
-    
     login_url = 'wayrem_admin:root'
     model = Banks
     form_class = BankViewForm
@@ -50,6 +50,7 @@ class BankView(LoginRequiredMixin,UpdateView):
           # capture that 'pk' as companyid and pass it to 'reverse_lazy()' function
           bank_id=self.kwargs['id']
           return reverse_lazy('wayrem_admin:updatebank', kwargs={'id': bank_id})
+
 class BanksUpdated(LoginRequiredMixin, UpdateView):
     login_url = 'wayrem_admin:root'
     model = Banks
@@ -77,5 +78,5 @@ class BanksCreate(CreateView):
 
 class BankUpdateStatusView(View):
     def get(self,request, id):
-        Banks.objects.filter(id=1).update(is_deleted=1)
+        Banks.objects.filter(id=1).update(is_deleted=1,status=0)
         return HttpResponse(1)
