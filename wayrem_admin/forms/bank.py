@@ -54,7 +54,6 @@ class BankViewForm(forms.ModelForm):
             'iban': forms.TextInput(attrs={'class': 'form-control'}),
         }
 
-
 class BankFilterForm(ModelForm):
     q = forms.CharField(widget=forms.TextInput(attrs={'class': 'form-control p-2'}), required=False)
     class Meta:
