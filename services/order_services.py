@@ -892,20 +892,20 @@ def format_string(view_list,image_list):
         pro_qty = i.quantity
         pro_price = i.price
         pro_image_path = j
-        x+=f"""<tr>
-                                        <td width="20%">
-                                            <img src="{pro_image_path}" alt="" style="width: 100px;height: 100px;object-fit: cover;border-radius: 16px;">
-                                        </td>
-                                        <td width="60%" style="    padding-left: 0.5rem;">
-                                            <div>
-                                                <p style="margin: 0;    color: #152F50;">{pro_name}</p>
-                                            </div>
-                                            <div><span style="color: #A8A8A8;font-size: .8rem;">Wayrem Supplier</span></div>
-                                            <div><span style="font-weight:600;    color: #152F50;">{pro_price}sr</span></div>
-                                        </td>
-                                        <td style="min-width: 100px; text-align: end;" <div>X {pro_qty}.0</div>
-
-                                        </td>
+        x +=f"""<tr>
+                                            <td width="20%">
+                                                <img src="{pro_image_path}" alt="" style="width:100px;height:100px;object-fit:cover;border-radius:16px" class="CToWUd a6T" tabindex="0"><div class="a6S" dir="ltr" style="opacity: 0.01; left: 299px; top: 417.109px;"><div id=":pv" class="T-I J-J5-Ji aQv T-I-ax7 L3 a5q" title="Download" role="button" tabindex="0" aria-label="Download attachment " data-tooltip-class="a1V"><div class="akn"><div class="aSK J-J5-Ji aYr"></div></div></div></div>
+                                            </td>
+                                            <td width="60%" style="padding-left:0.5rem">
+                                                <div>
+                                                    <p style="margin:0;color:#152f50">{pro_name}</p>
+                                                </div>
+                                                <div><span style="color:#a8a8a8;font-size:.8rem">Wayrem Supplier</span></div>
+                                                <div><span style="font-weight:600;color:#152f50">{pro_price}sr</span></div>
+                                            </td>
+                                            <td style="min-width:100px;text-align:end">X {pro_qty}.0
+    
+                                            </td>
                                     </tr>
                                 """
     return x
