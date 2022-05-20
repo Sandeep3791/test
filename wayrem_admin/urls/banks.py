@@ -6,5 +6,5 @@ urlpatterns = [
     path('update/<int:id>', views.BanksUpdated.as_view(), name='updatebank'),
     path('view/<int:id>', views.BankView.as_view(), name='viewbank'),
     path('add', views.BanksCreate.as_view(), name='bankadd'),
-    path('updatebankstatus/<int:id>', views.BankUpdateStatusView.as_view(), name='viewbank'),
+    path('updatebankstatus/<int:id>', views.BankUpdateStatusView.as_view(), name='updatebankstatus'),
 ]
