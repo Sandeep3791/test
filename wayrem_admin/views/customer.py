@@ -196,5 +196,5 @@ class PaymentForm(View):
     template_name = "customer/payment_form.html"
 
     def get(self, request):
-        checkout_id = request.GET.get("id")
+        checkout_id = request.GET.get("checkout_id")
         return render(self.request, self.template_name, {"checkoutId": checkout_id})
