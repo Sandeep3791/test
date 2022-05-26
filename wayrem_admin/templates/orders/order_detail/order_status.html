@@ -52,11 +52,18 @@
             <span>{{order_transaction.payment_mode.name}}</span>
             <span class="payment_status bg-warning ms-2">{{order_transaction.payment_status.name}}</span>
         </div>
+        {% if order_transaction.payment_mode.id == 12 %}
+        <p style="padding-top:10px;margin-bottom:-12px">
+            <a href="/media/common_folder/customer_banks/{{order_transaction.bank_payment_image}}" target="_blank" class="small">Download Bank transfer Document</a>
+        </p>
+        {% endif %}
         <div class="d-flex justify-content-between w-100 mt-4">
             <button class="btn btn-success modelpaymentstatus" type="button" data-id="{{PAYMENT_STATUS_CONFIRM}}" >Confirm</button>
+            
             <!-- <button class="btn btn-danger modelpaymentstatus" type="button" data-id="{{PAYMENT_STATUS_DECLINED}}" data-bs-toggle="modal" data-bs-target="#modal-default">Decline</button> -->
         </div>
     </div>
+    
     <div style="display:none">{{payment_status_form.payment_status}}</div>
     </form>
 </div>
