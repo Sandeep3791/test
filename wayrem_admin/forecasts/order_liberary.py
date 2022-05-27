@@ -25,10 +25,8 @@ class OrderLiberary:
     def __init__(self):
         self.recurrence_type = self.recurrent_type()
         self.today_date = date.today()
-        self.delivery_order_per_day = self.get_setting_value(
-            DELIVERY_ORDER_PER_DAY)
-        self.customer_approve_per_day = self.get_setting_value(
-            CUSTOMER_APPROVAL_PER_DAY)
+        self.delivery_order_per_day = self.get_setting_value(DELIVERY_ORDER_PER_DAY)
+        #self.customer_approve_per_day = self.get_setting_value(CUSTOMER_APPROVAL_PER_DAY)
 
     def recurrent_type(self):
         recurrence_type = RecurrentType.objects.filter(
@@ -46,9 +44,8 @@ class OrderLiberary:
         return int(get_setting.value)
 
     def get_filter_data(self):
-        total_day = self.today_date + \
-            timedelta(days=self.delivery_order_per_day) + \
-            timedelta(days=self.customer_approve_per_day)
+        #total_day = self.today_date + timedelta(days=self.delivery_order_per_day) + timedelta(days=self.customer_approve_per_day)
+        total_day = self.today_date + timedelta(days=self.delivery_order_per_day) 
         return total_day
 
     def recurrence_grocery(self, get_date):
