@@ -1,7 +1,7 @@
 
 from fastapi_jwt_auth import AuthJWT
 from schemas import order_schemas
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends,BackgroundTasks
 import database
 from sqlalchemy.orm import Session
 from services import order_services
@@ -19,8 +19,8 @@ logger = logging.getLogger(__name__)
 
 
 @router.post('/create/order')
-def create_order(request: order_schemas.OrderRequest, authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
-    data = order_services.create_order(request, authorize, db)
+def create_order(request: order_schemas.OrderRequest, authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db),background : BackgroundTasks = None):
+    data = order_services.create_order(request, authorize, db,background)
     return data
 
 

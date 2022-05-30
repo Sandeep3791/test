@@ -1,12 +1,12 @@
 from email import message
 import constants
 from services import firebase_services
-import random
+import random,os
 import logging
-from models import user_models,order_models,firebase_models
+from models import user_models,order_models,firebase_models,payment_models
 from schemas import firebase_schemas, user_schemas,order_schemas
-from services import common_services
-from fastapi import FastAPI, status
+from services import common_services , payment_services
+from fastapi import FastAPI, status,BackgroundTasks
 from fastapi_jwt_auth import AuthJWT
 from sqlalchemy.orm import Session
 from datetime import  datetime
@@ -22,8 +22,36 @@ logger = logging.getLogger(__name__)
 
 import math
 
-def create_order(request, authorize: AuthJWT, db: Session):
+def create_order(request, authorize: AuthJWT, db: Session,background_tasks:BackgroundTasks):
     authorize.jwt_required()
+    paid = False
+    cod = False
+    hyperpay_response = None
+    hyperpay_response_description = None
+    if int(request.payment_type) == 10 or int(request.payment_type) == 12:
+        cod = True
+    if not cod:
+        payment_status = payment_services.get_payment_status(
+            request.checkout_id, request.entityId)
+        payment_check = payment_status.get("result").get("code")
+        hyperpay_response = payment_status
+        hyperpay_response_description = payment_status.get(
+            "result").get("description")
+        if payment_check == "000.100.110" or payment_check == "000.000.000" or payment_check == payment_check.startswith("000.400."):
+            paid = True
+        registrationId = payment_status.get("registrationId")
+        if registrationId:
+            card_body = payment_status.get("card")
+            card_number = card_body.get("last4Digits")
+            expiry_month = card_body.get("expiryMonth")
+            expiry_year = card_body.get("expiryYear")
+            card_holder = card_body.get("holder")
+            card_type = card_body.get("type")
+            card_brand = payment_status.get("paymentBrand")
+            save_card = payment_models.CustomerCard(customer_id=request.customer_id, registration_id=registrationId, card_number=card_number, expiry_month=expiry_month,
+                                                 expiry_year=expiry_year, card_holder=card_holder, card_type=card_type, card_body=str(card_body), card_brand=card_brand)
+            db.merge(save_card)
+            db.commit()
 
     for req_product in request.products:
         product_qty = req_product.product_quantity
@@ -37,6 +65,7 @@ def create_order(request, authorize: AuthJWT, db: Session):
 
     db_user_active = db.query(user_models.User).filter(
         user_models.User.id == request.customer_id).first()
+
     if db_user_active.verification_status == "active":
 
         ref_no = random.randint(1000, 999999)
@@ -75,6 +104,7 @@ def create_order(request, authorize: AuthJWT, db: Session):
             order_type=24,
             delivery_charge=request.delivery_fees,
             order_date=common_services.get_time()
+
         )
         db.merge(order)
         db.commit()
@@ -87,6 +117,20 @@ def create_order(request, authorize: AuthJWT, db: Session):
         margin_list = []
         order_view_list = []
         image_list = []
+        price_list = []
+        sup_name_list = []
+        if not cod:
+            transaction_id = payment_status.get("id")
+            checkout_id = request.checkout_id
+            response_body = str(payment_status)
+            payment_type = payment_status.get("paymentType")
+            payment_brand = payment_status.get("paymentBrand")
+            amount = payment_status.get("amount")
+            payment_status = payment_status.get("result").get("description")
+            payment_transaction = payment_models.PaymentTransaction(order_id=order_id, transaction_id=transaction_id, checkout_id=checkout_id,
+                                                                 response_body=response_body, payment_type=payment_type, payment_brand=payment_brand, amount=amount, status=payment_status)
+            db.merge(payment_transaction)
+            db.commit()
 
         for product in request.products:
             product_id = product.product_id
@@ -111,8 +155,13 @@ def create_order(request, authorize: AuthJWT, db: Session):
                 product_name = product1.name
 
                 a = product1.primary_image
+                b = product1.mfr_name
+                # update_img = a.split("/")[-1]
                 upd_image_path = constants.IMAGES_DIR_PATH + a
                 image_list.append(upd_image_path)
+                sup_name_list.append(b)
+
+            price_list.append(req_product_price)
 
             if discount_unit == '%':
                 discount_value = (req_product_price/100)*product_discount
@@ -177,54 +226,57 @@ def create_order(request, authorize: AuthJWT, db: Session):
             db.commit()
             order_view_list.append(order_details)
 
-            inventory = order_models.Inventory(
-                order_id=order_id, quantity=product_qty, inventory_type_id=3, product_id=product_id, warehouse_id=1, order_status="ordered", created_at=common_services.get_time())
-            db.merge(inventory)
-            db.commit()
-            # Inverntory Update start
-            try:
-                product_type = db.execute(
-                    f"SELECT `inventory`.`inventory_type_id`, SUM(`inventory`.`quantity`) AS `inventory_quantity` FROM `inventory` WHERE `inventory`.`product_id` = {product_id} GROUP BY `inventory`.`inventory_type_id` ORDER BY `inventory`.`inventory_type_id` ASC")
-                total_quantity = 0
-                inventory_starting = 0
-                inventory_received = 0
-                inventory_shipped = 0
-                inventory_cancelled = 0
-                for quantity_cal in product_type:
-                    quantity = quantity_cal['inventory_quantity']
-                    if quantity_cal['inventory_type_id'] == 3:
-                        total_quantity -= quantity
-                        inventory_shipped = quantity
-                    else:
-                        total_quantity += quantity
-                        if quantity_cal['inventory_type_id'] == 1:
-                            inventory_starting = quantity
-                        elif quantity_cal['inventory_type_id'] == 2:
-                            inventory_received = quantity
-                        else:
-                            inventory_cancelled = quantity
-                timestamp = str(common_services.get_time())
-                update_query = f"UPDATE {constants.Database_name}.products_master SET `quantity` = {total_quantity},`updated_at` = '{timestamp}',`inventory_starting` = {inventory_starting},`inventory_received` = {inventory_received},`inventory_shipped` = {inventory_shipped},`inventory_cancelled` = {inventory_cancelled},`inventory_onhand` = {total_quantity} WHERE `id` = {product_id};"
-                db.execute(update_query)
+            if paid or cod:
+                inventory = order_models.Inventory(
+                    order_id=order_id, quantity=product_qty, inventory_type_id=3, product_id=product_id, warehouse_id=1, order_status="ordered", created_at=common_services.get_time())
+                db.merge(inventory)
                 db.commit()
-            except:
-                pass
-            # Inverntory Update end
+                # Inverntory Update start
+                try:
+                    product_type = db.execute(
+                        f"SELECT `inventory`.`inventory_type_id`, SUM(`inventory`.`quantity`) AS `inventory_quantity` FROM `inventory` WHERE `inventory`.`product_id` = {product_id} GROUP BY `inventory`.`inventory_type_id` ORDER BY `inventory`.`inventory_type_id` ASC")
+                    total_quantity = 0
+                    inventory_starting = 0
+                    inventory_received = 0
+                    inventory_shipped = 0
+                    inventory_cancelled = 0
+                    for quantity_cal in product_type:
+                        quantity = quantity_cal['inventory_quantity']
+                        if quantity_cal['inventory_type_id'] == 3:
+                            total_quantity -= quantity
+                            inventory_shipped = quantity
+                        else:
+                            total_quantity += quantity
+                            if quantity_cal['inventory_type_id'] == 1:
+                                inventory_starting = quantity
+                            elif quantity_cal['inventory_type_id'] == 2:
+                                inventory_received = quantity
+                            else:
+                                inventory_cancelled = quantity
+                    timestamp = str(common_services.get_time())
+                    update_query = f"UPDATE {constants.Database_name}.products_master SET `quantity` = {total_quantity},`updated_at` = '{timestamp}',`inventory_starting` = {inventory_starting},`inventory_received` = {inventory_received},`inventory_shipped` = {inventory_shipped},`inventory_cancelled` = {inventory_cancelled},`inventory_onhand` = {total_quantity} WHERE `id` = {product_id};"
+                    db.execute(update_query)
+                    db.commit()
+                except Exception as e:
+                    print(e)
 
-        transaction_data = db.query(order_models.OrderTransactions).all()
-        if transaction_data:
-            inv_no = len(transaction_data)+1001
-        else:
-            inv_no = 1001
+            # Inverntory Update end
+        inv_no = None
+        if paid or cod:
+            transaction_data = db.query(order_models.OrderTransactions).all()
+            if transaction_data:
+                inv_no = len(transaction_data)+1001
+            else:
+                inv_no = 1001
         order_transact = order_models.OrderTransactions(user_id=request.customer_id,  order_id=order_id, order_type=1,
                                                        payment_mode_id=request.payment_type, payment_status_id=request.payment_status, invoices_id=inv_no)
         db.merge(order_transact)
         db.commit()
-
-        order_delivery_logs = order_models.OrderDeliveryLogs(
-            order_id=order_id, order_status_id=1, order_status_details="Order is confirmed", user_id=1, customer_view=1, log_date=common_services.get_time())
-        db.merge(order_delivery_logs)
-        db.commit()
+        if paid or cod:
+            order_delivery_logs = order_models.OrderDeliveryLogs(
+                order_id=order_id, order_status_id=1, order_status_details="Order is confirmed", user_id=1, customer_view=1, log_date=common_services.get_time())
+            db.merge(order_delivery_logs)
+            db.commit()
 
         final_sub_total = sum(sub_total_list) - sum(discount_list)
         final_discount_total = sum(discount_list)
@@ -249,11 +301,12 @@ def create_order(request, authorize: AuthJWT, db: Session):
         order_data.shipping = request.delivery_fees
         db.merge(order_data)
         db.commit()
-        cart_items = db.query(order_models.CustomerCart).filter(
-            order_models.CustomerCart.customer_id == request.customer_id).all()
-        for item in cart_items:
-            db.delete(item)
-            db.commit()
+        if paid or cod:
+            cart_items = db.query(order_models.CustomerCart).filter(
+                order_models.CustomerCart.customer_id == request.customer_id).all()
+            for item in cart_items:
+                db.delete(item)
+                db.commit()
 
         user_notify = f"SELECT * FROM {constants.Database_name}.users_master where users_master.order_notify = True "
         if user_notify:
@@ -274,87 +327,68 @@ def create_order(request, authorize: AuthJWT, db: Session):
             }
             body = body.format(**values)
             for to in email_ids:
-                common_services.send_otp(to, subject, body, request, db)
+                 background_tasks.add_task(common_services.send_otp,to, subject, body, request, db)
 
         # for key = order_placed_customer_notification
-        order_placed_query = f"SELECT * FROM {constants.Database_name}.email_template where email_template.key = 'order_placed_customer_notification'"
-        if order_placed_query:
-            order_template = db.execute(order_placed_query)
-            subject = None
-            body = None
-            for template in order_template:
-                subject = template.subject
-                body = template.message_format
-            to = request.email
-            
-            pro_order_date = str(common_services.get_time())
-            month = calendar.month_name[int(pro_order_date[5:7])] 
-            pro_order_date = month + f" {str(pro_order_date[8:10])}, {str(pro_order_date[0:4])}{str(pro_order_date[10:16])}"
-            pro_order_date = pro_order_date
+        if paid or cod:
+            invoice_link_mail = f"{constants.global_link}/orders/invoice-orders/{ref_no}"
+            common_services.invoice_saver(invoice_link_mail, ref_no)
+            path = os.path.abspath('.')
+            invoice_path = os.path.join(
+                path, f"invoice_folder/invoice_{ref_no}.pdf")
+            invoice_delete = os.path.join(
+                path, f"invoice_folder/invoice_{ref_no}.pdf")
 
-            pro_status = db.execute(f"SELECT name from {constants.Database_name}.status_master where id=(SELECT payment_status_id from {constants.Database_name}.order_transactions where order_id={order_id}) ")
-            for i in pro_status:
-                pro1 = i[0]
-            pro_order_status = pro1
+            order_type_email = order.order_type
+            user_mail = request.email
 
-            pro_pay_type = db.execute(f"SELECT name from {constants.Database_name}.status_master where id=(SELECT payment_mode_id from {constants.Database_name}.order_transactions where order_id={order_id}) ")
-            for i in pro_pay_type:
-                pro2 = i[0]
-            pro_order_pay_type = pro2
+            returned = common_services.email_body(
+                user_mail, order_id, order_view_list, image_list, order_type_email, ref_no, price_list, sup_name_list, db)
 
-            pro_type = db.execute(f"SELECT name from {constants.Database_name}.status_master where id={order.order_type}")
-            for i in pro_type:
-                pro3 = i[0]
-            pro_order_type = pro3
-            
-            ret=format_string(order_view_list,image_list)
-                     
+            background_tasks.add_task(common_services.send_otp,
+                returned[0], returned[1], returned[2], request, db, invoice_path,invoice_delete)
 
-            values = {
-                'order_number': ref_no,
-                'order_date_time': pro_order_date,
-                'order_type': pro_order_type,
-                'order_status': pro_order_status,
-                'order_payment_type': pro_order_pay_type,
-                'datas': ret
-            }
-            
-            body = body.format(**values)
-            common_services.send_otp(to, subject, body, request, db)
+        if paid or cod:
+            response = order_schemas.OrderResponse(
+                status=status.HTTP_200_OK, message="Order Placed Successfully")
 
-        response = order_schemas.OrderResponse(
-            status=status.HTTP_200_OK, message="Order Placed Successfully")
-        try:
-            customer_data = db.execute(
-                f"select * from {constants.Database_name}.customer_device where customer_id = {request.customer_id} and is_active=True ;")
-            setting_message = db.execute(
-                f"select * from {constants.Database_name}.settings where settings.key = 'notification_app_order_received' ;")
-            for msg in setting_message:
-                message = msg.value
-            values = {
-                "ref_no": ref_no,
+            try:
+                customer_data = db.execute(
+                    f"select * from {constants.Database_name}.customer_device where customer_id = {request.customer_id} and is_active=True ;")
+                setting_message = db.execute(
+                    f"select * from {constants.Database_name}.settings where settings.key = 'notification_app_order_received' ;")
+                for msg in setting_message:
+                    message = msg.value
+                values = {
+                    "ref_no": ref_no,
 
-            }
-            message = message.format(**values)
-            if customer_data:
-                for data in customer_data:
-                    notf = firebase_schemas.PushNotificationFirebase(
-                        title="Order placed", message=message, device_token=data.device_id, order_id=order_id)
-                    firebase_services.push_notification_in_firebase(notf)
+                }
+                message = message.format(**values)
+                if customer_data:
+                    for data in customer_data:
+                        notf = firebase_schemas.PushNotificationFirebase(
+                            title="Order placed", message=message, device_token=data.device_id, order_id=order_id)
+                        firebase_services.push_notification_in_firebase(notf)
 
-                if notf:
-                    fire = firebase_models.CustomerNotification(
-                        customer_id=request.customer_id, order_id=order_id, title=notf.title, message=notf.message, created_at=common_services.get_time())
-                    db.merge(fire)
-                    db.commit()
-        except:
-            pass
+                    if notf:
+                        fire = firebase_models.CustomerNotification(
+                            customer_id=request.customer_id, order_id=order_id, title=notf.title, message=notf.message, created_at=common_services.get_time())
+                        db.merge(fire)
+                        db.commit()
+            except Exception as e:
+                print(e)
+        else:
+            data = hyperpay_response
+            if not hyperpay_response_description:
+                data = None
+                hyperpay_response_description = "Unable to place order. Try with another card."
+            response = user_schemas.ResponseCommonMessage(
+                status=status.HTTP_404_NOT_FOUND, message=str(hyperpay_response_description), data=str(data))
         return response
     else:
         common_msg = user_schemas.ResponseCommonMessage(
             status=status.HTTP_404_NOT_FOUND, message="User is not approved to place the order")
         return common_msg
-
 
 
 def get_all_orders(offset, customer_id, authorize: AuthJWT, db: Session):

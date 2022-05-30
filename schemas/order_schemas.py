@@ -16,6 +16,8 @@ class OrderProducts(BaseModel):
 
 
 class OrderRequest(BaseModel):
+    checkout_id: Optional[str]
+    entityId: Optional[str]
     customer_id: int
     email: str
     contact: int
