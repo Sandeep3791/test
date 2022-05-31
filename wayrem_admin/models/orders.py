@@ -53,6 +53,7 @@ class Orders(models.Model):
     order_type = models.ForeignKey(
         'StatusMaster', models.DO_NOTHING, db_column='order_type', blank=True, null=True)
     delivery_charge = models.CharField(max_length=100, null=True)
+    checkout_id = models.CharField(max_length=255, null=True)
 
     def __str__(self):
         return self.ref_number
