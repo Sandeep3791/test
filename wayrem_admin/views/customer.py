@@ -1,3 +1,9 @@
+from email import message
+from django.views.decorators.csrf import csrf_exempt
+from grpc import Status
+from wayrem_admin.loginext.webhook_liberary import WebHookLiberary
+from django.http import HttpResponse
+import json
 from wayrem_admin.forecasts.firebase_notify import FirebaseLibrary
 from wayrem_admin.services import send_email
 from wayrem_admin.forms import CustomerSearchFilter, CustomerEmailUpdateForm
@@ -198,3 +204,43 @@ class PaymentForm(View):
     def get(self, request):
         checkout_id = request.GET.get("checkout_id")
         return render(self.request, self.template_name, {"checkoutId": checkout_id})
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class HyperpayPayment(View):
+    @csrf_exempt
+    def post(self, request, **kwargs):
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        create = body
+        return HttpResponse({"message": "Success"})
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class HyperpayRegistration(View):
+    webhook = WebHookLiberary()
+
+    @csrf_exempt
+    def post(self, request, **kwargs):
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        create = body
+        create_order_dic = self.webhook.createorderrequest(create)
+        order_reference_id = self.webhook.get_order(create_order_dic)
+        self.webhook.saveorderrequest(create_order_dic, order_reference_id)
+        return HttpResponse({'message': 'Success'})
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class HyperpayRisk(View):
+    webhook = WebHookLiberary()
+
+    @csrf_exempt
+    def post(self, request, **kwargs):
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        create = body
+        create_order_dic = self.webhook.createorderrequest(create)
+        order_reference_id = self.webhook.get_order(create_order_dic)
+        self.webhook.saveorderrequest(create_order_dic, order_reference_id)
+        return HttpResponse({'message': 'Success'})
