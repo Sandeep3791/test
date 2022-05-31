@@ -8,21 +8,25 @@ from datetime import timedelta, date, datetime
 from django.db.models import Sum, F
 import googlemaps
 from wayrem_admin.forecasts.firebase_notify import FirebaseLibrary
-
+import math
 
 class OrderLiberary:
     tax_vat = SETTING_VAT
     invoice_default = INVOICE_DEFAULT
     free_shipping_total = FREE_SHIPPING_TOTAL
     paid_shipping_charge = PAID_SHIPPING_CHARGE
+    DELIVERY_FREE_CHARGE_AFTER_AMOUNT="delivery_free_charge_after_amount"
+    GOOGLE_MAP_KEY="AIzaSyCT93vNszQ2b8JQmHqrkDTVJnjVKmHSaTc"
+    DELIVERY_FREE_CHARGE_BELOW_RANGE="delivery_free_charge_below_range"
+    DELIVERY_CHARGE_BASE_FEE="delivery_charge_base_fee"
+    DELIVERY_FEE_DISTANCE_CHARGE="delivery_fee_distance_charge"
+    SHIPPING_RATES_AFTER_BASEFARE="shipping_rates_after_basefare"
 
     def __init__(self):
         self.recurrence_type = self.recurrent_type()
         self.today_date = date.today()
-        self.delivery_order_per_day = self.get_setting_value(
-            DELIVERY_ORDER_PER_DAY)
-        self.customer_approve_per_day = self.get_setting_value(
-            CUSTOMER_APPROVAL_PER_DAY)
+        self.delivery_order_per_day = self.get_setting_value(DELIVERY_ORDER_PER_DAY)
+        #self.customer_approve_per_day = self.get_setting_value(CUSTOMER_APPROVAL_PER_DAY)
 
     def recurrent_type(self):
         recurrence_type = RecurrentType.objects.filter(
@@ -40,14 +44,14 @@ class OrderLiberary:
         return int(get_setting.value)
 
     def get_filter_data(self):
-        total_day = self.today_date + \
-            timedelta(days=self.delivery_order_per_day) + \
-            timedelta(days=self.customer_approve_per_day)
+        #total_day = self.today_date + timedelta(days=self.delivery_order_per_day) + timedelta(days=self.customer_approve_per_day)
+        total_day = self.today_date + timedelta(days=self.delivery_order_per_day) 
         return total_day
 
     def recurrence_grocery(self, get_date):
         recurrence_groccery = RecurrenceGrocery.objects.filter(
             status=1, recurrence_nextdate=get_date)
+        
         return recurrence_groccery
 
     def create_recurrence_grocery_order(self, recurrence_grocery):
@@ -139,12 +143,13 @@ class OrderLiberary:
                 order_long = customer_address.deliveryaddress_longitude
 
             #shipping = self.get_shipping_value(order_lat,order_long)
-            shipping = self.get_shipping_value(total)
+            shipping = self.get_shipping_value(total,order_lat,order_long)
+            
+
             promo = 0
             item_discount = round(product_total['item_discount'], 2)
             discount = round(product_total['discount'], 2)
             grand_total, tax = self.get_grand_total(total, tax_vat, shipping)
-
             full_name = customer_address.full_name
 
             order_ship_name = full_name
@@ -192,7 +197,7 @@ class OrderLiberary:
             print(e)
             return 0
 
-    def get_shipping_value(self, total_amount):
+    def get_shipping_value_new(self, total_amount):
         if total_amount > float(self.free_shipping_total):
             return 0
         else:
@@ -200,36 +205,46 @@ class OrderLiberary:
                 self.paid_shipping_charge)
             return paid_shipping_charge
 
-    def get_shipping_value_old(self, customer_latitude, customer_longitude):
-        gmaps = googlemaps.Client(
-            key='AIzaSyCT93vNszQ2b8JQmHqrkDTVJnjVKmHSaTc')
-        warehouse = Warehouse.objects.filter(status=1).first()
-
+    def get_shipping_value(self, total_amount,customer_latitude, customer_longitude):
+        delivery_free_charge_below_range = Settings.objects.get(key=self.DELIVERY_FREE_CHARGE_AFTER_AMOUNT)
+        free_shipping_total=delivery_free_charge_below_range.value
+        if total_amount > float(free_shipping_total):
+            return float(0)
+        gmaps = googlemaps.Client(key=self.GOOGLE_MAP_KEY)
+        warehouse = Warehouse.objects.filter(status="Active").first()
         warehouse_latitude = warehouse.latitude
         warehouse_longitude = warehouse.longitude
-
         origin_latitude = float(warehouse_latitude)
         origin_longitude = float(warehouse_longitude)
         destination_latitude = float(customer_latitude)
         destination_longitude = float(customer_longitude)
-
+        #destination_latitude ="24.692387"
+        #destination_longitude ="46.725090"
         distance = gmaps.distance_matrix([str(origin_latitude) + " " + str(origin_longitude)], [str(
-            destination_latitude) + " " + str(destination_longitude)], mode='driving')['rows'][0]['elements'][0]
-
+                destination_latitude) + " " + str(destination_longitude)], mode='driving')['rows'][0]['elements'][0]
+        
         x = distance.get("distance").get('value')
         y = float(x/1000)
         calculate_price = self.calculate_price_km(y)
-        total_shipping_charge = calculate_price * y
-        return total_shipping_charge
+        return calculate_price
 
     def calculate_price_km(self, km):
-        km = int(km)
-        sr = ShippingRates.objects.filter(
-            from_dest__gte=km, to_dest__lte=km).first()
-        if sr is None:
-            return DEFAULT_SHIPPING_AMOUNT
+        km = float(km)
+        delivery_free_charge_below_range = Settings.objects.get(key=self.DELIVERY_FREE_CHARGE_BELOW_RANGE)
+        free_delivery_before_range=delivery_free_charge_below_range.value
+        if km <= float(free_delivery_before_range):
+            return float(0)
         else:
-            return sr.price
+            delivery_charge = Settings.objects.get(key=self.DELIVERY_CHARGE_BASE_FEE)
+            basic_charge=float(delivery_charge.value)-float(3)
+            delivery_fee_distance_charge=Settings.objects.get(key=self.DELIVERY_FEE_DISTANCE_CHARGE)
+            include_fees_after_km=delivery_fee_distance_charge.value
+            shipping_rates_after_basefare=Settings.objects.get(key=self.SHIPPING_RATES_AFTER_BASEFARE)
+            shipping_rates=shipping_rates_after_basefare.value
+            total_value=km/float(include_fees_after_km)
+            caluclate_dis=math.floor(total_value)
+            total_price=(float(caluclate_dis)*float(shipping_rates))+basic_charge
+            return total_price
 
     def product_total(self, grocery_product_list):
         subtotal_unit_price = 0
@@ -263,7 +278,7 @@ class OrderLiberary:
 
     def get_grand_total(self, total, tax, shipping):
         tax_amount = ((float(total)+float(shipping)) * float(tax)) / 100
-        grand_total = float(total)+float(tax_amount)
+        grand_total = float(total)+float(tax_amount)+float(shipping)
         grand_total = round(grand_total, 2)
         tax_amount = round(tax_amount, 2)
         return grand_total, tax_amount

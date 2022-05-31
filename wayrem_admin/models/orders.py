@@ -134,6 +134,7 @@ class OrderTransactions(models.Model):
     created_at = models.DateTimeField()
     updated_at = models.DateTimeField(blank=True, null=True)
     content = models.TextField(blank=True, null=True)
+    bank_payment_image = models.TextField(blank=True, null=True)
 
     class Meta:
         app_label = "wayrem_admin"

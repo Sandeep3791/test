@@ -1,3 +1,4 @@
+from wayrem_admin.models.BankModels import *
 from wayrem_admin.models.categories import *
 from wayrem_admin.models.customers import *
 from wayrem_admin.models.ingredients import *

@@ -1,0 +1,106 @@
+
+{% extends "layouts/base.html" %}
+
+{% block title %} View Bank {% endblock %} 
+{%load widget_tweaks %}
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+{% block content %}
+<div class="dashboard_content_inner">
+<div class="topbar_pages padding-0">
+    <div class="container ">
+        <h4 class="text-title">View Bank </h2>
+        <div class="breadcrumb-section">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb padding-left-0">
+                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
+                    <li class="breadcrumb-item"><span class="sidebar-icon"><i class="fas fa-box-open"></i></span> <span class="sidebar-text">Banks Management&nbsp; </span></li>
+                    <li class="breadcrumb-item active" aria-current="page">View Bank Management</li>
+                </ol>
+            </nav>
+        </div>
+    </div> 
+</div>
+<div class="row d-flex justify-content-center">
+   
+    <div class="col-12 col-xl-12">
+        <div class="card card-body card_shadow mb-4">
+            
+            <form action="{% url 'wayrem_admin:updatebank' id_pk %}" method="POST" enctype="multipart/form-data" validate>
+              {% csrf_token %}
+                <div class="row">
+                    <div class="col-md-12 mb-2">
+                        <div>
+                            <label for="name">Title  <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.code_name.errors | striptags}}</em></span></label>
+                            {{form.title}}
+                            <div class="input-group" id="name_error_message" style="color: #d12525;"></div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mb-2">
+                            <div>
+                                <label for="name">Bank Name<span class="text-danger">*</span>  <span class="text-danger"><em>{{form.branch_name.errors | striptags}}</em></span></label>
+                                {{form.bank_name}}
+                                <div class="input-group" id="branch_name_error_message" style="color: #d12525;"></div>
+                            </div>
+                        </div>
+                    
+                        <div class="col-md-12 mb-2">
+                            <div>
+                                <label for="name">Account Name <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.latitude.errors | striptags}}</em></span></label>
+                                {{form.account_name}}
+                                <div class="input-group" id="branch_name_error_message" style="color: #d12525;"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 mb-2">
+                            <div>
+                                <label for="name">City <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.longitude.errors | striptags}}</em></span></label>
+                                {{form.city}}
+                                <div class="input-group" id="branch_name_error_message" style="color: #d12525;"></div>
+                            </div>
+                        </div>
+
+                    <div class="col-md-12 mb-2">
+                        <div>
+                            <label for="address">Branch <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.address.errors | striptags}}</em></span></label>
+                            {{form.branch}}
+                            <div class="input-group"  id="message_format_error_message" style="color: #d12525;"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-12 mb-2">
+                        <div>
+                            <label for="address">IBAN <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.address.errors | striptags}}</em></span></label>
+                            {{form.iban}}
+                            <div class="input-group"  id="message_format_error_message" style="color: #d12525;"></div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-12 mb-2">
+                        <div>
+                            <label for="status">Status <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.status.errors | striptags}}</em></span></label>
+                            {{form.status}}
+                            <div class="input-group" id="status_error_message" style="color: #d12525;"></div>
+                        </div>
+                    </div>
+
+                    <div class="mt-3">
+                        <a href="{% url 'wayrem_admin:banklist' %}"
+                                    class="btn  btn-danger btn-block col-xl-3 col-md-5 col-12 mt-sm-3 mt-md-0 mt-3">Cancel</a>
+                    </div>
+                </div>
+
+                
+                        
+               
+            </form>
+        </div>
+    </div>
+</div>
+</div>
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+
+{% endblock javascripts %}

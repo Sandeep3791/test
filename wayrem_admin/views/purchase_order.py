@@ -128,6 +128,8 @@ def create_purchase_order(request):
             form = POFormOne(
                 initial={'supplier_name': request.session.get('supplier_company', None)})
     po = request.session.get('products', None)
+    if not po:
+        request.session['products'] = list()
     forecast_day = ForecastJobtype.objects.filter(status=1)
     return render(request, "po_step1.html", {'form': form, "po": po, 'forecast_day': forecast_day})
 

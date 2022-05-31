@@ -36,7 +36,7 @@ app.conf.beat_schedule = {
     },
     'product_recursion_24hrs': {
         'task': 'wayrem_admin.tasks.product_recursion',
-        'schedule': crontab(hour='*/12'),
+        'schedule': crontab(minute='*/30'),
         # 'args': (9),
     },
 }
