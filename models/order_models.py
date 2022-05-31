@@ -85,6 +85,8 @@ class OrderTransactions(Base):
     created_at = Column(DateTime, nullable=False, default=common_services.get_time())
     updated_at = Column(DateTime, nullable=False, default=common_services.get_time())
     content = Column(String(255), nullable=True)
+    bank_payment_image = Column(String(255), nullable=True)
+
 
 
 class Inventory(Base):

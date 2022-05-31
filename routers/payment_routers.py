@@ -74,3 +74,9 @@ def delete_customer_card(card_id: str, entityId: str, authorize: AuthJWT = Depen
 def get_payment_types(authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
     response = payment_services.get_payment_types(authorize, db)
     return response
+
+@router.get('/get/payment/status/types')
+def get_payment_status_types(authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
+    response = payment_services.get_payment_status_types(authorize, db)
+    return response
+

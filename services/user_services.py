@@ -191,8 +191,10 @@ def customer_registration_docs(customer_id, registration_docs, tax_docs, marrof_
         return common_msg
 
     if registration_docs:
+        a = registration_docs.filename
+        s = a.split(".")[-1]
         reg_docs_path = os.path.join(
-            common_folder_path, f"registration_docs-{customer_id}.pdf")
+            common_folder_path, f"registration_docs-{customer_id}."+s)
         if os.path.exists(reg_docs_path):
             os.remove(reg_docs_path)
         if user_data:
@@ -206,8 +208,10 @@ def customer_registration_docs(customer_id, registration_docs, tax_docs, marrof_
         reg_docs_path = "null"
 
     if tax_docs:
+        a = tax_docs.filename
+        s = a.split(".")[-1]
         tax_docs_path = os.path.join(
-            common_folder_path, f"tax_docs-{customer_id}.pdf")
+            common_folder_path, f"tax_docs-{customer_id}."+s)
         if os.path.exists(tax_docs_path):
             os.remove(tax_docs_path)
         if user_data:
@@ -221,8 +225,10 @@ def customer_registration_docs(customer_id, registration_docs, tax_docs, marrof_
         tax_docs_path = "null"
 
     if marrof_docs:
+        a = marrof_docs.filename
+        s = a.split(".")[-1]
         marrof_docs_path = os.path.join(
-            common_folder_path, f"marrof_docs-{customer_id}.pdf")
+            common_folder_path, f"marrof_docs-{customer_id}."+s)
         if os.path.exists(marrof_docs_path):
             os.remove(marrof_docs_path)
         if user_data:
@@ -240,6 +246,10 @@ def customer_registration_docs(customer_id, registration_docs, tax_docs, marrof_
 
     resp = user_schemas.Uploaddocs(
         status=status.HTTP_200_OK, message='success', data=docs_data)
+    if user_data.verification_status == "rejected":
+        user_data.verification_status = "updated"
+        db.merge(user_data)
+        db.commit()
     return resp
 
 
@@ -255,6 +265,21 @@ def download_profile_picture(customer_id, authorize, db: Session):
             return response
             # return FileRes
             # return FileResponse(os.path.join(common_dir_path,f'{file}'), filename="profile_picture.jpeg",media_type="image")
+    common_msg = user_schemas.ResponseCommonMessage(
+        status=status.HTTP_404_NOT_FOUND, message=f"No file available for {file}")
+    return common_msg
+
+
+def download_marrof_docs(customer_id, authorize, db: Session):
+    path = os.path.abspath('.')
+    common_dir_path = os.path.join(path, 'common_folder')
+    for file in os.listdir(common_dir_path):
+        if file.split('-')[0] == "marrof_docs" and int(file.split('-')[1].split('.')[0]) == customer_id:
+            file_path = constants.IMAGES_DIR_PATH + f'{file}'
+            data2 = user_schemas.Responsedocs(file_path=file_path)
+            response = user_schemas.Responsedocspath(
+                status=status.HTTP_200_OK, message='success', data=data2)
+            return response
     common_msg = user_schemas.ResponseCommonMessage(
         status=status.HTTP_404_NOT_FOUND, message=f"No file available for {file}")
     return common_msg
@@ -288,21 +313,6 @@ def download_tax_docs(customer_id, authorize, db: Session):
                 status=status.HTTP_200_OK, message='success', data=data2)
             return response
             # return FileResponse(os.path.join(common_dir_path,f'{file}'), filename="tax_docs.pdf")
-    common_msg = user_schemas.ResponseCommonMessage(
-        status=status.HTTP_404_NOT_FOUND, message=f"No file available for {file}")
-    return common_msg
-
-
-def download_marrof_docs(customer_id, authorize, db: Session):
-    path = os.path.abspath('.')
-    common_dir_path = os.path.join(path, 'common_folder')
-    for file in os.listdir(common_dir_path):
-        if file.split('-')[0] == "marrof_docs" and int(file.split('-')[1].split('.')[0]) == customer_id:
-            file_path = constants.IMAGES_DIR_PATH + f'{file}'
-            data2 = user_schemas.Responsedocs(file_path=file_path)
-            response = user_schemas.Responsedocspath(
-                status=status.HTTP_200_OK, message='success', data=data2)
-            return response
     common_msg = user_schemas.ResponseCommonMessage(
         status=status.HTTP_404_NOT_FOUND, message=f"No file available for {file}")
     return common_msg

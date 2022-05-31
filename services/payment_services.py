@@ -1,6 +1,7 @@
 
 
 import json
+from services import firebase_services,common_services
 from schemas import user_schemas,payment_schemas
 from models import user_models,order_models,payment_models
 from fastapi_jwt_auth import AuthJWT
@@ -116,7 +117,7 @@ def get_all_banks(authorize: AuthJWT, db: Session):
         return common_msg
 
 
-def upload_bank_payment_image(order_id, image, authorize: AuthJWT, db: Session):
+def upload_bank_payment_image(customer_id,order_id, image, authorize: AuthJWT, db: Session):
     authorize.jwt_required()
     order_data = db.query(order_models.OrderTransactions).filter(
         order_models.OrderTransactions.order_id == order_id).first()
@@ -148,8 +149,43 @@ def upload_bank_payment_image(order_id, image, authorize: AuthJWT, db: Session):
     prfl_path = user_schemas.UploadProfiledata(path=db_path)
     common_msg = user_schemas.UploadProfile(
         status=status.HTTP_200_OK, message="success", data=prfl_path)
-    return common_msg
+    
+    try:
+        customer_data = db.execute(
+            f"select * from {constants.Database_name}.customer_device where customer_id = {customer_id} and is_active=True ;")
 
+        setting_message = db.execute(
+            f"select * from {constants.Database_name}.settings where settings.key = 'bank_receipt_upload_notification' ;")
+
+        order_ref_no = db.execute(
+            f"select ref_number from {constants.Database_name}.orders where orders.id = {order_id} ;")
+        
+        for msg in setting_message:
+            message = msg.value
+            title_message = msg.display_name
+
+        for ref_no in order_ref_no:
+            ref = ref_no[0]
+        values = {
+            "order_ref_no": ref
+        }
+
+        message = message.format(**values)
+
+        if customer_data:
+            for data in customer_data:
+                notf = user_schemas.PushNotificationFirebase(
+                    title=title_message, message=message, device_token=data.device_id, order_id=order_id)
+                firebase_services.push_notification_in_firebase(notf)
+
+            if notf:
+                fire = user_models.CustomerNotification(
+                    customer_id=customer_id, order_id=order_id, title=notf.title, message=notf.message, created_at=common_services.get_time())
+                db.merge(fire)
+                db.commit()
+    except Exception as e:
+        print(e)
+    return common_msg
 
 def download_bank_payment_image(order_id, authorize, db: Session):
     authorize.jwt_required()
@@ -181,8 +217,7 @@ def get_customer_cards(customer_id, authorize: AuthJWT, db: Session):
     if user_cards:
         cards = []
         for card in user_cards:
-            data = payment_schemas.ResponseCustomerCards(id=card.id, card_number=card.card_number, expiry_month=card.expiry_month, expiry_year=card.expiry_year,
-                                                      card_holder=card.card_holder, card_type=card.card_type, card_brand=card.card_brand, card_id=card.registration_id)
+            data = payment_schemas.ResponseCustomerCards(id=card.id, card_number=card.card_number, expiry_month=card.expiry_month, expiry_year=card.expiry_year,card_holder=card.card_holder, card_type=card.card_type, card_brand=card.card_brand, card_id=card.registration_id)
             cards.append(data)
         response = payment_schemas.ResponseCustomerCardsFinal(
             status=status.HTTP_200_OK, message="User Cards!", data=cards)
@@ -222,4 +257,19 @@ def get_payment_types(authorize: AuthJWT, db: Session):
         payment_type_list.append(result)
     response = payment_schemas.ResponsePaymentsTypeFinal(
         status=status.HTTP_200_OK, message="User Cards!", data=payment_type_list)
+    return response
+
+
+
+def get_payment_status_types(authorize: AuthJWT, db: Session):
+    authorize.jwt_required()
+    payment_status_types = db.execute(
+        f'select * from {constants.Database_name}.status_master where status_type = 2')
+    payment_status_list = []
+    for data in payment_status_types:
+        result = payment_schemas.ResponsePaymentstatus(
+            id=data.id, payment_status_name=data.name, status=data.status)
+        payment_status_list.append(result)
+    response = payment_schemas.ResponsePaymentstatusFinal(
+        status=status.HTTP_200_OK, message="all payments status type!", data=payment_status_list)
     return response

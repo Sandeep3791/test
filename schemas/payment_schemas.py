@@ -54,3 +54,14 @@ class ResponsePaymentsTypeFinal(BaseModel):
     status: str
     message: str
     data: List[ResponsePaymentsType]
+
+class ResponsePaymentstatus(BaseModel):
+    id: int
+    payment_status_name: str
+    status: bool
+
+
+class ResponsePaymentstatusFinal(BaseModel):
+    status: str
+    message: str
+    data: List[ResponsePaymentstatus]
