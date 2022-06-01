@@ -6,7 +6,7 @@ import logging
 from models import user_models,firebase_models
 from schemas import user_schemas
 from services import common_services
-from fastapi import FastAPI, Depends, status
+from fastapi import FastAPI, Depends, status,BackgroundTasks
 from fastapi_jwt_auth import AuthJWT
 from sqlalchemy.orm import Session
 from datetime import timedelta, datetime
@@ -22,7 +22,7 @@ app = FastAPI()
 logger = logging.getLogger(__name__)
 
 
-def customer_user(request, authorize, db):
+def customer_user(request, authorize, db,background_tasks: BackgroundTasks):
     user = db.query(user_models.User).filter(
         user_models.User.email == request.email).first()
     contact = db.query(user_models.User).filter(
@@ -117,7 +117,8 @@ def customer_user(request, authorize, db):
         }
         body = body.format(**values)
         for to in send_emails_to:
-            common_services.send_otp(to, subject, body, request, db)
+            background_tasks.add_task(common_services.send_otp, to, subject, body, request, db)
+            
         sub = {"email": data.email, "id": data.id}
         access_token = authorize.create_access_token(
             subject=str(sub), expires_time=timedelta(days=10))

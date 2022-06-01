@@ -1,7 +1,8 @@
+from turtle import back
 from fastapi_jwt_auth import AuthJWT
 from starlette import status
 from schemas import user_schemas
-from fastapi import APIRouter, Depends, UploadFile, File
+from fastapi import APIRouter, Depends, UploadFile, File,BackgroundTasks
 import database
 from sqlalchemy.orm import Session
 from services import user_services
@@ -19,8 +20,8 @@ logger = logging.getLogger(__name__)
 
 
 @router.post('/customer/registration')
-def customer_user(request: user_schemas.User,authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
-    data = user_services.customer_user(request,authorize, db)
+def customer_user(request: user_schemas.User,authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db),background : BackgroundTasks = None):
+    data = user_services.customer_user(request,authorize, db,background)
     return data
 
 
