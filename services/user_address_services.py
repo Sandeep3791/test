@@ -1,17 +1,16 @@
 import constants
 import logging
-from models import user_models,order_models
+from models import user_models, order_models
 from schemas import user_schemas
 from fastapi import FastAPI, status
 from fastapi_jwt_auth import AuthJWT
 from sqlalchemy.orm import Session
 import constants
-from services import common_services
+from utility_services import common_services
 
 app = FastAPI()
 
 logger = logging.getLogger(__name__)
-
 
 
 def add_address_details(request, authorize: AuthJWT, db: Session):
@@ -269,4 +268,3 @@ def delete_customer_address(address_id, authorize: AuthJWT, db: Session):
     common_msg = user_schemas.ResponseCommonMessage(
         status=status.HTTP_200_OK, message="Address Deleted Successfully!")
     return common_msg
-

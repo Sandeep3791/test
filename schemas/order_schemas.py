@@ -71,7 +71,6 @@ class updateRecurrenceRequest(BaseModel):
     status: bool
 
 
-
 class OrdersProducts(BaseModel):
     product_id: int
     ordered_product_quantity: int
@@ -192,8 +191,6 @@ class RecurrenceFinalResponse(BaseModel):
     data: RecurrenceResponse
 
 
-
-
 class RecurrenceOrderProducts(BaseModel):
     product_id: int
     product_quantity: int
@@ -228,7 +225,7 @@ class RecurrentResponse(BaseModel):
 
 class Deliveryfeedata(BaseModel):
     delivery_fees: Optional[float]
-    free_delivery_after_amount : Optional[float]
+    free_delivery_after_amount: Optional[float]
     vat_value: str
 
 
@@ -236,3 +233,9 @@ class Getdeliveryfees(BaseModel):
     status: str
     message: str
     data: Deliveryfeedata
+
+
+class InitialOrderResponse(BaseModel):
+    status: str
+    message: str
+    ref_number: str

@@ -3,7 +3,7 @@ from sqlalchemy.dialects.mysql import LONGTEXT
 from sqlalchemy.sql.sqltypes import Boolean
 from database import Base
 import uuid
-from services import common_services
+from utility_services import common_services
 
 
 class Business_type(Base):
@@ -11,7 +11,6 @@ class Business_type(Base):
     id = Column(Integer(), autoincrement=True, primary_key=True)
     business_type = Column(String(255))
     status = Column(Boolean, default=False)
-
 
 
 class User(Base):
@@ -49,8 +48,10 @@ class User(Base):
     billlingAddress_Latitude = Column(String(255))
     billingAddress_longitude = Column(String(255))
     verification_status = Column(String(255), default="waiting for approval")
-    created_at = Column(DateTime, nullable=False, default=common_services.get_time())
-    updated_at = Column(DateTime, nullable=False, default=common_services.get_time())
+    created_at = Column(DateTime, nullable=False,
+                        default=common_services.get_time())
+    updated_at = Column(DateTime, nullable=False,
+                        default=common_services.get_time())
 
 
 class OtpVerification(Base):
@@ -59,7 +60,8 @@ class OtpVerification(Base):
     email = Column(String(255))
     otp = Column(Integer)
     verified = Column(Boolean, default=False)
-    created_at = Column(DateTime, nullable=False, default=common_services.get_time())
+    created_at = Column(DateTime, nullable=False,
+                        default=common_services.get_time())
 
 
 class Customerotp(Base):
@@ -67,7 +69,8 @@ class Customerotp(Base):
     id = Column(String(255), primary_key=True, default=uuid.uuid4)
     otp = Column(Integer)
     email = Column(String(255))
-    created_at = Column(DateTime, nullable=False, default=common_services.get_time())
+    created_at = Column(DateTime, nullable=False,
+                        default=common_services.get_time())
 
 
 class CustomerAddresses(Base):
@@ -87,12 +90,6 @@ class CustomerAddresses(Base):
     is_default = Column(Boolean, default=False)
 
 
-
-
-
-
-
-
 # class StatusMaster(Base):
 #     __tablename__= 'status_master'
 #     id = Column(Integer(),autoincrement=True,primary_key=True,index=True)
@@ -103,7 +100,4 @@ class CustomerAddresses(Base):
 #     status = Column(Integer)
 
 
-
-
 # notifications models
-

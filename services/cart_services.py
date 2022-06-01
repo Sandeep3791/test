@@ -1,8 +1,8 @@
 import constants
 import logging
 from models import order_models
-from services import common_services
-from schemas import user_schemas,cart_schemas
+from utility_services import common_services
+from schemas import user_schemas, cart_schemas
 from fastapi import FastAPI, status
 from fastapi_jwt_auth import AuthJWT
 from sqlalchemy.orm import Session
@@ -14,10 +14,11 @@ logger = logging.getLogger(__name__)
 
 def create_cart(request, authorize: AuthJWT, db: Session):
     authorize.jwt_required()
-    data_exist = db.query(order_models.CustomerCart).filter(order_models.CustomerCart.customer_id == request.customer_id, order_models.CustomerCart.product_id == request.product_id).first()
+    data_exist = db.query(order_models.CustomerCart).filter(order_models.CustomerCart.customer_id ==
+                                                            request.customer_id, order_models.CustomerCart.product_id == request.product_id).first()
     if data_exist:
         common_msg = user_schemas.ResponseCommonMessage(
-        status=status.HTTP_404_NOT_FOUND, message="This products already available in your cart")
+            status=status.HTTP_404_NOT_FOUND, message="This products already available in your cart")
         return common_msg
     db_data = order_models.CustomerCart(
         customer_id=request.customer_id, product_id=request.product_id, product_quantity=request.product_quantity)
@@ -85,7 +86,7 @@ def get_cart_product(customer_id, authorize: AuthJWT, db: Session):
             final_qty = qty
             data2 = cart_schemas.GetCartProducts(cart_id=var.id, product_id=var.product_id, product_quantity=var.product_quantity, stock_quantity=final_qty, name=i.name, SKU=i.SKU, mfr_name=i.mfr_name, description=i.description,
                                                  quantity_unit=j[0], threshold=qty_thresold, weight=i.weight, weight_unit=k[0], price=updated_price, discount=i.discount, discount_unit=i.dis_abs_percent, primary_image=image_path, images=image_list, rating=result)
-        
+
         cart_list.append(data2)
     response = cart_schemas.GetCartResponse(
         status=status.HTTP_200_OK, message="All Cart Products!", customer_id=customer_id, data=cart_list)
@@ -162,4 +163,3 @@ def add_multiple_products(request, authorize: AuthJWT, db: Session):
     common_msg = user_schemas.ResponseCartMultipleProducts(status=status.HTTP_200_OK, message="Product added to cart Successfully!",
                                                            customer_id=request.customer_id, products=products_list)
     return common_msg
-

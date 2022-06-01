@@ -1,8 +1,8 @@
 import constants
 import logging
-from models import user_models,order_models
-from schemas import user_schemas,grocery_schemas
-from services import common_services
+from models import user_models, order_models
+from schemas import user_schemas, grocery_schemas
+from utility_services import common_services
 from fastapi import FastAPI, status
 from fastapi_jwt_auth import AuthJWT
 from sqlalchemy.orm import Session
@@ -31,7 +31,7 @@ def create_user_grocery(request, authorize: AuthJWT, db: Session):
                 status=status.HTTP_200_OK, message="Invalid Address Id For This User!")
             return common_msg
         data = order_models.UserGrocery(grocery_name=request.grocery_name, description=request.description,
-                                       customer_id=request.customer_id, address_id=request.address_id)
+                                        customer_id=request.customer_id, address_id=request.address_id)
         db.merge(data)
         db.commit()
         last_record = db.execute(
@@ -40,7 +40,7 @@ def create_user_grocery(request, authorize: AuthJWT, db: Session):
             last_id = i.id
 
         res_data = grocery_schemas.CreateGrocerySchema(id=last_id, customer_id=request.customer_id,
-                                                    address_id=request.address_id, grocery_name=request.grocery_name, description=request.description)
+                                                       address_id=request.address_id, grocery_name=request.grocery_name, description=request.description)
         common_msg = grocery_schemas.CreateGroceryResponse(
             status=status.HTTP_200_OK, message="Grocery Created Successfully!", data=res_data)
         return common_msg
@@ -118,7 +118,7 @@ def get_all_grocery(customer_id, authorize: AuthJWT, db: Session):
                 order_models.GroceryProducts.grocery_id == data.id).all()
             count_value = len(grocery_products)
             res_data = grocery_schemas.ListGrocerDetailsResponse(grocery_id=data.id, product_count=count_value, customer_id=data.customer_id,
-                                                              address_id=data.address_id, grocery_name=data.grocery_name, description=data.description, recurrence_next_date=next_date)
+                                                                 address_id=data.address_id, grocery_name=data.grocery_name, description=data.description, recurrence_next_date=next_date)
             grocery_list.append(res_data)
         common_msg = grocery_schemas.ListGroceryDetails(
             status=status.HTTP_200_OK, message="Grocery details", data=grocery_list)
@@ -251,10 +251,10 @@ def get_grocery_products_details(grocery_id, authorize: AuthJWT, db: Session):
                 qty_thresold = i.outofstock_threshold
                 final_qty = qty
                 res_data = grocery_schemas.GroceryProdResp(product_id=i.id, product_qty=grocery_product.product_qty, name=i.name, SKU=i.SKU, mfr_name=i.mfr_name, description=i.description, quantity=final_qty,
-                                                        quantity_unit=j[0], threshold=qty_thresold, weight=i.weight, weight_unit=k[0], categories=prod_category_list, price=updated_price, discount=i.discount,  discount_unit=i.dis_abs_percent, primary_image=image_path, images=image_list)
+                                                           quantity_unit=j[0], threshold=qty_thresold, weight=i.weight, weight_unit=k[0], categories=prod_category_list, price=updated_price, discount=i.discount,  discount_unit=i.dis_abs_percent, primary_image=image_path, images=image_list)
                 list_data.append(res_data)
     data2 = grocery_schemas.GroceryRecurrenceprod(grocery_id=grocery_id, grocery_name=grocery_name, description=description, address_id=grocery_address_id,
-                                               recurrent_id=recurrent_id, recurrenttype=recurrence_type_value, recurrence_startdate=recurrence_startdate, recurrence_status=rec_status, products=list_data)
+                                                  recurrent_id=recurrent_id, recurrenttype=recurrence_type_value, recurrence_startdate=recurrence_startdate, recurrence_status=rec_status, products=list_data)
 
     common_msg = grocery_schemas.ResponseCommonMessageProducts(
         status=status.HTTP_200_OK, message="All Products of Grocery!", data=data2)
@@ -283,15 +283,14 @@ def update_product_quantity(request, authorize: AuthJWT, db: Session):
 def delete_grocery_products(request, authorize: AuthJWT, db: Session):
     authorize.jwt_required()
     del_prod = db.query(order_models.GroceryProducts).filter(order_models.GroceryProducts.grocery_id ==
-                                                            request.grocery_id, order_models.GroceryProducts.product_id == request.product_id).first()
+                                                             request.grocery_id, order_models.GroceryProducts.product_id == request.product_id).first()
     if not del_prod:
         common_msg = user_schemas.ResponseCommonMessage(
             status=status.HTTP_404_NOT_FOUND, message="Invalid Grocery Id Or Product_id")
         return common_msg
     db.query(order_models.GroceryProducts).filter(order_models.GroceryProducts.grocery_id == request.grocery_id,
-                                                 order_models.GroceryProducts.product_id == request.product_id).delete(synchronize_session=False)
+                                                  order_models.GroceryProducts.product_id == request.product_id).delete(synchronize_session=False)
     db.commit()
     common_msg = user_schemas.ResponseCommonMessage(
         status=status.HTTP_200_OK, message="Product deleted Successfully!")
     return common_msg
-

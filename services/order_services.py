@@ -1,18 +1,24 @@
+import math
 from email import message
 import constants
 from services import firebase_services
-import random,os
+from utility_services import common_services
+from utility_services.inventory_services import update_inventory
+import random
+import os
 import logging
-from models import user_models,order_models,firebase_models,payment_models
-from schemas import firebase_schemas, user_schemas,order_schemas
-from services import common_services , payment_services
-from fastapi import FastAPI, status,BackgroundTasks
+from models import user_models, order_models, firebase_models, payment_models
+from schemas import firebase_schemas, user_schemas, order_schemas
+from services import payment_services
+from fastapi import FastAPI, status, BackgroundTasks
 from fastapi_jwt_auth import AuthJWT
 from sqlalchemy.orm import Session
-from datetime import  datetime
-import random ,googlemaps
+from datetime import datetime
+import random
+import googlemaps
 import datetime as DT
-import constants ,calendar
+import constants
+import calendar
 
 
 app = FastAPI()
@@ -20,9 +26,116 @@ app = FastAPI()
 logger = logging.getLogger(__name__)
 
 
-import math
+def initial_order(request, authorize: AuthJWT, db: Session, background_tasks: BackgroundTasks):
+    authorize.jwt_required()
+    db_user_active = db.query(user_models.User).filter(
+        user_models.User.id == request.customer_id).first()
 
-def create_order(request, authorize: AuthJWT, db: Session,background_tasks:BackgroundTasks):
+    if db_user_active.verification_status != "active":
+        common_msg = user_schemas.ResponseCommonMessage(
+            status=status.HTTP_404_NOT_FOUND, message="User is not approved to place the order")
+        return common_msg
+    for product in request.products:
+        product_qty = product.product_quantity
+        product_quantity_check = db.execute(
+            f"select * from {constants.Database_name}.products_master where id = {product.product_id} and publish = {True};")
+        for prod_qty in product_quantity_check:
+            if int(prod_qty.quantity) < product_qty:
+                result = user_schemas.ResponseCommonMessage(
+                    status=status.HTTP_404_NOT_FOUND, message="Please check your cart some item are out of stock")
+                return result
+        product_id = product.product_id
+        req_product_price = product.product_price
+        final_request_price_with_qty = req_product_price*product_qty
+
+        if product.discount == None:
+            product_discount = 0
+        else:
+            product_discount = float(product.discount)
+        product_price = float(product.price)
+        product_margin = float(product.wayrem_margin)
+        margin_unit = product.margin_unit
+        discount_unit = product.dis_abs_percent
+
+        if discount_unit == '%':
+            discount_value = (req_product_price/100)*product_discount
+        elif product_discount == '':
+            discount_value = 0
+            product_discount = 0
+        else:
+            discount_value = int(product_discount)
+        disc_with_qty = discount_value*product_qty
+        dicscount_with_qty = round(disc_with_qty, 2)
+
+        if margin_unit == '%':
+            intial_margin_value = (product_price/100) * product_margin
+            margin_value = intial_margin_value
+            abc = product_price + margin_value
+            product_with_margin_price = round(abc, 2)
+            final_product_price = (product_with_margin_price) * product_qty
+
+        else:
+            margin_value = product_margin
+            final_product_price = (
+                product_price + product_margin) * product_qty
+            cde = product_price + margin_value
+            product_with_margin_price = round(cde, 2)
+        if req_product_price > product_with_margin_price or req_product_price < product_with_margin_price:
+            data1 = order_schemas.OrderedProducts(
+                product_id=product_id, latest_price=product_with_margin_price)
+            increased = "Price Increased for this product"
+            decreased = "Price Decreased for this product"
+            message = decreased if req_product_price < product_with_margin_price else increased
+            result = order_schemas.OrderResponse1(
+                status=status.HTTP_401_UNAUTHORIZED, message=message, data=data1)
+            return result
+
+    ref_no = random.randint(1000, 999999)
+    same_order_ref_no = db.query(order_models.Orders).filter(
+        order_models.Orders.ref_number == ref_no).first()
+    if same_order_ref_no:
+        ref_no = random.randint(999999, 99999999)
+    order = order_models.Orders(
+        ref_number=ref_no,
+        customer_id=request.customer_id,
+        status=16,
+        delivery_status=1,
+        sub_total=0,
+        item_discount=0,
+        item_margin=0,
+        tax=0,
+        tax_vat=0,
+        discount=0,
+        grand_total=0,
+        shipping=0,
+        total=0,
+        order_shipped=0,
+        order_ship_name=request.shipping_name,
+        order_ship_address=request.shipping_address,
+        order_billing_name=request.billing_name,
+        order_billing_address=request.billing_address,
+        order_city=request.city,
+        order_country=request.country,
+        order_ship_region=request.shipping_region,
+        order_ship_landmark=request.shipping_landmark,
+        order_ship_building_name=request.shipping_building_name,
+        order_ship_latitude=request.shipping_latitude,
+        order_ship_longitude=request. shipping_longitude,
+        order_phone=request.contact,
+        order_email=request.email,
+        order_type=24,
+        delivery_charge=request.delivery_fees,
+        order_date=common_services.get_time()
+
+    )
+    db.merge(order)
+    db.commit()
+    result = order_schemas.InitialOrderResponse(
+        status=status.HTTP_200_OK, message="Initial Order created successfully!!", ref_number=ref_no)
+    return result
+
+
+def create_order(request, authorize: AuthJWT, db: Session, background_tasks: BackgroundTasks):
     authorize.jwt_required()
     paid = False
     cod = False
@@ -49,7 +162,7 @@ def create_order(request, authorize: AuthJWT, db: Session,background_tasks:Backg
             card_type = card_body.get("type")
             card_brand = payment_status.get("paymentBrand")
             save_card = payment_models.CustomerCard(customer_id=request.customer_id, registration_id=registrationId, card_number=card_number, expiry_month=expiry_month,
-                                                 expiry_year=expiry_year, card_holder=card_holder, card_type=card_type, card_body=str(card_body), card_brand=card_brand)
+                                                    expiry_year=expiry_year, card_holder=card_holder, card_type=card_type, card_body=str(card_body), card_brand=card_brand)
             db.merge(save_card)
             db.commit()
 
@@ -112,13 +225,8 @@ def create_order(request, authorize: AuthJWT, db: Session,background_tasks:Backg
         order_data = db.query(order_models.Orders).filter(
             order_models.Orders.ref_number == order.ref_number).first()
         order_id = order_data.id
-        sub_total_list = []
-        discount_list = []
-        margin_list = []
-        order_view_list = []
-        image_list = []
-        price_list = []
-        sup_name_list = []
+        sub_total_list, discount_list, margin_list, order_view_list, image_list, price_list, sup_name_list = list(
+        ), list(), list(), list(), list(), list(), list()
         if not cod:
             transaction_id = payment_status.get("id")
             checkout_id = request.checkout_id
@@ -128,7 +236,7 @@ def create_order(request, authorize: AuthJWT, db: Session,background_tasks:Backg
             amount = payment_status.get("amount")
             payment_status = payment_status.get("result").get("description")
             payment_transaction = payment_models.PaymentTransaction(order_id=order_id, transaction_id=transaction_id, checkout_id=checkout_id,
-                                                                 response_body=response_body, payment_type=payment_type, payment_brand=payment_brand, amount=amount, status=payment_status)
+                                                                    response_body=response_body, payment_type=payment_type, payment_brand=payment_brand, amount=amount, status=payment_status)
             db.merge(payment_transaction)
             db.commit()
 
@@ -136,9 +244,9 @@ def create_order(request, authorize: AuthJWT, db: Session,background_tasks:Backg
             product_id = product.product_id
             product_qty = product.product_quantity
             req_product_price = product.product_price
-            final_request_proce_with_qty = req_product_price*product_qty
+            final_request_price_with_qty = req_product_price*product_qty
 
-            sub_total_list.append(final_request_proce_with_qty)
+            sub_total_list.append(final_request_price_with_qty)
 
             product_data = db.execute(
                 f"select * from {constants.Database_name}.products_master where id = {product_id} and publish = {True};")
@@ -190,26 +298,18 @@ def create_order(request, authorize: AuthJWT, db: Session,background_tasks:Backg
             margin_wity_qty = product_margin*product_qty
             margin_list.append(margin_wity_qty)
 
-            if req_product_price > product_with_margin_price:
+            if req_product_price > product_with_margin_price or req_product_price < product_with_margin_price:
                 data1 = order_schemas.OrderedProducts(
                     product_id=product_id, latest_price=product_with_margin_price)
                 order_intial_data = db.query(order_models.Orders).filter(
                     order_models.Orders.id == order_id).first()
                 db.delete(order_intial_data)
                 db.commit()
+                increased = "Price Increased for this product"
+                decreased = "Price Decreased for this product"
+                message = decreased if req_product_price < product_with_margin_price else increased
                 result = order_schemas.OrderResponse1(
-                    status=status.HTTP_401_UNAUTHORIZED, message="Price Decreased for this product", data=data1)
-                return result
-
-            if req_product_price < product_with_margin_price:
-                data = order_schemas.OrderedProducts(
-                    product_id=product_id, latest_price=product_with_margin_price)
-                order_intial_data = db.query(order_models.Orders).filter(
-                    order_models.Orders.id == order_id).first()
-                db.delete(order_intial_data)
-                db.commit()
-                result = order_schemas.OrderResponse1(
-                    status=status.HTTP_401_UNAUTHORIZED, message="Price Increased for this product", data=data)
+                    status=status.HTTP_401_UNAUTHORIZED, message=message, data=data1)
                 return result
 
             order_details = order_models.OrderDetails(
@@ -227,40 +327,9 @@ def create_order(request, authorize: AuthJWT, db: Session,background_tasks:Backg
             order_view_list.append(order_details)
 
             if paid or cod:
-                inventory = order_models.Inventory(
-                    order_id=order_id, quantity=product_qty, inventory_type_id=3, product_id=product_id, warehouse_id=1, order_status="ordered", created_at=common_services.get_time())
-                db.merge(inventory)
-                db.commit()
-                # Inverntory Update start
-                try:
-                    product_type = db.execute(
-                        f"SELECT `inventory`.`inventory_type_id`, SUM(`inventory`.`quantity`) AS `inventory_quantity` FROM `inventory` WHERE `inventory`.`product_id` = {product_id} GROUP BY `inventory`.`inventory_type_id` ORDER BY `inventory`.`inventory_type_id` ASC")
-                    total_quantity = 0
-                    inventory_starting = 0
-                    inventory_received = 0
-                    inventory_shipped = 0
-                    inventory_cancelled = 0
-                    for quantity_cal in product_type:
-                        quantity = quantity_cal['inventory_quantity']
-                        if quantity_cal['inventory_type_id'] == 3:
-                            total_quantity -= quantity
-                            inventory_shipped = quantity
-                        else:
-                            total_quantity += quantity
-                            if quantity_cal['inventory_type_id'] == 1:
-                                inventory_starting = quantity
-                            elif quantity_cal['inventory_type_id'] == 2:
-                                inventory_received = quantity
-                            else:
-                                inventory_cancelled = quantity
-                    timestamp = str(common_services.get_time())
-                    update_query = f"UPDATE {constants.Database_name}.products_master SET `quantity` = {total_quantity},`updated_at` = '{timestamp}',`inventory_starting` = {inventory_starting},`inventory_received` = {inventory_received},`inventory_shipped` = {inventory_shipped},`inventory_cancelled` = {inventory_cancelled},`inventory_onhand` = {total_quantity} WHERE `id` = {product_id};"
-                    db.execute(update_query)
-                    db.commit()
-                except Exception as e:
-                    print(e)
-
-            # Inverntory Update end
+                inventory_update = update_inventory(
+                    order_id, product_id, product_qty, db)
+                print(inventory_update)
         inv_no = None
         if paid or cod:
             transaction_data = db.query(order_models.OrderTransactions).all()
@@ -269,7 +338,7 @@ def create_order(request, authorize: AuthJWT, db: Session,background_tasks:Backg
             else:
                 inv_no = 1001
         order_transact = order_models.OrderTransactions(user_id=request.customer_id,  order_id=order_id, order_type=1,
-                                                       payment_mode_id=request.payment_type, payment_status_id=request.payment_status, invoices_id=inv_no)
+                                                        payment_mode_id=request.payment_type, payment_status_id=request.payment_status, invoices_id=inv_no)
         db.merge(order_transact)
         db.commit()
         if paid or cod:
@@ -327,7 +396,8 @@ def create_order(request, authorize: AuthJWT, db: Session,background_tasks:Backg
             }
             body = body.format(**values)
             for to in email_ids:
-                 background_tasks.add_task(common_services.send_otp,to, subject, body, request, db)
+                background_tasks.add_task(
+                    common_services.send_otp, to, subject, body, request, db)
 
         # for key = order_placed_customer_notification
         if paid or cod:
@@ -346,7 +416,7 @@ def create_order(request, authorize: AuthJWT, db: Session,background_tasks:Backg
                 user_mail, order_id, order_view_list, image_list, order_type_email, ref_no, price_list, sup_name_list, db)
 
             background_tasks.add_task(common_services.send_otp,
-                returned[0], returned[1], returned[2], request, db, invoice_path,invoice_delete)
+                                      returned[0], returned[1], returned[2], request, db, invoice_path, invoice_delete)
 
         if paid or cod:
             response = order_schemas.OrderResponse(
@@ -469,7 +539,7 @@ def get_all_orders(offset, customer_id, authorize: AuthJWT, db: Session):
                     qty_thresold = i.outofstock_threshold
                     final_qty = qty
                     data3 = order_schemas.OrdersProducts(product_id=data2.product_id, ordered_product_quantity=data2.quantity, stock_quantity=final_qty, name=i.name, SKU=i.SKU, mfr_name=i.mfr_name, description=i.description,
-                                                        quantity_unit=j[0], threshold=qty_thresold, weight=i.weight, weight_unit=k[0], price=updated_price, discount=i.discount, discount_unit=i.dis_abs_percent, primary_image=image_path, images=image_list, rating=result)
+                                                         quantity_unit=j[0], threshold=qty_thresold, weight=i.weight, weight_unit=k[0], price=updated_price, discount=i.discount, discount_unit=i.dis_abs_percent, primary_image=image_path, images=image_list, rating=result)
                 order_product_list.append(data3)
 
                 vat_value = db.execute(
@@ -490,7 +560,7 @@ def get_all_orders(offset, customer_id, authorize: AuthJWT, db: Session):
                     order_value = type_value.name
 
             data_order = order_schemas.OrderDetails(order_id=data.id, order_ref_no=data.ref_number, sub_total=data.sub_total, item_discount=data.item_discount, tax_vat=vat_with_prcnt, total=data.total, grand_total=data.grand_total, email=data.order_email, contact=data.order_phone, country=data.order_country, city=data.order_city, billing_name=data.order_billing_name,
-                                                   billing_address=data.order_billing_address, shipping_name=data.order_ship_name, shipping_address=data.order_ship_address, payment_type=payment_type, payment_status=payment_status, order_date=date, product_count=product_count, order_status=order_status, order_type=order_value, invoice_id=data.invoices_id, delivery_logs=last_log, products=order_product_list)
+                                                    billing_address=data.order_billing_address, shipping_name=data.order_ship_name, shipping_address=data.order_ship_address, payment_type=payment_type, payment_status=payment_status, order_date=date, product_count=product_count, order_status=order_status, order_type=order_value, invoice_id=data.invoices_id, delivery_logs=last_log, products=order_product_list)
             order_list.append(data_order)
 
         data4 = order_schemas.ResponseMyOrders(
@@ -578,7 +648,7 @@ def get_order_details(order_id, authorize: AuthJWT, db: Session):
                     qty_thresold = i.outofstock_threshold
                     final_qty = qty
                     data3 = order_schemas.OrdersProducts(product_id=data2.product_id, ordered_product_quantity=qua, stock_quantity=final_qty, name=i.name, SKU=i.SKU, mfr_name=i.mfr_name, description=i.description,
-                                                        quantity_unit=j[0], threshold=qty_thresold, weight=i.weight, weight_unit=k[0], price=final_ordered_price, discount=dis, primary_image=image_path, images=image_list, rating=result, review=rev)
+                                                         quantity_unit=j[0], threshold=qty_thresold, weight=i.weight, weight_unit=k[0], price=final_ordered_price, discount=dis, primary_image=image_path, images=image_list, rating=result, review=rev)
                 order_product_list.append(data3)
 
                 vat_value = db.execute(
@@ -614,7 +684,7 @@ def get_order_details(order_id, authorize: AuthJWT, db: Session):
             # invoice_link = f"http://15.185.103.226/orders/invoice-order/{data.invoices_id}"
             invoice_link = f"https://admin-stg.wayrem.com/orders/invoice-orders/{data.ref_number}"
             data_order = order_schemas.OrderDetailsbyid(order_id=data.id, order_ref_no=data.ref_number, sub_total=data.sub_total, item_discount=data.item_discount, tax_vat=vat_with_prcnt, total=data.total, grand_total=data.grand_total, email=data.order_email, contact=data.order_phone, country=data.order_country, city=data.order_city, billing_name=data.order_billing_name,
-                                                       billing_address=data.order_billing_address, shipping_name=data.order_ship_name, shipping_address=data.order_ship_address, payment_type=payment_type, payment_status=payment_status, order_date=date, product_count=product_count, order_status=order_status, order_type=order_value, invoice_id=data.invoices_id, invoice_link=invoice_link, delivery_charges=delivery_charge, order_delivery_logs=logs_list, products=order_product_list)
+                                                        billing_address=data.order_billing_address, shipping_name=data.order_ship_name, shipping_address=data.order_ship_address, payment_type=payment_type, payment_status=payment_status, order_date=date, product_count=product_count, order_status=order_status, order_type=order_value, invoice_id=data.invoices_id, invoice_link=invoice_link, delivery_charges=delivery_charge, order_delivery_logs=logs_list, products=order_product_list)
             order_list.append(data_order)
         data4 = order_schemas.ResponseMyOrdersbyid(
             customer_id=data.customer_id, orders=order_list)
@@ -632,13 +702,13 @@ def get_order_details(order_id, authorize: AuthJWT, db: Session):
 def create_recurrence_order(request, authorize: AuthJWT, db: Session):
     authorize.jwt_required()
     grocery = db.query(order_models.UserGrocery).filter(order_models.UserGrocery.id ==
-                                                       request.grocery_id, order_models.UserGrocery.customer_id == request.customer_id).first()
+                                                        request.grocery_id, order_models.UserGrocery.customer_id == request.customer_id).first()
     if not grocery:
         common_msg = user_schemas.ResponseCommonMessage(
             status=status.HTTP_404_NOT_FOUND, message="grocery id not found for this user!")
         return common_msg
     recurrent_grocery = db.query(order_models.RecurrenceGrocery).filter(order_models.RecurrenceGrocery.grocery_id ==
-                                                                       request.grocery_id, order_models.RecurrenceGrocery.customer_id == request.customer_id).first()
+                                                                        request.grocery_id, order_models.RecurrenceGrocery.customer_id == request.customer_id).first()
     if recurrent_grocery:
         common_msg = user_schemas.ResponseCommonMessage(
             status=status.HTTP_404_NOT_FOUND, message="This grocery is already available in your recurrent order!")
@@ -656,13 +726,14 @@ def create_recurrence_order(request, authorize: AuthJWT, db: Session):
         next_recurrent_date = "null"
     else:
         recurrence_startdate1 = request.recurrence_startdate
-        recurrence_startdate = datetime.strptime(recurrence_startdate1, '%d-%b-%y')
+        recurrence_startdate = datetime.strptime(
+            recurrence_startdate1, '%d-%b-%y')
         next_recurrent = recurrence_startdate + \
             DT.timedelta(days=recurrent_type_value)
         next_recurrent_date = str(next_recurrent.date())
 
     recurrent_data = order_models.RecurrenceGrocery(customer_id=request.customer_id, grocery_id=request.grocery_id, recurrenttype=recurrent_id,
-                                                   recurrence_startdate=recurrence_startdate, recurrence_nextdate=next_recurrent_date, status=request.status)
+                                                    recurrence_startdate=recurrence_startdate, recurrence_nextdate=next_recurrent_date, status=request.status)
     db.merge(recurrent_data)
     db.commit()
     grocery_product_update = db.query(order_models.GroceryProducts).filter(
@@ -672,7 +743,7 @@ def create_recurrence_order(request, authorize: AuthJWT, db: Session):
         db.merge(j)
         db.commit()
     data = order_schemas.RecurrenceResponse(grocery_id=request.grocery_id, recurrenttype=request.recurrenttype,
-                                           recurrence_startdate=request.recurrence_startdate, status=request.status)
+                                            recurrence_startdate=request.recurrence_startdate, status=request.status)
     result = order_schemas.RecurrenceFinalResponse(
         status=status.HTTP_200_OK, message="recurrence order created successfully!", customer_id=request.customer_id, data=data)
     return result
@@ -714,7 +785,7 @@ def update_recurrence_order(request, authorize: AuthJWT, db: Session):
         db.merge(j)
         db.commit()
     data = order_schemas.RecurrenceResponse(grocery_id=request.grocery_id, recurrenttype=request.recurrenttype,
-                                           recurrence_startdate=request.recurrence_startdate, status=request.status)
+                                            recurrence_startdate=request.recurrence_startdate, status=request.status)
     result = order_schemas.RecurrenceFinalResponse(
         status=status.HTTP_200_OK, message="recurrence order Updated successfully!", customer_id=request.customer_id, data=data)
     return result
@@ -733,7 +804,6 @@ def get_all_recurrent_type(authorize: AuthJWT, db: Session):
     common_msg = order_schemas.RecurrentResponse(
         status=status.HTTP_200_OK, message="Recurrent type details", data=cat_list)
     return common_msg
-
 
 
 def get_delivery_fees(address_id, authorize: AuthJWT, db: Session):
@@ -883,7 +953,7 @@ def get_filters_orders(offset, customer_id, filter_id, authorize: AuthJWT, db: S
                     qty_thresold = i.outofstock_threshold
                     final_qty = qty
                     data3 = order_schemas.OrdersProducts(product_id=data2.product_id, ordered_product_quantity=data2.quantity, stock_quantity=final_qty, threshold=qty_thresold, name=i.name, SKU=i.SKU, mfr_name=i.mfr_name, description=i.description,
-                                                        quantity_unit=j[0], weight=i.weight, weight_unit=k[0], price=updated_price, discount=i.discount, discount_unit=i.dis_abs_percent, primary_image=image_path, images=image_list, rating=result)
+                                                         quantity_unit=j[0], weight=i.weight, weight_unit=k[0], price=updated_price, discount=i.discount, discount_unit=i.dis_abs_percent, primary_image=image_path, images=image_list, rating=result)
                 order_product_list.append(data3)
 
                 vat_value = db.execute(
@@ -904,7 +974,7 @@ def get_filters_orders(offset, customer_id, filter_id, authorize: AuthJWT, db: S
                 order_value = type_value.name
 
             data_order = order_schemas.OrderDetails(order_id=data.id, order_ref_no=data.ref_number, sub_total=data.sub_total, item_discount=data.item_discount, tax_vat=vat_with_prcnt, total=data.total, grand_total=data.grand_total, email=data.order_email, contact=data.order_phone, country=data.order_country, city=data.order_city, billing_name=data.order_billing_name,
-                                                   billing_address=data.order_billing_address, shipping_name=data.order_ship_name, shipping_address=data.order_ship_address, payment_type=payment_type, payment_status=payment_status, order_date=date, product_count=product_count, order_status=order_status, order_type=order_value, invoice_id=data.invoices_id, delivery_logs=last_log, products=order_product_list)
+                                                    billing_address=data.order_billing_address, shipping_name=data.order_ship_name, shipping_address=data.order_ship_address, payment_type=payment_type, payment_status=payment_status, order_date=date, product_count=product_count, order_status=order_status, order_type=order_value, invoice_id=data.invoices_id, delivery_logs=last_log, products=order_product_list)
             order_list.append(data_order)
 
         data4 = order_schemas.ResponseMyOrders(
@@ -917,29 +987,3 @@ def get_filters_orders(offset, customer_id, filter_id, authorize: AuthJWT, db: S
         common_msg = user_schemas.ResponseCommonMessage(
             status=status.HTTP_404_NOT_FOUND, message="No Orders found!")
         return common_msg
-
-
-def format_string(view_list,image_list):
-    x = f""
-    for i,j in zip(view_list,image_list):
-        pro_name = i.product_name
-        pro_qty = i.quantity
-        pro_price = i.price
-        pro_image_path = j
-        x +=f"""<tr>
-                                            <td width="20%">
-                                                <img src="{pro_image_path}" alt="" style="width:100px;height:100px;object-fit:cover;border-radius:16px" class="CToWUd a6T" tabindex="0"><div class="a6S" dir="ltr" style="opacity: 0.01; left: 299px; top: 417.109px;"><div id=":pv" class="T-I J-J5-Ji aQv T-I-ax7 L3 a5q" title="Download" role="button" tabindex="0" aria-label="Download attachment " data-tooltip-class="a1V"><div class="akn"><div class="aSK J-J5-Ji aYr"></div></div></div></div>
-                                            </td>
-                                            <td width="60%" style="padding-left:0.5rem">
-                                                <div>
-                                                    <p style="margin:0;color:#152f50">{pro_name}</p>
-                                                </div>
-                                                <div><span style="color:#a8a8a8;font-size:.8rem">Wayrem Supplier</span></div>
-                                                <div><span style="font-weight:600;color:#152f50">{pro_price}sr</span></div>
-                                            </td>
-                                            <td style="min-width:100px;text-align:end">X {pro_qty}.0
-    
-                                            </td>
-                                    </tr>
-                                """
-    return x

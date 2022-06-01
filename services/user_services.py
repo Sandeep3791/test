@@ -3,9 +3,9 @@ from fastapi.param_functions import Depends
 import constants
 import random
 import logging
-from models import user_models,firebase_models
+from models import user_models, firebase_models
 from schemas import user_schemas
-from services import common_services
+from utility_services import common_services
 from fastapi import FastAPI, Depends, status
 from fastapi_jwt_auth import AuthJWT
 from sqlalchemy.orm import Session
@@ -126,7 +126,7 @@ def customer_user(request, authorize, db):
 
         customer_id = data.id
         fire = db.query(firebase_models.CustomerDevice).filter(firebase_models.CustomerDevice.customer_id ==
-                                                           customer_id, firebase_models.CustomerDevice.device_id == request.device_id).first()
+                                                               customer_id, firebase_models.CustomerDevice.device_id == request.device_id).first()
         if not fire:
             fire = firebase_models.CustomerDevice(
                 customer_id=customer_id, device_id=request.device_id, device_type=request.device_type)
@@ -327,7 +327,7 @@ def customer_login(request, authorize: AuthJWT, db: Session):
         return common_msg
     customer_id = user.id
     fire = db.query(firebase_models.CustomerDevice).filter(firebase_models.CustomerDevice.customer_id ==
-                                                       customer_id, firebase_models.CustomerDevice.device_id == request.device_id).first()
+                                                           customer_id, firebase_models.CustomerDevice.device_id == request.device_id).first()
     if not fire:
         fire = firebase_models.CustomerDevice(
             customer_id=customer_id, device_id=request.device_id, device_type=request.device_type)
@@ -610,6 +610,3 @@ def refresh_token(authorize: AuthJWT = Depends()):
     current_user = authorize.get_jwt_subject()
     new_access_token = authorize.create_access_token(subject=current_user)
     return {"access_token": new_access_token}
-
-
-
