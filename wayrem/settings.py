@@ -79,7 +79,7 @@ DATABASES = {
         'NAME': 'wayrem_stg_v1',
         'USER': 'wayremdb_adminuser',
         'PASSWORD': 'r2wXJfUs78NczMFWRXcV',
-        'HOST': '15.185.103.226',
+        'HOST': 'db',
         'PORT': '3306',
         'OPTIONS': {
             "init_command": "SET foreign_key_checks = 0;",
