@@ -1,13 +1,14 @@
 
 
 import json
-from services import firebase_services,common_services
-from schemas import user_schemas,payment_schemas
-from models import user_models,order_models,payment_models
+from services import firebase_services, common_services
+from schemas import user_schemas, payment_schemas
+from models import user_models, order_models, payment_models
 from fastapi_jwt_auth import AuthJWT
 from sqlalchemy.orm import Session
-from fastapi import status,BackgroundTasks
-import constants,os
+from fastapi import status, BackgroundTasks
+import constants
+import os
 try:
     from urllib.error import HTTPError, URLError
     from urllib.parse import urlencode
@@ -27,6 +28,11 @@ def checkout_id(user_request):
         'currency': user_request.currency,
         'paymentType': user_request.paymentType
     }
+    if user_request.registrationId:
+        data['registrations[0].id'] = user_request.registrationId
+        data['standingInstruction.source'] = 'CIT'
+        data['standingInstruction.mode'] = 'REPEATED'
+        data['standingInstruction.type'] = 'UNSCHEDULED'
     try:
         opener = build_opener(HTTPHandler)
         request = Request(url, data=urlencode(data).encode('utf-8'))
@@ -106,7 +112,7 @@ def get_all_banks(authorize: AuthJWT, db: Session):
         banks_list = []
         for data in bank_data:
             result = payment_schemas.BankResponse(title=data.title, bank_name=data.bank_name, account_name=data.account_name,
-                                               city=data.city, branch=data.branch, iban=data.iban)
+                                                  city=data.city, branch=data.branch, iban=data.iban)
             banks_list.append(result)
         response = payment_schemas.ResponseBankData(
             status=status.HTTP_200_OK, message="All banks list", data=banks_list)
@@ -117,7 +123,7 @@ def get_all_banks(authorize: AuthJWT, db: Session):
         return common_msg
 
 
-def upload_bank_payment_image(customer_id,order_id, image, authorize: AuthJWT, db: Session):
+def upload_bank_payment_image(customer_id, order_id, image, authorize: AuthJWT, db: Session):
     authorize.jwt_required()
     order_data = db.query(order_models.OrderTransactions).filter(
         order_models.OrderTransactions.order_id == order_id).first()
@@ -149,7 +155,7 @@ def upload_bank_payment_image(customer_id,order_id, image, authorize: AuthJWT, d
     prfl_path = user_schemas.UploadProfiledata(path=db_path)
     common_msg = user_schemas.UploadProfile(
         status=status.HTTP_200_OK, message="success", data=prfl_path)
-    
+
     try:
         customer_data = db.execute(
             f"select * from {constants.Database_name}.customer_device where customer_id = {customer_id} and is_active=True ;")
@@ -159,7 +165,7 @@ def upload_bank_payment_image(customer_id,order_id, image, authorize: AuthJWT, d
 
         order_ref_no = db.execute(
             f"select ref_number from {constants.Database_name}.orders where orders.id = {order_id} ;")
-        
+
         for msg in setting_message:
             message = msg.value
             title_message = msg.display_name
@@ -186,6 +192,7 @@ def upload_bank_payment_image(customer_id,order_id, image, authorize: AuthJWT, d
     except Exception as e:
         print(e)
     return common_msg
+
 
 def download_bank_payment_image(order_id, authorize, db: Session):
     authorize.jwt_required()
@@ -217,7 +224,8 @@ def get_customer_cards(customer_id, authorize: AuthJWT, db: Session):
     if user_cards:
         cards = []
         for card in user_cards:
-            data = payment_schemas.ResponseCustomerCards(id=card.id, card_number=card.card_number, expiry_month=card.expiry_month, expiry_year=card.expiry_year,card_holder=card.card_holder, card_type=card.card_type, card_brand=card.card_brand, card_id=card.registration_id)
+            data = payment_schemas.ResponseCustomerCards(id=card.id, card_number=card.card_number, expiry_month=card.expiry_month, expiry_year=card.expiry_year,
+                                                         card_holder=card.card_holder, card_type=card.card_type, card_brand=card.card_brand, card_id=card.registration_id)
             cards.append(data)
         response = payment_schemas.ResponseCustomerCardsFinal(
             status=status.HTTP_200_OK, message="User Cards!", data=cards)
@@ -258,7 +266,6 @@ def get_payment_types(authorize: AuthJWT, db: Session):
     response = payment_schemas.ResponsePaymentsTypeFinal(
         status=status.HTTP_200_OK, message="User Cards!", data=payment_type_list)
     return response
-
 
 
 def get_payment_status_types(authorize: AuthJWT, db: Session):
