@@ -580,7 +580,7 @@ def get_order_details(order_id, authorize: AuthJWT, db: Session):
                     qty = int(i.quantity)
                     qty_thresold = i.outofstock_threshold
                     final_qty = qty
-                    data3 = user_schemas.OrdersProducts(product_id=data2.product_id, ordered_product_quantity=qua, stock_quantity=final_qty, name=i.name, SKU=i.SKU, mfr_name=i.mfr_name, description=i.description,
+                    data3 = order_schemas.OrdersProducts(product_id=data2.product_id, ordered_product_quantity=qua, stock_quantity=final_qty, name=i.name, SKU=i.SKU, mfr_name=i.mfr_name, description=i.description,
                                                         quantity_unit=j[0], threshold=qty_thresold, weight=i.weight, weight_unit=k[0], price=final_ordered_price, discount=dis, primary_image=image_path, images=image_list, rating=result, review=rev)
                 order_product_list.append(data3)
 
@@ -600,7 +600,7 @@ def get_order_details(order_id, authorize: AuthJWT, db: Session):
             for log_data in delivery_logs_data:
                 log_date = str(log_data.log_date.strftime("%Y-%m-%d %H:%M:%S"))
 
-                data_logs = user_schemas.OrderByIdDeliveryLogs(
+                data_logs = order_schemas.OrderByIdDeliveryLogs(
                     id=log_data.id, status_name=log_data.name, status_description=log_data.description, log_date=log_date)
                 logs_list.append(data_logs)
             if data.delivery_charge:
@@ -618,13 +618,13 @@ def get_order_details(order_id, authorize: AuthJWT, db: Session):
             invoice_link = None
             if data.invoices_id:
                 invoice_link = f"{constants.global_link}/orders/invoice-orders/{data.ref_number}"
-            data_order = user_schemas.OrderDetailsbyid(order_id=data.id, order_ref_no=data.ref_number, sub_total=data.sub_total, item_discount=data.item_discount, tax_vat=vat_with_prcnt, total=data.total, grand_total=data.grand_total, email=data.order_email, contact=data.order_phone, country=data.order_country, city=data.order_city, billing_name=data.order_billing_name,
+            data_order = order_schemas.OrderDetailsbyid(order_id=data.id, order_ref_no=data.ref_number, sub_total=data.sub_total, item_discount=data.item_discount, tax_vat=vat_with_prcnt, total=data.total, grand_total=data.grand_total, email=data.order_email, contact=data.order_phone, country=data.order_country, city=data.order_city, billing_name=data.order_billing_name,
                                                        billing_address=data.order_billing_address, shipping_name=data.order_ship_name, shipping_address=data.order_ship_address, payment_type=payment_type, payment_status=payment_status, order_date=date, product_count=product_count, order_status=order_status, order_type=order_value, invoice_id=data.invoices_id, invoice_link=invoice_link, delivery_charges=delivery_charge, order_delivery_logs=logs_list, products=order_product_list)
             order_list.append(data_order)
-        data4 = user_schemas.ResponseMyOrdersbyid(
+        data4 = order_schemas.ResponseMyOrdersbyid(
             customer_id=data.customer_id, orders=order_list)
 
-        response = user_schemas.FinalOrderResponsebyid(
+        response = order_schemas.FinalOrderResponsebyid(
             status=status.HTTP_200_OK, message="Order details!", data=data4)
         return response
 
