@@ -71,7 +71,6 @@ class updateRecurrenceRequest(BaseModel):
     status: bool
 
 
-
 class OrdersProducts(BaseModel):
     product_id: int
     ordered_product_quantity: int
@@ -122,7 +121,7 @@ class OrderDetails(BaseModel):
     product_count: int
     order_status: int
     order_type: str
-    invoice_id: str
+    invoice_id: Optional[str]
     delivery_logs: List[OrderByIdDeliveryLogs]
     products: List[OrdersProducts]
 
@@ -160,8 +159,8 @@ class OrderDetailsbyid(BaseModel):
     product_count: int
     order_status: int
     order_type: str
-    invoice_id: str
-    invoice_link: str
+    invoice_id: Optional[str]
+    invoice_link: Optional[str]
     delivery_charges: float
     order_delivery_logs: List[OrderByIdDeliveryLogs]
     products: List[OrdersProducts]
@@ -190,8 +189,6 @@ class RecurrenceFinalResponse(BaseModel):
     message: str
     customer_id: int
     data: RecurrenceResponse
-
-
 
 
 class RecurrenceOrderProducts(BaseModel):
@@ -228,7 +225,7 @@ class RecurrentResponse(BaseModel):
 
 class Deliveryfeedata(BaseModel):
     delivery_fees: Optional[float]
-    free_delivery_after_amount : Optional[float]
+    free_delivery_after_amount: Optional[float]
     vat_value: str
 
 

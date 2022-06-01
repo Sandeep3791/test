@@ -1,18 +1,22 @@
+import math
 from email import message
 import constants
 from services import firebase_services
-import random,os
+import random
+import os
 import logging
-from models import user_models,order_models,firebase_models,payment_models
-from schemas import firebase_schemas, user_schemas,order_schemas
-from services import common_services , payment_services
-from fastapi import FastAPI, status,BackgroundTasks
+from models import user_models, order_models, firebase_models, payment_models
+from schemas import firebase_schemas, user_schemas, order_schemas
+from services import common_services, payment_services
+from fastapi import FastAPI, status, BackgroundTasks
 from fastapi_jwt_auth import AuthJWT
 from sqlalchemy.orm import Session
-from datetime import  datetime
-import random ,googlemaps
+from datetime import datetime
+import random
+import googlemaps
 import datetime as DT
-import constants ,calendar
+import constants
+import calendar
 
 
 app = FastAPI()
@@ -20,9 +24,7 @@ app = FastAPI()
 logger = logging.getLogger(__name__)
 
 
-import math
-
-def create_order(request, authorize: AuthJWT, db: Session,background_tasks:BackgroundTasks):
+def create_order(request, authorize: AuthJWT, db: Session, background_tasks: BackgroundTasks):
     authorize.jwt_required()
     paid = False
     cod = False
@@ -49,7 +51,7 @@ def create_order(request, authorize: AuthJWT, db: Session,background_tasks:Backg
             card_type = card_body.get("type")
             card_brand = payment_status.get("paymentBrand")
             save_card = payment_models.CustomerCard(customer_id=request.customer_id, registration_id=registrationId, card_number=card_number, expiry_month=expiry_month,
-                                                 expiry_year=expiry_year, card_holder=card_holder, card_type=card_type, card_body=str(card_body), card_brand=card_brand)
+                                                    expiry_year=expiry_year, card_holder=card_holder, card_type=card_type, card_body=str(card_body), card_brand=card_brand)
             db.merge(save_card)
             db.commit()
 
@@ -128,7 +130,7 @@ def create_order(request, authorize: AuthJWT, db: Session,background_tasks:Backg
             amount = payment_status.get("amount")
             payment_status = payment_status.get("result").get("description")
             payment_transaction = payment_models.PaymentTransaction(order_id=order_id, transaction_id=transaction_id, checkout_id=checkout_id,
-                                                                 response_body=response_body, payment_type=payment_type, payment_brand=payment_brand, amount=amount, status=payment_status)
+                                                                    response_body=response_body, payment_type=payment_type, payment_brand=payment_brand, amount=amount, status=payment_status)
             db.merge(payment_transaction)
             db.commit()
 
@@ -269,7 +271,7 @@ def create_order(request, authorize: AuthJWT, db: Session,background_tasks:Backg
             else:
                 inv_no = 1001
         order_transact = order_models.OrderTransactions(user_id=request.customer_id,  order_id=order_id, order_type=1,
-                                                       payment_mode_id=request.payment_type, payment_status_id=request.payment_status, invoices_id=inv_no)
+                                                        payment_mode_id=request.payment_type, payment_status_id=request.payment_status, invoices_id=inv_no)
         db.merge(order_transact)
         db.commit()
         if paid or cod:
@@ -327,7 +329,8 @@ def create_order(request, authorize: AuthJWT, db: Session,background_tasks:Backg
             }
             body = body.format(**values)
             for to in email_ids:
-                 background_tasks.add_task(common_services.send_otp,to, subject, body, request, db)
+                background_tasks.add_task(
+                    common_services.send_otp, to, subject, body, request, db)
 
         # for key = order_placed_customer_notification
         if paid or cod:
@@ -346,7 +349,7 @@ def create_order(request, authorize: AuthJWT, db: Session,background_tasks:Backg
                 user_mail, order_id, order_view_list, image_list, order_type_email, ref_no, price_list, sup_name_list, db)
 
             background_tasks.add_task(common_services.send_otp,
-                returned[0], returned[1], returned[2], request, db, invoice_path,invoice_delete)
+                                      returned[0], returned[1], returned[2], request, db, invoice_path, invoice_delete)
 
         if paid or cod:
             response = order_schemas.OrderResponse(
@@ -469,7 +472,7 @@ def get_all_orders(offset, customer_id, authorize: AuthJWT, db: Session):
                     qty_thresold = i.outofstock_threshold
                     final_qty = qty
                     data3 = order_schemas.OrdersProducts(product_id=data2.product_id, ordered_product_quantity=data2.quantity, stock_quantity=final_qty, name=i.name, SKU=i.SKU, mfr_name=i.mfr_name, description=i.description,
-                                                        quantity_unit=j[0], threshold=qty_thresold, weight=i.weight, weight_unit=k[0], price=updated_price, discount=i.discount, discount_unit=i.dis_abs_percent, primary_image=image_path, images=image_list, rating=result)
+                                                         quantity_unit=j[0], threshold=qty_thresold, weight=i.weight, weight_unit=k[0], price=updated_price, discount=i.discount, discount_unit=i.dis_abs_percent, primary_image=image_path, images=image_list, rating=result)
                 order_product_list.append(data3)
 
                 vat_value = db.execute(
@@ -490,7 +493,7 @@ def get_all_orders(offset, customer_id, authorize: AuthJWT, db: Session):
                     order_value = type_value.name
 
             data_order = order_schemas.OrderDetails(order_id=data.id, order_ref_no=data.ref_number, sub_total=data.sub_total, item_discount=data.item_discount, tax_vat=vat_with_prcnt, total=data.total, grand_total=data.grand_total, email=data.order_email, contact=data.order_phone, country=data.order_country, city=data.order_city, billing_name=data.order_billing_name,
-                                                   billing_address=data.order_billing_address, shipping_name=data.order_ship_name, shipping_address=data.order_ship_address, payment_type=payment_type, payment_status=payment_status, order_date=date, product_count=product_count, order_status=order_status, order_type=order_value, invoice_id=data.invoices_id, delivery_logs=last_log, products=order_product_list)
+                                                    billing_address=data.order_billing_address, shipping_name=data.order_ship_name, shipping_address=data.order_ship_address, payment_type=payment_type, payment_status=payment_status, order_date=date, product_count=product_count, order_status=order_status, order_type=order_value, invoice_id=data.invoices_id, delivery_logs=last_log, products=order_product_list)
             order_list.append(data_order)
 
         data4 = order_schemas.ResponseMyOrders(
@@ -577,7 +580,7 @@ def get_order_details(order_id, authorize: AuthJWT, db: Session):
                     qty = int(i.quantity)
                     qty_thresold = i.outofstock_threshold
                     final_qty = qty
-                    data3 = order_schemas.OrdersProducts(product_id=data2.product_id, ordered_product_quantity=qua, stock_quantity=final_qty, name=i.name, SKU=i.SKU, mfr_name=i.mfr_name, description=i.description,
+                    data3 = user_schemas.OrdersProducts(product_id=data2.product_id, ordered_product_quantity=qua, stock_quantity=final_qty, name=i.name, SKU=i.SKU, mfr_name=i.mfr_name, description=i.description,
                                                         quantity_unit=j[0], threshold=qty_thresold, weight=i.weight, weight_unit=k[0], price=final_ordered_price, discount=dis, primary_image=image_path, images=image_list, rating=result, review=rev)
                 order_product_list.append(data3)
 
@@ -597,7 +600,7 @@ def get_order_details(order_id, authorize: AuthJWT, db: Session):
             for log_data in delivery_logs_data:
                 log_date = str(log_data.log_date.strftime("%Y-%m-%d %H:%M:%S"))
 
-                data_logs = order_schemas.OrderByIdDeliveryLogs(
+                data_logs = user_schemas.OrderByIdDeliveryLogs(
                     id=log_data.id, status_name=log_data.name, status_description=log_data.description, log_date=log_date)
                 logs_list.append(data_logs)
             if data.delivery_charge:
@@ -612,14 +615,16 @@ def get_order_details(order_id, authorize: AuthJWT, db: Session):
                 order_value = type_value.name
 
             # invoice_link = f"http://15.185.103.226/orders/invoice-order/{data.invoices_id}"
-            invoice_link = f"https://admin-stg.wayrem.com/orders/invoice-orders/{data.ref_number}"
-            data_order = order_schemas.OrderDetailsbyid(order_id=data.id, order_ref_no=data.ref_number, sub_total=data.sub_total, item_discount=data.item_discount, tax_vat=vat_with_prcnt, total=data.total, grand_total=data.grand_total, email=data.order_email, contact=data.order_phone, country=data.order_country, city=data.order_city, billing_name=data.order_billing_name,
+            invoice_link = None
+            if data.invoices_id:
+                invoice_link = f"{constants.global_link}/orders/invoice-orders/{data.ref_number}"
+            data_order = user_schemas.OrderDetailsbyid(order_id=data.id, order_ref_no=data.ref_number, sub_total=data.sub_total, item_discount=data.item_discount, tax_vat=vat_with_prcnt, total=data.total, grand_total=data.grand_total, email=data.order_email, contact=data.order_phone, country=data.order_country, city=data.order_city, billing_name=data.order_billing_name,
                                                        billing_address=data.order_billing_address, shipping_name=data.order_ship_name, shipping_address=data.order_ship_address, payment_type=payment_type, payment_status=payment_status, order_date=date, product_count=product_count, order_status=order_status, order_type=order_value, invoice_id=data.invoices_id, invoice_link=invoice_link, delivery_charges=delivery_charge, order_delivery_logs=logs_list, products=order_product_list)
             order_list.append(data_order)
-        data4 = order_schemas.ResponseMyOrdersbyid(
+        data4 = user_schemas.ResponseMyOrdersbyid(
             customer_id=data.customer_id, orders=order_list)
 
-        response = order_schemas.FinalOrderResponsebyid(
+        response = user_schemas.FinalOrderResponsebyid(
             status=status.HTTP_200_OK, message="Order details!", data=data4)
         return response
 
@@ -632,13 +637,13 @@ def get_order_details(order_id, authorize: AuthJWT, db: Session):
 def create_recurrence_order(request, authorize: AuthJWT, db: Session):
     authorize.jwt_required()
     grocery = db.query(order_models.UserGrocery).filter(order_models.UserGrocery.id ==
-                                                       request.grocery_id, order_models.UserGrocery.customer_id == request.customer_id).first()
+                                                        request.grocery_id, order_models.UserGrocery.customer_id == request.customer_id).first()
     if not grocery:
         common_msg = user_schemas.ResponseCommonMessage(
             status=status.HTTP_404_NOT_FOUND, message="grocery id not found for this user!")
         return common_msg
     recurrent_grocery = db.query(order_models.RecurrenceGrocery).filter(order_models.RecurrenceGrocery.grocery_id ==
-                                                                       request.grocery_id, order_models.RecurrenceGrocery.customer_id == request.customer_id).first()
+                                                                        request.grocery_id, order_models.RecurrenceGrocery.customer_id == request.customer_id).first()
     if recurrent_grocery:
         common_msg = user_schemas.ResponseCommonMessage(
             status=status.HTTP_404_NOT_FOUND, message="This grocery is already available in your recurrent order!")
@@ -656,13 +661,14 @@ def create_recurrence_order(request, authorize: AuthJWT, db: Session):
         next_recurrent_date = "null"
     else:
         recurrence_startdate1 = request.recurrence_startdate
-        recurrence_startdate = datetime.strptime(recurrence_startdate1, '%d-%b-%y')
+        recurrence_startdate = datetime.strptime(
+            recurrence_startdate1, '%d-%b-%y')
         next_recurrent = recurrence_startdate + \
             DT.timedelta(days=recurrent_type_value)
         next_recurrent_date = str(next_recurrent.date())
 
     recurrent_data = order_models.RecurrenceGrocery(customer_id=request.customer_id, grocery_id=request.grocery_id, recurrenttype=recurrent_id,
-                                                   recurrence_startdate=recurrence_startdate, recurrence_nextdate=next_recurrent_date, status=request.status)
+                                                    recurrence_startdate=recurrence_startdate, recurrence_nextdate=next_recurrent_date, status=request.status)
     db.merge(recurrent_data)
     db.commit()
     grocery_product_update = db.query(order_models.GroceryProducts).filter(
@@ -672,7 +678,7 @@ def create_recurrence_order(request, authorize: AuthJWT, db: Session):
         db.merge(j)
         db.commit()
     data = order_schemas.RecurrenceResponse(grocery_id=request.grocery_id, recurrenttype=request.recurrenttype,
-                                           recurrence_startdate=request.recurrence_startdate, status=request.status)
+                                            recurrence_startdate=request.recurrence_startdate, status=request.status)
     result = order_schemas.RecurrenceFinalResponse(
         status=status.HTTP_200_OK, message="recurrence order created successfully!", customer_id=request.customer_id, data=data)
     return result
@@ -714,7 +720,7 @@ def update_recurrence_order(request, authorize: AuthJWT, db: Session):
         db.merge(j)
         db.commit()
     data = order_schemas.RecurrenceResponse(grocery_id=request.grocery_id, recurrenttype=request.recurrenttype,
-                                           recurrence_startdate=request.recurrence_startdate, status=request.status)
+                                            recurrence_startdate=request.recurrence_startdate, status=request.status)
     result = order_schemas.RecurrenceFinalResponse(
         status=status.HTTP_200_OK, message="recurrence order Updated successfully!", customer_id=request.customer_id, data=data)
     return result
@@ -733,7 +739,6 @@ def get_all_recurrent_type(authorize: AuthJWT, db: Session):
     common_msg = order_schemas.RecurrentResponse(
         status=status.HTTP_200_OK, message="Recurrent type details", data=cat_list)
     return common_msg
-
 
 
 def get_delivery_fees(address_id, authorize: AuthJWT, db: Session):
@@ -883,7 +888,7 @@ def get_filters_orders(offset, customer_id, filter_id, authorize: AuthJWT, db: S
                     qty_thresold = i.outofstock_threshold
                     final_qty = qty
                     data3 = order_schemas.OrdersProducts(product_id=data2.product_id, ordered_product_quantity=data2.quantity, stock_quantity=final_qty, threshold=qty_thresold, name=i.name, SKU=i.SKU, mfr_name=i.mfr_name, description=i.description,
-                                                        quantity_unit=j[0], weight=i.weight, weight_unit=k[0], price=updated_price, discount=i.discount, discount_unit=i.dis_abs_percent, primary_image=image_path, images=image_list, rating=result)
+                                                         quantity_unit=j[0], weight=i.weight, weight_unit=k[0], price=updated_price, discount=i.discount, discount_unit=i.dis_abs_percent, primary_image=image_path, images=image_list, rating=result)
                 order_product_list.append(data3)
 
                 vat_value = db.execute(
@@ -904,7 +909,7 @@ def get_filters_orders(offset, customer_id, filter_id, authorize: AuthJWT, db: S
                 order_value = type_value.name
 
             data_order = order_schemas.OrderDetails(order_id=data.id, order_ref_no=data.ref_number, sub_total=data.sub_total, item_discount=data.item_discount, tax_vat=vat_with_prcnt, total=data.total, grand_total=data.grand_total, email=data.order_email, contact=data.order_phone, country=data.order_country, city=data.order_city, billing_name=data.order_billing_name,
-                                                   billing_address=data.order_billing_address, shipping_name=data.order_ship_name, shipping_address=data.order_ship_address, payment_type=payment_type, payment_status=payment_status, order_date=date, product_count=product_count, order_status=order_status, order_type=order_value, invoice_id=data.invoices_id, delivery_logs=last_log, products=order_product_list)
+                                                    billing_address=data.order_billing_address, shipping_name=data.order_ship_name, shipping_address=data.order_ship_address, payment_type=payment_type, payment_status=payment_status, order_date=date, product_count=product_count, order_status=order_status, order_type=order_value, invoice_id=data.invoices_id, delivery_logs=last_log, products=order_product_list)
             order_list.append(data_order)
 
         data4 = order_schemas.ResponseMyOrders(
@@ -919,14 +924,14 @@ def get_filters_orders(offset, customer_id, filter_id, authorize: AuthJWT, db: S
         return common_msg
 
 
-def format_string(view_list,image_list):
+def format_string(view_list, image_list):
     x = f""
-    for i,j in zip(view_list,image_list):
+    for i, j in zip(view_list, image_list):
         pro_name = i.product_name
         pro_qty = i.quantity
         pro_price = i.price
         pro_image_path = j
-        x +=f"""<tr>
+        x += f"""<tr>
                                             <td width="20%">
                                                 <img src="{pro_image_path}" alt="" style="width:100px;height:100px;object-fit:cover;border-radius:16px" class="CToWUd a6T" tabindex="0"><div class="a6S" dir="ltr" style="opacity: 0.01; left: 299px; top: 417.109px;"><div id=":pv" class="T-I J-J5-Ji aQv T-I-ax7 L3 a5q" title="Download" role="button" tabindex="0" aria-label="Download attachment " data-tooltip-class="a1V"><div class="akn"><div class="aSK J-J5-Ji aYr"></div></div></div></div>
                                             </td>
