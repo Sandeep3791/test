@@ -9,7 +9,7 @@ from services import common_services
 from fastapi import FastAPI, Depends, status,BackgroundTasks
 from fastapi_jwt_auth import AuthJWT
 from sqlalchemy.orm import Session
-from datetime import timedelta, datetime
+from datetime import timedelta
 import os
 import random
 from fastapi import Depends, FastAPI, status

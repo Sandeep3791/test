@@ -1,4 +1,3 @@
-from turtle import back
 from fastapi_jwt_auth import AuthJWT
 from starlette import status
 from schemas import user_schemas
