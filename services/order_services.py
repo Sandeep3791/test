@@ -202,7 +202,7 @@ def create_order(request, authorize: AuthJWT, db: Session, background_tasks: Bac
             margin_wity_qty = product_margin*product_qty
             margin_list.append(margin_wity_qty)
 
-            if req_product_price > product_with_margin_price:
+            if round(req_product_price,2) > product_with_margin_price:
                 data1 = order_schemas.OrderedProducts(
                     product_id=product_id, latest_price=product_with_margin_price)
                 order_intial_data = db.query(order_models.Orders).filter(
@@ -213,7 +213,7 @@ def create_order(request, authorize: AuthJWT, db: Session, background_tasks: Bac
                     status=status.HTTP_401_UNAUTHORIZED, message="Price Decreased for this product", data=data1)
                 return result
 
-            if req_product_price < product_with_margin_price:
+            if round(req_product_price,2) < product_with_margin_price:
                 data = order_schemas.OrderedProducts(
                     product_id=product_id, latest_price=product_with_margin_price)
                 order_intial_data = db.query(order_models.Orders).filter(
