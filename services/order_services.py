@@ -75,7 +75,7 @@ def create_order(request, authorize: AuthJWT, db: Session, background_tasks: Bac
     for req_product in request.products:
         product_qty = req_product.product_quantity
         product_quantity_check = db.execute(
-            f"select * from {constants.Database_name}.products_master where id = {req_product.product_id} and publish = {True};")
+            f"select * from {constants.Database_name}.products_master where id = {req_product.product_id};")
         for prod_qty in product_quantity_check:
             if int(prod_qty.quantity) < product_qty:
                 result = user_schemas.ResponseCommonMessage(
@@ -159,7 +159,7 @@ def create_order(request, authorize: AuthJWT, db: Session, background_tasks: Bac
             sub_total_list.append(final_request_proce_with_qty)
 
             product_data = db.execute(
-                f"select * from {constants.Database_name}.products_master where id = {product_id} and publish = {True};")
+                f"select * from {constants.Database_name}.products_master where id = {product_id};")
             for product1 in product_data:
                 if product1.discount == None:
                     product_discount = 0
