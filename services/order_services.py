@@ -47,6 +47,13 @@ def create_order(request, authorize: AuthJWT, db: Session, background_tasks: Bac
         hyperpay_response = payment_status
         hyperpay_response_description = payment_status.get(
             "result").get("description")
+        if re.search(PENDING_CHANGEABLE_SOON_CODES_REGEX, payment_check) or re.search(PENDING_NOT_CHANGEABLE_SOON_CODES_REGEX, payment_check) or re.search(SUCCESS_CODES_REGEX, payment_check) or re.search(SUCCESS_MANUAL_REVIEW_CODES_REGEX, payment_check):
+            failed = False
+        else:
+            failed = True
+        if failed:
+            response = user_schemas.ResponseCommonMessage(
+                status=status.HTTP_424_FAILED_DEPENDENCY, message="Transaction Failed!!", data=str(hyperpay_response))
         if re.search(PENDING_CHANGEABLE_SOON_CODES_REGEX, payment_check) or re.search(PENDING_NOT_CHANGEABLE_SOON_CODES_REGEX, payment_check):
             request.payment_status = 6
             pending = True
@@ -58,8 +65,9 @@ def create_order(request, authorize: AuthJWT, db: Session, background_tasks: Bac
             card_body = payment_status.get("card")
             card_number = card_body.get("last4Digits")
 
-            reg_id = db.query(payment_models.CustomerCard).filter(payment_models.CustomerCard.customer_id == request.customer_id,or_(payment_models.CustomerCard.registration_id == registrationId,payment_models.CustomerCard.card_number==card_number)).first()
-            
+            reg_id = db.query(payment_models.CustomerCard).filter(payment_models.CustomerCard.customer_id == request.customer_id, or_(
+                payment_models.CustomerCard.registration_id == registrationId, payment_models.CustomerCard.card_number == card_number)).first()
+
             if not reg_id:
                 card_body = payment_status.get("card")
                 card_number = card_body.get("last4Digits")
@@ -68,7 +76,8 @@ def create_order(request, authorize: AuthJWT, db: Session, background_tasks: Bac
                 card_holder = card_body.get("holder")
                 card_type = card_body.get("type")
                 card_brand = payment_status.get("paymentBrand")
-                save_card = payment_models.CustomerCard(customer_id=request.customer_id, registration_id=registrationId, card_number=card_number, expiry_month=expiry_month,expiry_year=expiry_year, card_holder=card_holder, card_type=card_type, card_body=str(card_body), card_brand=card_brand)
+                save_card = payment_models.CustomerCard(customer_id=request.customer_id, registration_id=registrationId, card_number=card_number, expiry_month=expiry_month,
+                                                        expiry_year=expiry_year, card_holder=card_holder, card_type=card_type, card_body=str(card_body), card_brand=card_brand)
                 db.merge(save_card)
                 db.commit()
 
@@ -146,7 +155,8 @@ def create_order(request, authorize: AuthJWT, db: Session, background_tasks: Bac
             payment_brand = payment_status.get("paymentBrand")
             amount = payment_status.get("amount")
             payment_status = payment_status.get("result").get("description")
-            payment_transaction = payment_models.PaymentTransaction(order_id=order_id, transaction_id=transaction_id, checkout_id=checkout_id,response_body=response_body, payment_type=payment_type, payment_brand=payment_brand, amount=amount, status=payment_status)
+            payment_transaction = payment_models.PaymentTransaction(order_id=order_id, transaction_id=transaction_id, checkout_id=checkout_id,
+                                                                    response_body=response_body, payment_type=payment_type, payment_brand=payment_brand, amount=amount, status=payment_status)
             db.merge(payment_transaction)
             db.commit()
 
@@ -208,7 +218,7 @@ def create_order(request, authorize: AuthJWT, db: Session, background_tasks: Bac
             margin_wity_qty = product_margin*product_qty
             margin_list.append(margin_wity_qty)
 
-            if round(req_product_price,2) > product_with_margin_price:
+            if round(req_product_price, 2) > product_with_margin_price:
                 data1 = order_schemas.OrderedProducts(
                     product_id=product_id, latest_price=product_with_margin_price)
                 order_intial_data = db.query(order_models.Orders).filter(
@@ -219,7 +229,7 @@ def create_order(request, authorize: AuthJWT, db: Session, background_tasks: Bac
                     status=status.HTTP_401_UNAUTHORIZED, message="Price Decreased for this product", data=data1)
                 return result
 
-            if round(req_product_price,2) < product_with_margin_price:
+            if round(req_product_price, 2) < product_with_margin_price:
                 data = order_schemas.OrderedProducts(
                     product_id=product_id, latest_price=product_with_margin_price)
                 order_intial_data = db.query(order_models.Orders).filter(
@@ -286,11 +296,13 @@ def create_order(request, authorize: AuthJWT, db: Session, background_tasks: Bac
                 inv_no = len(transaction_data)+1001
             else:
                 inv_no = 1001
-        order_transact = order_models.OrderTransactions(user_id=request.customer_id,  order_id=order_id, order_type=1,payment_mode_id=request.payment_type, payment_status_id=request.payment_status, invoices_id=inv_no)
+        order_transact = order_models.OrderTransactions(user_id=request.customer_id,  order_id=order_id, order_type=1,
+                                                        payment_mode_id=request.payment_type, payment_status_id=request.payment_status, invoices_id=inv_no)
         db.merge(order_transact)
         db.commit()
         if paid or cod or pending:
-            order_delivery_logs = order_models.OrderDeliveryLogs(order_id=order_id, order_status_id=1, order_status_details="Order is confirmed", user_id=1, customer_view=1, log_date=common_services.get_time())
+            order_delivery_logs = order_models.OrderDeliveryLogs(
+                order_id=order_id, order_status_id=1, order_status_details="Order is confirmed", user_id=1, customer_view=1, log_date=common_services.get_time())
             db.merge(order_delivery_logs)
             db.commit()
 
@@ -359,18 +371,24 @@ def create_order(request, authorize: AuthJWT, db: Session, background_tasks: Bac
             order_type_email = order.order_type
             user_mail = request.email
 
-            returned = common_services.email_body(user_mail, order_id, order_view_list, image_list, order_type_email, ref_no, price_list, sup_name_list, db)
+            returned = common_services.email_body(
+                user_mail, order_id, order_view_list, image_list, order_type_email, ref_no, price_list, sup_name_list, db)
 
-            background_tasks.add_task(common_services.send_otp,returned[0], returned[1], returned[2], request, db, invoice_path, invoice_delete)
+            background_tasks.add_task(
+                common_services.send_otp, returned[0], returned[1], returned[2], request, db, invoice_path, invoice_delete)
 
         if paid or cod or pending:
             if pending:
-                response = order_schemas.OrderResponse(status=status.HTTP_206_PARTIAL_CONTENT, message="Order Placed Successfully")
+                response = order_schemas.OrderResponse(
+                    status=status.HTTP_206_PARTIAL_CONTENT, message="Order Placed Successfully")
             else:
-                response = order_schemas.OrderResponse(status=status.HTTP_200_OK, message="Order Placed Successfully")
+                response = order_schemas.OrderResponse(
+                    status=status.HTTP_200_OK, message="Order Placed Successfully")
             try:
-                customer_data = db.execute(f"select * from {constants.Database_name}.customer_device where customer_id = {request.customer_id} and is_active=True ;")
-                setting_message = db.execute(f"select * from {constants.Database_name}.settings where settings.key = 'notification_app_order_received' ;")
+                customer_data = db.execute(
+                    f"select * from {constants.Database_name}.customer_device where customer_id = {request.customer_id} and is_active=True ;")
+                setting_message = db.execute(
+                    f"select * from {constants.Database_name}.settings where settings.key = 'notification_app_order_received' ;")
                 for msg in setting_message:
                     message = msg.value
                 values = {
@@ -591,7 +609,7 @@ def get_order_details(order_id, authorize: AuthJWT, db: Session):
                     qty_thresold = i.outofstock_threshold
                     final_qty = qty
                     data3 = order_schemas.OrdersProducts(product_id=data2.product_id, ordered_product_quantity=qua, stock_quantity=final_qty, name=i.name, SKU=i.SKU, mfr_name=i.mfr_name, description=i.description,
-                                                        quantity_unit=j[0], threshold=qty_thresold, weight=i.weight, weight_unit=k[0], price=final_ordered_price, discount=dis, primary_image=image_path, images=image_list, rating=result, review=rev)
+                                                         quantity_unit=j[0], threshold=qty_thresold, weight=i.weight, weight_unit=k[0], price=final_ordered_price, discount=dis, primary_image=image_path, images=image_list, rating=result, review=rev)
                 order_product_list.append(data3)
 
                 vat_value = db.execute(
@@ -629,7 +647,7 @@ def get_order_details(order_id, authorize: AuthJWT, db: Session):
             if data.invoices_id:
                 invoice_link = f"{constants.global_link}/orders/invoice-orders/{data.ref_number}"
             data_order = order_schemas.OrderDetailsbyid(order_id=data.id, order_ref_no=data.ref_number, sub_total=data.sub_total, item_discount=data.item_discount, tax_vat=vat_with_prcnt, total=data.total, grand_total=data.grand_total, email=data.order_email, contact=data.order_phone, country=data.order_country, city=data.order_city, billing_name=data.order_billing_name,
-                                                       billing_address=data.order_billing_address, shipping_name=data.order_ship_name, shipping_address=data.order_ship_address, payment_type=payment_type, payment_status=payment_status, order_date=date, product_count=product_count, order_status=order_status, order_type=order_value, invoice_id=data.invoices_id, invoice_link=invoice_link, delivery_charges=delivery_charge, order_delivery_logs=logs_list, products=order_product_list)
+                                                        billing_address=data.order_billing_address, shipping_name=data.order_ship_name, shipping_address=data.order_ship_address, payment_type=payment_type, payment_status=payment_status, order_date=date, product_count=product_count, order_status=order_status, order_type=order_value, invoice_id=data.invoices_id, invoice_link=invoice_link, delivery_charges=delivery_charge, order_delivery_logs=logs_list, products=order_product_list)
             order_list.append(data_order)
         data4 = order_schemas.ResponseMyOrdersbyid(
             customer_id=data.customer_id, orders=order_list)
