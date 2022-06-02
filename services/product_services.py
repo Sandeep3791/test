@@ -56,11 +56,11 @@ def get_product_details(customer_id, product_id, authorize: AuthJWT, db: Session
                 if i.margin_unit == '%':
                     margin_value = (intial_price/100)*int(wayrem_margin)
                     abc = intial_price+margin_value
-                    updated_price = round(abc)
+                    updated_price = abc
                 else:
                     cde = intial_price + float(wayrem_margin)
                     # cde = intial_price + float(i.wayrem_margin)
-                    updated_price = round(cde)
+                    updated_price = cde
 
                 product_category = db.execute(
                     f"select * from {constants.Database_name}.products_master_category where products_id = {product_id}")
