@@ -17,6 +17,7 @@ import googlemaps
 import datetime as DT
 import constants
 import re
+from sqlalchemy import or_
 
 
 app = FastAPI()
@@ -52,8 +53,13 @@ def create_order(request, authorize: AuthJWT, db: Session, background_tasks: Bac
         if re.search(SUCCESS_CODES_REGEX, payment_check) or re.search(SUCCESS_MANUAL_REVIEW_CODES_REGEX, payment_check):
             paid = True
         registrationId = payment_status.get("registrationId")
+
         if registrationId:
-            reg_id = db.query(payment_models.CustomerCard).filter(payment_models.CustomerCard.customer_id == request.customer_id, payment_models.CustomerCard.registration_id == registrationId).first()
+            card_body = payment_status.get("card")
+            card_number = card_body.get("last4Digits")
+
+            reg_id = db.query(payment_models.CustomerCard).filter(payment_models.CustomerCard.customer_id == request.customer_id,or_(payment_models.CustomerCard.registration_id == registrationId,payment_models.CustomerCard.card_number==card_number)).first()
+            
             if not reg_id:
                 card_body = payment_status.get("card")
                 card_number = card_body.get("last4Digits")
