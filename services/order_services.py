@@ -54,6 +54,7 @@ def create_order(request, authorize: AuthJWT, db: Session, background_tasks: Bac
         if failed:
             response = user_schemas.ResponseCommonMessage(
                 status=status.HTTP_424_FAILED_DEPENDENCY, message="Transaction Failed!!", data=str(hyperpay_response))
+            return response
         if re.search(PENDING_CHANGEABLE_SOON_CODES_REGEX, payment_check) or re.search(PENDING_NOT_CHANGEABLE_SOON_CODES_REGEX, payment_check):
             request.payment_status = 6
             pending = True
