@@ -668,3 +668,60 @@ def check_import_status(request):
     response = HttpResponse(json.dumps(context))
     return response
     # return render(request, "product/img_status.html", context)
+
+
+def import_single_image(request):
+    # path = '/home/suryaaa/Music/image_testing/client-images'
+    path = os.path.join(os.path.abspath(
+        '.'), f"media/common_folder/import_images")
+    # path = '/opt/app/wayrem-admin-backend/media/wayrem-product-images'
+
+    items = [f for f in os.listdir(
+        path) if not os.path.isdir(os.path.join(path, f))]
+
+    print(items)
+
+    for file in items:
+        file_name = file.split(".")[0].lower()
+        product = Products.objects.filter(name__icontains=file_name).first()
+        # product = Products.objects.filter(SKU=i).first()
+        common_folder = os.path.join(
+            os.path.abspath('.'), f"media/common_folder")
+        if product:
+            src_dir = f"{path}/{file}"
+            # dst_dir = f"/home/suryaaa/Music/database/products/{i}/"
+            dst_dir = f"{common_folder}/products/{product.SKU}/"
+            isExist = os.path.exists(dst_dir)
+            if not isExist:
+                os.makedirs(dst_dir)
+            if os.path.isfile(src_dir):
+                destination = dst_dir + file
+                shutil.copy(src_dir, destination)
+                product.primary_image = f"products/{product.SKU}/{file}"
+                print("default image copied")
+                product.save()
+                extention = file.split('.')[-1]
+                num = random.randint(111, 999)
+                fname = '{}_{}.{}'.format(file_name, product.SKU, extention)
+                destination = dst_dir + fname
+                shutil.copy(src_dir, destination)
+                img = Images()
+                img.product = product
+                img.image = f"products/{product.SKU}/{fname}"
+                img.save()
+                print('copied', file_name)
+            os.remove(src_dir)
+        else:
+            source = f"{path}/{file}"
+            # dst_dir = f"/home/suryaaa/Music/image_testing/failed"
+            dst_dir = f"{common_folder}/failed/"
+            isExist = os.path.exists(dst_dir)
+            if not isExist:
+                os.makedirs(dst_dir)
+            destination = dst_dir + file
+            shutil.copy(source, destination)
+            print('copied', file)
+            os.remove(source)
+            print("failed!!")
+    print("done")
+    return HttpResponse("Successfully imported!!")
