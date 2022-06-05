@@ -244,3 +244,16 @@ def get_business_type(authorize: AuthJWT, db: Session):
             status=status.HTTP_404_NOT_FOUND, message="No data found!")
         return common_msg
 
+def get_entityId(entityId):
+
+    if entityId == 'hyper_VISA':
+        entityId = os.environ.get('HYPER_VISA')
+        return entityId
+
+    elif entityId == 'hyper_MADA':
+        entityId = os.environ.get('HYPER_MADA')
+        return entityId
+
+    elif entityId == 'hyper_MASTER':
+        entityId = os.environ.get('HYPER_MASTER')
+        return entityId

@@ -17,6 +17,7 @@ class Orders(Base):
     item_margin = Column(Float())
     tax = Column(Float())
     tax_vat = Column(String(255), nullable=True)
+    checkout_id = Column(String(255), nullable=True)
     shipping = Column(Float())
     total = Column(Float())
     promo = Column(String(255))

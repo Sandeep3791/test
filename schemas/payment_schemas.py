@@ -4,7 +4,7 @@ from typing import Optional, List
 from starlette import status
 
 
-class CheoutIdRequest(BaseModel):
+class CheckoutIdRequest(BaseModel):
     entityId: str
     amount: str
     currency: str
