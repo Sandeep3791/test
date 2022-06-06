@@ -534,7 +534,7 @@ def initial_order(request, authorize: AuthJWT, db: Session, background_tasks: Ba
         checkout_details = payment_services.checkout_id(user_request)
         success_code = checkout_details['result']['code']
 
-        if success_code == '000.200.100' or success_code == '000.200.101' or success_code == '000.200.102':
+        if success_code != '000.200.100' or success_code != '000.200.101' or success_code != '000.200.102':
             payment_services.delete_card(request.registrationId, entityId)
             card = db.query(payment_models.CustomerCard).filter(
             payment_models.CustomerCard.registration_id == request.registrationId).first()
@@ -545,16 +545,15 @@ def initial_order(request, authorize: AuthJWT, db: Session, background_tasks: Ba
             db.delete(card)
             db.commit()
 
-            common_msg = user_schemas.ResponseCommonMessage(status = status.HTTP_404_NOT_FOUND, message = "Invalid registration id!")
+            common_msg = user_schemas.ResponseCommonMessage(status = status.HTTP_400_BAD_REQUEST, message = "Invalid registration id!")
             return common_msg
 
         else:
-            if success_code != '000.200.100' or success_code != '000.200.101' or success_code != '000.200.102':
-                checkout_id = checkout_details['id']
-                order.checkout_id = checkout_id
-                db.merge(order)
-                db.commit()
-            
+            checkout_id = checkout_details['id']
+            order.checkout_id = checkout_id
+            db.merge(order)
+            db.commit()
+        
             result = order_schemas.InitialOrderResponse(
                 status=status.HTTP_200_OK, message="Initial Order created successfully!!", ref_number=ref_no, checkout_id = checkout_id)
             return result           
