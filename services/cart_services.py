@@ -12,8 +12,7 @@ app = FastAPI()
 logger = logging.getLogger(__name__)
 
 
-def create_cart(request, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def create_cart(request, db: Session):
     data_exist = db.query(order_models.CustomerCart).filter(order_models.CustomerCart.customer_id ==
                                                             request.customer_id, order_models.CustomerCart.product_id == request.product_id).first()
     if data_exist:
@@ -29,8 +28,7 @@ def create_cart(request, authorize: AuthJWT, db: Session):
     return common_msg
 
 
-def get_cart_product(customer_id, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def get_cart_product(customer_id,  db: Session):
 
     user_cart = db.execute(
         f'select * from {constants.Database_name}.customer_cart where customer_id = {customer_id}')
@@ -94,8 +92,7 @@ def get_cart_product(customer_id, authorize: AuthJWT, db: Session):
     return response
 
 
-def update_cart_product(request, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def update_cart_product(request,  db: Session):
     db_cart_update = db.query(order_models.CustomerCart).filter(
         order_models.CustomerCart.id == request.cart_id).first()
 
@@ -110,8 +107,7 @@ def update_cart_product(request, authorize: AuthJWT, db: Session):
     return common_msg
 
 
-def delete_cart(cart_id, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def delete_cart(cart_id,  db: Session):
     delete_product = db.query(order_models.CustomerCart).filter(
         order_models.CustomerCart.id == cart_id).first()
     if not delete_product:
@@ -126,8 +122,7 @@ def delete_cart(cart_id, authorize: AuthJWT, db: Session):
     return common_msg
 
 
-def clear_cart(customer_id, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def clear_cart(customer_id,  db: Session):
     delete_product = db.query(order_models.CustomerCart).filter(
         order_models.CustomerCart.customer_id == customer_id).all()
     if not delete_product:
@@ -142,8 +137,7 @@ def clear_cart(customer_id, authorize: AuthJWT, db: Session):
     return common_msg
 
 
-def add_multiple_products(request, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def add_multiple_products(request, db: Session):
     cart_exist = db.query(order_models.CustomerCart).filter(
         order_models.CustomerCart.customer_id == request.customer_id).all()
     if cart_exist:

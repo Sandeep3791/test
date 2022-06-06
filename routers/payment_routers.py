@@ -6,6 +6,7 @@ from schemas import payment_schemas
 from sqlalchemy.orm import Session
 from services import payment_services
 import logging
+from fastapi.security import HTTPBearer
 
 
 router = APIRouter(
@@ -17,65 +18,66 @@ router = APIRouter(
 )
 
 logger = logging.getLogger(__name__)
+oauth2_schema = HTTPBearer()
 
 
 @router.post('/get/payment/checkout/id')
-def get_payment_checkout_id(user_request: payment_schemas.CheckoutIdRequest, authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
+def get_payment_checkout_id(user_request: payment_schemas.CheckoutIdRequest, authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
     response = payment_services.get_payment_checkout_id(
-        user_request, authorize, db)
+        user_request, db)
     return response
 
 
 @router.get('/get/payment/status')
-def get_payment_checkout_id(entityId: str, checkout_id: str, authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
+def get_payment_checkout_id(entityId: str, checkout_id: str, authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
     response = payment_services.get_payment_status_api(
-        entityId, checkout_id, authorize, db)
+        entityId, checkout_id, db)
     return response
 
 
 @router.get('/get/all/banks')
-def get_all_banks(authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
-    response = payment_services.get_all_banks(authorize, db)
+def get_all_banks(authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
+    response = payment_services.get_all_banks(db)
     return response
 
 
 @router.post('/upload/bank/payment/image')
-def upload_bank_payment_image(order_id: int, image: UploadFile = File(...), authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
+def upload_bank_payment_image(order_id: int, image: UploadFile = File(...), authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
     user = payment_services.upload_bank_payment_image(
-        order_id, image, authorize, db)
+        order_id, image, db)
     return user
 
 
 @router.get('/download/bank/payment/image')
 def download_bank_payment_image(
         order_id: int,
-        authorize: AuthJWT = Depends(),
+        authorize: AuthJWT = Depends(oauth2_schema),
         db: Session = Depends(database.get_db)):
     response = payment_services.download_bank_payment_image(
-        order_id, authorize, db)
+        order_id, db)
     return response
 
 
 @router.get('/get/customer/cards')
-def get_customer_cards(customer_id: int, authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
-    get_cards = payment_services.get_customer_cards(customer_id, authorize, db)
+def get_customer_cards(customer_id: int, authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
+    get_cards = payment_services.get_customer_cards(customer_id, db)
     return get_cards
 
 
 @router.delete('/delete/customer/card')
-def delete_customer_card(card_id: str, entityId: str, authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
+def delete_customer_card(card_id: str, entityId: str, authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
     delete_card = payment_services.delete_customer_card(
-        card_id, entityId, authorize, db)
+        card_id, entityId, db)
     return delete_card
 
 
 @router.get('/get/payment/types')
-def get_payment_types(authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
-    response = payment_services.get_payment_types(authorize, db)
+def get_payment_types(authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
+    response = payment_services.get_payment_types(db)
     return response
 
 @router.get('/get/payment/status/types')
-def get_payment_status_types(authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
-    response = payment_services.get_payment_status_types(authorize, db)
+def get_payment_status_types(authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
+    response = payment_services.get_payment_status_types(db)
     return response
 

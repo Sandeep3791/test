@@ -15,8 +15,7 @@ logger = logging.getLogger(__name__)
 
 
 
-def get_product_details(customer_id, product_id, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def get_product_details(customer_id, product_id, db: Session):
 
     data = db.execute(
         f"select * from {constants.Database_name}.products_master where id = {product_id}")
@@ -108,7 +107,7 @@ def get_product_details(customer_id, product_id, authorize: AuthJWT, db: Session
                             if customer_data.profile_pic:
                                 customer_id = review.customer_id
                                 data = user_services.download_profile_picture(
-                                    customer_id, authorize, db)
+                                    customer_id, db)
                                 x = dict(data.data)
                                 file_path = x.get("file_path")
                             else:
@@ -130,8 +129,8 @@ def get_product_details(customer_id, product_id, authorize: AuthJWT, db: Session
     return common_msg
 
 
-def get_all_products(offset, customer_id, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def get_all_products(offset, customer_id, db: Session):
+    
     offset_int = int(offset)
     limit_value = db.execute(
         f"select value from {constants.Database_name}.settings where id = 15 ;")
@@ -236,8 +235,7 @@ def get_all_products(offset, customer_id, authorize: AuthJWT, db: Session):
     return common_msg
 
 
-def get_category_products(customer_id, category_id, offset, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def get_category_products(customer_id, category_id, offset, db: Session):
 
     offset_int = int(offset)
     limit_value = db.execute(
@@ -337,8 +335,7 @@ def get_category_products(customer_id, category_id, offset, authorize: AuthJWT, 
     return common_msg
 
 
-def get_all_categories(authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def get_all_categories(db: Session):
 
     category_data = db.execute(
         f'select * from {constants.Database_name}.categories_master')
@@ -362,8 +359,8 @@ def get_all_categories(authorize: AuthJWT, db: Session):
         return common_msg
 
 
-def get_best_selling_products(authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def get_best_selling_products(db: Session):
+    
     data = db.execute(
         f"SELECT product_id, count(product_id) FROM {constants.Database_name}.order_details group by product_id order by count(product_id) desc limit 0,20;")
     if not data:
@@ -443,8 +440,8 @@ def get_best_selling_products(authorize: AuthJWT, db: Session):
     return common_msg
 
 
-def get_featured_products(customer_id, offset, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def get_featured_products(customer_id, offset, db: Session):
+    
     offset_int = int(offset)
     limit_value = db.execute(
         f"select value from {constants.Database_name}.settings where id = 15 ;")
@@ -546,8 +543,8 @@ def get_featured_products(customer_id, offset, authorize: AuthJWT, db: Session):
     return common_msg
 
 
-def Favorite_Product(request, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def Favorite_Product(request, db: Session):
+    
     match_products = db.execute(
         f'select * from {constants.Database_name}.products_master where id ="{request.product_id}" and publish = {True}')
     prod_avail = db.query(product_models.FavoriteProduct).filter(product_models.FavoriteProduct.product_id ==
@@ -577,8 +574,8 @@ def Favorite_Product(request, authorize: AuthJWT, db: Session):
         return common_msg
 
 
-def get_favorite_product_details(customer_id, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def get_favorite_product_details(customer_id, db: Session):
+    
     products = db.execute(
         f'select * from {constants.Database_name}.Favorite_Product where customer_id = "{customer_id}"')
     if products.rowcount==0:
@@ -640,8 +637,8 @@ def get_favorite_product_details(customer_id, authorize: AuthJWT, db: Session):
     return response
 
 
-def update_favorite_product(request, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def update_favorite_product(request, db: Session):
+    
     update_product = db.query(product_models.FavoriteProduct).filter(
         product_models.FavoriteProduct.customer_id == request.customer_id).first()
     if not update_product:
@@ -659,8 +656,8 @@ def update_favorite_product(request, authorize: AuthJWT, db: Session):
     return common_msg
 
 
-def delete_favorite_product(id, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def delete_favorite_product(id, db: Session):
+    
     delete_product = db.query(product_models.FavoriteProduct).filter(
         product_models.FavoriteProduct.id == id).first()
     if not delete_product:
@@ -675,8 +672,8 @@ def delete_favorite_product(id, authorize: AuthJWT, db: Session):
     return common_msg
 
 
-def create_product_rating(authorize: AuthJWT, request, db: Session):
-    authorize.jwt_required()
+def create_product_rating(request, db: Session):
+    
     db_update_rating = db.query(product_models.RatingReview).filter(product_models.RatingReview.customer_id ==
                                                                  request.customer_id, product_models.RatingReview.product_id == request.product_id).first()
     x = 0
@@ -738,9 +735,8 @@ def create_product_rating(authorize: AuthJWT, request, db: Session):
     return response
 
 
-def search_filter_products(offset ,customer_id, authorize: AuthJWT, start_price, end_price, discount, featured, rating, newest, category, db: Session):
-    authorize.jwt_required()
-
+def search_filter_products(offset ,customer_id, start_price, end_price, discount, featured, rating, newest, category, db: Session):
+    
     offset_int = int(offset)
     limit_value = db.execute(
         f"select value from {constants.Database_name}.settings where id = 15 ;")
@@ -890,9 +886,8 @@ def search_filter_products(offset ,customer_id, authorize: AuthJWT, start_price,
     return common_msg
 
 
-def search_products_name(offset,authorize: AuthJWT, customer_id, name, db: Session):
-    authorize.jwt_required()
-
+def search_products_name(offset,customer_id, name, db: Session):
+    
     offset_int = int(offset)
     limit_value = db.execute(
         f"select value from {constants.Database_name}.settings where id = 15 ;")

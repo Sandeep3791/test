@@ -35,8 +35,7 @@ def push_notification_in_firebase(data):
     return response
 
 
-def get_device_id(customer_id, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def get_device_id(customer_id, db: Session):
 
     customer_data = db.query(firebase_models.CustomerDevice).filter(
         firebase_models.CustomerDevice.customer_id == customer_id).all()
@@ -60,8 +59,7 @@ def get_device_id(customer_id, authorize: AuthJWT, db: Session):
         return common_msg
 
 
-def send_notification_list(customer_id, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def send_notification_list(customer_id, db: Session):
 
     customer_data = db.execute(
         f"select * from {constants.Database_name}.customer_notification where customer_id = {customer_id} ORDER BY id DESC ; ")
@@ -94,8 +92,7 @@ def send_notification_list(customer_id, authorize: AuthJWT, db: Session):
         return common_msg
 
 
-def delete_notification(customer_id, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def delete_notification(customer_id, db: Session):
 
     data = db.query(firebase_models.CustomerNotification).filter(
         firebase_models.CustomerNotification.customer_id == customer_id).delete(synchronize_session=False)
@@ -110,8 +107,7 @@ def delete_notification(customer_id, authorize: AuthJWT, db: Session):
         return common_msg
 
 
-def notification_status(customer_id, device_id, is_active: bool, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def notification_status(customer_id, device_id, is_active: bool, db: Session):
 
     customer_data = db.query(firebase_models.CustomerDevice).filter(
         firebase_models.CustomerDevice.customer_id == customer_id, firebase_models.CustomerDevice.device_id == device_id).first()
@@ -129,8 +125,7 @@ def notification_status(customer_id, device_id, is_active: bool, authorize: Auth
         return common_msg
 
 
-def notification_off(customer_id, device_id, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def notification_off(customer_id, device_id, db: Session):
 
     customer_data = db.query(firebase_models.CustomerDevice).filter(
         firebase_models.CustomerDevice.customer_id == customer_id, firebase_models.CustomerDevice.device_id == device_id).all()

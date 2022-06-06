@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from services import user_services
 import logging
 from typing import Optional
+from fastapi.security import HTTPBearer
 
 router = APIRouter(
     prefix="/v1",
@@ -17,18 +18,19 @@ router = APIRouter(
 )
 
 logger = logging.getLogger(__name__)
+oauth2_schema = HTTPBearer()
 
 
 @router.post('/customer/registration')
-def customer_user(request: user_schemas.User,authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db),background : BackgroundTasks = None):
+def customer_user(request: user_schemas.User,authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db),background : BackgroundTasks = None):
     data = user_services.customer_user(request,authorize, db,background)
     return data
 
 
 @router.post('/upload/profile/picture')
-def upload_profile_picture(customer_id: int, profile_picture: UploadFile = File(...), authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
+def upload_profile_picture(customer_id: int, profile_picture: UploadFile = File(...), authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
     user = user_services.upload_profile_picture(
-        customer_id, profile_picture, authorize, db)
+        customer_id, profile_picture, db)
     return user
 
 
@@ -42,63 +44,63 @@ def customer_registration_docs(customer_id: int, registration_docs: Optional[Upl
 @router.post('/download/profile/picture')
 def download_profile_picture(
         customer_id: int,
-        authorize: AuthJWT = Depends(),
+        authorize: AuthJWT = Depends(oauth2_schema),
         db: Session = Depends(database.get_db)):
     response = user_services.download_profile_picture(
-        customer_id, authorize, db)
+        customer_id, db)
     return response
 
 
 @router.post('/download/registration/docs')
 def download_registration_docs(
         customer_id: int,
-        authorize: AuthJWT = Depends(),
+        authorize: AuthJWT = Depends(oauth2_schema),
         db: Session = Depends(database.get_db)):
     response = user_services.download_registration_docs(
-        customer_id, authorize, db)
+        customer_id, db)
     return response
 
 
 @router.post('/download/tax/docs')
 def download_tax_docs(
         customer_id: int,
-        authorize: AuthJWT = Depends(),
+        authorize: AuthJWT = Depends(oauth2_schema),
         db: Session = Depends(database.get_db)):
-    response = user_services.download_tax_docs(customer_id, authorize, db)
+    response = user_services.download_tax_docs(customer_id, db)
     return response
 
 @router.post('/download/marrof/docs')
 def download_marrof_docs(
         customer_id: int,
-        authorize: AuthJWT = Depends(),
+        authorize: AuthJWT = Depends(oauth2_schema),
         db: Session = Depends(database.get_db)):
     response = user_services.download_marrof_docs(
-        customer_id, authorize, db)
+        customer_id, db)
     return response
 
 @router.post('/customer/login')
-def customer_login(request: user_schemas.Login, authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
+def customer_login(request: user_schemas.Login, authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
     data = user_services.customer_login(request, authorize, db)
     return data
 
 
 @router.put('/update/profile')
-def update_profile(request: user_schemas.UserUpdate, authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
-    user = user_services.update_profile(request, authorize, db)
+def update_profile(request: user_schemas.UserUpdate, authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
+    user = user_services.update_profile(request, db)
     return user
 
 
 @router.get('/get/profile/details')
-def get_profile_details(customer_id: int, authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
+def get_profile_details(customer_id: int, authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
     authorize.jwt_required()
     get_address_details = user_services.get_profile_details(
-        customer_id, authorize, db)
+        customer_id, db)
     return get_address_details
 
 
 @router.post('/reset/password')
-def reset_password(request: user_schemas.ResetPassword, authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
-    reset_password = user_services.reset_password(request, authorize, db)
+def reset_password(request: user_schemas.ResetPassword, authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
+    reset_password = user_services.reset_password(request, db)
     return reset_password
 
 

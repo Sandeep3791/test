@@ -80,8 +80,8 @@ def delete_card(id, entityId):
         return e.reason
 
 
-def get_payment_checkout_id(user_request, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def get_payment_checkout_id(user_request, db: Session):
+    
     customer_id = user_request.customer_id
     db_user_active = db.query(user_models.User).filter(
         user_models.User.id == customer_id).first()
@@ -98,13 +98,13 @@ def get_payment_checkout_id(user_request, authorize: AuthJWT, db: Session):
         return common_msg
 
 
-def get_payment_status_api(entityId, checkout_id, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def get_payment_status_api(entityId, checkout_id, db: Session):
+    
     return get_payment_status(checkout_id, entityId)
 
 
-def get_all_banks(authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def get_all_banks(db: Session):
+    
     bank_data = db.execute(
         f"select * from {constants.Database_name}.banks where status = True ; ")
     if bank_data.rowcount > 0:
@@ -122,8 +122,8 @@ def get_all_banks(authorize: AuthJWT, db: Session):
         return common_msg
 
 
-def upload_bank_payment_image(customer_id, order_id, image, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def upload_bank_payment_image(customer_id, order_id, image, db: Session):
+    
     order_data = db.query(order_models.OrderTransactions).filter(
         order_models.OrderTransactions.order_id == order_id).first()
     if not order_data:
@@ -193,8 +193,8 @@ def upload_bank_payment_image(customer_id, order_id, image, authorize: AuthJWT, 
     return common_msg
 
 
-def download_bank_payment_image(order_id, authorize, db: Session):
-    authorize.jwt_required()
+def download_bank_payment_image(order_id, db: Session):
+    
     path = os.path.abspath('.')
 
     image_path = os.path.join(path, 'common_folder')
@@ -216,8 +216,8 @@ def download_bank_payment_image(order_id, authorize, db: Session):
     return common_msg
 
 
-def get_customer_cards(customer_id, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def get_customer_cards(customer_id, db: Session):
+    
     user_cards = db.execute(
         f'select * from {constants.Database_name}.customer_cards where customer_id = "{customer_id}"')
     if user_cards:
@@ -236,8 +236,8 @@ def get_customer_cards(customer_id, authorize: AuthJWT, db: Session):
         return common_msg
 
 
-def delete_customer_card(card_id, entityId, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def delete_customer_card(card_id, entityId, db: Session):
+    
     card = db.query(payment_models.CustomerCard).filter(
         payment_models.CustomerCard.registration_id == card_id).first()
     if not card:
@@ -253,8 +253,8 @@ def delete_customer_card(card_id, entityId, authorize: AuthJWT, db: Session):
     return common_msg
 
 
-def get_payment_types(authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def get_payment_types(db: Session):
+    
     payment_types = db.execute(
         f'select * from {constants.Database_name}.status_master where status_type = 3 and status = 1')
     payment_type_list = []
@@ -267,8 +267,8 @@ def get_payment_types(authorize: AuthJWT, db: Session):
     return response
 
 
-def get_payment_status_types(authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def get_payment_status_types(db: Session):
+    
     payment_status_types = db.execute(
         f'select * from {constants.Database_name}.status_master where status_type = 2')
     payment_status_list = []

@@ -27,8 +27,8 @@ app = FastAPI()
 logger = logging.getLogger(__name__)
 
 
-def create_order(request, authorize: AuthJWT, db: Session, background_tasks: BackgroundTasks):
-    authorize.jwt_required()
+def create_order(request, db: Session, background_tasks: BackgroundTasks):
+    
     paid = False
     cod = False
     pending = False
@@ -425,8 +425,7 @@ def create_order(request, authorize: AuthJWT, db: Session, background_tasks: Bac
         return common_msg
 
 
-def initial_order(request, authorize: AuthJWT, db: Session, background_tasks: BackgroundTasks):
-    authorize.jwt_required()
+def initial_order(request, db: Session, background_tasks: BackgroundTasks):
     db_user_active = db.query(user_models.User).filter(
         user_models.User.id == request.customer_id).first()
 
@@ -578,11 +577,12 @@ def initial_order(request, authorize: AuthJWT, db: Session, background_tasks: Ba
             return common_msg
 
 
-def create_order_new(request, authorize: AuthJWT, db: Session, background_tasks: BackgroundTasks):
-    authorize.jwt_required()
+def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
+    
     try:
         db.query(order_models.Orders).filter(order_models.Orders.ref_number == request.ref_number).delete(synchronize_session = False)
-        
+        db.commit()
+
         paid = False
         cod = False
         hyperpay_response = None
@@ -672,8 +672,15 @@ def create_order_new(request, authorize: AuthJWT, db: Session, background_tasks:
             order_data = db.query(order_models.Orders).filter(
                 order_models.Orders.ref_number == order.ref_number).first()
             order_id = order_data.id
-            sub_total_list, discount_list, margin_list, order_view_list, image_list, price_list, sup_name_list = list(), 
-            list(), list(), list(), list(), list(), list()
+        
+            sub_total_list = []
+            discount_list = [] 
+            margin_list = []
+            order_view_list = []
+            image_list = []
+            price_list = []
+            sup_name_list = []
+            
             if not cod:
                 transaction_id = payment_status.get("id")
                 checkout_id = request.checkout_id
@@ -910,10 +917,10 @@ def create_order_new(request, authorize: AuthJWT, db: Session, background_tasks:
     except Exception as e:
         common_msg = user_schemas.ResponseCommonMessage(
                 status=status.HTTP_406_NOT_ACCEPTABLE, message="Order already created !!")
-        return 
+        return common_msg
 
-def get_all_orders(offset, customer_id, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def get_all_orders(offset, customer_id, db: Session):
+    
     offset_int = int(offset)
     limit_value = db.execute(
         f"select value from {constants.Database_name}.settings where id = 15 ;")
@@ -1026,9 +1033,8 @@ def get_all_orders(offset, customer_id, authorize: AuthJWT, db: Session):
         return common_msg
 
 
-def get_order_details(order_id, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
-
+def get_order_details(order_id, db: Session):
+    
     orders_data = db.execute(
         f'SELECT t1.*, t2.id as transaction_id, t2.payment_mode_id, t2.payment_status_id , t2.invoices_id, t4.name as payment_mode , t3.name as payment_status FROM {constants.Database_name}.orders t1 inner join {constants.Database_name}.order_transactions t2 on t1.id = t2.order_id inner join {constants.Database_name}.status_master t3 on  t3.id = t2.payment_status_id inner join {constants.Database_name}.status_master t4 on t4.id = t2.payment_mode_id  where t1.id = {order_id};')
     if orders_data.rowcount > 0:
@@ -1152,8 +1158,8 @@ def get_order_details(order_id, authorize: AuthJWT, db: Session):
         return common_msg
 
 
-def create_recurrence_order(request, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def create_recurrence_order(request, db: Session):
+    
     grocery = db.query(order_models.UserGrocery).filter(order_models.UserGrocery.id ==
                                                         request.grocery_id, order_models.UserGrocery.customer_id == request.customer_id).first()
     if not grocery:
@@ -1202,8 +1208,8 @@ def create_recurrence_order(request, authorize: AuthJWT, db: Session):
     return result
 
 
-def update_recurrence_order(request, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def update_recurrence_order(request, db: Session):
+    
     recurrent = db.query(order_models.RecurrenceGrocery).filter(
         order_models.RecurrenceGrocery.id == request.recurrent_order_id).first()
     if not recurrent:
@@ -1244,9 +1250,8 @@ def update_recurrence_order(request, authorize: AuthJWT, db: Session):
     return result
 
 
-def get_all_recurrent_type(authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
-
+def get_all_recurrent_type(db: Session):
+    
     recurrent_data = db.execute(
         f'select * from {constants.Database_name}.recurrent_type')
     cat_list = []
@@ -1259,8 +1264,8 @@ def get_all_recurrent_type(authorize: AuthJWT, db: Session):
     return common_msg
 
 
-def get_delivery_fees(address_id, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def get_delivery_fees(address_id, db: Session):
+    
     try:
         delivery_charge_data = db.execute(
             f"""SELECT * FROM {constants.Database_name}.settings WHERE settings.key = 'setting_vat' OR settings.key = 'delivery_fee_distance_charge' OR settings.key = 'delivery_charge_base_fee' OR settings.key = 'delivery_free_charge_after_amount' OR settings.key = 'delivery_free_charge_below_range'OR settings.key = 'shipping_rates_after_basefare' order by id ;""")
@@ -1327,8 +1332,8 @@ def get_delivery_fees(address_id, authorize: AuthJWT, db: Session):
         return common_msg
 
 
-def get_filters_orders(offset, customer_id, filter_id, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def get_filters_orders(offset, customer_id, filter_id, db: Session):
+    
     offset_int = int(offset)
     limit_value = db.execute(
         f"select value from {constants.Database_name}.settings where id = 15 ;")

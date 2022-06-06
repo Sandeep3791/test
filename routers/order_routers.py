@@ -7,6 +7,8 @@ from sqlalchemy.orm import Session
 from services import order_services
 import logging
 from typing import Optional
+from fastapi.security import HTTPBearer
+
 
 router = APIRouter(
     prefix="/v1",
@@ -17,62 +19,63 @@ router = APIRouter(
 )
 
 logger = logging.getLogger(__name__)
+oauth2_schema = HTTPBearer()
 
 
 @router.post('/create/order')
-def create_order(request: order_schemas.OrderRequest, authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db),background : BackgroundTasks = None):
-    data = order_services.create_order(request, authorize, db,background)
+def create_order(request: order_schemas.OrderRequest, authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db),background : BackgroundTasks = None):
+    data = order_services.create_order(request, db,background)
     return data
 
 @router.post('/initial/order')
-def initialize_order(request: order_schemas.InitialOrderRequest, authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db),background : BackgroundTasks = None):
-    data = order_services.initial_order(request, authorize, db,background)
+def initialize_order(request: order_schemas.InitialOrderRequest, authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db),background : BackgroundTasks = None):
+    data = order_services.initial_order(request, db,background)
     return data 
 
 @router.post('/create/order/new')
-def create_order_new(request: order_schemas.CreateOrderRequest, authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db),background : BackgroundTasks = None):
-    data = order_services.create_order_new(request, authorize, db,background)
+def create_order_new(request: order_schemas.CreateOrderRequest, authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db),background : BackgroundTasks = None):
+    data = order_services.create_order_new(request, db,background)
     return data
 
 
 @router.get('/get/all/orders')
-def get_all_orders(offset: str, customer_id: int, authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
+def get_all_orders(offset: str, customer_id: int, authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
     get_product_details = order_services.get_all_orders(
-        offset, customer_id, authorize, db)
+        offset, customer_id, db)
     return get_product_details
 
 
 @router.get('/get/order/details')
-def get_order_details(order_id: int, authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
+def get_order_details(order_id: int, authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
     get_product_details = order_services.get_order_details(
-        order_id, authorize, db)
+        order_id, db)
     return get_product_details
 
 
 @router.post('/create/recurrence/order')
-def create_recurrence_order(request: order_schemas.RecurrenceRequest, authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
-    data = order_services.create_recurrence_order(request, authorize, db)
+def create_recurrence_order(request: order_schemas.RecurrenceRequest, authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
+    data = order_services.create_recurrence_order(request, db)
     return data
 
 
 @router.put('/update/recurrence/order')
-def update_recurrence_order(request: order_schemas.updateRecurrenceRequest, authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
-    data = order_services.update_recurrence_order(request, authorize, db)
+def update_recurrence_order(request: order_schemas.updateRecurrenceRequest, authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
+    data = order_services.update_recurrence_order(request, db)
     return data
 
 
 @router.get('/get/all/recurrent/types')
-def get_all_recurrent_type(authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
-    grocery_details = order_services.get_all_recurrent_type(authorize, db)
+def get_all_recurrent_type(authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
+    grocery_details = order_services.get_all_recurrent_type(db)
     return grocery_details
 
 @router.get('/get/delivery/fees')
-def get_delivery_fees(address_id: Optional[int] = None ,authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
-    get_delivery = order_services.get_delivery_fees(address_id, authorize, db)
+def get_delivery_fees(address_id: Optional[int] = None ,authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
+    get_delivery = order_services.get_delivery_fees(address_id, db)
     return get_delivery
 
 @router.get('/get/all/orders/filter')
-def get_filters_orders(offset: str, customer_id: int, filter_id: int ,authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
+def get_filters_orders(offset: str, customer_id: int, filter_id: int ,authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
     get_product_details = order_services.get_filters_orders(
-        offset, customer_id,filter_id, authorize, db)
+        offset, customer_id,filter_id, db)
     return get_product_details
