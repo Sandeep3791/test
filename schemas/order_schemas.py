@@ -42,6 +42,7 @@ class OrderRequest(BaseModel):
 class InitialOrderRequest(BaseModel):
     entityId: Optional[str]
     customer_id: int
+    registrationId: Optional[str]
     email: str
     amount: str
     contact: int

@@ -237,7 +237,7 @@ def get_customer_cards(customer_id, authorize: AuthJWT, db: Session):
 
 
 def delete_customer_card(card_id, entityId, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+    # authorize.jwt_required()
     card = db.query(payment_models.CustomerCard).filter(
         payment_models.CustomerCard.registration_id == card_id).first()
     if not card:

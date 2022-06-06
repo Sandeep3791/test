@@ -1,7 +1,7 @@
 import math
 from email import message
 import constants
-from services import firebase_services
+from services import firebase_services, payment_services
 from utility_services import common_services
 from utility_services.inventory_services import update_inventory
 import random
@@ -9,7 +9,6 @@ import os
 import logging
 from models import user_models, order_models, firebase_models, payment_models
 from schemas import firebase_schemas, user_schemas, order_schemas, payment_schemas
-from services import payment_services, common_services
 from fastapi import FastAPI, status, BackgroundTasks
 from fastapi_jwt_auth import AuthJWT
 from sqlalchemy.orm import Session
@@ -529,22 +528,55 @@ def initial_order(request, authorize: AuthJWT, db: Session, background_tasks: Ba
     )
     entityId = common_services.get_entityId(request.entityId)
 
-    user_request = payment_schemas.CheckoutIdRequest(entityId = entityId, amount = request.amount, currency = 'SAR', 
-                                        paymentType = request.payment_type, customer_id = request.customer_id)
-    checkout_details = payment_services.checkout_id(user_request)
-    success_code = checkout_details['result']['code']
-    if success_code == '000.200.100' or success_code == '000.200.101' or success_code == '000.200.102':
-        checkout_id = checkout_details['id']
-        order.checkout_id = checkout_id
-        db.merge(order)
-        db.commit()
+    if request.registrationId:
+        user_request = payment_schemas.CheckoutIdRequest(entityId = entityId, amount = request.amount, currency = 'SAR', 
+                                        paymentType = request.payment_type, registrationId = request.registrationId, customer_id = request.customer_id)
+        checkout_details = payment_services.checkout_id(user_request)
+        success_code = checkout_details['result']['code']
+
+        if success_code == '000.200.100' or success_code == '000.200.101' or success_code == '000.200.102':
+            payment_services.delete_card(request.registrationId, entityId)
+            card = db.query(payment_models.CustomerCard).filter(
+            payment_models.CustomerCard.registration_id == request.registrationId).first()
+            if not card:
+                common_msg = user_schemas.ResponseCommonMessage(
+                    status=status.HTTP_404_NOT_FOUND, message="Registration id Doesn't Exist!")
+                return common_msg
+            db.delete(card)
+            db.commit()
+
+            common_msg = user_schemas.ResponseCommonMessage(status = status.HTTP_404_NOT_FOUND, message = "Invalid registration id!")
+            return common_msg
+
+        else:
+            if success_code != '000.200.100' or success_code != '000.200.101' or success_code != '000.200.102':
+                checkout_id = checkout_details['id']
+                order.checkout_id = checkout_id
+                db.merge(order)
+                db.commit()
+            
+            result = order_schemas.InitialOrderResponse(
+                status=status.HTTP_200_OK, message="Initial Order created successfully!!", ref_number=ref_no, checkout_id = checkout_id)
+            return result           
         
-        result = order_schemas.InitialOrderResponse(
-            status=status.HTTP_200_OK, message="Initial Order created successfully!!", ref_number=ref_no, checkout_id = checkout_id)
-        return result
     else:
-        common_msg = user_schemas.ResponseCommonMessage(status = status.HTTP_404_NOT_FOUND, message = "Transaction Failed !")
-        return common_msg
+        user_request = payment_schemas.CheckoutIdRequest(entityId = entityId, amount = request.amount, currency = 'SAR', 
+                                        paymentType = request.payment_type, customer_id = request.customer_id)
+        checkout_details = payment_services.checkout_id(user_request)
+        
+        success_code = checkout_details['result']['code']
+        if success_code == '000.200.100' or success_code == '000.200.101' or success_code == '000.200.102':
+            checkout_id = checkout_details['id']
+            order.checkout_id = checkout_id
+            db.merge(order)
+            db.commit()
+            
+            result = order_schemas.InitialOrderResponse(
+                status=status.HTTP_200_OK, message="Initial Order created successfully!!", ref_number=ref_no, checkout_id = checkout_id)
+            return result
+        else:
+            common_msg = user_schemas.ResponseCommonMessage(status = status.HTTP_404_NOT_FOUND, message = "Transaction Failed !")
+            return common_msg
 
 
 def create_order_new(request, authorize: AuthJWT, db: Session, background_tasks: BackgroundTasks):
