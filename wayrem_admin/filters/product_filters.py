@@ -7,9 +7,9 @@ class ProductFilter(django_filters.FilterSet):
         field_name='date_of_mfg', lookup_expr='gte')
     date_of_exp = django_filters.DateTimeFilter(
         field_name="date_of_exp", lookup_expr='lte')
-    product_name = django_filters.Filter(
+    name = django_filters.Filter(
         field_name='name', lookup_expr='icontains')
-    product_sku = django_filters.Filter(
+    SKU = django_filters.Filter(
         field_name='SKU', lookup_expr='icontains')
 
     class Meta:
