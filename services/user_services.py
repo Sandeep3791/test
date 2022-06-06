@@ -153,7 +153,7 @@ def customer_user(request, authorize, db,background_tasks: BackgroundTasks):
 
 
 def upload_profile_picture(customer_id, profile_picture, authorize: AuthJWT, db: Session):
-    # authorize.jwt_required()
+    authorize.jwt_required()
     path = os.path.abspath('.')
 
     user_profile_path = os.path.join(path, 'common_folder')

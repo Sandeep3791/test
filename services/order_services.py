@@ -426,7 +426,7 @@ def create_order(request, authorize: AuthJWT, db: Session, background_tasks: Bac
 
 
 def initial_order(request, authorize: AuthJWT, db: Session, background_tasks: BackgroundTasks):
-    # authorize.jwt_required()
+    authorize.jwt_required()
     db_user_active = db.query(user_models.User).filter(
         user_models.User.id == request.customer_id).first()
 
