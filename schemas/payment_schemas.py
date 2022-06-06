@@ -9,6 +9,7 @@ class CheckoutIdRequest(BaseModel):
     amount: str
     currency: str
     paymentType: str
+    registrationId: Optional[str]
     customer_id: int
 
 
@@ -54,6 +55,7 @@ class ResponsePaymentsTypeFinal(BaseModel):
     status: str
     message: str
     data: List[ResponsePaymentsType]
+
 
 class ResponsePaymentstatus(BaseModel):
     id: int

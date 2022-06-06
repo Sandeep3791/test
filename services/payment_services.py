@@ -1,5 +1,3 @@
-
-
 import json
 from services import firebase_services
 from schemas import user_schemas, payment_schemas
@@ -9,7 +7,6 @@ from sqlalchemy.orm import Session
 from fastapi import status, BackgroundTasks
 import constants
 import os
-
 from utility_services import common_services
 try:
     from urllib.error import HTTPError, URLError
@@ -30,6 +27,11 @@ def checkout_id(user_request):
         'currency': user_request.currency,
         'paymentType': user_request.paymentType
     }
+    if user_request.registrationId:
+        data['registrations[0].id'] = user_request.registrationId
+        data['standingInstruction.source'] = 'CIT'
+        data['standingInstruction.mode'] = 'REPEATED'
+        data['standingInstruction.type'] = 'UNSCHEDULED'
     try:
         opener = build_opener(HTTPHandler)
         request = Request(url, data=urlencode(data).encode('utf-8'))

@@ -56,11 +56,11 @@ def get_product_details(customer_id, product_id, authorize: AuthJWT, db: Session
                 if i.margin_unit == '%':
                     margin_value = (intial_price/100)*int(wayrem_margin)
                     abc = intial_price+margin_value
-                    updated_price = round(abc)
+                    updated_price = round(abc,2)
                 else:
                     cde = intial_price + float(wayrem_margin)
                     # cde = intial_price + float(i.wayrem_margin)
-                    updated_price = round(cde)
+                    updated_price = round(cde,2)
 
                 product_category = db.execute(
                     f"select * from {constants.Database_name}.products_master_category where products_id = {product_id}")
@@ -141,7 +141,7 @@ def get_all_products(offset, customer_id, authorize: AuthJWT, db: Session):
         f"select * from {constants.Database_name}.products_master where publish = {True} limit {offset_int},{limit_val}")
 
     fav_product_data = db.execute(
-        f"SELECT t1.SKU, t2.id,t2.customer_id,t2.product_id FROM {constants.Database_name}.products_master t1 inner join {constants.Database_name}.Favorite_Product t2 on t2.product_id = t1.id where t2.customer_id = {customer_id} ;")
+        f"SELECT t1.SKU, t2.id,t2.customer_id,t2.product_id FROM {constants.Database_name}.products_master t1 inner join {constants.Database_name}.Favorite_Product t2 on t2.product_id = t1.id where t2.customer_id = {customer_id} and t1.publish = {True} ;")
 
     if not data:
         common_msg = user_schemas.ResponseCommonMessage(
@@ -249,7 +249,7 @@ def get_category_products(customer_id, category_id, offset, authorize: AuthJWT, 
         f"select * from {constants.Database_name}.products_master t1 inner join  {constants.Database_name}.products_master_category t2  on t2.categories_id = {category_id} where t1.id = t2.products_id and t1.publish = {True} limit {offset_int},{limit_val};")
 
     fav_product_data = db.execute(
-        f"SELECT t1.SKU, t2.id,t2.customer_id,t2.product_id FROM {constants.Database_name}.products_master t1 inner join {constants.Database_name}.Favorite_Product t2 on t2.product_id = t1.id where t2.customer_id = {customer_id} ;")
+        f"SELECT t1.SKU, t2.id,t2.customer_id,t2.product_id FROM {constants.Database_name}.products_master t1 inner join {constants.Database_name}.Favorite_Product t2 on t2.product_id = t1.id where t2.customer_id = {customer_id} and t1.publish = {True} ;")
     fav_id_list = []
     for favorite in fav_product_data:
         fav_prod_id = int(favorite.product_id)
@@ -452,7 +452,7 @@ def get_featured_products(customer_id, offset, authorize: AuthJWT, db: Session):
         limit_val = int(value[0])
 
     fav_product_data = db.execute(
-        f"SELECT t1.SKU, t2.id,t2.customer_id,t2.product_id FROM {constants.Database_name}.products_master t1 inner join {constants.Database_name}.Favorite_Product t2 on t2.product_id = t1.id where t2.customer_id = {customer_id} ;")
+        f"SELECT t1.SKU, t2.id,t2.customer_id,t2.product_id FROM {constants.Database_name}.products_master t1 inner join {constants.Database_name}.Favorite_Product t2 on t2.product_id = t1.id where t2.customer_id = {customer_id} and t1.publish = {True} ;")
     fav_id_list = []
     for favorite in fav_product_data:
         fav_prod_id = int(favorite.product_id)
@@ -766,12 +766,12 @@ def search_filter_products(offset ,customer_id, authorize: AuthJWT, start_price,
     rating_request = rating
     result = None
     
-    query += f" limit {offset_int},{limit_val}"
+    query += f"and publish = {True} limit {offset_int},{limit_val}"
 
     data = db.execute(query)
 
     fav_product_data = db.execute(
-        f"SELECT t1.SKU, t2.id,t2.customer_id,t2.product_id FROM {constants.Database_name}.products_master t1 inner join {constants.Database_name}.Favorite_Product t2 on t2.product_id = t1.id where t2.customer_id = {customer_id} ;")
+        f"SELECT t1.SKU, t2.id,t2.customer_id,t2.product_id FROM {constants.Database_name}.products_master t1 inner join {constants.Database_name}.Favorite_Product t2 on t2.product_id = t1.id where t2.customer_id = {customer_id} and t1.publish = {True} ;")
 
     fav_id_list = []
     for favorite in fav_product_data:
@@ -899,11 +899,11 @@ def search_products_name(offset,authorize: AuthJWT, customer_id, name, db: Sessi
     for value in limit_value:
         limit_val = int(value[0])
 
-    query = f"SELECT * FROM  {constants.Database_name}.products_master where meta_key REGEXP '{name}$' or name LIKE '%{name}%' limit {offset_int},{limit_val} "
+    query = f"SELECT * FROM  {constants.Database_name}.products_master where meta_key REGEXP '{name}$' or name LIKE '%{name}%' and publish = {True} limit {offset_int},{limit_val} "
     data = db.execute(query)
 
     fav_product_data = db.execute(
-        f"SELECT t1.SKU, t2.id,t2.customer_id,t2.product_id FROM {constants.Database_name}.products_master t1 inner join {constants.Database_name}.Favorite_Product t2 on t2.product_id = t1.id where t2.customer_id = {customer_id} ;")
+        f"SELECT t1.SKU, t2.id,t2.customer_id,t2.product_id FROM {constants.Database_name}.products_master t1 inner join {constants.Database_name}.Favorite_Product t2 on t2.product_id = t1.id where t2.customer_id = {customer_id} and t1.publish = {True} ;")
 
     fav_id_list = []
     for favorite in fav_product_data:

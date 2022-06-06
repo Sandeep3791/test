@@ -16,6 +16,28 @@ class OrderProducts(BaseModel):
     product_quantity: int
     product_price: float
 
+class OrderRequest(BaseModel):
+    checkout_id: Optional[str]
+    entityId: Optional[str]
+    customer_id: int
+    email: str
+    contact: int
+    country: str
+    city: str
+    shipping_region: str
+    shipping_building_name: str
+    shipping_landmark: str
+    shipping_latitude: str
+    shipping_longitude: str
+    billing_name: str
+    billing_address: str
+    shipping_name: str
+    shipping_address: str
+    payment_type: str
+    payment_status: str
+    delivery_fees: float
+    products: List[OrderProducts]
+
 
 class InitialOrderRequest(BaseModel):
     entityId: Optional[str]
@@ -146,7 +168,7 @@ class OrderDetails(BaseModel):
     product_count: int
     order_status: int
     order_type: str
-    invoice_id: str
+    invoice_id: Optional[str]
     delivery_logs: List[OrderByIdDeliveryLogs]
     products: List[OrdersProducts]
 
@@ -184,8 +206,8 @@ class OrderDetailsbyid(BaseModel):
     product_count: int
     order_status: int
     order_type: str
-    invoice_id: str
-    invoice_link: str
+    invoice_id: Optional[str]
+    invoice_link: Optional[str]
     delivery_charges: float
     order_delivery_logs: List[OrderByIdDeliveryLogs]
     products: List[OrdersProducts]

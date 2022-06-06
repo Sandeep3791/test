@@ -18,6 +18,12 @@ router = APIRouter(
 
 logger = logging.getLogger(__name__)
 
+
+@router.post('/create/order')
+def create_order(request: order_schemas.OrderRequest, authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db),background : BackgroundTasks = None):
+    data = order_services.create_order(request, authorize, db,background)
+    return data
+
 @router.post('/initial/order')
 def initialize_order(request: order_schemas.InitialOrderRequest, authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db),background : BackgroundTasks = None):
     data = order_services.initial_order(request, authorize, db,background)
