@@ -179,6 +179,7 @@ def upload_profile_picture(customer_id, profile_picture, authorize: AuthJWT, db:
 
 
 def customer_registration_docs(customer_id, registration_docs, tax_docs, marrof_docs, db):
+    
     path = os.path.abspath('.')
     # print("-----------------------------------------------------------os path")
     # print(path)
@@ -186,6 +187,12 @@ def customer_registration_docs(customer_id, registration_docs, tax_docs, marrof_
 
     user_data = db.query(user_models.User).filter(
         user_models.User.id == customer_id).first()
+
+    if user_data.verification_status == "active":
+        resp = user_schemas.ResponseCommonMessage(
+        status=status.HTTP_200_OK, message='User is already active!')
+        return resp
+
     if not user_data:
         common_msg = user_schemas.ResponseCommonMessage(
             status=status.HTTP_404_NOT_FOUND, message='Invalid Customer ID')
