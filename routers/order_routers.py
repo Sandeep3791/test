@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from services import order_services
 import logging
 from typing import Optional
+
 router = APIRouter(
     prefix="/v1",
     # dependencies=[Depends(get_bearer_header)],
@@ -22,9 +23,9 @@ def initialize_order(request: order_schemas.InitialOrderRequest, authorize: Auth
     data = order_services.initial_order(request, authorize, db,background)
     return data 
 
-@router.post('/create/order')
-def create_order(request: order_schemas.CreateOrderRequest, authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db),background : BackgroundTasks = None):
-    data = order_services.create_order(request, authorize, db,background)
+@router.post('/create/order/new')
+def create_order_new(request: order_schemas.CreateOrderRequest, authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db),background : BackgroundTasks = None):
+    data = order_services.create_order_new(request, authorize, db,background)
     return data
 
 

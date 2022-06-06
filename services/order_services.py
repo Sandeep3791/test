@@ -146,7 +146,8 @@ def initial_order(request, authorize: AuthJWT, db: Session, background_tasks: Ba
         common_msg = user_schemas.ResponseCommonMessage(status = status.HTTP_404_NOT_FOUND, message = "Transaction Failed !")
         return common_msg
 
-def create_order(request, authorize: AuthJWT, db: Session, background_tasks: BackgroundTasks):
+
+def create_order_new(request, authorize: AuthJWT, db: Session, background_tasks: BackgroundTasks):
     authorize.jwt_required()
     try:
         db.query(order_models.Orders).filter(order_models.Orders.ref_number == request.ref_number).delete(synchronize_session = False)

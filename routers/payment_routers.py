@@ -19,7 +19,6 @@ router = APIRouter(
 logger = logging.getLogger(__name__)
 
 
-
 @router.post('/get/payment/checkout/id')
 def get_payment_checkout_id(user_request: payment_schemas.CheckoutIdRequest, authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
     response = payment_services.get_payment_checkout_id(
