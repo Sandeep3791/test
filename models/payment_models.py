@@ -2,7 +2,8 @@
 from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
 from database import Base
 from pytz import timezone
-from services.common_services import get_time
+from utility_services.common_services import get_time
+
 
 class PaymentTransaction(Base):
     __tablename__ = 'payment_transactions'

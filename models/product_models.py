@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Float, DateTime
 from database import Base
-from services import common_services
+from utility_services import common_services
 
 
 class FavoriteProduct(Base):
@@ -9,6 +9,7 @@ class FavoriteProduct(Base):
     customer_id = Column(String(255))
     product_id = Column(String(255))
     product_qty = Column(Integer)
+
 
 class RatingReview(Base):
     __tablename__ = 'rating_review'
@@ -27,4 +28,3 @@ class ProductRating(Base):
     rating = Column(Float)
     total_ratings = Column(Integer)
     total_reviews = Column(Integer)
-

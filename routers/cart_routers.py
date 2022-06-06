@@ -5,6 +5,7 @@ from fastapi import APIRouter, Depends
 import database
 from sqlalchemy.orm import Session
 from services import cart_services
+
 router = APIRouter(
     prefix="/v1",
     # dependencies=[Depends(get_bearer_header)],
@@ -12,6 +13,8 @@ router = APIRouter(
     # 401:{"description":"Unauthorised"}},
     tags=["CART"],
 )
+
+
 @router.post('/create/cart')
 def create_cart(request: cart_schemas.AddToCart, authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
     products = cart_services.create_cart(request, authorize, db)

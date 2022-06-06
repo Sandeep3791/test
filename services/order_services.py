@@ -1,13 +1,14 @@
 import math
 from email import message
 import constants
-from services import firebase_services
+from services import firebase_services, payment_services
+from utility_services import common_services
+from utility_services.inventory_services import update_inventory
 import random
 import os
 import logging
 from models import user_models, order_models, firebase_models, payment_models
-from schemas import firebase_schemas, user_schemas, order_schemas
-from services import common_services, payment_services
+from schemas import firebase_schemas, user_schemas, order_schemas, payment_schemas
 from fastapi import FastAPI, status, BackgroundTasks
 from fastapi_jwt_auth import AuthJWT
 from sqlalchemy.orm import Session
@@ -16,6 +17,7 @@ import random
 import googlemaps
 import datetime as DT
 import constants
+import calendar
 import re
 from sqlalchemy import or_
 
@@ -422,6 +424,493 @@ def create_order(request, authorize: AuthJWT, db: Session, background_tasks: Bac
             status=status.HTTP_404_NOT_FOUND, message="User is not approved to place the order")
         return common_msg
 
+
+def initial_order(request, authorize: AuthJWT, db: Session, background_tasks: BackgroundTasks):
+    authorize.jwt_required()
+    db_user_active = db.query(user_models.User).filter(
+        user_models.User.id == request.customer_id).first()
+
+    if db_user_active.verification_status != "active":
+        common_msg = user_schemas.ResponseCommonMessage(
+            status=status.HTTP_404_NOT_FOUND, message="User is not approved to place the order")
+        return common_msg
+    for product in request.products:
+        product_qty = product.product_quantity
+        product_quantity_check = db.execute(
+            f"select * from {constants.Database_name}.products_master where id = {product.product_id} and publish = {True};")
+        for prod_qty in product_quantity_check:
+            if int(prod_qty.quantity) < product_qty:
+                result = user_schemas.ResponseCommonMessage(
+                    status=status.HTTP_404_NOT_FOUND, message="Please check your cart some item are out of stock")
+                return result
+            if prod_qty.discount == None:
+                product_discount = 0
+            else:
+                product_discount = float(prod_qty.discount)
+            product_price = float(prod_qty.price)
+            product_margin = float(prod_qty.wayrem_margin)
+            margin_unit = prod_qty.margin_unit
+            discount_unit = prod_qty.dis_abs_percent
+
+        product_id = product.product_id
+        req_product_price = product.product_price
+        final_request_price_with_qty = req_product_price*product_qty
+
+        if discount_unit == '%':
+            discount_value = (req_product_price/100)*product_discount
+        elif product_discount == '':
+            discount_value = 0
+            product_discount = 0
+        else:
+            discount_value = int(product_discount)
+        disc_with_qty = discount_value*product_qty
+        dicscount_with_qty = round(disc_with_qty, 2)
+
+        if margin_unit == '%':
+            intial_margin_value = (product_price/100) * product_margin
+            margin_value = intial_margin_value
+            abc = product_price + margin_value
+            product_with_margin_price = round(abc, 2)
+            final_product_price = (product_with_margin_price) * product_qty
+
+        else:
+            margin_value = product_margin
+            final_product_price = (
+                product_price + product_margin) * product_qty
+            cde = product_price + margin_value
+            product_with_margin_price = round(cde, 2)
+        if req_product_price > product_with_margin_price or req_product_price < product_with_margin_price:
+            data1 = order_schemas.OrderedProducts(
+                product_id=product_id, latest_price=product_with_margin_price)
+            increased = "Price Increased for this product"
+            decreased = "Price Decreased for this product"
+            message = decreased if req_product_price < product_with_margin_price else increased
+            result = order_schemas.OrderResponse1(
+                status=status.HTTP_401_UNAUTHORIZED, message=message, data=data1)
+            return result
+
+    ref_no = random.randint(1000, 999999)
+    same_order_ref_no = db.query(order_models.Orders).filter(
+        order_models.Orders.ref_number == ref_no).first()
+    if same_order_ref_no:
+        ref_no = random.randint(999999, 99999999)
+    order = order_models.Orders(
+        ref_number=ref_no,
+        customer_id=request.customer_id,
+        status=16,
+        delivery_status=1,
+        sub_total=0,
+        item_discount=0,
+        item_margin=0,
+        tax=0,
+        tax_vat=0,
+        discount=0,
+        grand_total=0,
+        shipping=0,
+        total=0,
+        order_shipped=0,
+        order_ship_name=request.shipping_name,
+        order_ship_address=request.shipping_address,
+        order_billing_name=request.billing_name,
+        order_billing_address=request.billing_address,
+        order_city=request.city,
+        order_country=request.country,
+        order_ship_region=request.shipping_region,
+        order_ship_landmark=request.shipping_landmark,
+        order_ship_building_name=request.shipping_building_name,
+        order_ship_latitude=request.shipping_latitude,
+        order_ship_longitude=request. shipping_longitude,
+        order_phone=request.contact,
+        order_email=request.email,
+        order_type=24,
+        delivery_charge=request.delivery_fees,
+        order_date=common_services.get_time()
+    )
+    entityId = common_services.get_entityId(request.entityId)
+
+    if request.registrationId:
+        user_request = payment_schemas.CheckoutIdRequest(entityId = entityId, amount = request.amount, currency = 'SAR', 
+                                        paymentType = request.payment_type, registrationId = request.registrationId, customer_id = request.customer_id)
+        checkout_details = payment_services.checkout_id(user_request)
+        success_code = checkout_details['result']['code']
+
+        if success_code != '000.200.100' or success_code != '000.200.101' or success_code != '000.200.102':
+            payment_services.delete_card(request.registrationId, entityId)
+            card = db.query(payment_models.CustomerCard).filter(
+            payment_models.CustomerCard.registration_id == request.registrationId).first()
+            if not card:
+                common_msg = user_schemas.ResponseCommonMessage(
+                    status=status.HTTP_404_NOT_FOUND, message="Registration id Doesn't Exist!")
+                return common_msg
+            db.delete(card)
+            db.commit()
+
+            common_msg = user_schemas.ResponseCommonMessage(status = status.HTTP_400_BAD_REQUEST, message = "Invalid registration id!")
+            return common_msg
+
+        else:
+            checkout_id = checkout_details['id']
+            order.checkout_id = checkout_id
+            db.merge(order)
+            db.commit()
+        
+            result = order_schemas.InitialOrderResponse(
+                status=status.HTTP_200_OK, message="Initial Order created successfully!!", ref_number=ref_no, checkout_id = checkout_id)
+            return result           
+        
+    else:
+        user_request = payment_schemas.CheckoutIdRequest(entityId = entityId, amount = request.amount, currency = 'SAR', 
+                                        paymentType = request.payment_type, customer_id = request.customer_id)
+        checkout_details = payment_services.checkout_id(user_request)
+        
+        success_code = checkout_details['result']['code']
+        if success_code == '000.200.100' or success_code == '000.200.101' or success_code == '000.200.102':
+            checkout_id = checkout_details['id']
+            order.checkout_id = checkout_id
+            db.merge(order)
+            db.commit()
+            
+            result = order_schemas.InitialOrderResponse(
+                status=status.HTTP_200_OK, message="Initial Order created successfully!!", ref_number=ref_no, checkout_id = checkout_id)
+            return result
+        else:
+            common_msg = user_schemas.ResponseCommonMessage(status = status.HTTP_404_NOT_FOUND, message = "Transaction Failed !")
+            return common_msg
+
+
+def create_order_new(request, authorize: AuthJWT, db: Session, background_tasks: BackgroundTasks):
+    authorize.jwt_required()
+    try:
+        db.query(order_models.Orders).filter(order_models.Orders.ref_number == request.ref_number).delete(synchronize_session = False)
+        
+        paid = False
+        cod = False
+        hyperpay_response = None
+        hyperpay_response_description = None
+        entityId = common_services.get_entityId(request.entityId)
+        if int(request.payment_type) == 10 or int(request.payment_type) == 12:
+            cod = True
+        if not cod:
+            payment_status = payment_services.get_payment_status(
+                request.checkout_id, entityId)
+            payment_check = payment_status.get("result").get("code")
+            hyperpay_response = payment_status
+            hyperpay_response_description = payment_status.get(
+                "result").get("description")
+            if payment_check == "000.100.110" or payment_check == "000.000.000" or payment_check == payment_check.startswith("000.400."):
+                paid = True
+            registrationId = payment_status.get("registrationId")
+            if registrationId:
+                card_body = payment_status.get("card")
+                card_number = card_body.get("last4Digits")
+                expiry_month = card_body.get("expiryMonth")
+                expiry_year = card_body.get("expiryYear")
+                card_holder = card_body.get("holder")
+                card_type = card_body.get("type")
+                card_brand = payment_status.get("paymentBrand")
+                save_card = payment_models.CustomerCard(customer_id=request.customer_id, registration_id=registrationId, card_number=card_number, expiry_month=expiry_month,
+                                                        expiry_year=expiry_year, card_holder=card_holder, card_type=card_type, card_body=str(card_body), card_brand=card_brand)
+                db.merge(save_card)
+                db.commit()
+
+        for req_product in request.products:
+            product_qty = req_product.product_quantity
+            product_quantity_check = db.execute(
+                f"select * from {constants.Database_name}.products_master where id = {req_product.product_id} and publish = {True};")
+            for prod_qty in product_quantity_check:
+                if int(prod_qty.quantity) < product_qty:
+                    result = user_schemas.ResponseCommonMessage(
+                        status=status.HTTP_404_NOT_FOUND, message="Please check your cart some item are out of stock")
+                    return result
+
+        db_user_active = db.query(user_models.User).filter(
+            user_models.User.id == request.customer_id).first()
+
+        if db_user_active.verification_status == "active":
+
+            # ref_no = random.randint(1000, 999999)
+            # same_order_ref_no = db.query(order_models.Orders).filter(
+            #     order_models.Orders.ref_number == ref_no).first()
+            # if same_order_ref_no:
+            #     ref_no = random.randint(999999, 99999999)
+            order = order_models.Orders(
+                ref_number=request.ref_number,
+                customer_id=request.customer_id,
+                status=16,
+                delivery_status=1,
+                sub_total=0,
+                item_discount=0,
+                item_margin=0,
+                tax=0,
+                tax_vat=0,
+                discount=0,
+                grand_total=0,
+                shipping=0,
+                total=0,
+                order_shipped=0,
+                order_ship_name=request.shipping_name,
+                order_ship_address=request.shipping_address,
+                order_billing_name=request.billing_name,
+                order_billing_address=request.billing_address,
+                order_city=request.city,
+                order_country=request.country,
+                order_ship_region=request.shipping_region,
+                order_ship_landmark=request.shipping_landmark,
+                order_ship_building_name=request.shipping_building_name,
+                order_ship_latitude=request.shipping_latitude,
+                order_ship_longitude=request. shipping_longitude,
+                order_phone=request.contact,
+                order_email=request.email,
+                order_type=24,
+                delivery_charge=request.delivery_fees,
+                order_date=common_services.get_time()
+
+            )
+            db.merge(order)
+            db.commit()
+
+            order_data = db.query(order_models.Orders).filter(
+                order_models.Orders.ref_number == order.ref_number).first()
+            order_id = order_data.id
+            sub_total_list, discount_list, margin_list, order_view_list, image_list, price_list, sup_name_list = list(), 
+            list(), list(), list(), list(), list(), list()
+            if not cod:
+                transaction_id = payment_status.get("id")
+                checkout_id = request.checkout_id
+                response_body = str(payment_status)
+                payment_type = payment_status.get("paymentType")
+                payment_brand = payment_status.get("paymentBrand")
+                amount = payment_status.get("amount")
+                payment_status = payment_status.get("result").get("description")
+                payment_transaction = payment_models.PaymentTransaction(order_id=order_id, transaction_id=transaction_id, checkout_id=checkout_id,
+                                                                        response_body=response_body, payment_type=payment_type, payment_brand=payment_brand, amount=amount, status=payment_status)
+                db.merge(payment_transaction)
+                db.commit()
+
+            for product in request.products:
+                product_id = product.product_id
+                product_qty = product.product_quantity
+                req_product_price = product.product_price
+                final_request_price_with_qty = req_product_price*product_qty
+
+                sub_total_list.append(final_request_price_with_qty)
+
+                product_data = db.execute(
+                    f"select * from {constants.Database_name}.products_master where id = {product_id} and publish = {True};")
+                for product1 in product_data:
+                    if product1.discount == None:
+                        product_discount = 0
+                    else:
+                        product_discount = float(product1.discount)
+                    product_price = float(product1.price)
+                    product_margin = float(product1.wayrem_margin)
+                    margin_unit = product1.margin_unit
+                    discount_unit = product1.dis_abs_percent
+                    product_SKU = product1.SKU
+                    product_name = product1.name
+
+                    a = product1.primary_image
+                    b = product1.mfr_name
+                    # update_img = a.split("/")[-1]
+                    upd_image_path = constants.IMAGES_DIR_PATH + a
+                    image_list.append(upd_image_path)
+                    sup_name_list.append(b)
+
+                price_list.append(req_product_price)
+
+                if discount_unit == '%':
+                    discount_value = (req_product_price/100)*product_discount
+                elif product_discount == '':
+                    discount_value = 0
+                    product_discount = 0
+                else:
+                    discount_value = int(product_discount)
+                disc_with_qty = discount_value*product_qty
+                dicscount_with_qty = round(disc_with_qty, 2)
+                discount_list.append(dicscount_with_qty)
+
+                if margin_unit == '%':
+                    intial_margin_value = (product_price/100) * product_margin
+                    margin_value = intial_margin_value
+                    abc = product_price + margin_value
+                    product_with_margin_price = round(abc, 2)
+                    final_product_price = (product_with_margin_price) * product_qty
+
+                else:
+                    margin_value = product_margin
+                    final_product_price = (
+                        product_price + product_margin) * product_qty
+                    cde = product_price + margin_value
+                    product_with_margin_price = round(cde, 2)
+                margin_wity_qty = product_margin*product_qty
+                margin_list.append(margin_wity_qty)
+
+                if req_product_price > product_with_margin_price or req_product_price < product_with_margin_price:
+                    data1 = order_schemas.OrderedProducts(
+                        product_id=product_id, latest_price=product_with_margin_price)
+                    order_intial_data = db.query(order_models.Orders).filter(
+                        order_models.Orders.id == order_id).first()
+                    db.delete(order_intial_data)
+                    db.commit()
+                    increased = "Price Increased for this product"
+                    decreased = "Price Decreased for this product"
+                    message = decreased if req_product_price < product_with_margin_price else increased
+                    result = order_schemas.OrderResponse1(
+                        status=status.HTTP_401_UNAUTHORIZED, message=message, data=data1)
+                    return result
+
+                order_details = order_models.OrderDetails(
+                    order_id=order_id,
+                    product_id=product_id,
+                    product_name=product_name,
+                    sku=product_SKU,
+                    price=product_price,
+                    discount=discount_value,
+                    item_margin=margin_value,
+                    quantity=product_qty
+                )
+                db.merge(order_details)
+                db.commit()
+                order_view_list.append(order_details)
+
+                if paid or cod:
+                    inventory_update = update_inventory(
+                        order_id, product_id, product_qty, db)
+                    print(inventory_update)
+            inv_no = None
+            if paid or cod:
+                transaction_data = db.query(order_models.OrderTransactions).all()
+                if transaction_data:
+                    inv_no = len(transaction_data)+1001
+                else:
+                    inv_no = 1001
+            order_transact = order_models.OrderTransactions(user_id=request.customer_id,  order_id=order_id, order_type=1,
+                                                            payment_mode_id=request.payment_type, payment_status_id=request.payment_status, invoices_id=inv_no)
+            db.merge(order_transact)
+            db.commit()
+            if paid or cod:
+                order_delivery_logs = order_models.OrderDeliveryLogs(
+                    order_id=order_id, order_status_id=1, order_status_details="Order is confirmed", user_id=1, customer_view=1, log_date=common_services.get_time())
+                db.merge(order_delivery_logs)
+                db.commit()
+
+            final_sub_total = sum(sub_total_list) - sum(discount_list)
+            final_discount_total = sum(discount_list)
+            final_margin_total = sum(margin_list)
+            final_total = final_sub_total
+            vat_value = db.execute(
+                f"select value from {constants.Database_name}.settings where id = 7 ;")
+            for i in vat_value:
+                vat_prcnt_value = int(i[0])
+
+            final_total_with_delivery_fee = final_total+request.delivery_fees
+            vat_amount = (final_total_with_delivery_fee/100)*vat_prcnt_value
+            final_grand_total = final_total_with_delivery_fee + vat_amount
+
+            order_data.sub_total = round(final_sub_total, 2)
+            order_data.item_discount = round(final_discount_total, 2)
+            order_data.item_margin = round(final_margin_total, 2)
+            order_data.total = round(final_total, 2)
+            order_data.grand_total = round(final_grand_total, 2)
+            order_data.tax_vat = vat_prcnt_value
+            order_data.tax = round(vat_amount, 2)
+            order_data.shipping = request.delivery_fees
+            db.merge(order_data)
+            db.commit()
+            if paid or cod:
+                cart_items = db.query(order_models.CustomerCart).filter(
+                    order_models.CustomerCart.customer_id == request.customer_id).all()
+                for item in cart_items:
+                    db.delete(item)
+                    db.commit()
+
+            user_notify = f"SELECT * FROM {constants.Database_name}.users_master where users_master.order_notify = True "
+            if user_notify:
+                emails = db.execute(user_notify)
+                email_ids = []
+                for email in emails:
+                    email_ids.append(email.email)
+                email_query = f"SELECT * FROM {constants.Database_name}.email_template where email_template.key = 'order_placed_notification'"
+                email_template = db.execute(email_query)
+                subject = None
+                body = None
+                for template in email_template:
+                    subject = template.subject
+                    body = template.message_format
+                values = {
+                    'order_number': request.ref_number,
+                    'link': f"{constants.global_link}/orders/{order_id}"
+                }
+                body = body.format(**values)
+                for to in email_ids:
+                    background_tasks.add_task(
+                        common_services.send_otp, to, subject, body, request, db)
+
+            # for key = order_placed_customer_notification
+            if paid or cod:
+                invoice_link_mail = f"{constants.global_link}/orders/invoice-orders/{request.ref_number}"
+                common_services.invoice_saver(invoice_link_mail, request.ref_number)
+                path = os.path.abspath('.')
+                invoice_path = os.path.join(
+                    path, f"invoice_folder/invoice_{request.ref_number}.pdf")
+                invoice_delete = os.path.join(
+                    path, f"invoice_folder/invoice_{request.ref_number}.pdf")
+
+                order_type_email = order.order_type
+                user_mail = request.email
+
+                returned = common_services.email_body(
+                    user_mail, order_id, order_view_list, image_list, order_type_email, request.ref_number, price_list, sup_name_list, db)
+
+                background_tasks.add_task(common_services.send_otp,
+                                        returned[0], returned[1], returned[2], request, db, invoice_path, invoice_delete)
+
+            if paid or cod:
+                response = order_schemas.OrderResponse(
+                    status=status.HTTP_200_OK, message="Order Placed Successfully")
+
+                try:
+                    customer_data = db.execute(
+                        f"select * from {constants.Database_name}.customer_device where customer_id = {request.customer_id} and is_active=True ;")
+                    setting_message = db.execute(
+                        f"select * from {constants.Database_name}.settings where settings.key = 'notification_app_order_received' ;")
+                    for msg in setting_message:
+                        message = msg.value
+                    values = {
+                        "ref_no": request.ref_number,
+
+                    }
+                    message = message.format(**values)
+                    if customer_data:
+                        for data in customer_data:
+                            notf = firebase_schemas.PushNotificationFirebase(
+                                title="Order placed", message=message, device_token=data.device_id, order_id=order_id)
+                            firebase_services.push_notification_in_firebase(notf)
+
+                        if notf:
+                            fire = firebase_models.CustomerNotification(
+                                customer_id=request.customer_id, order_id=order_id, title=notf.title, message=notf.message, created_at=common_services.get_time())
+                            db.merge(fire)
+                            db.commit()
+                except Exception as e:
+                    print(e)
+            else:
+                data = hyperpay_response
+                if not hyperpay_response_description:
+                    data = None
+                    hyperpay_response_description = "Unable to place order. Try with another card."
+                response = user_schemas.ResponseCommonMessage(
+                    status=status.HTTP_404_NOT_FOUND, message=str(hyperpay_response_description), data=str(data))
+            return response
+        else:
+            common_msg = user_schemas.ResponseCommonMessage(
+                status=status.HTTP_404_NOT_FOUND, message="User is not approved to place the order")
+            return common_msg
+
+    except Exception as e:
+        common_msg = user_schemas.ResponseCommonMessage(
+                status=status.HTTP_406_NOT_ACCEPTABLE, message="Order already created !!")
+        return 
 
 def get_all_orders(offset, customer_id, authorize: AuthJWT, db: Session):
     authorize.jwt_required()

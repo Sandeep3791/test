@@ -2,8 +2,7 @@ from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey
 from sqlalchemy.sql.sqltypes import Boolean
 from database import Base
 import datetime as DT
-from services import common_services
-
+from utility_services import common_services
 
 
 class Orders(Base):
@@ -18,6 +17,7 @@ class Orders(Base):
     item_margin = Column(Float())
     tax = Column(Float())
     tax_vat = Column(String(255), nullable=True)
+    checkout_id = Column(String(255), nullable=True)
     shipping = Column(Float())
     total = Column(Float())
     promo = Column(String(255))
@@ -33,10 +33,11 @@ class Orders(Base):
     order_ship_landmark = Column(String(255))
     order_ship_building_name = Column(String(255))
     order_ship_latitude = Column(String(255))
-    order_ship_longitude = Column(String(255)) 
+    order_ship_longitude = Column(String(255))
     order_phone = Column(String(255))
     order_email = Column(String(255))
-    order_date = Column(DateTime, nullable=False, default=common_services.get_time())
+    order_date = Column(DateTime, nullable=False,
+                        default=common_services.get_time())
     order_shipped = Column(Integer)
     order_tracking_number = Column(String(255))
     content = Column(String(255))
@@ -67,7 +68,8 @@ class OrderDeliveryLogs(Base):
     order_status_id = Column(Integer)
     user_id = Column(Integer)
     order_status_details = Column(String(255))
-    log_date = Column(DateTime, nullable=False, default=common_services.get_time())
+    log_date = Column(DateTime, nullable=False,
+                      default=common_services.get_time())
     customer_view = Column(Integer)
 
 
@@ -82,11 +84,12 @@ class OrderTransactions(Base):
     payment_mode_id = Column(Integer, nullable=True)
     payment_status_id = Column(Integer, nullable=True)
     invoices_id = Column(Integer)
-    created_at = Column(DateTime, nullable=False, default=common_services.get_time())
-    updated_at = Column(DateTime, nullable=False, default=common_services.get_time())
+    created_at = Column(DateTime, nullable=False,
+                        default=common_services.get_time())
+    updated_at = Column(DateTime, nullable=False,
+                        default=common_services.get_time())
     content = Column(String(255), nullable=True)
     bank_payment_image = Column(String(255), nullable=True)
-
 
 
 class Inventory(Base):
@@ -98,8 +101,10 @@ class Inventory(Base):
     quantity = Column(Integer)
     inventory_type_id = Column(String(255))
     order_status = Column(String(255))
-    created_at = Column(DateTime, nullable=False, default=common_services.get_time())
-    updated_at = Column(DateTime, nullable=False, default=common_services.get_time())
+    created_at = Column(DateTime, nullable=False,
+                        default=common_services.get_time())
+    updated_at = Column(DateTime, nullable=False,
+                        default=common_services.get_time())
 
 
 class CustomerCart(Base):
@@ -108,8 +113,11 @@ class CustomerCart(Base):
     customer_id = Column(Integer)
     product_id = Column(Integer)
     product_quantity = Column(Integer)
-    created_at = Column(DateTime, nullable=False, default=common_services.get_time())
-    updated_at = Column(DateTime, nullable=False, default=common_services.get_time())
+    created_at = Column(DateTime, nullable=False,
+                        default=common_services.get_time())
+    updated_at = Column(DateTime, nullable=False,
+                        default=common_services.get_time())
+
 
 class UserGrocery(Base):
     __tablename__ = 'grocery_master'
@@ -118,8 +126,10 @@ class UserGrocery(Base):
     description = Column(String(1000))
     customer_id = Column(ForeignKey('customers_master.id'))
     address_id = Column(ForeignKey('customer_addresses.id'))
-    created_at = Column(DateTime, nullable=False, default=common_services.get_time())
-    updated_at = Column(DateTime, nullable=False, default=common_services.get_time())
+    created_at = Column(DateTime, nullable=False,
+                        default=common_services.get_time())
+    updated_at = Column(DateTime, nullable=False,
+                        default=common_services.get_time())
 
 
 class GroceryProducts(Base):
@@ -129,6 +139,7 @@ class GroceryProducts(Base):
     product_id = Column(String(255))
     product_qty = Column(Integer)
     recurrence_nextdate = Column(String(255))
+
 
 class RecurrentType(Base):
     __tablename__ = 'recurrent_type'
@@ -148,5 +159,7 @@ class RecurrenceGrocery(Base):
         String(255), nullable=False, default=DT.date.today())
     recurrence_nextdate = Column(String(255), nullable=False)
     status = Column(Boolean, default=True)
-    created_at = Column(DateTime, nullable=False, default=common_services.get_time())
-    updated_at = Column(DateTime, nullable=False, default=common_services.get_time())
+    created_at = Column(DateTime, nullable=False,
+                        default=common_services.get_time())
+    updated_at = Column(DateTime, nullable=False,
+                        default=common_services.get_time())

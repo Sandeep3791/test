@@ -4,6 +4,8 @@ from pydantic import BaseModel
 from typing import Optional, List
 from starlette import status
 
+from services.payment_services import checkout_id
+
 
 class Settings(BaseModel):
     authjwt_secret_key: str = "secret"
@@ -14,8 +16,54 @@ class OrderProducts(BaseModel):
     product_quantity: int
     product_price: float
 
-
 class OrderRequest(BaseModel):
+    checkout_id: Optional[str]
+    entityId: Optional[str]
+    customer_id: int
+    email: str
+    contact: int
+    country: str
+    city: str
+    shipping_region: str
+    shipping_building_name: str
+    shipping_landmark: str
+    shipping_latitude: str
+    shipping_longitude: str
+    billing_name: str
+    billing_address: str
+    shipping_name: str
+    shipping_address: str
+    payment_type: str
+    payment_status: str
+    delivery_fees: float
+    products: List[OrderProducts]
+
+
+class InitialOrderRequest(BaseModel):
+    entityId: Optional[str]
+    customer_id: int
+    registrationId: Optional[str]
+    email: str
+    amount: str
+    contact: int
+    country: str
+    city: str
+    shipping_region: str
+    shipping_building_name: str
+    shipping_landmark: str
+    shipping_latitude: str
+    shipping_longitude: str
+    billing_name: str
+    billing_address: str
+    shipping_name: str
+    shipping_address: str
+    payment_type: str
+    payment_status: str
+    delivery_fees: float
+    products: List[OrderProducts]
+
+class CreateOrderRequest(BaseModel):
+    ref_number: Optional[str]
     checkout_id: Optional[str]
     entityId: Optional[str]
     customer_id: int
@@ -233,3 +281,10 @@ class Getdeliveryfees(BaseModel):
     status: str
     message: str
     data: Deliveryfeedata
+
+
+class InitialOrderResponse(BaseModel):
+    status: str
+    message: str
+    ref_number: str
+    checkout_id: str

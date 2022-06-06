@@ -1,7 +1,5 @@
-
-
 import json
-from services import firebase_services, common_services
+from services import firebase_services
 from schemas import user_schemas, payment_schemas
 from models import user_models, order_models, payment_models
 from fastapi_jwt_auth import AuthJWT
@@ -9,6 +7,7 @@ from sqlalchemy.orm import Session
 from fastapi import status, BackgroundTasks
 import constants
 import os
+from utility_services import common_services
 try:
     from urllib.error import HTTPError, URLError
     from urllib.parse import urlencode

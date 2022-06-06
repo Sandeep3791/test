@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from services import product_services
 import logging
 
+
 router = APIRouter(
     prefix="/v1",
     # dependencies=[Depends(get_bearer_header)],
