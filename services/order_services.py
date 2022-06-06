@@ -559,8 +559,7 @@ def initial_order(request, authorize: AuthJWT, db: Session, background_tasks: Ba
             return result           
         
     else:
-        user_request = payment_schemas.CheckoutIdRequest(entityId = entityId, amount = request.amount, currency = 'SAR', 
-                                        paymentType = request.payment_type, customer_id = request.customer_id)
+        user_request = payment_schemas.CheckoutIdRequest(entityId = entityId, amount = request.amount, currency = 'SAR',paymentType = request.payment_type, customer_id = request.customer_id)
         checkout_details = payment_services.checkout_id(user_request)
         
         success_code = checkout_details['result']['code']
@@ -582,6 +581,7 @@ def create_order_new(request, authorize: AuthJWT, db: Session, background_tasks:
     authorize.jwt_required()
     try:
         db.query(order_models.Orders).filter(order_models.Orders.ref_number == request.ref_number).delete(synchronize_session = False)
+        db.commit()
         
         paid = False
         cod = False
@@ -672,8 +672,7 @@ def create_order_new(request, authorize: AuthJWT, db: Session, background_tasks:
             order_data = db.query(order_models.Orders).filter(
                 order_models.Orders.ref_number == order.ref_number).first()
             order_id = order_data.id
-            sub_total_list, discount_list, margin_list, order_view_list, image_list, price_list, sup_name_list = list(), 
-            list(), list(), list(), list(), list(), list()
+            sub_total_list, discount_list, margin_list, order_view_list, image_list, price_list, sup_name_list = list(),list(), list(), list(), list(), list(), list()
             if not cod:
                 transaction_id = payment_status.get("id")
                 checkout_id = request.checkout_id
