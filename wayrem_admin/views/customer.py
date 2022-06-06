@@ -1,4 +1,7 @@
+from wayrem_admin.models import PaymentTransaction
 from email import message
+import imp
+from urllib import response
 from django.views.decorators.csrf import csrf_exempt
 from grpc import Status
 from wayrem_admin.loginext.webhook_liberary import WebHookLiberary
@@ -212,35 +215,33 @@ class HyperpayPayment(View):
     def post(self, request, **kwargs):
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
-        create = body
+        print(body)
+        data = PaymentTransaction(response_body=str(body))
+        print(data)
+        data.save()
         return HttpResponse({"message": "Success"})
 
 
 @method_decorator(csrf_exempt, name='dispatch')
 class HyperpayRegistration(View):
-    webhook = WebHookLiberary()
 
     @csrf_exempt
     def post(self, request, **kwargs):
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
-        create = body
-        create_order_dic = self.webhook.createorderrequest(create)
-        order_reference_id = self.webhook.get_order(create_order_dic)
-        self.webhook.saveorderrequest(create_order_dic, order_reference_id)
+        data = PaymentTransaction(response_body=body)
+        print(data)
+        data.save()
         return HttpResponse({'message': 'Success'})
 
 
 @method_decorator(csrf_exempt, name='dispatch')
 class HyperpayRisk(View):
-    webhook = WebHookLiberary()
 
     @csrf_exempt
     def post(self, request, **kwargs):
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
-        create = body
-        create_order_dic = self.webhook.createorderrequest(create)
-        order_reference_id = self.webhook.get_order(create_order_dic)
-        self.webhook.saveorderrequest(create_order_dic, order_reference_id)
+        data = PaymentTransaction(response_body=body)
+        data.save()
         return HttpResponse({'message': 'Success'})
