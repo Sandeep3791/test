@@ -13,8 +13,8 @@ app = FastAPI()
 logger = logging.getLogger(__name__)
 
 
-def add_address_details(request, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def add_address_details(request, db: Session):
+    
     user = db.query(user_models.User).filter(
         user_models.User.id == request.customer_id).first()
     if not user:
@@ -72,8 +72,7 @@ def add_address_details(request, authorize: AuthJWT, db: Session):
         return common_msg
 
 
-def get_all_address(customer_id, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def get_all_address(customer_id, db: Session):
 
     user_address = db.execute(
         f'select * from {constants.Database_name}.customer_addresses where customer_id = "{customer_id}"')
@@ -93,8 +92,8 @@ def get_all_address(customer_id, authorize: AuthJWT, db: Session):
         return common_msg
 
 
-def update_address(request, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def update_address(request, db: Session):
+    
     db_user_update = db.query(user_models.CustomerAddresses).filter(
         user_models.CustomerAddresses.id == request.address_id).first()
 
@@ -201,9 +200,8 @@ def update_address(request, authorize: AuthJWT, db: Session):
     return common_msg
 
 
-def get_billing_address(customer_id, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
-
+def get_billing_address(customer_id, db: Session):
+    
     user_address = db.execute(
         f'select * from {constants.Database_name}.customers_master where id = "{customer_id}"')
     if user_address:
@@ -220,8 +218,8 @@ def get_billing_address(customer_id, authorize: AuthJWT, db: Session):
         return common_msg
 
 
-def update_billing_address(request, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def update_billing_address(request, db: Session):
+    
     db_user_update = db.query(user_models.User).filter(
         user_models.User.id == request.customer_id).first()
 
@@ -248,8 +246,8 @@ def update_billing_address(request, authorize: AuthJWT, db: Session):
     return common_msg
 
 
-def delete_customer_address(address_id, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def delete_customer_address(address_id, db: Session):
+    
     delete_address_data = db.query(user_models.CustomerAddresses).filter(
         user_models.CustomerAddresses.id == address_id).first()
     grocery_address = db.query(order_models.UserGrocery).filter(

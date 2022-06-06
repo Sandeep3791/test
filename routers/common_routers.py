@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends
 import database
 from sqlalchemy.orm import Session
 from utility_services import common_services
-
+from fastapi.security import HTTPBearer
 router = APIRouter(
     prefix="/v1",
     # dependencies=[Depends(get_bearer_header)],
@@ -11,17 +11,18 @@ router = APIRouter(
     # 401:{"description":"Unauthorised"}},
     tags=["COMMON"],
 )
+oauth2_scheme = HTTPBearer()
 
 
 @router.get('/get/static/pages')
-def get_static_pages(authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
-    get_static = common_services.get_static_pages(authorize, db)
+def get_static_pages(authorize: AuthJWT = Depends(oauth2_scheme), db: Session = Depends(database.get_db)):
+    get_static = common_services.get_static_pages(db)
     return get_static
 
 
 @router.get('/get/state/code')
-def get_state_code(authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
-    get_state = common_services.get_state_code(authorize, db)
+def get_state_code(authorize: AuthJWT = Depends(oauth2_scheme), db: Session = Depends(database.get_db)):
+    get_state = common_services.get_state_code(db)
     return get_state
 
 
@@ -32,6 +33,6 @@ def check_jwt_token(token: str, db: Session = Depends(database.get_db)):
 
 
 @router.get('/business/type')
-def get_business_type(authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
-    get_business = common_services.get_business_type(authorize, db)
+def get_business_type(authorize: AuthJWT = Depends(oauth2_scheme), db: Session = Depends(database.get_db)):
+    get_business = common_services.get_business_type(db)
     return get_business

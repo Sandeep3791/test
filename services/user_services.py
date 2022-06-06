@@ -22,7 +22,7 @@ app = FastAPI()
 logger = logging.getLogger(__name__)
 
 
-def customer_user(request, authorize, db,background_tasks: BackgroundTasks):
+def customer_user(request, authorize: AuthJWT, db: Session,background_tasks: BackgroundTasks):
     user = db.query(user_models.User).filter(
         user_models.User.email == request.email).first()
     contact = db.query(user_models.User).filter(
@@ -152,8 +152,8 @@ def customer_user(request, authorize, db,background_tasks: BackgroundTasks):
         return common_msg
 
 
-def upload_profile_picture(customer_id, profile_picture, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def upload_profile_picture(customer_id, profile_picture, db: Session):
+    
     path = os.path.abspath('.')
 
     user_profile_path = os.path.join(path, 'common_folder')
@@ -261,7 +261,7 @@ def customer_registration_docs(customer_id, registration_docs, tax_docs, marrof_
     return resp
 
 
-def download_profile_picture(customer_id, authorize, db: Session):
+def download_profile_picture(customer_id, db: Session):
     path = os.path.abspath('.')
     common_dir_path = os.path.join(path, 'common_folder')
     for file in os.listdir(common_dir_path):
@@ -278,7 +278,7 @@ def download_profile_picture(customer_id, authorize, db: Session):
     return common_msg
 
 
-def download_marrof_docs(customer_id, authorize, db: Session):
+def download_marrof_docs(customer_id, db: Session):
     path = os.path.abspath('.')
     common_dir_path = os.path.join(path, 'common_folder')
     for file in os.listdir(common_dir_path):
@@ -293,7 +293,7 @@ def download_marrof_docs(customer_id, authorize, db: Session):
     return common_msg
 
 
-def download_registration_docs(customer_id, authorize, db: Session):
+def download_registration_docs(customer_id, db: Session):
     path = os.path.abspath('.')
     common_dir_path = os.path.join(path, 'common_folder')
     for file in os.listdir(common_dir_path):
@@ -310,7 +310,7 @@ def download_registration_docs(customer_id, authorize, db: Session):
     return common_msg
 
 
-def download_tax_docs(customer_id, authorize, db: Session):
+def download_tax_docs(customer_id, db: Session):
     path = os.path.abspath('.')
     common_dir_path = os.path.join(path, 'common_folder')
     for file in os.listdir(common_dir_path):
@@ -360,7 +360,7 @@ def customer_login(request, authorize: AuthJWT, db: Session):
         try:
             if user.profile_pic:
                 customer_id = user.id
-                data = download_profile_picture(customer_id, authorize, db)
+                data = download_profile_picture(customer_id, db)
                 x = dict(data.data)
                 file_path = x.get("file_path")
             else:
@@ -375,8 +375,8 @@ def customer_login(request, authorize: AuthJWT, db: Session):
         return response
 
 
-def update_profile(request, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def update_profile(request, db: Session):
+    
     customer_add = db.query(user_models.CustomerAddresses).filter(
         user_models.CustomerAddresses.customer_id == request.id, user_models.CustomerAddresses.is_default == True).first()
 
@@ -444,7 +444,7 @@ def update_profile(request, authorize: AuthJWT, db: Session):
     return common_msg
 
 
-def get_profile_details(customer_id, authorize: AuthJWT, db: Session):
+def get_profile_details(customer_id, db: Session):
     user = db.query(user_models.User).filter(
         user_models.User.id == customer_id).first()
     if not user:
@@ -454,7 +454,7 @@ def get_profile_details(customer_id, authorize: AuthJWT, db: Session):
     try:
         if user.profile_pic:
             customer_id = user.id
-            data = download_profile_picture(customer_id, authorize, db)
+            data = download_profile_picture(customer_id, db)
             x = dict(data.data)
             file_path = x.get("file_path")
         else:
@@ -463,7 +463,7 @@ def get_profile_details(customer_id, authorize: AuthJWT, db: Session):
         file_path = None
     try:
         if user.registration_docs_path:
-            data1 = download_registration_docs(customer_id, authorize, db)
+            data1 = download_registration_docs(customer_id, db)
             x = dict(data1.data)
             register_docs_path = x.get("file_path")
         else:
@@ -472,7 +472,7 @@ def get_profile_details(customer_id, authorize: AuthJWT, db: Session):
         register_docs_path = None
     try:
         if user.tax_docs_path:
-            data1 = download_tax_docs(customer_id, authorize, db)
+            data1 = download_tax_docs(customer_id, db)
             x = dict(data1.data)
             tax_docs_path = x.get("file_path")
         else:
@@ -482,7 +482,7 @@ def get_profile_details(customer_id, authorize: AuthJWT, db: Session):
 
     try:
         if user.marrof_docs_path:
-            data1 = download_marrof_docs(customer_id, authorize, db)
+            data1 = download_marrof_docs(customer_id, db)
             x = dict(data1.data)
             marrof_docs_path = x.get("file_path")
         else:
@@ -497,8 +497,8 @@ def get_profile_details(customer_id, authorize: AuthJWT, db: Session):
     return response
 
 
-def reset_password(request, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def reset_password(request, db: Session):
+    
     user = db.query(user_models.User).filter(
         user_models.User.email == request.email).first()
 
@@ -587,7 +587,7 @@ def verify_otp(request, db):
         return common_msg
 
 
-def forgot_password(request, db):
+def forgot_password(request, db: Session):
     # data = db.query(user_models.Customerotp).filter(user_models.Customerotp.email==request.email).first()
     data2 = db.query(user_models.User).filter(
         user_models.User.email == request.email).first()

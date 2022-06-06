@@ -177,8 +177,7 @@ def invoice_saver(invoice_link_mail, ref_no):
     open(completeName, 'wb').write(file_content.content)
 
 
-def get_static_pages(authorize: AuthJWT, db: Session):
-    # authorize.jwt_required()
+def get_static_pages(db: Session):
     static_pages_data = db.execute(
         f"select * from {constants.Database_name}.static_pages")
     static_page_list = []
@@ -193,8 +192,7 @@ def get_static_pages(authorize: AuthJWT, db: Session):
     return response
 
 
-def get_state_code(authorize: AuthJWT, db: Session):
-    # authorize.jwt_required()
+def get_state_code(db: Session):
 
     state_data = db.execute(
         f"SELECT * FROM {constants.Database_name}.state_code where status=1;")
@@ -231,8 +229,7 @@ def check_jwt_token(token, db: Session):
         return common_msg
 
 
-def get_business_type(authorize: AuthJWT, db: Session):
-    # authorize.jwt_required()
+def get_business_type(db: Session):
     business_data = db.execute(
         f"SELECT * FROM {constants.Database_name}.business_type ;")
     business_list = []

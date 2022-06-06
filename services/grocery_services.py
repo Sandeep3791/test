@@ -13,8 +13,8 @@ app = FastAPI()
 logger = logging.getLogger(__name__)
 
 
-def create_user_grocery(request, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def create_user_grocery(request, db: Session):
+    
     user = db.query(user_models.User).filter(
         user_models.User.id == request.customer_id).first()
     if not user:
@@ -50,8 +50,8 @@ def create_user_grocery(request, authorize: AuthJWT, db: Session):
         return common_msg
 
 
-def update_user_grocery(request, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def update_user_grocery(request, db: Session):
+    
     update_grocery = db.query(order_models.UserGrocery).filter(
         order_models.UserGrocery.id == request.grocery_id).first()
     if not update_grocery:
@@ -71,8 +71,8 @@ def update_user_grocery(request, authorize: AuthJWT, db: Session):
     return common_msg
 
 
-def delete_user_grocery(grocery_id, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def delete_user_grocery(grocery_id, db: Session):
+    
     delete_grocery = db.query(order_models.UserGrocery).filter(
         order_models.UserGrocery.id == grocery_id).first()
     if not delete_grocery:
@@ -96,9 +96,8 @@ def delete_user_grocery(grocery_id, authorize: AuthJWT, db: Session):
     return common_msg
 
 
-def get_all_grocery(customer_id, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
-
+def get_all_grocery(customer_id, db: Session):
+    
     grocery_details = db.execute(
         f'select * from {constants.Database_name}.grocery_master where customer_id ="{customer_id}"')
     if grocery_details.rowcount > 0:
@@ -129,8 +128,8 @@ def get_all_grocery(customer_id, authorize: AuthJWT, db: Session):
         return common_msg
 
 
-def create_grocery_products(request, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def create_grocery_products(request, db: Session):
+    
     create_products = db.query(order_models.UserGrocery).filter(
         order_models.UserGrocery.id == request.grocery_id).first()
     if not create_products:
@@ -165,8 +164,8 @@ def create_grocery_products(request, authorize: AuthJWT, db: Session):
     return common_msg
 
 
-def get_grocery_products_details(grocery_id, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def get_grocery_products_details(grocery_id, db: Session):
+    
     grocery_products = db.execute(
         f'select * from {constants.Database_name}.grocery_products where grocery_id ="{grocery_id}"')
     if grocery_products.rowcount <= 0:
@@ -261,9 +260,8 @@ def get_grocery_products_details(grocery_id, authorize: AuthJWT, db: Session):
     return common_msg
 
 
-def update_product_quantity(request, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
-
+def update_product_quantity(request, db: Session):
+    
     product_update_qty = db.query(order_models.GroceryProducts).filter(
         order_models.GroceryProducts.grocery_id == request.grocery_id, order_models.GroceryProducts.product_id == request.product_id).first()
     if not product_update_qty:
@@ -280,8 +278,8 @@ def update_product_quantity(request, authorize: AuthJWT, db: Session):
     return common_msg
 
 
-def delete_grocery_products(request, authorize: AuthJWT, db: Session):
-    authorize.jwt_required()
+def delete_grocery_products(request, db: Session):
+    
     del_prod = db.query(order_models.GroceryProducts).filter(order_models.GroceryProducts.grocery_id ==
                                                              request.grocery_id, order_models.GroceryProducts.product_id == request.product_id).first()
     if not del_prod:
