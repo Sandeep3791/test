@@ -92,9 +92,7 @@ def update_profile(request: user_schemas.UserUpdate, authorize: AuthJWT = Depend
 
 @router.get('/get/profile/details')
 def get_profile_details(customer_id: int, authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
-    authorize.jwt_required()
-    get_address_details = user_services.get_profile_details(
-        customer_id, db)
+    get_address_details = user_services.get_profile_details(customer_id, db)
     return get_address_details
 
 
