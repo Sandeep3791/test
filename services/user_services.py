@@ -490,8 +490,14 @@ def get_profile_details(customer_id, db: Session):
     except:
         marrof_docs_path = None
 
-    res_data = user_schemas.ProfileResponse(customer_id=user.id, first_name=user.first_name, last_name=user.last_name, business_type=user.business_type_id, business_name=user.business_name, email=user.email, password=user.password, contact=user.contact, registration_number=user.registration_number, tax_number=user.tax_number, profile_pic=file_path, registration_docs=register_docs_path, tax_docs=tax_docs_path, marrof_docs=marrof_docs_path, delivery_house_no_building_name=user.delivery_house_no_building_name, delivery_road_name_Area=user.delivery_road_name_Area, delivery_landmark=user.delivery_landmark, delivery_country=user.delivery_country,
-                                            delivery_region=user.delivery_region, delivery_town_city=user.delivery_town_city, billing_house_no_building_name=user.billing_house_no_building_name, billing_road_name_Area=user.billing_road_name_Area, billing_landmark=user.billing_landmark, billing_country=user.billing_country, billing_region=user.billing_region, billing_town_city=user.billing_town_city, deliveryAddress_latitude=user.deliveryAddress_latitude, deliveryAddress_longitude=user.deliveryAddress_longitude, billlingAddress_Latitude=user.billlingAddress_Latitude, billingAddress_longitude=user.billingAddress_longitude)
+
+    if  user.reject_reason :
+        reason = user.reject_reason
+    else:
+        reason = None
+
+
+    res_data = user_schemas.ProfileResponse(customer_id=user.id, first_name=user.first_name, last_name=user.last_name, business_type=user.business_type_id, business_name=user.business_name, email=user.email, password=user.password, contact=user.contact, registration_number=user.registration_number, tax_number=user.tax_number, profile_pic=file_path, registration_docs=register_docs_path, tax_docs=tax_docs_path, marrof_docs=marrof_docs_path, delivery_house_no_building_name=user.delivery_house_no_building_name, delivery_road_name_Area=user.delivery_road_name_Area, delivery_landmark=user.delivery_landmark, delivery_country=user.delivery_country,delivery_region=user.delivery_region, delivery_town_city=user.delivery_town_city, billing_house_no_building_name=user.billing_house_no_building_name, billing_road_name_Area=user.billing_road_name_Area, billing_landmark=user.billing_landmark, billing_country=user.billing_country, billing_region=user.billing_region, billing_town_city=user.billing_town_city, deliveryAddress_latitude=user.deliveryAddress_latitude, deliveryAddress_longitude=user.deliveryAddress_longitude, billlingAddress_Latitude=user.billlingAddress_Latitude, billingAddress_longitude=user.billingAddress_longitude,doc_reject_reason = reason)
     response = user_schemas.ProfileResponseSchema(
         status=status.HTTP_200_OK, message='Profile data', data=res_data)
     return response

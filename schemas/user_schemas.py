@@ -161,6 +161,7 @@ class ProfileResponse(BaseModel):
     deliveryAddress_longitude: str
     billlingAddress_Latitude: str
     billingAddress_longitude: str
+    doc_reject_reason : Optional[str] = None
 
 
 class ProfileResponseSchema(BaseModel):

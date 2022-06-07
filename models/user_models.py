@@ -52,7 +52,7 @@ class User(Base):
                         default=common_services.get_time())
     updated_at = Column(DateTime, nullable=False,
                         default=common_services.get_time())
-
+    reject_reason = Column(String(255), nullable=True)
 
 class OtpVerification(Base):
     __tablename__ = 'customer_otp_verify'
