@@ -967,7 +967,7 @@ def get_all_orders(offset, customer_id, db: Session):
     for value in limit_value:
         limit_val = int(value[0])
     orders_data = db.execute(
-        f'SELECT t1.*, t2.id as transaction_id, t2.payment_mode_id, t2.payment_status_id , t2.invoices_id, t4.name as payment_mode , t3.name as payment_status FROM {constants.Database_name}.orders t1 inner join {constants.Database_name}.order_transactions t2 on t1.id = t2.order_id inner join {constants.Database_name}.status_master t3 on  t3.id = t2.payment_status_id inner join {constants.Database_name}.status_master t4 on t4.id = t2.payment_mode_id  where customer_id = {customer_id} order by t1.id DESC limit {offset_int},{limit_val};')
+        f'SELECT t1.*, t2.id as transaction_id, t2.payment_mode_id, t2.payment_status_id , t2.invoices_id, t4.name as payment_mode , t3.name as payment_status FROM {constants.Database_name}.orders t1 inner join {constants.Database_name}.order_transactions t2 on t1.id = t2.order_id inner join {constants.Database_name}.status_master t3 on  t3.id = t2.payment_status_id inner join {constants.Database_name}.status_master t4 on t4.id = t2.payment_mode_id  where customer_id = {customer_id} and is_shown = true order by t1.id DESC limit {offset_int},{limit_val};')
     if orders_data.rowcount > 0:
         order_list = []
         for data in orders_data:
