@@ -15,13 +15,13 @@ oauth2_scheme = HTTPBearer()
 
 
 @router.get('/get/static/pages')
-def get_static_pages(authorize: AuthJWT = Depends(oauth2_scheme), db: Session = Depends(database.get_db)):
+def get_static_pages(authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
     get_static = common_services.get_static_pages(db)
     return get_static
 
 
 @router.get('/get/state/code')
-def get_state_code(authorize: AuthJWT = Depends(oauth2_scheme), db: Session = Depends(database.get_db)):
+def get_state_code(authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
     get_state = common_services.get_state_code(db)
     return get_state
 
@@ -33,6 +33,6 @@ def check_jwt_token(token: str, db: Session = Depends(database.get_db)):
 
 
 @router.get('/business/type')
-def get_business_type(authorize: AuthJWT = Depends(oauth2_scheme), db: Session = Depends(database.get_db)):
+def get_business_type(authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
     get_business = common_services.get_business_type(db)
     return get_business
