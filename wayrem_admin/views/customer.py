@@ -131,7 +131,8 @@ def customer_verification(request, id=None):
                         "message": message,
                         "device_token": device_token,
                         "order_id": None,
-                        "grocery_id": None
+                        "grocery_id": None,
+                        "profile_document": "profile_document"
                     }
                     FirebaseLibrary().push_notification_in_firebase(notf)
         except:
