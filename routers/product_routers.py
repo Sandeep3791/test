@@ -22,7 +22,6 @@ oauth2_schema = HTTPBearer()
 
 @router.get('/get/product/details')
 def get_product_details(customer_id: int, product_id: int, authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
-    authorize.jwt_required()
     get_product_details = product_services.get_product_details(
         customer_id, product_id, db)
     return get_product_details
@@ -30,7 +29,6 @@ def get_product_details(customer_id: int, product_id: int, authorize: AuthJWT = 
 
 @router.get('/get/all/products')
 def get_all_products(offset: str, customer_id: int, authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
-    authorize.jwt_required()
     get_product_details = product_services.get_all_products(
         offset, customer_id, db)
     return get_product_details
@@ -38,7 +36,6 @@ def get_all_products(offset: str, customer_id: int, authorize: AuthJWT = Depends
 
 @router.get('/get/category/products')
 def get_category_products(customer_id: int, category_id: int, offset: str, authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
-    authorize.jwt_required()
     get_product_details = product_services.get_category_products(
         customer_id, category_id, offset, db)
     return get_product_details
@@ -50,13 +47,11 @@ def get_all_categories(authorize: AuthJWT = Depends(oauth2_schema), db: Session 
 
 @router.get('/get/best/selling/products')
 def get_best_selling_products(authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
-    authorize.jwt_required()
     get_product_details = product_services.get_best_selling_products(db)
     return get_product_details
 
 @router.get('/get/featured/products')
 def get_featured_products(customer_id: int, offset: str, authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
-    authorize.jwt_required()
     get_product_details = product_services.get_featured_products(
         customer_id, offset, db)
     return get_product_details
