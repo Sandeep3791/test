@@ -79,7 +79,7 @@ def download_marrof_docs(
     return response
 
 @router.post('/customer/login')
-def customer_login(request: user_schemas.Login, authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
+def customer_login(request: user_schemas.Login, authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
     data = user_services.customer_login(request, authorize, db)
     return data
 
