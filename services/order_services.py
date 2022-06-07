@@ -575,8 +575,9 @@ def initial_order(request, db: Session, background_tasks: BackgroundTasks):
 def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
     
     try:
-        db.query(order_models.Orders).filter(order_models.Orders.ref_number == request.ref_number).delete(synchronize_session = False)
-        db.commit()
+        if request.ref_number:
+            db.query(order_models.Orders).filter(order_models.Orders.ref_number == request.ref_number).delete(synchronize_session = False)
+            db.commit()
         
         paid = False
         cod = False
@@ -667,13 +668,16 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
 
         if db_user_active.verification_status == "active":
 
-            # ref_no = random.randint(1000, 999999)
-            # same_order_ref_no = db.query(order_models.Orders).filter(
-            #     order_models.Orders.ref_number == ref_no).first()
-            # if same_order_ref_no:
-            #     ref_no = random.randint(999999, 99999999)
+            if not request.ref_number:
+                ref_no = random.randint(1000, 999999)
+                same_order_ref_no = db.query(order_models.Orders).filter(
+                    order_models.Orders.ref_number == ref_no).first()
+                if same_order_ref_no:
+                    ref_no = random.randint(999999, 99999999)
+            else:
+                ref_no = request.ref_number
             order = order_models.Orders(
-                ref_number=request.ref_number,
+                ref_number=ref_no,
                 customer_id=request.customer_id,
                 status=16,
                 delivery_status=1,
@@ -885,7 +889,7 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
                     subject = template.subject
                     body = template.message_format
                 values = {
-                    'order_number': request.ref_number,
+                    'order_number': ref_no,
                     'link': f"{constants.global_link}/orders/{order_id}"
                 }
                 body = body.format(**values)
@@ -895,19 +899,19 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
 
             # for key = order_placed_customer_notification
             if paid or cod:
-                invoice_link_mail = f"{constants.global_link}/orders/invoice-orders/{request.ref_number}"
-                common_services.invoice_saver(invoice_link_mail, request.ref_number)
+                invoice_link_mail = f"{constants.global_link}/orders/invoice-orders/{ref_no}"
+                common_services.invoice_saver(invoice_link_mail, ref_no)
                 path = os.path.abspath('.')
                 invoice_path = os.path.join(
-                    path, f"invoice_folder/invoice_{request.ref_number}.pdf")
+                    path, f"invoice_folder/invoice_{ref_no}.pdf")
                 invoice_delete = os.path.join(
-                    path, f"invoice_folder/invoice_{request.ref_number}.pdf")
+                    path, f"invoice_folder/invoice_{ref_no}.pdf")
 
                 order_type_email = order.order_type
                 user_mail = request.email
 
                 returned = common_services.email_body(
-                    user_mail, order_id, order_view_list, image_list, order_type_email, request.ref_number, price_list, sup_name_list, db)
+                    user_mail, order_id, order_view_list, image_list, order_type_email, ref_no, price_list, sup_name_list, db)
 
                 background_tasks.add_task(common_services.send_otp,
                                         returned[0], returned[1], returned[2], request, db, invoice_path, invoice_delete)
@@ -924,7 +928,7 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
                     for msg in setting_message:
                         message = msg.value
                     values = {
-                        "ref_no": request.ref_number,
+                        "ref_no": ref_no,
 
                     }
                     message = message.format(**values)
