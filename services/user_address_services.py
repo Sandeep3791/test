@@ -33,13 +33,12 @@ def add_address_details(request, db: Session):
 
     else:
 
-        new_data = db.execute(
-        f'select * from {constants.Database_name}.customers_master where id = "{request.customer_id}"')
-
-        for req_data in new_data:
-            cus_data = user_models.CustomerAddresses(customer_id=req_data.id, full_name=req_data.first_name + req_data.last_name, contact=req_data.contact, house_no_building_name=req_data.delivery_house_no_building_name, road_name_Area=req_data.delivery_road_name_Area,landmark=req_data.delivery_landmark, country=req_data.delivery_country, region=req_data.delivery_region, town_city=req_data.delivery_town_city, deliveryAddress_latitude=req_data.deliveryAddress_latitude, deliveryAddress_longitude=req_data.deliveryAddress_longitude)
-            db.merge(cus_data)
-            db.commit()
+        new_data = db.query(user_models.CustomerAddresses).filter(
+            user_models.CustomerAddresses.customer_id == request.customer_id,user_models.CustomerAddresses.is_default == True).first()
+        
+        cus_data = user_models.CustomerAddresses(customer_id=new_data.customer_id, full_name=new_data.full_name, contact=new_data.contact, house_no_building_name=new_data.house_no_building_name, road_name_Area=new_data.road_name_Area,landmark=new_data.landmark, country=new_data.country, region=new_data.region, town_city=new_data.town_city, deliveryAddress_latitude=new_data.deliveryAddress_latitude, deliveryAddress_longitude=new_data.deliveryAddress_longitude,is_default = False)
+        db.merge(cus_data)
+        db.commit()
 
         data3 = db.query(user_models.User).filter(
             user_models.User.id == request.customer_id).first()
