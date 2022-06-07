@@ -22,18 +22,23 @@ def add_address_details(request, db: Session):
             status=status.HTTP_404_NOT_FOUND, message="User Doesn't Exist!")
         return common_msg
     if request.default == False:
-        data = user_models.CustomerAddresses(customer_id=request.customer_id, full_name=request.full_name, contact=request.contact, house_no_building_name=request.house_no_building_name, road_name_Area=request.road_name_Area,
-                                             landmark=request.landmark, country=request.country, region=request.region, town_city=request.town_city, deliveryAddress_latitude=request.deliveryAddress_latitude, deliveryAddress_longitude=request.deliveryAddress_longitude)
+        data = user_models.CustomerAddresses(customer_id=request.customer_id, full_name=request.full_name, contact=request.contact, house_no_building_name=request.house_no_building_name, road_name_Area=request.road_name_Area,landmark=request.landmark, country=request.country, region=request.region, town_city=request.town_city, deliveryAddress_latitude=request.deliveryAddress_latitude, deliveryAddress_longitude=request.deliveryAddress_longitude)
         db.merge(data)
         db.commit()
 
-        data2 = user_schemas.CustomerAddressResponse2(customer_id=request.customer_id, full_name=request.full_name, contact=request.contact, house_no_building_name=request.house_no_building_name, road_name_Area=request.road_name_Area,
-                                                      landmark=request.landmark, country=request.country, region=request.region, town_city=request.town_city, deliveryAddress_latitude=request.deliveryAddress_latitude, deliveryAddress_longitude=request.deliveryAddress_longitude)
+        data2 = user_schemas.CustomerAddressResponse2(customer_id=request.customer_id, full_name=request.full_name, contact=request.contact, house_no_building_name=request.house_no_building_name, road_name_Area=request.road_name_Area,landmark=request.landmark, country=request.country, region=request.region, town_city=request.town_city, deliveryAddress_latitude=request.deliveryAddress_latitude, deliveryAddress_longitude=request.deliveryAddress_longitude)
         common_msg = user_schemas.ResponseCommonMessageSchema(
             status=status.HTTP_200_OK, message="Address Added Successfully!", data=data2)
         return common_msg
 
     else:
+
+        new_data = db.query(user_models.CustomerAddresses).filter(
+            user_models.CustomerAddresses.customer_id == request.customer_id,user_models.CustomerAddresses.is_default == True).first()
+        
+        cus_data = user_models.CustomerAddresses(customer_id=new_data.customer_id, full_name=new_data.full_name, contact=new_data.contact, house_no_building_name=new_data.house_no_building_name, road_name_Area=new_data.road_name_Area,landmark=new_data.landmark, country=new_data.country, region=new_data.region, town_city=new_data.town_city, deliveryAddress_latitude=new_data.deliveryAddress_latitude, deliveryAddress_longitude=new_data.deliveryAddress_longitude,is_default = False)
+        db.merge(cus_data)
+        db.commit()
 
         data3 = db.query(user_models.User).filter(
             user_models.User.id == request.customer_id).first()
