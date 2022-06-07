@@ -28,7 +28,7 @@ def customer_user(request: user_schemas.User,authorize: AuthJWT = Depends(), db:
 
 
 @router.post('/upload/profile/picture')
-def upload_profile_picture(customer_id: int, profile_picture: UploadFile = File(...), authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
+def upload_profile_picture(customer_id: int, profile_picture: UploadFile = File(...), authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db)):
     user = user_services.upload_profile_picture(
         customer_id, profile_picture, db)
     return user
@@ -44,7 +44,7 @@ def customer_registration_docs(customer_id: int, registration_docs: Optional[Upl
 @router.post('/download/profile/picture')
 def download_profile_picture(
         customer_id: int,
-        authorize: AuthJWT = Depends(oauth2_schema),
+        authorize: AuthJWT = Depends(),
         db: Session = Depends(database.get_db)):
     response = user_services.download_profile_picture(
         customer_id, db)
@@ -54,7 +54,7 @@ def download_profile_picture(
 @router.post('/download/registration/docs')
 def download_registration_docs(
         customer_id: int,
-        authorize: AuthJWT = Depends(oauth2_schema),
+        authorize: AuthJWT = Depends(),
         db: Session = Depends(database.get_db)):
     response = user_services.download_registration_docs(
         customer_id, db)
@@ -64,7 +64,7 @@ def download_registration_docs(
 @router.post('/download/tax/docs')
 def download_tax_docs(
         customer_id: int,
-        authorize: AuthJWT = Depends(oauth2_schema),
+        authorize: AuthJWT = Depends(),
         db: Session = Depends(database.get_db)):
     response = user_services.download_tax_docs(customer_id, db)
     return response
@@ -72,7 +72,7 @@ def download_tax_docs(
 @router.post('/download/marrof/docs')
 def download_marrof_docs(
         customer_id: int,
-        authorize: AuthJWT = Depends(oauth2_schema),
+        authorize: AuthJWT = Depends(),
         db: Session = Depends(database.get_db)):
     response = user_services.download_marrof_docs(
         customer_id, db)
