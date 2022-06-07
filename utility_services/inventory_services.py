@@ -1,9 +1,10 @@
 from models import order_models
 from utility_services import common_services
 import constants
+from sqlalchemy.orm import Session
 
 
-def update_inventory(order_id, product_id, product_quantity, db):
+def update_inventory(order_id, product_id, product_quantity, db: Session):
     inventory = order_models.Inventory(order_id=order_id, quantity=product_quantity, inventory_type_id=3,
                                        product_id=product_id, warehouse_id=1, order_status="ordered", created_at=common_services.get_time())
     db.merge(inventory)

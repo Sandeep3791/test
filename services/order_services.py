@@ -1,23 +1,18 @@
 import math
-from email import message
-import constants
 from services import firebase_services, payment_services
 from utility_services import common_services
 from utility_services.inventory_services import update_inventory
-import random
 import os
 import logging
 from models import user_models, order_models, firebase_models, payment_models
 from schemas import firebase_schemas, user_schemas, order_schemas, payment_schemas
 from fastapi import FastAPI, status, BackgroundTasks
-from fastapi_jwt_auth import AuthJWT
 from sqlalchemy.orm import Session
 from datetime import datetime
 import random
 import googlemaps
 import datetime as DT
 import constants
-import calendar
 import re
 from sqlalchemy import or_
 
@@ -584,6 +579,13 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
         
         paid = False
         cod = False
+        pending = False
+        SUCCESS_CODES_REGEX = re.compile(r'^(000\.000\.|000\.100\.1|000\.[36])')
+        SUCCESS_MANUAL_REVIEW_CODES_REGEX = re.compile(
+            r'^(000\.400\.0[^3]|000\.400\.[0-1]{2}0)')
+        PENDING_CHANGEABLE_SOON_CODES_REGEX = re.compile(r'^(000\.200)')
+        PENDING_NOT_CHANGEABLE_SOON_CODES_REGEX = re.compile(
+            r'^(800\.400\.5|100\.400\.500)')
         hyperpay_response = None
         hyperpay_response_description = None
         entityId = common_services.get_entityId(request.entityId)
@@ -596,21 +598,58 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
             hyperpay_response = payment_status
             hyperpay_response_description = payment_status.get(
                 "result").get("description")
-            if payment_check == "000.100.110" or payment_check == "000.000.000" or payment_check == payment_check.startswith("000.400."):
+            if re.search(PENDING_CHANGEABLE_SOON_CODES_REGEX, payment_check) or re.search(PENDING_NOT_CHANGEABLE_SOON_CODES_REGEX, payment_check) or re.search(SUCCESS_CODES_REGEX, payment_check) or re.search(SUCCESS_MANUAL_REVIEW_CODES_REGEX, payment_check):
+                failed = False
+            
+            else:
+                failed = True
+            
+            if failed:
+                response = user_schemas.ResponseCommonMessage(
+                    status=status.HTTP_424_FAILED_DEPENDENCY, message="Transaction Failed!!", data=str(hyperpay_response))
+                return response
+            
+            if re.search(PENDING_CHANGEABLE_SOON_CODES_REGEX, payment_check) or re.search(PENDING_NOT_CHANGEABLE_SOON_CODES_REGEX, payment_check):
+                request.payment_status = 6
+                pending = True
+            
+            if re.search(SUCCESS_CODES_REGEX, payment_check) or re.search(SUCCESS_MANUAL_REVIEW_CODES_REGEX, payment_check):
                 paid = True
+            # if payment_check == "000.100.110" or payment_check == "000.000.000" or payment_check == payment_check.startswith("000.400."):
+            #     paid = True
             registrationId = payment_status.get("registrationId")
+            
             if registrationId:
                 card_body = payment_status.get("card")
                 card_number = card_body.get("last4Digits")
-                expiry_month = card_body.get("expiryMonth")
-                expiry_year = card_body.get("expiryYear")
-                card_holder = card_body.get("holder")
-                card_type = card_body.get("type")
-                card_brand = payment_status.get("paymentBrand")
-                save_card = payment_models.CustomerCard(customer_id=request.customer_id, registration_id=registrationId, card_number=card_number, expiry_month=expiry_month,
-                                                        expiry_year=expiry_year, card_holder=card_holder, card_type=card_type, card_body=str(card_body), card_brand=card_brand)
-                db.merge(save_card)
-                db.commit()
+
+                reg_id = db.query(payment_models.CustomerCard).filter(payment_models.CustomerCard.customer_id == request.customer_id, or_(
+                    payment_models.CustomerCard.registration_id == registrationId, payment_models.CustomerCard.card_number == card_number)).first()
+
+                if not reg_id:
+                    card_body = payment_status.get("card")
+                    card_number = card_body.get("last4Digits")
+                    expiry_month = card_body.get("expiryMonth")
+                    expiry_year = card_body.get("expiryYear")
+                    card_holder = card_body.get("holder")
+                    card_type = card_body.get("type")
+                    card_brand = payment_status.get("paymentBrand")
+                    save_card = payment_models.CustomerCard(customer_id=request.customer_id, registration_id=registrationId, card_number=card_number, expiry_month=expiry_month,
+                                                            expiry_year=expiry_year, card_holder=card_holder, card_type=card_type, card_body=str(card_body), card_brand=card_brand)
+                    db.merge(save_card)
+                    db.commit()
+            # if registrationId:
+            #     card_body = payment_status.get("card")
+            #     card_number = card_body.get("last4Digits")
+            #     expiry_month = card_body.get("expiryMonth")
+            #     expiry_year = card_body.get("expiryYear")
+            #     card_holder = card_body.get("holder")
+            #     card_type = card_body.get("type")
+            #     card_brand = payment_status.get("paymentBrand")
+            #     save_card = payment_models.CustomerCard(customer_id=request.customer_id, registration_id=registrationId, card_number=card_number, expiry_month=expiry_month,
+            #                                             expiry_year=expiry_year, card_holder=card_holder, card_type=card_type, card_body=str(card_body), card_brand=card_brand)
+            #     db.merge(save_card)
+            #     db.commit()
 
         for req_product in request.products:
             product_qty = req_product.product_quantity
@@ -751,7 +790,7 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
                 margin_wity_qty = product_margin*product_qty
                 margin_list.append(margin_wity_qty)
 
-                if req_product_price > product_with_margin_price or req_product_price < product_with_margin_price:
+                if round(req_product_price, 2) > product_with_margin_price or round(req_product_price, 2) < product_with_margin_price:
                     data1 = order_schemas.OrderedProducts(
                         product_id=product_id, latest_price=product_with_margin_price)
                     order_intial_data = db.query(order_models.Orders).filter(
@@ -779,10 +818,9 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
                 db.commit()
                 order_view_list.append(order_details)
 
-                if paid or cod:
+                if paid or cod or pending:
                     inventory_update = update_inventory(
                         order_id, product_id, product_qty, db)
-                    print(inventory_update)
             inv_no = None
             if paid or cod:
                 transaction_data = db.query(order_models.OrderTransactions).all()
@@ -794,7 +832,7 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
                                                             payment_mode_id=request.payment_type, payment_status_id=request.payment_status, invoices_id=inv_no)
             db.merge(order_transact)
             db.commit()
-            if paid or cod:
+            if paid or cod or pending:
                 order_delivery_logs = order_models.OrderDeliveryLogs(
                     order_id=order_id, order_status_id=1, order_status_details="Order is confirmed", user_id=1, customer_view=1, log_date=common_services.get_time())
                 db.merge(order_delivery_logs)
@@ -821,9 +859,11 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
             order_data.tax_vat = vat_prcnt_value
             order_data.tax = round(vat_amount, 2)
             order_data.shipping = request.delivery_fees
+            if paid or cod or pending:
+                order_data.is_shown = True
             db.merge(order_data)
             db.commit()
-            if paid or cod:
+            if paid or cod or pending:
                 cart_items = db.query(order_models.CustomerCart).filter(
                     order_models.CustomerCart.customer_id == request.customer_id).all()
                 for item in cart_items:
@@ -871,7 +911,7 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
                 background_tasks.add_task(common_services.send_otp,
                                         returned[0], returned[1], returned[2], request, db, invoice_path, invoice_delete)
 
-            if paid or cod:
+            if paid or cod or pending:
                 response = order_schemas.OrderResponse(
                     status=status.HTTP_200_OK, message="Order Placed Successfully")
 
