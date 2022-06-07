@@ -325,6 +325,7 @@ def create_order(request, db: Session, background_tasks: BackgroundTasks):
         order_data.tax_vat = vat_prcnt_value
         order_data.tax = round(vat_amount, 2)
         order_data.shipping = request.delivery_fees
+        order_data.is_shown = True
         db.merge(order_data)
         db.commit()
         if paid or cod or pending:
