@@ -472,7 +472,7 @@ def initial_order(request, db: Session, background_tasks: BackgroundTasks):
                 product_price + product_margin) * product_qty
             cde = product_price + margin_value
             product_with_margin_price = round(cde, 2)
-        if req_product_price > product_with_margin_price or req_product_price < product_with_margin_price:
+        if round(req_product_price, 2) > product_with_margin_price or round(req_product_price, 2) < product_with_margin_price:
             data1 = order_schemas.OrderedProducts(
                 product_id=product_id, latest_price=product_with_margin_price)
             increased = "Price Increased for this product"
