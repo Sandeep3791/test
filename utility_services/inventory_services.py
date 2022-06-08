@@ -1,5 +1,7 @@
 from models import order_models, payment_models
 from utility_services import common_services
+from schemas import user_schemas
+from fastapi import status
 import constants
 import random
 from sqlalchemy.orm import Session
@@ -50,3 +52,17 @@ def generate_ref_number(db: Session):
         ref_no = random.randint(999999, 99999999)
 
     return ref_no
+
+
+def product_details(discount_unit, req_product_price, product_qty, product_discount):
+    if discount_unit == '%':
+        discount_value = (req_product_price/100)*product_discount
+    elif product_discount == '':
+        discount_value = 0
+        product_discount = 0
+    else:
+        discount_value = int(product_discount)
+    disc_with_qty = discount_value*product_qty
+    dicscount_with_qty = round(disc_with_qty, 2)
+
+    return discount_value, dicscount_with_qty

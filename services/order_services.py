@@ -1,7 +1,7 @@
 import math
 from services import firebase_services, payment_services
 from utility_services import common_services
-from utility_services.inventory_services import update_inventory, generate_ref_number
+from utility_services.inventory_services import product_details, update_inventory, generate_ref_number
 import os
 import logging
 from models import user_models, order_models, firebase_models, payment_models
@@ -434,6 +434,7 @@ def initial_order(request, db: Session, background_tasks: BackgroundTasks):
         common_msg = user_schemas.ResponseCommonMessage(
             status=status.HTTP_404_NOT_FOUND, message="User is not approved to place the order !")
         return common_msg
+    
     for product in request.products:
         product_qty = product.product_quantity
         product_quantity_check = db.execute(
@@ -456,15 +457,7 @@ def initial_order(request, db: Session, background_tasks: BackgroundTasks):
         req_product_price = product.product_price
         final_request_price_with_qty = req_product_price*product_qty
 
-        if discount_unit == '%':
-            discount_value = (req_product_price/100)*product_discount
-        elif product_discount == '':
-            discount_value = 0
-            product_discount = 0
-        else:
-            discount_value = int(product_discount)
-        disc_with_qty = discount_value*product_qty
-        dicscount_with_qty = round(disc_with_qty, 2)
+        discount_value, dicscount_with_qty = product_details(discount_unit, req_product_price, product_qty, product_discount)
 
         if margin_unit == '%':
             intial_margin_value = (product_price/100) * product_margin
@@ -766,16 +759,9 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
                     sup_name_list.append(b)
 
                 price_list.append(req_product_price)
-
-                if discount_unit == '%':
-                    discount_value = (req_product_price/100)*product_discount
-                elif product_discount == '':
-                    discount_value = 0
-                    product_discount = 0
-                else:
-                    discount_value = int(product_discount)
-                disc_with_qty = discount_value*product_qty
-                dicscount_with_qty = round(disc_with_qty, 2)
+                
+                discount_value, dicscount_with_qty = product_details(discount_unit, req_product_price, product_qty, product_discount)
+                
                 discount_list.append(dicscount_with_qty)
 
                 if margin_unit == '%':
