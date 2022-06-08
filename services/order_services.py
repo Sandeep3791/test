@@ -425,9 +425,14 @@ def initial_order(request, db: Session, background_tasks: BackgroundTasks):
     db_user_active = db.query(user_models.User).filter(
         user_models.User.id == request.customer_id).first()
 
+    if not db_user_active:
+        common_msg = user_schemas.ResponseCommonMessage(
+            status=status.HTTP_404_NOT_FOUND, message="Customer doesn't exist!!")
+        return common_msg
+
     if db_user_active.verification_status != "active":
         common_msg = user_schemas.ResponseCommonMessage(
-            status=status.HTTP_404_NOT_FOUND, message="User is not approved to place the order")
+            status=status.HTTP_404_NOT_FOUND, message="User is not approved to place the order !")
         return common_msg
     for product in request.products:
         product_qty = product.product_quantity
