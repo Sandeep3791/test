@@ -1,7 +1,7 @@
 import math
 from services import firebase_services, payment_services
 from utility_services import common_services
-from utility_services.inventory_services import update_inventory
+from utility_services.inventory_services import product_details, update_inventory, generate_ref_number
 import os
 import logging
 from models import user_models, order_models, firebase_models, payment_models
@@ -425,10 +425,16 @@ def initial_order(request, db: Session, background_tasks: BackgroundTasks):
     db_user_active = db.query(user_models.User).filter(
         user_models.User.id == request.customer_id).first()
 
+    if not db_user_active:
+        common_msg = user_schemas.ResponseCommonMessage(
+            status=status.HTTP_404_NOT_FOUND, message="Customer doesn't exist!!")
+        return common_msg
+
     if db_user_active.verification_status != "active":
         common_msg = user_schemas.ResponseCommonMessage(
-            status=status.HTTP_404_NOT_FOUND, message="User is not approved to place the order")
+            status=status.HTTP_404_NOT_FOUND, message="User is not approved to place the order !")
         return common_msg
+    
     for product in request.products:
         product_qty = product.product_quantity
         product_quantity_check = db.execute(
@@ -451,15 +457,7 @@ def initial_order(request, db: Session, background_tasks: BackgroundTasks):
         req_product_price = product.product_price
         final_request_price_with_qty = req_product_price*product_qty
 
-        if discount_unit == '%':
-            discount_value = (req_product_price/100)*product_discount
-        elif product_discount == '':
-            discount_value = 0
-            product_discount = 0
-        else:
-            discount_value = int(product_discount)
-        disc_with_qty = discount_value*product_qty
-        dicscount_with_qty = round(disc_with_qty, 2)
+        discount_value, dicscount_with_qty = product_details(discount_unit, req_product_price, product_qty, product_discount)
 
         if margin_unit == '%':
             intial_margin_value = (product_price/100) * product_margin
@@ -474,7 +472,7 @@ def initial_order(request, db: Session, background_tasks: BackgroundTasks):
                 product_price + product_margin) * product_qty
             cde = product_price + margin_value
             product_with_margin_price = round(cde, 2)
-        if req_product_price > product_with_margin_price or req_product_price < product_with_margin_price:
+        if round(req_product_price, 2) > product_with_margin_price or round(req_product_price, 2) < product_with_margin_price:
             data1 = order_schemas.OrderedProducts(
                 product_id=product_id, latest_price=product_with_margin_price)
             increased = "Price Increased for this product"
@@ -483,12 +481,9 @@ def initial_order(request, db: Session, background_tasks: BackgroundTasks):
             result = order_schemas.OrderResponse1(
                 status=status.HTTP_401_UNAUTHORIZED, message=message, data=data1)
             return result
-
-    ref_no = random.randint(1000, 999999)
-    same_order_ref_no = db.query(order_models.Orders).filter(
-        order_models.Orders.ref_number == ref_no).first()
-    if same_order_ref_no:
-        ref_no = random.randint(999999, 99999999)
+    
+    ref_no = generate_ref_number(db)
+    
     order = order_models.Orders(
         ref_number=ref_no,
         customer_id=request.customer_id,
@@ -575,8 +570,9 @@ def initial_order(request, db: Session, background_tasks: BackgroundTasks):
 def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
     
     try:
-        db.query(order_models.Orders).filter(order_models.Orders.ref_number == request.ref_number).delete(synchronize_session = False)
-        db.commit()
+        if request.ref_number:
+            db.query(order_models.Orders).filter(order_models.Orders.ref_number == request.ref_number).delete(synchronize_session = False)
+            db.commit()
         
         paid = False
         cod = False
@@ -667,13 +663,13 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
 
         if db_user_active.verification_status == "active":
 
-            # ref_no = random.randint(1000, 999999)
-            # same_order_ref_no = db.query(order_models.Orders).filter(
-            #     order_models.Orders.ref_number == ref_no).first()
-            # if same_order_ref_no:
-            #     ref_no = random.randint(999999, 99999999)
+            if not request.ref_number:
+                ref_no = generate_ref_number(db)
+                
+            else:
+                ref_no = request.ref_number
             order = order_models.Orders(
-                ref_number=request.ref_number,
+                ref_number=ref_no,
                 customer_id=request.customer_id,
                 status=16,
                 delivery_status=1,
@@ -763,16 +759,9 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
                     sup_name_list.append(b)
 
                 price_list.append(req_product_price)
-
-                if discount_unit == '%':
-                    discount_value = (req_product_price/100)*product_discount
-                elif product_discount == '':
-                    discount_value = 0
-                    product_discount = 0
-                else:
-                    discount_value = int(product_discount)
-                disc_with_qty = discount_value*product_qty
-                dicscount_with_qty = round(disc_with_qty, 2)
+                
+                discount_value, dicscount_with_qty = product_details(discount_unit, req_product_price, product_qty, product_discount)
+                
                 discount_list.append(dicscount_with_qty)
 
                 if margin_unit == '%':
@@ -885,7 +874,7 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
                     subject = template.subject
                     body = template.message_format
                 values = {
-                    'order_number': request.ref_number,
+                    'order_number': ref_no,
                     'link': f"{constants.global_link}/orders/{order_id}"
                 }
                 body = body.format(**values)
@@ -895,19 +884,19 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
 
             # for key = order_placed_customer_notification
             if paid or cod:
-                invoice_link_mail = f"{constants.global_link}/orders/invoice-orders/{request.ref_number}"
-                common_services.invoice_saver(invoice_link_mail, request.ref_number)
+                invoice_link_mail = f"{constants.global_link}/orders/invoice-orders/{ref_no}"
+                common_services.invoice_saver(invoice_link_mail, ref_no)
                 path = os.path.abspath('.')
                 invoice_path = os.path.join(
-                    path, f"invoice_folder/invoice_{request.ref_number}.pdf")
+                    path, f"invoice_folder/invoice_{ref_no}.pdf")
                 invoice_delete = os.path.join(
-                    path, f"invoice_folder/invoice_{request.ref_number}.pdf")
+                    path, f"invoice_folder/invoice_{ref_no}.pdf")
 
                 order_type_email = order.order_type
                 user_mail = request.email
 
                 returned = common_services.email_body(
-                    user_mail, order_id, order_view_list, image_list, order_type_email, request.ref_number, price_list, sup_name_list, db)
+                    user_mail, order_id, order_view_list, image_list, order_type_email, ref_no, price_list, sup_name_list, db)
 
                 background_tasks.add_task(common_services.send_otp,
                                         returned[0], returned[1], returned[2], request, db, invoice_path, invoice_delete)
@@ -924,7 +913,7 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
                     for msg in setting_message:
                         message = msg.value
                     values = {
-                        "ref_no": request.ref_number,
+                        "ref_no": ref_no,
 
                     }
                     message = message.format(**values)
