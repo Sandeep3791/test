@@ -1,7 +1,7 @@
 import math
 from services import firebase_services, payment_services
 from utility_services import common_services
-from utility_services.inventory_services import update_inventory
+from utility_services.inventory_services import update_inventory, generate_ref_number
 import os
 import logging
 from models import user_models, order_models, firebase_models, payment_models
@@ -488,12 +488,9 @@ def initial_order(request, db: Session, background_tasks: BackgroundTasks):
             result = order_schemas.OrderResponse1(
                 status=status.HTTP_401_UNAUTHORIZED, message=message, data=data1)
             return result
-
-    ref_no = random.randint(1000, 999999)
-    same_order_ref_no = db.query(order_models.Orders).filter(
-        order_models.Orders.ref_number == ref_no).first()
-    if same_order_ref_no:
-        ref_no = random.randint(999999, 99999999)
+    
+    ref_no = generate_ref_number(db)
+    
     order = order_models.Orders(
         ref_number=ref_no,
         customer_id=request.customer_id,
@@ -674,11 +671,8 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
         if db_user_active.verification_status == "active":
 
             if not request.ref_number:
-                ref_no = random.randint(1000, 999999)
-                same_order_ref_no = db.query(order_models.Orders).filter(
-                    order_models.Orders.ref_number == ref_no).first()
-                if same_order_ref_no:
-                    ref_no = random.randint(999999, 99999999)
+                ref_no = generate_ref_number(db)
+                
             else:
                 ref_no = request.ref_number
             order = order_models.Orders(

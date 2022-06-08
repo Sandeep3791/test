@@ -1,6 +1,7 @@
-from models import order_models
+from models import order_models, payment_models
 from utility_services import common_services
 import constants
+import random
 from sqlalchemy.orm import Session
 
 
@@ -40,3 +41,12 @@ def update_inventory(order_id, product_id, product_quantity, db: Session):
     except Exception as e:
         print(e)
         return False
+
+def generate_ref_number(db: Session):
+    ref_no = random.randint(1000, 999999)
+    same_order_ref_no = db.query(order_models.Orders).filter(
+        order_models.Orders.ref_number == ref_no).first()
+    if same_order_ref_no:
+        ref_no = random.randint(999999, 99999999)
+
+    return ref_no
