@@ -6,6 +6,8 @@ from fastapi_jwt_auth import AuthJWT
 from sqlalchemy.orm import Session
 from fastapi import status, BackgroundTasks
 import constants
+import os
+from dotenv import load_dotenv
 from utility_services import common_services
 try:
     from urllib.error import HTTPError, URLError
@@ -16,18 +18,20 @@ except ImportError:
 
     from urllib2 import HTTPError, HTTPHandler, Request, URLError, build_opener
 
+load_dotenv()
+
 
 def checkout_id(user_request):
 
     url = "https://eu-test.oppwa.com/v1/checkouts"
     data = {
-        'entityId': user_request.entityId,
-        'amount': user_request.amount,
-        'currency': user_request.currency,
-        'paymentType': user_request.paymentType
+        'entityId': user_request['entityId'],
+        'amount': user_request['amount'],
+        'currency': user_request['currency'],
+        'paymentType': user_request['paymentType']
     }
-    if user_request.registrationId:
-        data['registrations[0].id'] = user_request.registrationId
+    if user_request['registrationId']:
+        data['registrations[0].id'] = user_request['registrationId']
         data['standingInstruction.source'] = 'CIT'
         data['standingInstruction.mode'] = 'REPEATED'
         data['standingInstruction.type'] = 'UNSCHEDULED'
@@ -35,7 +39,7 @@ def checkout_id(user_request):
         opener = build_opener(HTTPHandler)
         request = Request(url, data=urlencode(data).encode('utf-8'))
         request.add_header(
-            'Authorization', 'Bearer OGFjN2E0Yzk3Njc0NzNlNDAxNzY3ZWZkNzc1NjE5M2Z8azVKY1NtZlFYeQ==')
+            'Authorization', os.getenv('AUTHORIZATION_TOKEN'))
         request.get_method = lambda: 'POST'
         response = opener.open(request)
         return json.loads(response.read())
@@ -52,7 +56,7 @@ def get_payment_status(id, entityId=None):
         opener = build_opener(HTTPHandler)
         request = Request(url, data=b'')
         request.add_header(
-            'Authorization', 'Bearer OGFjN2E0Yzk3Njc0NzNlNDAxNzY3ZWZkNzc1NjE5M2Z8azVKY1NtZlFYeQ==')
+            'Authorization', os.getenv('AUTHORIZATION_TOKEN'))
         request.get_method = lambda: 'GET'
         response = opener.open(request)
         return json.loads(response.read())
@@ -69,7 +73,7 @@ def delete_card(id, entityId):
         opener = build_opener(HTTPHandler)
         request = Request(url, data=b'')
         request.add_header(
-            'Authorization', 'Bearer OGFjN2E0Yzk3Njc0NzNlNDAxNzY3ZWZkNzc1NjE5M2Z8azVKY1NtZlFYeQ==')
+            'Authorization', os.getenv('AUTHORIZATION_TOKEN'))
         request.get_method = lambda: 'DELETE'
         response = opener.open(request)
         return json.loads(response.read())
