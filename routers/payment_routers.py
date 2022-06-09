@@ -42,9 +42,9 @@ def get_all_banks(authorize: AuthJWT = Depends(oauth2_schema), db: Session = Dep
 
 
 @router.post('/upload/bank/payment/image')
-def upload_bank_payment_image(order_id: int, image: UploadFile = File(...), authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
+def upload_bank_payment_image(customer_id: str, order_id: int, image: UploadFile = File(...), authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
     user = payment_services.upload_bank_payment_image(
-        order_id, image, db)
+        customer_id, order_id, image, db)
     return user
 
 
