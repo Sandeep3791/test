@@ -1,6 +1,6 @@
 from models import order_models, payment_models
 from utility_services import common_services
-from schemas import user_schemas
+from schemas import user_schemas, order_schemas
 from fastapi import status
 import constants
 import random
@@ -66,3 +66,16 @@ def product_details(discount_unit, req_product_price, product_qty, product_disco
     dicscount_with_qty = round(disc_with_qty, 2)
 
     return discount_value, dicscount_with_qty
+
+
+def order_checkout_entry(checkout_details, order, ref_no, db: Session):
+    checkout_id = checkout_details['id']
+    order.checkout_id = checkout_id
+    db.merge(order)
+    db.commit()
+
+    ref_and_checkout_ids = order_schemas.ReferenceAndCheckoutIds(ref_number = ref_no, checkout_id = checkout_id)
+
+    result = order_schemas.InitialOrderResponse(
+        status=status.HTTP_200_OK, message="Initial Order created successfully!!", data = ref_and_checkout_ids)
+    return result 
