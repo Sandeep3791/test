@@ -114,4 +114,6 @@ matplotlib
 
 urllib3
 
+python-dotenv==0.15.0
+
 mailersend==0.2.1
