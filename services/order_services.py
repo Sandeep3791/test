@@ -526,7 +526,7 @@ def initial_order(request, db: Session, background_tasks: BackgroundTasks):
 
     if request.registrationId:
         user_request['registrationId'] = request.registrationId
-        checkout_details = payment_services.checkout_id(user_request)
+        checkout_details = payment_services.order_checkout_id(user_request)
         success_code = checkout_details['result']['code']
 
         if success_code == '000.200.100' or success_code == '000.200.101' or success_code == '000.200.102':
@@ -547,7 +547,7 @@ def initial_order(request, db: Session, background_tasks: BackgroundTasks):
             return common_msg          
         
     else:
-        checkout_details = payment_services.checkout_id(user_request)
+        checkout_details = payment_services.order_checkout_id(user_request)
           
         success_code = checkout_details['result']['code']
 
