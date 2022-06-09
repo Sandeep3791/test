@@ -21,6 +21,7 @@ from pytz import timezone
 import email
 import requests
 import os
+from dotenv import load_dotenv
 import constants
 import calendar
 import smtplib
@@ -29,7 +30,7 @@ import email.mime.application
 app = FastAPI()
 
 logger = logging.getLogger(__name__)
-
+load_dotenv()
 
 def get_time():
     now_utc = datetime.now(timezone('UTC'))
@@ -254,13 +255,13 @@ def get_business_type(db: Session):
 def get_entityId(entityId):
 
     if entityId == 'hyper_VISA':
-        entityId = os.environ.get('HYPER_VISA')
+        entityId = os.getenv('HYPER_VISA')
         return entityId
 
     elif entityId == 'hyper_MADA':
-        entityId = os.environ.get('HYPER_MADA')
+        entityId = os.getenv('HYPER_MADA')
         return entityId
 
     elif entityId == 'hyper_MASTER':
-        entityId = os.environ.get('HYPER_MASTER')
+        entityId = os.getenv('HYPER_MASTER')
         return entityId

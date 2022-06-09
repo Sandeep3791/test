@@ -28,7 +28,7 @@ def create_order(request: order_schemas.OrderRequest, authorize: AuthJWT = Depen
     return data
 
 @router.post('/initial/order')
-def initialize_order(request: order_schemas.InitialOrderRequest, authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db),background : BackgroundTasks = None):
+def initialize_order(request: order_schemas.InitialOrderRequest, authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db),background : BackgroundTasks = None):
     data = order_services.initial_order(request, db,background)
     return data 
 
