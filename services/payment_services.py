@@ -21,7 +21,7 @@ except ImportError:
 load_dotenv()
 
 
-def checkout_id(user_request):
+def order_checkout_id(user_request):
 
     url = "https://eu-test.oppwa.com/v1/checkouts"
     data = {
@@ -47,6 +47,35 @@ def checkout_id(user_request):
         return json.loads(e.read())
     except URLError as e:
         return e.reason
+
+
+def checkout_id(user_request):
+
+    url = "https://eu-test.oppwa.com/v1/checkouts"
+    data = {
+        'entityId': user_request.entityId,
+        'amount': user_request.amount,
+        'currency': user_request.currency,
+        'paymentType': user_request.paymentType
+    }
+    if user_request.registrationId:
+        data['registrations[0].id'] = user_request.registrationId
+        data['standingInstruction.source'] = 'CIT'
+        data['standingInstruction.mode'] = 'REPEATED'
+        data['standingInstruction.type'] = 'UNSCHEDULED'
+    try:
+        opener = build_opener(HTTPHandler)
+        request = Request(url, data=urlencode(data).encode('utf-8'))
+        request.add_header(
+            'Authorization', os.getenv('AUTHORIZATION_TOKEN'))
+        request.get_method = lambda: 'POST'
+        response = opener.open(request)
+        return json.loads(response.read())
+    except HTTPError as e:
+        return json.loads(e.read())
+    except URLError as e:
+        return e.reason
+
 
 
 def get_payment_status(id, entityId=None):
