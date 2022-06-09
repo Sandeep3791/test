@@ -282,9 +282,11 @@ class Getdeliveryfees(BaseModel):
     message: str
     data: Deliveryfeedata
 
+class ReferenceAndCheckoutIds(BaseModel):
+    ref_number: str
+    checkout_id: str
 
 class InitialOrderResponse(BaseModel):
     status: str
     message: str
-    ref_number: str
-    checkout_id: str
+    data: ReferenceAndCheckoutIds
