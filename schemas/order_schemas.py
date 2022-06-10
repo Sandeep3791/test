@@ -58,6 +58,7 @@ class InitialOrderRequest(BaseModel):
     shipping_name: str
     shipping_address: str
     payment_type: str
+    hyperpay_payment_type: str
     payment_status: str
     delivery_fees: float
     products: List[OrderProducts]
