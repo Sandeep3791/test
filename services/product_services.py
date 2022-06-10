@@ -762,7 +762,7 @@ def search_filter_products(offset ,customer_id, start_price, end_price, discount
     rating_request = rating
     result = None
     
-    query += f"and publish = {True} limit {offset_int},{limit_val}"
+    query += f" and publish = {True} limit {offset_int},{limit_val}"
 
     data = db.execute(query)
 
