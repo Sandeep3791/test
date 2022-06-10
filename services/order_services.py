@@ -520,7 +520,7 @@ def initial_order(request, db: Session, background_tasks: BackgroundTasks):
     entityId = common_services.get_entityId(request.entityId)
 
     checkout_request = payment_schemas.CheckoutIdRequest(entityId = entityId, amount = request.amount, currency = 'SAR', 
-                    paymentType = request.payment_type, customer_id = request.customer_id)
+                    paymentType = request.hyperpay_payment_type, customer_id = request.customer_id)
     
     user_request = jsonable_encoder(checkout_request)
 
