@@ -743,7 +743,9 @@ def search_filter_products(offset ,customer_id, start_price, end_price, discount
     for value in limit_value:
         limit_val = int(value[0])
 
-    query = f"select * from {constants.Database_name}.products_master where {True} "
+    query = f"select * from {constants.Database_name}.products_master where "
+    query += f" publish = {True}"
+
     if start_price:
         query += f" and price > {start_price}"
     if end_price:
@@ -757,12 +759,12 @@ def search_filter_products(offset ,customer_id, start_price, end_price, discount
     if category:
         query += f" and id in (select products_id from {constants.Database_name}.products_master_category where categories_id in ({category}))"
     if newest:
-        query += f" order by updated_at ASC"
+        query += f" order by updated_at ASC "
 
     rating_request = rating
     result = None
     
-    query += f" and publish = {True} limit {offset_int},{limit_val}"
+    query += f" limit {offset_int},{limit_val}"
 
     data = db.execute(query)
 
