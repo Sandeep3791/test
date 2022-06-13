@@ -101,6 +101,7 @@ class OrderResponse1(BaseModel):
 class OrderResponse(BaseModel):
     status: str
     message: str
+    order_id: str = None
 
 
 class RecurrenceRequest(BaseModel):

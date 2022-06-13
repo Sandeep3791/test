@@ -704,7 +704,6 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
         order_data = db.query(order_models.Orders).filter(
             order_models.Orders.ref_number == order.ref_number).first()
         order_id = order_data.id
-    
         sub_total_list = []
         discount_list = [] 
         margin_list = []
@@ -900,7 +899,7 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
 
         if paid or cod or pending:
             response = order_schemas.OrderResponse(
-                status=status.HTTP_200_OK, message="Order Placed Successfully")
+                status=status.HTTP_200_OK, message="Order Placed Successfully",order_id=order_id)
 
             try:
                 customer_data = db.execute(
