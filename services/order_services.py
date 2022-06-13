@@ -898,8 +898,10 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
                                     returned[0], returned[1], returned[2], request, db, invoice_path, invoice_delete)
 
         if paid or cod or pending:
-            response = order_schemas.OrderResponse(
-                status=status.HTTP_200_OK, message="Order Placed Successfully",order_id=order_id)
+
+            data_response  = order_schemas.OrderResponseData(order_id=order_id)
+
+            response = order_schemas.OrderResponse(status=status.HTTP_200_OK, message="Order Placed Successfully",data=data_response)
 
             try:
                 customer_data = db.execute(

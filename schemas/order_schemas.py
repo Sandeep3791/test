@@ -97,11 +97,12 @@ class OrderResponse1(BaseModel):
     message: str
     data: OrderedProducts
 
-
+class OrderResponseData(BaseModel):
+    order_id : str = None
 class OrderResponse(BaseModel):
     status: str
     message: str
-    order_id: str = None
+    data : OrderResponseData
 
 
 class RecurrenceRequest(BaseModel):
