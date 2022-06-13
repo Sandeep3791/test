@@ -236,6 +236,15 @@
         </a>
       </li>
     </ul>
+
+    <ul class="nav m-1">
+      <li class="nav-item w-100 {% if 'dashboard' in segment %} active {% endif %}">
+        <a href="{% url 'wayrem_admin:banklist' %}" class="nav-link">
+          <span class="sidebar-icon"><i class="fas fa-university"></i></span>
+          <span class="sidebar-text">Banks Management</span>
+        </a>
+      </li>
+    </ul>
   
       <li role="separator" class="dropdown-divider mt-4 mb-3 border-black"></li>
     </ul>
