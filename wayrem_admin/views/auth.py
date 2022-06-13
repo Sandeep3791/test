@@ -11,7 +11,7 @@ from django.contrib import messages
 from django.utils.decorators import method_decorator
 from wayrem_admin.decorators import anonymous
 from django.contrib.auth import update_session_auth_hash
-from wayrem_admin.models import User, Otp
+from wayrem_admin.models import User, Otp, EmailTemplateModel
 from django.views import View
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.hashers import check_password, make_password
@@ -76,8 +76,12 @@ class Forgot_Password(View):
         else:
             no = random.randint(1000, 99999)
             to = email
-            subject = 'Your Wayrem password reset request !'
-            body = f'Your One time password is: <strong><em>{no}</em></strong>'
+            obj = EmailTemplateModel.objects.filter(key='otp_user').first()
+            values = {
+                'otp': no
+            }
+            subject = obj.subject
+            body = obj.message_format.format(**values)
             send_email(to, subject, body)
 
             data1 = {"email": request.POST['email'], "otp": no}
