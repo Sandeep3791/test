@@ -3,9 +3,6 @@ from time import time
 from typing import Optional,List
 from pydantic import BaseModel
 
-class Settings(BaseModel):
-    authjwt_secret_key: str = "secret"
-
 
 class PushNotificationFirebase(BaseModel):
     title: Optional[str]

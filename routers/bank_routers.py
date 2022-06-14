@@ -33,6 +33,6 @@ def upload_bank_payment_image(customer_id: str, order_id: int, image: UploadFile
 
 
 @router.get('/download/bank/payment/image')
-def download_bank_payment_image(order_id: int,authorize: AuthJWT = Depends(oauth2_schema),db: Session = Depends(database.get_db)):
+def download_bank_payment_image(order_id: int, authorize: AuthJWT = Depends(oauth2_schema),db: Session = Depends(database.get_db)):
     response = bank_services.download_bank_payment_image(order_id, db)
     return response

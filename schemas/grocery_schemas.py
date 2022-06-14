@@ -5,12 +5,6 @@ from typing import Optional, List
 from starlette import status
 
 
-class Settings(BaseModel):
-    authjwt_secret_key: str = "secret"
-
-
-
-
 class GroceryProductsListResponse(BaseModel):
     product_id: int
     product_qty: int

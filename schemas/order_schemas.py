@@ -1,14 +1,6 @@
-
 from typing import Optional
 from pydantic import BaseModel
 from typing import Optional, List
-from starlette import status
-
-from services.payment_services import checkout_id
-
-
-class Settings(BaseModel):
-    authjwt_secret_key: str = "secret"
 
 
 class OrderProducts(BaseModel):
@@ -67,6 +59,7 @@ class CreateOrderRequest(BaseModel):
     ref_number: Optional[str]
     checkout_id: Optional[str]
     entityId: Optional[str]
+    registrationId: Optional[str]
     customer_id: int
     email: str
     contact: int
