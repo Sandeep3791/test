@@ -4,10 +4,6 @@ from typing import Optional, List
 from starlette import status
 
 
-class Settings(BaseModel):
-    authjwt_secret_key: str = "secret"
-
-
 class GetReview(BaseModel):
     customer_id: int
     customer_name: str

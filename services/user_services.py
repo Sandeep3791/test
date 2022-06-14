@@ -598,8 +598,8 @@ def forgot_password(request, db: Session):
     data2 = db.query(user_models.User).filter(
         user_models.User.email == request.email).first()
 
-    # if not data:
-    #     common_msg = user_schemas.ResponseCommonMessage(status = status.HTTP_404_NOT_FOUND, message="The Email You Entered is Wrong")
+    # if not data2:
+    #     common_msg = user_schemas.ResponseCommonMessage(status = status.HTTP_404_NOT_FOUND, message="The Email You Entered is Invalid !")
     #     return common_msg
     # if data.otp != request.otp:
     #     common_msg = user_schemas.ResponseCommonMessage(status = status.HTTP_404_NOT_FOUND, message="The OTP You Entered Is Wrong")

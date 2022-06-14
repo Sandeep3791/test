@@ -3,13 +3,6 @@ from typing import List
 from starlette import status
 
 
-
-class Settings(BaseModel):
-    authjwt_secret_key: str = "secret"
-
-
-
-
 class StaticPages(BaseModel):
     id: int
     page_title: str

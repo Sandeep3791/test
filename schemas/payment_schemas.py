@@ -12,6 +12,7 @@ class CheckoutIdRequest(BaseModel):
     registrationId: Optional[str]
     customer_id: int
 
+
 class ResponseCustomerCards(BaseModel):
     id: int
     card_number: str

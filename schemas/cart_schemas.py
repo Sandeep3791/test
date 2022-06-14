@@ -1,10 +1,6 @@
 from pydantic import BaseModel
 from typing import  List,Optional
 
-class Settings(BaseModel):
-    authjwt_secret_key: str = "secret"
-
-
 
 class AddToCart(BaseModel):
     customer_id: int
