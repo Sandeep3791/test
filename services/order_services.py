@@ -15,7 +15,7 @@ import googlemaps
 import datetime as DT
 import constants
 import re
-from sqlalchemy import or_
+from sqlalchemy import null, or_
 
 
 app = FastAPI()
@@ -1065,7 +1065,10 @@ def get_order_details(order_id, db: Session):
         order_list = []
         logs_list = []
         for data in orders_data:
-            final_bank_re = constants.BANK_PAYMENT_IMAGES_PATH + data.bank_payment_image
+            final_bank_re = None
+            if data.bank_payment_image:
+                final_bank_re = constants.BANK_PAYMENT_IMAGES_PATH + data.bank_payment_image
+                
             order_details_data = db.execute(
                 f'select * from {constants.Database_name}.order_details where order_id = {data.id}')
             for data2 in order_details_data:

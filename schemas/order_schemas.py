@@ -206,7 +206,7 @@ class OrderDetailsbyid(BaseModel):
     invoice_id: Optional[str]
     invoice_link: Optional[str]
     delivery_charges: float
-    bank_receipt: Optional[str]
+    bank_receipt: Optional[str] = None
     order_delivery_logs: List[OrderByIdDeliveryLogs]
     products: List[OrdersProducts]
     
