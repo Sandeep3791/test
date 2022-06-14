@@ -2,6 +2,13 @@ from django import forms
 from wayrem_admin.models import Supplier
 
 
+def validate_digits_letters(word):
+    for char in word:
+        if not char.isdigit() and not char.isalpha():
+            return False
+    return True
+
+
 class SupplierForm(forms.ModelForm):
     password2 = forms.CharField(
         label='Confirm Password', widget=forms.HiddenInput(attrs={'class': 'form-control'}))
@@ -41,6 +48,13 @@ class SupplierForm(forms.ModelForm):
 
     def clean_username(self):
         username = self.cleaned_data['username']
+        if not username.islower():
+            raise forms.ValidationError("Username should be in lowercase")
+
+        if not validate_digits_letters(username):
+            raise forms.ValidationError(
+                "Username should not contain special characters")
+
         if ' ' in username:
             raise forms.ValidationError(
                 'username should not contain any space')
