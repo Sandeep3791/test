@@ -1059,12 +1059,13 @@ def get_all_orders(offset, customer_id, db: Session):
 def get_order_details(order_id, db: Session):
     
     orders_data = db.execute(
-        f'SELECT t1.*, t2.id as transaction_id, t2.payment_mode_id, t2.payment_status_id , t2.invoices_id, t4.name as payment_mode , t3.name as payment_status FROM {constants.Database_name}.orders t1 inner join {constants.Database_name}.order_transactions t2 on t1.id = t2.order_id inner join {constants.Database_name}.status_master t3 on  t3.id = t2.payment_status_id inner join {constants.Database_name}.status_master t4 on t4.id = t2.payment_mode_id  where t1.id = {order_id};')
+        f'SELECT t1.*, t2.id as transaction_id, t2.payment_mode_id,t2.bank_payment_image, t2.payment_status_id , t2.invoices_id, t4.name as payment_mode , t3.name as payment_status FROM {constants.Database_name}.orders t1 inner join {constants.Database_name}.order_transactions t2 on t1.id = t2.order_id inner join {constants.Database_name}.status_master t3 on  t3.id = t2.payment_status_id inner join {constants.Database_name}.status_master t4 on t4.id = t2.payment_mode_id  where t1.id = {order_id};')
     if orders_data.rowcount > 0:
         order_product_list = []
         order_list = []
         logs_list = []
         for data in orders_data:
+            final_bank_re = constants.BANK_PAYMENT_IMAGES_PATH + data.bank_payment_image
             order_details_data = db.execute(
                 f'select * from {constants.Database_name}.order_details where order_id = {data.id}')
             for data2 in order_details_data:
@@ -1165,8 +1166,11 @@ def get_order_details(order_id, db: Session):
             invoice_link = None
             if data.invoices_id:
                 invoice_link = f"{constants.global_link}/orders/invoice-orders/{data.ref_number}"
+            
+            
             data_order = order_schemas.OrderDetailsbyid(order_id=data.id, order_ref_no=data.ref_number, sub_total=data.sub_total, item_discount=data.item_discount, tax_vat=vat_with_prcnt, total=data.total, grand_total=data.grand_total, email=data.order_email, contact=data.order_phone, country=data.order_country, city=data.order_city, billing_name=data.order_billing_name,
-                                                        billing_address=data.order_billing_address, shipping_name=data.order_ship_name, shipping_address=data.order_ship_address, payment_type=payment_type, payment_status=payment_status, order_date=date, product_count=product_count, order_status=order_status, order_type=order_value, invoice_id=data.invoices_id, invoice_link=invoice_link, delivery_charges=delivery_charge, order_delivery_logs=logs_list, products=order_product_list)
+                                                        billing_address=data.order_billing_address, shipping_name=data.order_ship_name, shipping_address=data.order_ship_address, payment_type=payment_type, payment_status=payment_status, order_date=date, product_count=product_count, order_status=order_status, order_type=order_value, invoice_id=data.invoices_id, invoice_link=invoice_link, delivery_charges=delivery_charge,
+bank_receipt=final_bank_re, order_delivery_logs=logs_list, products=order_product_list)
             order_list.append(data_order)
         data4 = order_schemas.ResponseMyOrdersbyid(
             customer_id=data.customer_id, orders=order_list)

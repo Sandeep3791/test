@@ -98,17 +98,17 @@ def format_string(view_list, image_list, price_list, sup_name_list):
             sup_name = "Wayrem Supplier"
         y += 2
         x += f"""<tr>
-                                            <td width="20%">
+                                            <td width="20%" style="padding-bottom:3rem!important ;">
                                                 <img src="{pro_image_path}" alt="" style="width:100px;height:100px;object-fit:cover;border-radius:16px" class="CToWUd a6T" tabindex="0"><div class="a6S" dir="ltr" style="opacity: 0.01; left: 299px; top: 417.109px;"><div id=":pv" class="T-I J-J5-Ji aQv T-I-ax7 L3 a5q" title="Download" role="button" tabindex="0" aria-label="Download attachment " data-tooltip-class="a1V"><div class="akn"><div class="aSK J-J5-Ji aYr"></div></div></div></div>
                                             </td>
-                                            <td width="60%" style="padding-left:0.5rem">
+                                            <td width="60%" style="padding-left:0.5rem; padding-bottom:3rem!important;">
                                                 <div>
                                                     <p style="margin:0;color:#152f50">{pro_name}</p>
                                                 </div>
                                                 <div><span style="color:#a8a8a8;font-size:.8rem">{sup_name}</span></div>
                                                 <div><span style="font-weight:600;color:#152f50">{pro_price} SAR</span></div>
                                             </td>
-                                            <td style="min-width:100px;text-align:end">x {pro_qty}
+                                            <td style="min-width:100px;text-align:end ; padding-bottom:3rem!important;">x {pro_qty}
     
                                             </td>
                                     </tr>
