@@ -22,23 +22,6 @@ def categories_excel(request):
     return generate_excel("categories_master", "categories")
 
 
-@login_required(login_url='wayrem_admin:root')
-@role_required('Categories Add')
-def create_category(request):
-    context = {}
-    form = CategoryCreateForm(request.POST or None, request.FILES or None)
-    context['form'] = form
-    if request.method == "POST":
-        print("POST")
-        if form.is_valid():
-            print('valid')
-            form.save()
-            return redirect('wayrem_admin:categorieslist')
-        else:
-            print("Invalid")
-    return render(request, 'edit_categories.html', context)
-
-
 class CategoriesList(ListView):
     model = Categories
     template_name = "category/list.html"
@@ -57,69 +40,44 @@ class CategoriesList(ListView):
         return context
 
 
-# class CategoriesList(View):
-#     template_name = "categorieslist.html"
-
-#     @method_decorator(login_required(login_url='wayrem_admin:root'))
-#     @method_decorator(role_required('Categories View'))
-#     def get(self, request, format=None):
-#         categorieslist = Categories.objects.all()
-#         paginator = Paginator(categorieslist, 5)
-#         page = request.GET.get('page')
-#         try:
-#             clist = paginator.page(page)
-#         except PageNotAnInteger:
-#             # If page is not an integer, deliver first page.
-#             clist = paginator.page(1)
-#         except EmptyPage:
-#             # If page is out of range (e.g. 9999), deliver last page of results.
-#             clist = paginator.page(paginator.num_pages)
-#         return render(request, self.template_name, {"categorieslist": clist})
-
-
-# class DeleteCategories(View):
-#     def post(self, request):
-#         categoriesid = request.POST.get('category_id')
-#         categories = Categories.objects.get(id=categoriesid)
-#         categories.delete()
-#         return redirect('wayrem_admin:categorieslist')
-
-
 @login_required(login_url='wayrem_admin:root')
 @role_required('Categories Edit')
 def update_categories(request, id=None, *args, **kwargs):
     print(id)
     if request.method == "POST":
-        user = Categories.objects.get(id=id)
+        category = Categories.objects.get(id=id)
+        checkParent = Categories.objects.filter(parent=category.name)
         form = CategoryUpdateForm(
-            request.POST or None, request.FILES or None, instance=user)
+            request.POST or None, request.FILES or None, instance=category)
         if form.is_valid():
-            print("FORM")
             name = form.cleaned_data.get('name')
             parent = form.cleaned_data.get('parent_category')
             image = form.cleaned_data.get('image')
             margin = form.cleaned_data.get('margin')
             unit = form.cleaned_data.get('unit')
             tag = form.cleaned_data.get('tag')
-            user.name = name
-            user.image = image
-            user.margin = margin
-            user.unit = unit
-            user.tag = tag
+            if checkParent:
+                for cat in checkParent:
+                    cat.parent = name
+                    cat.save()
+            category.name = name
+            category.image = image
+            category.margin = margin
+            category.unit = unit
+            category.tag = tag
             if parent:
-                user.parent = parent
-                user.is_parent = True
+                category.parent = parent
+                category.is_parent = True
             else:
-                user.parent = None
-                user.is_parent = False
-            user.save()
-            print("Here")
+                category.parent = None
+                category.is_parent = False
+            category.save()
             return redirect('wayrem_admin:categorieslist')
-    user = Categories.objects.get(id=id)
-    form = CategoryUpdateForm(instance=user, initial={                              
-                              'parent_category': user.parent                              
+    category = Categories.objects.get(id=id)
+    form = CategoryUpdateForm(instance=category, initial={
+                              'parent_category': category.parent
                               })
-    return render(request, 'update_category.html', {'form': form, 'id': user.id, 'user':user})
+    return render(request, 'update_category.html', {'form': form, 'id': category.id, 'user': category})
 
 
 @role_required('Categories View')
