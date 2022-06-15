@@ -338,7 +338,7 @@ def get_category_products(customer_id, category_id, offset, db: Session):
 def get_all_categories(db: Session):
 
     category_data = db.execute(
-        f'select * from {constants.Database_name}.categories_master')
+        f'select * from {constants.Database_name}.categories_master where is_parent=false')
     if category_data.rowcount > 0:
         cat_list = []
         for data in category_data:
@@ -1112,3 +1112,27 @@ def get_discounted_products(offset, customer_id, db: Session):
     common_msg = product_schemas.GetAllProducts(
         status=status.HTTP_200_OK, message="All Products List", data=list_data)
     return common_msg
+
+
+
+def get_all_subcategories(category,db: Session):
+
+    sub_category_data = db.execute(f"select * from {constants.Database_name}.categories_master where is_parent = true and parent='{category}' ")
+    if sub_category_data.rowcount > 0:
+        cat_list = []
+        for data in sub_category_data:
+            path = data.image
+            if path:
+                category_image = constants.IMAGES_DIR_PATH + path
+            else:
+                category_image = "null"
+            res_data = product_schemas.Allsubcategories(
+                sub_category_id=data.id, sub_category_name=data.name, sub_category_tags=data.tag, sub_category_image=category_image)
+            cat_list.append(res_data)
+        common_msg = product_schemas.Getsubcategories(
+            status=status.HTTP_200_OK, message="Sub-categories details", data=cat_list)
+        return common_msg
+    else:
+        common_msg = user_schemas.ResponseCommonMessage(
+            status=status.HTTP_404_NOT_FOUND, message="No sub-categories found!")
+        return common_msg

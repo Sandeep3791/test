@@ -54,6 +54,16 @@ class GetAllProductsResponse(BaseModel):
     message: str
     data: AllProductDetails
 
+class Allsubcategories(BaseModel):
+    sub_category_id: int
+    sub_category_name: str
+    sub_category_tags: str
+    sub_category_image: str
+    
+class Getsubcategories(BaseModel):
+    status: str
+    message: str
+    data: List[Allsubcategories]
 
 class Allcategories(BaseModel):
     category_id: int
