@@ -735,7 +735,7 @@ def create_product_rating(request, db: Session):
     return response
 
 
-def search_filter_products(offset ,customer_id, start_price, end_price, discount, featured, rating, newest, category, db: Session):
+def search_filter_products(offset ,customer_id, start_price, end_price, discount, featured, rating, newest, category,brand, db: Session):
     
     offset_int = int(offset)
     limit_value = db.execute(
@@ -743,9 +743,11 @@ def search_filter_products(offset ,customer_id, start_price, end_price, discount
     for value in limit_value:
         limit_val = int(value[0])
 
-    query = f"select * from {constants.Database_name}.products_master where "
-    query += f" publish = {True}"
+    query = f"select * from {constants.Database_name}.products_master where publish = {True} "
 
+    if brand:
+        brand = list(set(brand.rsplit(',')))
+        query += ' and mfr_name in (' + '"{}"'.format('","'.join(brand)) + ')'
     if start_price:
         query += f" and price > {start_price}"
     if end_price:
@@ -1006,3 +1008,107 @@ def search_products_name(offset,customer_id, name, db: Session):
             status=status.HTTP_200_OK, message="No Products available", data=list_data)
         return common_msg
 
+
+
+def get_discounted_products(offset, customer_id, db: Session):
+    
+    offset_int = int(offset)
+    limit_value = db.execute(f"select value from {constants.Database_name}.settings where id = 15 ;")
+    for value in limit_value:
+        limit_val = int(value[0])
+    data = db.execute(f"select * from {constants.Database_name}.products_master where publish = {True} and discount>0 ORDER BY LPAD(lower(discount), 2,0) desc limit {offset_int},{limit_val}")
+
+    fav_product_data = db.execute(
+        f"SELECT t1.SKU, t2.id,t2.customer_id,t2.product_id FROM {constants.Database_name}.products_master t1 inner join {constants.Database_name}.Favorite_Product t2 on t2.product_id = t1.id where t2.customer_id = {customer_id} and t1.publish = {True} ;")
+
+    if not data:
+        common_msg = user_schemas.ResponseCommonMessage(
+            status=status.HTTP_404_NOT_FOUND, message="No Products Available!")
+        return common_msg
+
+    fav_id_list = []
+    for favorite in fav_product_data:
+        fav_prod_id = int(favorite.product_id)
+        fav_id_list.append(fav_prod_id)
+
+    list_data = []
+    for i in data:
+        quantity_unit = i.quantity_unit_id if i.quantity_unit_id else 1
+        weight_unit = i.weight_unit_id if i.weight_unit_id else 1
+        if i.primary_image:
+            primary_img = i.primary_image
+            # img_name = primary_img.split("/")[-1]
+            image_path = constants.IMAGES_DIR_PATH + primary_img
+        else:
+            image_path = "null"
+
+        unit1 = db.execute(
+            f"select unit_name from {constants.Database_name}.unit_master where id = {quantity_unit}")
+        unit2 = db.execute(
+            f"select unit_name from {constants.Database_name}.unit_master where id = {weight_unit}")
+
+        prod_images = db.execute(
+            f"select image from {constants.Database_name}.product_images where product_id = {i.id}")
+        image_list = []
+        for image in prod_images:
+            a = image[0]
+            # update_img = a.split("/")[-1]
+            upd_image_path = constants.IMAGES_DIR_PATH + a
+            image_list.append(upd_image_path)
+
+        for j in unit1:
+            for k in unit2:
+                intial_price = float(i.price)
+                if i.margin_unit == '%':
+                    margin_value = (intial_price/100)*int(i.wayrem_margin)
+                    abc = intial_price+margin_value
+                    updated_price = round(abc, 2)
+                else:
+                    wayrem_margin = i.wayrem_margin if i.wayrem_margin else 0
+                    cde = intial_price + float(wayrem_margin)
+                    # cde = intial_price + float(i.wayrem_margin)
+                    updated_price = round(cde, 2)
+
+                product_id = i.id
+                product_category = db.execute(
+                    f"select * from {constants.Database_name}.products_master_category where products_id = {product_id}")
+                if product_category:
+                    prod_category_list = []
+                    for categories in product_category:
+                        product_category_name = db.execute(
+                            f"select * from {constants.Database_name}.categories_master where id = {categories.categories_id}")
+                        for name in product_category_name:
+                            catg_name = name.name
+                            prod_category_list.append(catg_name)
+                else:
+                    prod_category_list = []
+
+        for favr_id in fav_id_list:
+            fav_product_uuid = db.query(product_models.FavoriteProduct).filter(
+                product_models.FavoriteProduct.product_id == favr_id, product_models.FavoriteProduct.customer_id == customer_id).first()
+            if favr_id == product_id:
+                favorite = True
+                favorite_product_id = fav_product_uuid.id
+                break
+            favorite = False
+            favorite_product_id = None
+        if fav_product_data.rowcount == 0:
+            favorite = False
+            favorite_product_id = None
+
+        var = i.id
+        result = None
+        rates = db.execute(
+            f"select * from {constants.Database_name}.product_rating where product_id= {var}")
+        for rate in rates:
+            result = rate.rating
+
+        qty = int(i.quantity)
+        qty_thresold = i.outofstock_threshold
+        final_qty = qty
+        res_data = product_schemas.AllProductDetails(id=i.id, name=i.name, SKU=i.SKU, mfr_name=i.mfr_name, description=i.description, quantity=final_qty, quantity_unit=j[0], threshold=qty_thresold, weight=i.weight, weight_unit=k[
+                                                  0], categories=prod_category_list, price=updated_price, discount=i.discount, discount_unit=i.dis_abs_percent, favorite=favorite, favorite_product_uuid=favorite_product_id, primary_image=image_path, images=image_list, rating=result)
+        list_data.append(res_data)
+    common_msg = product_schemas.GetAllProducts(
+        status=status.HTTP_200_OK, message="All Products List", data=list_data)
+    return common_msg
