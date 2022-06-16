@@ -91,7 +91,14 @@ class DeleteCategories(View):
     def post(self, request):
         categoriesid = request.POST.get('category_id')
         categories = Categories.objects.get(id=categoriesid)
+        category_name = categories.name
         categories.delete()
+        isParentCheck = Categories.objects.filter(parent=category_name)
+        if isParentCheck:
+            for category in isParentCheck:
+                category.is_parent = False
+                category.parent = None
+                category.save()
         return redirect('wayrem_admin:categorieslist')
 
 
