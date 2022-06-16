@@ -759,7 +759,7 @@ def search_filter_products(offset ,customer_id, start_price, end_price, discount
     elif featured == False:
         query += f" and feature_product = false"
     if category:
-        query += f" and id in (select products_id from {constants.Database_name}.products_master_category where categories_id in ({category}))"
+        query += f" and id in (select products_id from {constants.Database_name}.products_master_category where categories_id in ({category},(SELECT categories_id FROM wayrem_uat_v1.products_master_category where categories_id in (SELECT id FROM wayrem_uat_v1.categories_master where parent in (SELECT name FROM wayrem_uat_v1.categories_master where id in ({category}))))))"
     if newest:
         query += f" order by updated_at ASC "
 
