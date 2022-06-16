@@ -184,6 +184,11 @@ class OrderStatusUpdated(LoginRequiredMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         id_pk = self.kwargs['id']
         context['id_pk'] = id_pk
+        order_transaction=OrderTransactions.objects.filter(order_id=id_pk).first()
+        if (order_transaction.payment_mode_id == BANKTRANSFER_MODE) and (order_transaction.payment_status_id == PAYMENT_STATUS_PENDING or order_transaction.payment_status_id == PAYMENT_STATUS_DECLINED):
+            context['message'] = "Please confirm the Bank Transfer document before approving the order"
+        else:
+            context['message'] = ""
         return context
 
     def loginext_api(self, order_id, status_id):
@@ -360,10 +365,15 @@ class OrderUpdateView(LoginRequiredMixin, DetailView):
         duplicaterequest['status'] = self.get_object().status.id
         duplicaterequest['payment_status'] = context['order_transaction'].payment_status.id
         context['status_form'] = OrderStatusDetailForm(
-            self.get_object().status.id, duplicaterequest)
+            self.get_object().status.id,order_id, duplicaterequest)
         context['payment_status_form'] = OrderUpdatedPaymentStatusForm(
             duplicaterequest)
         context['currency'] = CURRENCY
         context['PAYMENT_STATUS_CONFIRM'] = PAYMENT_STATUS_CONFIRM
         context['PAYMENT_STATUS_DECLINED'] = PAYMENT_STATUS_DECLINED
+        order_transaction=OrderTransactions.objects.filter(order_id=order_id).first()
+        if (order_transaction.payment_mode_id == BANKTRANSFER_MODE) and (order_transaction.payment_status_id == PAYMENT_STATUS_PENDING or order_transaction.payment_status_id == PAYMENT_STATUS_DECLINED):
+            context['message'] = "Please confirm the Bank Transfer document before approving the order"
+        else:
+            context['message'] = ""
         return context

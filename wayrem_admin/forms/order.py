@@ -6,6 +6,18 @@ from wayrem_admin.models_orders import Orders, OrderTransactions, StatusMaster
 from django.forms import ModelForm
 from wayrem_admin.utils.constants import *
 
+from django.forms import Select
+
+class Select(Select):
+    def create_option(self, *args,**kwargs):
+        option = super().create_option(*args,**kwargs)
+        if not option.get('value'):
+            option['attrs']['disabled'] = 'disabled'
+
+        if option.get('value') == 17:
+            option['attrs']['disabled'] = 'disabled'
+        
+        return option
 
 class OrderUpdatedPaymentStatusForm(ModelForm):
     payment_status = forms.ChoiceField(required=True, widget=forms.Select(
@@ -23,14 +35,18 @@ class OrderUpdatedPaymentStatusForm(ModelForm):
 
 
 class OrderStatusUpdatedForm(ModelForm):
-    status = forms.ChoiceField(required=True, widget=forms.Select(
-        attrs={'class': 'form-control form-control-select'}))
-
+    status = forms.ChoiceField(required=True)
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         order_id = kwargs['instance']
+        
         order_status_id = Orders.objects.filter(ref_number=order_id).first()
-
+        order_id=order_status_id.id
+        order_transaction=OrderTransactions.objects.filter(order_id=order_id).first()
+        if (order_transaction.payment_mode_id == BANKTRANSFER_MODE) and (order_transaction.payment_status_id == PAYMENT_STATUS_PENDING or order_transaction.payment_status_id == PAYMENT_STATUS_DECLINED):
+            self.fields['status'].widget=Select(attrs={'class': 'form-control form-control-select'})
+        else:
+            self.fields['status'].widget=forms.Select(attrs={'class': 'form-control form-control-select'})
         if order_status_id.status.id == ORDER_PENDING_APPROVED:
             exclude_status = [OREDER_PENDING_RECURENCE]
         elif order_status_id.status.id == OREDER_PENDING_RECURENCE:
@@ -45,7 +61,7 @@ class OrderStatusUpdatedForm(ModelForm):
     class Meta:
         model = Orders
         fields = ['status']
-
+        
 
 class OrderAdvanceFilterForm(ModelForm):
     status = forms.ChoiceField(required=False, widget=forms.Select(
@@ -98,11 +114,17 @@ class OrderStatusFilter(ModelForm):
 
 
 class OrderStatusDetailForm(ModelForm):
-    status = forms.ChoiceField(required=True, widget=forms.Select(
-        attrs={'class': 'form-control form-control-select'}))
+    #status = forms.ChoiceField(required=True, widget=forms.Select(attrs={'class': 'form-control form-control-select'}))
+    status = forms.ChoiceField(required=True)
 
-    def __init__(self, status_id, *args, **kwargs):
+    def __init__(self, status_id,order_id, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        
+        order_transaction=OrderTransactions.objects.filter(order_id=order_id).first()
+        if (order_transaction.payment_mode_id == BANKTRANSFER_MODE) and (order_transaction.payment_status_id == PAYMENT_STATUS_PENDING or order_transaction.payment_status_id == PAYMENT_STATUS_DECLINED):
+            self.fields['status'].widget=Select(attrs={'class': 'form-control form-control-select'})
+        else:
+            self.fields['status'].widget=forms.Select(attrs={'class': 'form-control form-control-select'})
         if status_id == ORDER_PENDING_APPROVED:
             exclude_status = [OREDER_PENDING_RECURENCE]
         elif status_id == OREDER_PENDING_RECURENCE:
