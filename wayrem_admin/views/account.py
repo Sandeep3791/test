@@ -1,4 +1,3 @@
-from matplotlib.style import context
 from wayrem_admin.forms.account import UserSearchFilter
 from wayrem_admin.utils.constants import *
 from django.shortcuts import render, redirect
@@ -18,8 +17,6 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic import ListView
 from django.urls import reverse_lazy
 from wayrem_admin.filters.user_filters import UserFilter
-
-
 
 
 def user_excel(request):
@@ -102,9 +99,6 @@ class UsersList(ListView):
         context = super(UsersList, self).get_context_data(**kwargs)
         context['filter_form'] = UserSearchFilter(self.request.GET)
         return context
-
-
-
 
 
 @role_required('User View')
