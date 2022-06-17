@@ -111,3 +111,55 @@ class BusinessType(models.Model):
     class Meta:
         app_label = "wayrem_admin"
         db_table = 'business_type'
+
+
+class CustomerNotification(models.Model):
+    id = models.AutoField(primary_key=True, unique=True)
+    customer = models.ForeignKey(
+        'wayrem_admin.Customer', on_delete=models.CASCADE)
+    order = models.ForeignKey('wayrem_admin.Orders', models.CASCADE, null=True)
+    title = models.CharField(max_length=255, null=True)
+    message = models.CharField(max_length=255, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        app_label = "wayrem_admin"
+        db_table = 'customer_notification'
+
+
+class PaymentTransaction(models.Model):
+    id = models.AutoField(primary_key=True, unique=True)
+    order_id = models.IntegerField(null=True, blank=True)
+    transaction_id = models.TextField(null=True, blank=True)
+    checkout_id = models.TextField(null=True, blank=True)
+    response_body = models.TextField(null=True, blank=True)
+    payment_type = models.CharField(max_length=255, null=True, blank=True)
+    payment_brand = models.CharField(max_length=255, null=True, blank=True)
+    amount = models.CharField(max_length=255, blank=True, default=0.00)
+    status = models.CharField(max_length=255, blank=True, default="PAID")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        app_label = "wayrem_admin"
+        db_table = 'payment_transactions'
+
+
+class CardDetails(models.Model):
+    id = models.AutoField(primary_key=True, unique=True)
+    customer = models.ForeignKey(
+        Customer, on_delete=models.CASCADE, null=True, blank=True)
+    registration_id = models.CharField(max_length=255, null=True, blank=True)
+    card_number = models.CharField(max_length=50, null=True, blank=True)
+    expiry_month = models.CharField(max_length=50, null=True, blank=True)
+    expiry_year = models.CharField(max_length=50, null=True, blank=True)
+    card_holder = models.CharField(max_length=255, null=True, blank=True)
+    card_type = models.CharField(max_length=255, null=True, blank=True)
+    card_body = models.TextField(null=True, blank=True)
+    card_brand = models.CharField(max_length=255, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        app_label = "wayrem_admin"
+        db_table = 'customer_cards'

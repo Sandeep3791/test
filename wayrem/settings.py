@@ -78,10 +78,10 @@ WSGI_APPLICATION = 'wayrem.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'wayrem_stg_v1',
+        'NAME': 'wayrem_uat_v1',
         'USER': 'wayremdb_adminuser',
         'PASSWORD': 'r2wXJfUs78NczMFWRXcV',
-        'HOST': '15.185.103.226',
+        'HOST': 'db',
         'PORT': '3306',
         'OPTIONS': {
             "init_command": "SET foreign_key_checks = 0;",
@@ -93,7 +93,7 @@ DATABASES = {
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'wayrem_uat_v2',
+#         'NAME': 'wayrem_uat_v1',
 #         'USER': 'root',
 #         'PASSWORD': 'root1234',
 #         'HOST': 'localhost',

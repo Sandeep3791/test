@@ -54,6 +54,7 @@ class Orders(models.Model):
         'StatusMaster', models.DO_NOTHING, db_column='order_type', blank=True, null=True)
     delivery_charge = models.CharField(max_length=100, null=True)
     checkout_id = models.CharField(max_length=255, null=True)
+    is_shown = models.BooleanField(default=False)
 
     def __str__(self):
         return self.ref_number
@@ -279,17 +280,3 @@ class OrderLoginextShipment(models.Model):
     class Meta:
         app_label = "wayrem_admin"
         db_table = 'order_loginext_shipment'
-
-
-class CustomerNotification(models.Model):
-    id = models.AutoField(primary_key=True, unique=True)
-    customer = models.ForeignKey(
-        'wayrem_admin.Customer', on_delete=models.CASCADE)
-    order = models.ForeignKey('wayrem_admin.Orders', models.CASCADE, null=True)
-    title = models.CharField(max_length=255, null=True)
-    message = models.CharField(max_length=255, null=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-
-    class Meta:
-        app_label = "wayrem_admin"
-        db_table = 'customer_notification'

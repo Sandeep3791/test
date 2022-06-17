@@ -28,8 +28,9 @@ class FirebaseLibrary:
                 'to': data.get("device_token"),
                 'priority': 'high',
                 "data": {
-                    "order_id": data.get("order_id"),
-                    "recurrent": data.get("grocery_id")
+                    "order_id": data.get("order_id", None),
+                    "recurrent": data.get("grocery_id", None),
+                    "action_type": data.get("profile_document", None)
                 }
             }
             response = requests.post(
