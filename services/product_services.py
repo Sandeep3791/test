@@ -735,7 +735,7 @@ def create_product_rating(request, db: Session):
     return response
 
 
-def search_filter_products(offset ,customer_id, start_price, end_price, discount, featured, rating, newest, category,brand, db: Session):
+def search_filter_products(offset ,customer_id, start_price, end_price, discount, featured, rating, newest, category,brand,rating_value ,db: Session):
     
     offset_int = int(offset)
     limit_value = db.execute(
@@ -753,11 +753,13 @@ def search_filter_products(offset ,customer_id, start_price, end_price, discount
     if end_price:
         query += f" and price < {end_price}"
     if discount:
-        query += f" and discount > {discount}"
+        query += f" and discount > 0 "
     if featured:
         query += f" and feature_product = true"
     elif featured == False:
         query += f" and feature_product = false"
+    if rating_value:
+        query += f" and id in (select product_id from {constants.Database_name}.product_rating where rating <= {rating_value} and rating>{rating_value-1} Order by rating DESC ) "
     if rating:
         query += f" and id in (select product_id from {constants.Database_name}.product_rating where rating >= 0 Order by rating DESC ) "
     if category:
@@ -871,7 +873,7 @@ def search_filter_products(offset ,customer_id, start_price, end_price, discount
         
         list_data.append(res_data)
     
-    if rating:
+    if rating or rating_value:
         list_data = sorted(list_data, key=lambda x: x.rating,reverse=True)
 
     common_msg = product_schemas.GetAllProducts(
