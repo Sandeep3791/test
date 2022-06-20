@@ -36,7 +36,7 @@ class Products(models.Model):
     id = models.IntegerField(primary_key=True, unique=True)
     name = models.CharField(max_length=255, null=True, blank=False)
     SKU = models.CharField(max_length=255, null=True, blank=False, unique=True)
-    category = models.ManyToManyField('Categories', null=True)
+    category = models.ManyToManyField('Categories')
     # product_code = models.CharField(max_length=255, null=True)
     meta_key = models.TextField(null=True, blank=True)
     feature_product = models.BooleanField(default=True)
@@ -44,7 +44,7 @@ class Products(models.Model):
     date_of_mfg = models.DateField(blank=True, null=True)
     date_of_exp = models.DateField(blank=True, null=True)
     mfr_name = models.CharField(max_length=100, null=True, blank=True)
-    supplier = models.ManyToManyField('Supplier', null=True, blank=True)
+    supplier = models.ManyToManyField('Supplier', blank=True)
     dis_abs_percent = models.CharField(
         max_length=20, choices=DIS_ABS_PERCENT, null=True, blank=False)
     description = models.TextField(null=True, blank=True)

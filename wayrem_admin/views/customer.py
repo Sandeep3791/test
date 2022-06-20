@@ -1,3 +1,4 @@
+from django.views.generic.edit import CreateView
 from wayrem_admin.models import PaymentTransaction
 from email import message
 import imp
@@ -8,12 +9,13 @@ from wayrem_admin.loginext.webhook_liberary import WebHookLiberary
 from django.http import HttpResponse
 import json
 from wayrem_admin.forecasts.firebase_notify import FirebaseLibrary
+from wayrem_admin.models import CreditSettings
 from wayrem_admin.services import send_email
-from wayrem_admin.forms import CustomerSearchFilter, CustomerEmailUpdateForm
+from wayrem_admin.forms import CustomerSearchFilter, CustomerEmailUpdateForm, CreditsForm, CreditsSearchFilter
 from django.urls import reverse_lazy
 from wayrem_admin.utils.constants import *
 from wayrem_admin.filters.customer_filters import *
-from django.views.generic import ListView
+from django.views.generic import ListView, UpdateView
 import uuid
 from django.shortcuts import render, redirect
 from django.contrib import messages
@@ -241,3 +243,72 @@ class HyperpayRisk(View):
         data = PaymentTransaction(response_body=body)
         data.save()
         return HttpResponse({'message': 'Success'})
+
+
+class CreditCreate(CreateView):
+    model = CreditSettings
+    form_class = CreditsForm
+    template_name = 'credits/add.html'
+    success_url = reverse_lazy('wayrem_admin:customerslist')
+
+    @method_decorator(login_required(login_url='wayrem_admin:root'))
+    def dispatch(self, *args, **kwargs):
+        return super(CreditCreate, self).dispatch(*args, **kwargs)
+
+
+class CreditsList(ListView):
+    model = CreditSettings
+    template_name = "credits/list.html"
+    context_object_name = 'list'
+    paginate_by = RECORDS_PER_PAGE
+    success_url = reverse_lazy('wayrem_admin:credits_list')
+
+    def get_queryset(self):
+        qs = CreditSettings.objects.filter().order_by("-id")
+        filtered_list = CreditsFilter(self.request.GET, queryset=qs)
+        return filtered_list.qs
+
+    def get_context_data(self, **kwargs):
+        context = super(CreditsList, self).get_context_data(**kwargs)
+        context['filter_form'] = CreditsSearchFilter(self.request.GET)
+        return context
+
+
+class CreditUpdate(UpdateView):
+    model = CreditSettings
+    form_class = CreditsForm
+    template_name = 'credits/update.html'
+    pk_url_kwarg = 'credit_pk'
+
+    @method_decorator(login_required(login_url='wayrem_admin:root'))
+    def dispatch(self, *args, **kwargs):
+        return super(CreditUpdate, self).dispatch(*args, **kwargs)
+
+    def get_success_url(self):
+        return reverse_lazy('wayrem_admin:update_credit', kwargs={'credit_pk': self.get_object().id})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        credit_pk = self.kwargs['credit_pk']
+        context['credit_pk'] = credit_pk
+        return context
+
+
+class CreditView(UpdateView):
+    model = CreditSettings
+    form_class = CreditsForm
+    template_name = 'credits/view.html'
+    pk_url_kwarg = 'credit_pk'
+
+    @method_decorator(login_required(login_url='wayrem_admin:root'))
+    def dispatch(self, *args, **kwargs):
+        return super(CreditView, self).dispatch(*args, **kwargs)
+
+    def get_success_url(self):
+        return reverse_lazy('wayrem_admin:view_credit', kwargs={'credit_pk': self.get_object().id})
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        credit_pk = self.kwargs['credit_pk']
+        context['credit_pk'] = credit_pk
+        return context

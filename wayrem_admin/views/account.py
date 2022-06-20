@@ -9,15 +9,13 @@ from wayrem_admin.services import send_email
 from wayrem_admin.export import generate_excel
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from wayrem_admin.models import User, EmailTemplateModel
+from wayrem_admin.models import Users, EmailTemplateModel
 from django.views import View
 from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic import ListView
 from django.urls import reverse_lazy
 from wayrem_admin.filters.user_filters import UserFilter
-
-from wayrem_admin.models.users import Users
 
 
 def user_excel(request):
@@ -122,7 +120,7 @@ def update_profile(request, *args, **kwargs):
             address = form.cleaned_data['address']
             city = form.cleaned_data['city']
             zip_code = form.cleaned_data['zip_code']
-            user = User.objects.get(username=request.user.username)
+            user = Users.objects.get(username=request.user.username)
             user.email = email
             user.first_name = fname
             user.last_name = lname

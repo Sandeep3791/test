@@ -163,3 +163,25 @@ class CardDetails(models.Model):
     class Meta:
         app_label = "wayrem_admin"
         db_table = 'customer_cards'
+
+
+class CreditSettings(models.Model):
+    id = models.AutoField(primary_key=True, unique=True)
+    credit_amount = models.IntegerField()
+    time_period = models.IntegerField()
+
+    class Meta:
+        app_label = "wayrem_admin"
+        db_table = 'credit_settings'
+
+
+# class CreditManagement(models.Model):
+#     id = models.AutoField(primary_key=True, unique=True)
+#     customer = models.ForeignKey("Customer", models.CASCADE)
+#     credit = models.ForeignKey("CreditSettings", models.CASCADE)
+#     used = models.FloatField()
+#     available = models.FloatField()
+#     created_at = models.DateTimeField(auto_now_add=True)
+#     updated_at = models.DateTimeField(auto_now=True)
+#     class Meta:
+#         db_table = 'credit_management'

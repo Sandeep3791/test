@@ -25,8 +25,8 @@ class User(AbstractBaseUser):
     username = models.CharField(unique=True, max_length=150)
     first_name = models.CharField(max_length=150, null=True, blank=True)
     last_name = models.CharField(max_length=150, null=True, blank=True)
-    is_superuser = models.IntegerField(null=True, blank=True, default=1)
-    is_active = models.IntegerField(null=True, blank=True, default=1)
+    is_superuser = models.IntegerField(null=True, blank=True, default=False)
+    is_active = models.IntegerField(null=True, blank=True, default=True)
     is_staff = models.BooleanField(
         _('staff status'),
         default=False,

@@ -1,6 +1,6 @@
 from django.db.models import Q
 import django_filters
-from wayrem_admin.models import Customer
+from wayrem_admin.models import Customer, CreditSettings
 
 
 class CustomerFilter(django_filters.FilterSet):
@@ -19,4 +19,19 @@ class CustomerFilter(django_filters.FilterSet):
                 business_name__icontains=value) | Q(
                 verification_status__icontains=value) | Q(
                 registration_number__icontains=value)
+        ).order_by("id")
+
+
+class CreditsFilter(django_filters.FilterSet):
+    credit = django_filters.CharFilter(
+        method='credit_filter', label="Search")
+
+    class Meta:
+        model = CreditSettings
+        fields = ['credit']
+
+    def credit_filter(self, queryset, name, value):
+        return CreditSettings.objects.filter(
+            Q(credit_amount__icontains=value) | Q(
+                time_period__icontains=value)
         ).order_by("id")
