@@ -737,6 +737,7 @@ def create_product_rating(request, db: Session):
 
 def search_filter_products(offset ,customer_id, start_price, end_price, discount, featured, rating, newest, category,brand,rating_value ,db: Session):
     
+    rating_check = False
     offset_int = int(offset)
     limit_value = db.execute(
         f"select value from {constants.Database_name}.settings where id = 15 ;")
@@ -753,7 +754,7 @@ def search_filter_products(offset ,customer_id, start_price, end_price, discount
     if end_price:
         query += f" and price < {end_price}"
     if discount:
-        query += f" and discount > 0 "
+        query += f" and discount > 0"
     if featured:
         query += f" and feature_product = true"
     elif featured == False:
@@ -761,6 +762,7 @@ def search_filter_products(offset ,customer_id, start_price, end_price, discount
     if rating_value:
         query += f" and id in (select product_id from {constants.Database_name}.product_rating where rating <= {rating_value} and rating>{rating_value-1} Order by rating DESC ) "
     if rating:
+        rating_check=True
         query += f" and id in (select product_id from {constants.Database_name}.product_rating where rating >= 0 Order by rating DESC ) "
     if category:
         query += f" and id in (select products_id from {constants.Database_name}.products_master_category where categories_id in ({category},(SELECT categories_id FROM wayrem_uat_v1.products_master_category where categories_id in (SELECT id FROM wayrem_uat_v1.categories_master where parent in (SELECT name FROM wayrem_uat_v1.categories_master where id in ({category}))))))"
@@ -873,7 +875,7 @@ def search_filter_products(offset ,customer_id, start_price, end_price, discount
         
         list_data.append(res_data)
     
-    if rating or rating_value:
+    if rating_check or rating_value :
         list_data = sorted(list_data, key=lambda x: x.rating,reverse=True)
 
     common_msg = product_schemas.GetAllProducts(
