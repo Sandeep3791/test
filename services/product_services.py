@@ -758,12 +758,12 @@ def search_filter_products(offset ,customer_id, start_price, end_price, discount
         query += f" and feature_product = true"
     elif featured == False:
         query += f" and feature_product = false"
+    if rating:
+        query += f" and id in (select product_id from {constants.Database_name}.product_rating where rating >= 0 Order by rating DESC ) "
     if category:
         query += f" and id in (select products_id from {constants.Database_name}.products_master_category where categories_id in ({category},(SELECT categories_id FROM wayrem_uat_v1.products_master_category where categories_id in (SELECT id FROM wayrem_uat_v1.categories_master where parent in (SELECT name FROM wayrem_uat_v1.categories_master where id in ({category}))))))"
     if newest:
         query += f" order by updated_at ASC "
-
-    rating_request = rating
     result = None
     
     query += f" limit {offset_int},{limit_val}"
@@ -790,11 +790,7 @@ def search_filter_products(offset ,customer_id, start_price, end_price, discount
             image_path = constants.IMAGES_DIR_PATH + primary_img
         else:
             image_path = "null"
-        ratings = db.execute(
-            f"select * from {constants.Database_name}.product_rating where product_id= {i.id}")
-        if ratings:
-            for rating in ratings:
-                result = rating.rating
+        
 
         unit1 = db.execute(
             f"select unit_name from {constants.Database_name}.unit_master where id = {quantity_unit}")
@@ -871,19 +867,12 @@ def search_filter_products(offset ,customer_id, start_price, end_price, discount
         qty = int(i.quantity)
         qty_thresold = i.outofstock_threshold
         final_qty = qty
-        res_data = product_schemas.AllProductDetails(id=i.id, name=i.name, SKU=i.SKU, mfr_name=i.mfr_name, description=i.description, quantity=final_qty, quantity_unit=j[0], threshold=qty_thresold, weight=i.weight, weight_unit=k[
-                                                  0], categories=prod_category_list, price=updated_price, discount=i.discount, discount_unit=i.dis_abs_percent, favorite=favorite, favorite_product_uuid=favorite_product_id, primary_image=image_path, rating=result, review=list2, images=image_list)
-        if result:
-            if rating_request:
-                if result > 0:
-                    list_data.append(res_data)
-            elif rating_request == False:
-                if result == 0.0:
-                    list_data.append(res_data)
-            else:
-                list_data.append(res_data)
-        else:
-            list_data.append(res_data)
+        res_data = product_schemas.AllProductDetails(id=i.id, name=i.name, SKU=i.SKU, mfr_name=i.mfr_name, description=i.description, quantity=final_qty, quantity_unit=j[0], threshold=qty_thresold, weight=i.weight, weight_unit=k[0], categories=prod_category_list, price=updated_price, discount=i.discount, discount_unit=i.dis_abs_percent, favorite=favorite, favorite_product_uuid=favorite_product_id, primary_image=image_path, rating=result, review=list2, images=image_list)
+        
+        list_data.append(res_data)
+    
+    if rating:
+        list_data = sorted(list_data, key=lambda x: x.rating,reverse=True)
 
     common_msg = product_schemas.GetAllProducts(
         status=status.HTTP_200_OK, message="Filtered Products List", data=list_data)
