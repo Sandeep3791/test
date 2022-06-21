@@ -17,9 +17,11 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.db.models import Q
 from wayrem_admin.utils.constants import *
+from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
 
 
-class WarehouseList(View):
+class WarehouseList(LoginPermissionCheckMixin, View):
+    permission_required = 'inventory_warehouses.warehouses'
     template_name = "warehouses/list.html"
     form = SettingsForm()
 
@@ -42,7 +44,8 @@ class WarehouseList(View):
         return render(request, self.template_name, {"warehouses": slist, 'q': q, "form": self.form})
 
 
-class WarehouseCreate(CreateView):
+class WarehouseCreate(LoginPermissionCheckMixin, CreateView):
+    permission_required = 'warehouse.create'
     model = Warehouse
     form_class = WarehouseForm
     template_name = 'warehouses/add.html'
@@ -53,7 +56,8 @@ class WarehouseCreate(CreateView):
         return super(WarehouseCreate, self).dispatch(*args, **kwargs)
 
 
-class WarehouseUpdate(UpdateView):
+class WarehouseUpdate(LoginPermissionCheckMixin, UpdateView):
+    permission_required = 'warehouse.edit'
     model = Warehouse
     form_class = WarehouseForm
     template_name = 'warehouses/update.html'
@@ -73,7 +77,8 @@ class WarehouseUpdate(UpdateView):
         return context
 
 
-class WarehouseView(UpdateView):
+class WarehouseView(LoginPermissionCheckMixin, UpdateView):
+    permission_required = 'warehouse.view'
     model = Warehouse
     form_class = WarehouseForm
     template_name = 'warehouses/view.html'
