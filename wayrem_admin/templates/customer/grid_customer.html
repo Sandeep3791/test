@@ -10,7 +10,9 @@
             <th scope="col">Username</th>
             <th scope="col">Email</th>
             <th scope="col">Contact</th>
+            {% if perms.customer.approve %}
             <th scope="col">Status</th>
+            {% endif %}
             {% comment %} <th scope="col">Active/Inactive</th> {% endcomment %}
             <th scope="col">Action</th>
         </tr>
@@ -24,6 +26,7 @@
             <td>{{user.first_name}} {{user.last_name}}</td>
             <td>{{user.email}}</td>
             <td>{{user.contact}}</td>
+            {% if perms.customer.approve %}
             <td>
                 {% if 'User Edit' in request.user.role.permission or request.user.is_superuser %}
                 {% if user.verification_status == "waiting for approval" %}
@@ -40,7 +43,8 @@
                         class="fas fa-toggle-off"> Inactive</i></a>
 
                 {% endif %}
-                     </td>
+            </td>
+            {% endif %}
 {% comment %} href="{% url 'wayrem_admin:customerdetails' user.id %}" {% endcomment %}
                 <!-- <a type="button" class="btn btn-sm " data-bs-toggle="modal" data-bs-target="#customerModal{{user.id}}" >
                         <i class="mx-1 fas fa-eye text-success" style="font-size:15px;"></i>
@@ -54,8 +58,12 @@
                             <span class="sr-only">Toggle Dropdown</span>
                         </button>
                         <div class="dropdown-menu">
+                            {% if perms.customer.view %}
                             <a class="dropdown-item" href="{% url 'wayrem_admin:customerdetails' user.id %}"><span class="fas fa-eye mr-2"></span>View Details</a>
+                            {% endif %}
+                            {% if perms.customer.update_email %}
                             <a class="dropdown-item" href="{% url 'wayrem_admin:customer_email_update' user.id %}"><span class="fas fa-edit mr-2"></span>Update Email</a>
+                            {% endif %}
                             {% comment %} <a class="dropdown-item" href=""><span class="fas fa-edit mr-2"></span>Edit</a>
                             <a class="dropdown-item text-danger"  data-bs-toggle="modal" data-bs-target="#deleteModal{{suppl.id}}" href="#"> <span class="fas fa-trash-alt mr-2"></span>Remove</a> {% endcomment %}
                         </div>
