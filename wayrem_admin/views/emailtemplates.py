@@ -16,13 +16,14 @@ from wayrem_admin.forms import EmailtemplatesForm, EmailtemplatesViewForm
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
 from wayrem_admin.utils.constants import *
+from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
 
-
-class EmailtemplatesList(View):
+class EmailtemplatesList(LoginPermissionCheckMixin,View):
+    permission_required = 'email_templates.list_view'
     template_name = "emailtemplate/list.html"
     form = SettingsForm()
 
-    @method_decorator(login_required(login_url='wayrem_admin:root'))
+    #@method_decorator(login_required(login_url='wayrem_admin:root'))
     def get(self, request, format=None):
         userlist = EmailTemplateModel.objects.all()
         paginator = Paginator(userlist, RECORDS_PER_PAGE)
@@ -38,26 +39,19 @@ class EmailtemplatesList(View):
         return render(request, self.template_name, {"userlist": slist, "form": self.form})
 
 
-class EmailtemplatesCreate(CreateView):
+class EmailtemplatesCreate(LoginPermissionCheckMixin,CreateView):
+    permission_required = 'email_templates.add'
     model = EmailTemplateModel
     form_class = EmailtemplatesForm
     template_name = 'emailtemplate/add.html'
     success_url = reverse_lazy('wayrem_admin:emailtemplates')
 
-    @method_decorator(login_required(login_url='wayrem_admin:root'))
-    def dispatch(self, *args, **kwargs):
-        return super(EmailtemplatesCreate, self).dispatch(*args, **kwargs)
-
-
-class EmailtemplatesUpdate(UpdateView):
+class EmailtemplatesUpdate(LoginPermissionCheckMixin,UpdateView):
+    permission_required = 'email_templates.edit'
     model = EmailTemplateModel
     form_class = EmailtemplatesForm
     template_name = 'emailtemplate/update.html'
     pk_url_kwarg = 'emailtemplate_pk'
-
-    @method_decorator(login_required(login_url='wayrem_admin:root'))
-    def dispatch(self, *args, **kwargs):
-        return super(EmailtemplatesUpdate, self).dispatch(*args, **kwargs)
 
     def get_success_url(self):
         return reverse_lazy('wayrem_admin:updateemailtemplates', kwargs={'emailtemplate_pk': self.get_object().id})
@@ -69,15 +63,12 @@ class EmailtemplatesUpdate(UpdateView):
         return context
 
 
-class EmailtemplatesView(UpdateView):
+class EmailtemplatesView(LoginPermissionCheckMixin,UpdateView):
+    permission_required = 'email_templates.view'
     model = EmailTemplateModel
     form_class = EmailtemplatesViewForm
     template_name = 'emailtemplate/view.html'
     pk_url_kwarg = 'emailtemplate_pk'
-
-    @method_decorator(login_required(login_url='wayrem_admin:root'))
-    def dispatch(self, *args, **kwargs):
-        return super(EmailtemplatesView, self).dispatch(*args, **kwargs)
 
     def get_success_url(self):
         return reverse_lazy('wayrem_admin:viewemailtemplates', kwargs={'emailtemplate_pk': self.get_object().id})
