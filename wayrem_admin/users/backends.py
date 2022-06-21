@@ -70,5 +70,5 @@ class MyAuthBackend(object):
         return user_obj._perm_cache
 
     def has_perm(self, user_obj, perm, obj=None):
-        print(self.get_all_permissions(user_obj, obj))
+        
         return user_obj.is_active == 1 and perm in self.get_all_permissions(user_obj, obj)
