@@ -33,8 +33,11 @@ from wayrem_admin.forms.static_pages import StaticPageSearchFilter
 #             # If page is out of range (e.g. 9999), deliver last page of results.
 #             slist = paginator.page(paginator.num_pages)
 #         return render(request, self.template_name, {"userlist": slist, "form": self.form})
+from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
 
-class StaticpagesList(ListView):
+
+class StaticpagesList(LoginPermissionCheckMixin, ListView):
+    permission_required = 'static_page.list'
     model = StaticPages
     template_name = "static_pages/list.html"
     context_object_name = 'userlist'
@@ -52,7 +55,8 @@ class StaticpagesList(ListView):
         return context
 
 
-class StaticpagesCreate(CreateView):
+class StaticpagesCreate(LoginPermissionCheckMixin, CreateView):
+    permission_required = 'static_page.create'
     model = StaticPages
     form_class = StaticpagesForm
     template_name = 'static_pages/add.html'
@@ -63,7 +67,8 @@ class StaticpagesCreate(CreateView):
         return super(StaticpagesCreate, self).dispatch(*args, **kwargs)
 
 
-class StaticpagesUpdate(UpdateView):
+class StaticpagesUpdate(LoginPermissionCheckMixin, UpdateView):
+    permission_required = 'static_page.edit'
     model = StaticPages
     form_class = StaticpagesForm
     template_name = 'static_pages/update.html'
@@ -83,7 +88,8 @@ class StaticpagesUpdate(UpdateView):
         return context
 
 
-class StaticpagesView(UpdateView):
+class StaticpagesView(LoginPermissionCheckMixin, UpdateView):
+    permission_required = 'static_page.view'
     model = StaticPages
     form_class = StaticpagesViewForm
     template_name = 'static_pages/view.html'
@@ -103,7 +109,8 @@ class StaticpagesView(UpdateView):
         return context
 
 
-class DeleteStaticpages(View):
+class DeleteStaticpages(LoginPermissionCheckMixin, View):
+    permission_required = 'static_page.delete'
 
     def post(self, request):
         pageid = request.POST.get('pageid')

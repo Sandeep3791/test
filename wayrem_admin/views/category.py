@@ -17,13 +17,15 @@ from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from django.contrib.auth.decorators import permission_required
+from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
 
 
 def categories_excel(request):
     return generate_excel("categories_master", "categories")
 
 
-class CategoriesList(ListView):
+class CategoriesList(LoginPermissionCheckMixin, ListView):
+    permission_required = 'categories.list'
     model = Categories
     template_name = "category/list.html"
     context_object_name = 'categorieslist'
@@ -85,7 +87,9 @@ def category_details(request, id=None):
     return render(request, 'category_popup.html', {'catedata': cate})
 
 
-class DeleteCategories(View):
+class DeleteCategories(LoginPermissionCheckMixin, View):
+    permission_required = 'categories.delete'
+
     def post(self, request):
         categoriesid = request.POST.get('category_id')
         categories = Categories.objects.get(id=categoriesid)

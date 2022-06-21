@@ -28,6 +28,7 @@ from weasyprint import HTML
 import tempfile
 from wayrem_admin.models import ForecastJobtype
 from django.core import serializers
+from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
 
 
 def po_excel(request):
@@ -217,7 +218,8 @@ def delete_inserted_item(request, id=None):
     return redirect('wayrem_admin:create_po')
 
 
-class POList(ListView):
+class POList(LoginPermissionCheckMixin, ListView):
+    permission_required = 'purchase_orders.list'
     model = PurchaseOrder
     template_name = "purchase_order/list.html"
     context_object_name = 'list'
@@ -238,7 +240,8 @@ class POList(ListView):
         return context
 
 
-class POList1(View):
+class POList1(LoginPermissionCheckMixin, View):
+    permission_required = 'purchase_orders.list'
     template_name = "po_list.html"
 
     @method_decorator(login_required(login_url='wayrem_admin:root'))
@@ -271,7 +274,8 @@ class POList1(View):
         return render(request, self.template_name, {"list": ulist})
 
 
-class DeletePO(View):
+class DeletePO(LoginPermissionCheckMixin, View):
+    permission_required = 'purchase_orders.delete'
 
     def post(self, request):
         po_id = request.POST.get('po_id')

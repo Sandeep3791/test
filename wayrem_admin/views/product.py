@@ -1,3 +1,4 @@
+from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
 import imp
 import re
 from django.db import connection
@@ -290,7 +291,8 @@ def product_images(request):
 # # ----------------------------------------------------------------------------
 
 
-class ProductList(ListView):
+class ProductList(LoginPermissionCheckMixin, ListView):
+    permission_required = 'product_management.manage_product_list'
     model = Products
     template_name = "product/list.html"
     context_object_name = 'productslist'
@@ -401,7 +403,9 @@ def update_product(request, id=None, *args, **kwargs):
     return render(request, 'product_update_latest.html', {'form': form, 'formset': form1, 'form3': form3, 'image': prod.primary_image, 'product_images': product_images, 'id': prod.id})
 
 
-class DeleteProduct(View):
+class DeleteProduct(LoginPermissionCheckMixin, View):
+    permission_required = 'product.delete'
+
     def post(self, request):
         productid = request.POST.get('product_id')
         products = Products.objects.get(id=productid)

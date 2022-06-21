@@ -1,4 +1,5 @@
 # Suppliers Registration and Management Start
+from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
 import imp
 from wayrem_admin.utils.constants import *
 import uuid
@@ -113,7 +114,8 @@ def supplier_register(request):
 #         return render(request, self.template_name, {"supplierlist": slist})
 
 
-class SupplierList(ListView):
+class SupplierList(LoginPermissionCheckMixin, ListView):
+    permission_required = 'supplier_list.list'
     model = Supplier
     template_name = "supplier/list.html"
     context_object_name = 'supplierlist'
@@ -131,7 +133,8 @@ class SupplierList(ListView):
         return context
 
 
-class DeleteSupplier(View):
+class DeleteSupplier(LoginPermissionCheckMixin, View):
+    permission_required = 'supplier_management.delete_supplier'
 
     def post(self, request):
         supplierid = request.POST.get('supplier_id')
@@ -141,7 +144,8 @@ class DeleteSupplier(View):
 
 
 # Active/Block
-class Active_BlockSupplier(View):
+class Active_BlockSupplier(LoginPermissionCheckMixin, View):
+    permission_required = 'supplier_management.supplier_activate'
 
     @method_decorator(login_required(login_url='wayrem_admin:root'))
     def get(self, request, id):

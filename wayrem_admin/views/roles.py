@@ -11,6 +11,7 @@ from wayrem_admin.models.permissions import FunctionMaster, RolePermissions
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
+from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
 
 
 class RolePermissionView(View):

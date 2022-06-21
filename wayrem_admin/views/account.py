@@ -1,3 +1,4 @@
+from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
 from wayrem_admin.forms.account import UserSearchFilter
 from wayrem_admin.utils.constants import *
 from django.shortcuts import render, redirect
@@ -63,7 +64,8 @@ def user_signup(request):
         return redirect('wayrem_admin:dashboard')
 
 
-class UsersList(ListView):
+class UsersList(LoginPermissionCheckMixin, ListView):
+    permission_required = 'user_management.users_list'
     model = Users
     template_name = "users/list.html"
     context_object_name = 'userlist'
@@ -138,7 +140,8 @@ def update_profile(request, *args, **kwargs):
     return render(request, 'settings.html', {'form': form})
 
 
-class DeleteUser(View):
+class DeleteUser(LoginPermissionCheckMixin, View):
+    permission_required = 'user_management.delete_user'
 
     def post(self, request):
         userid = request.POST.get('userid')
@@ -148,7 +151,9 @@ class DeleteUser(View):
 
 
 # Active/Block
-class Active_BlockUser(View):
+class Active_BlockUser(LoginPermissionCheckMixin, View):
+    permission_required = 'user_management.user_activate'
+
     @method_decorator(login_required(login_url='wayrem_admin:root'))
     def get(self, request, id):
         user = Users.objects.get(pk=id)
