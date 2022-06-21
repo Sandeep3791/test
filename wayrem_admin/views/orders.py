@@ -146,7 +146,7 @@ class OrderExportView(View):
 
 
 class OrdersList(LoginPermissionCheckMixin, ListView):
-    permission_required = 'order.view'
+    permission_required = 'order.list_view'
     login_url = 'wayrem_admin:root'
     model = Orders
     template_name = "orders/list.html"
@@ -334,15 +334,13 @@ class OrderInvoiceView(LoginRequiredMixin, View):
         # return render(request, self.template_name,context)
 
 
-class OrderUpdateView(LoginRequiredMixin, DetailView):
+class OrderUpdateView(LoginPermissionCheckMixin, DetailView):
+    permission_required = 'order.view_order'
     login_url = 'wayrem_admin:root'
     model = Orders
     template_name = "orders/order_page.html"
     context_object_name = 'order'
     KEY = 'setting_vat'
-
-    def dispatch(self, *args, **kwargs):
-        return super(OrderUpdateView, self).dispatch(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
