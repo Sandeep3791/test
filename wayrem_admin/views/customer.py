@@ -26,13 +26,16 @@ from wayrem_admin.models import Customer, EmailTemplateModel, CustomerDevice, Se
 from wayrem_admin.export import generate_pdf, generate_excel
 from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
+from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
+from django.contrib.auth.decorators import permission_required
+from django.utils.decorators import method_decorator
 
 def customers_excel(request):
     return generate_excel("customers_master", "customers")
 
 
-class CustomersList(ListView):
+class CustomersList(LoginPermissionCheckMixin,ListView):
+    permission_required = 'order.list_view'
     model = Customer
     template_name = "customer/list.html"
     context_object_name = 'list'
@@ -80,7 +83,7 @@ class Active_BlockCustomer(View):
         user.save()
         return redirect('wayrem_admin:customerslist')
 
-
+@permission_required('customer.view',raise_exception=True)
 def customer_details(request, id=None):
     user = Customer.objects.filter(id=id).first()
     return render(request, 'customer/customer_view.html', {'user': user})
