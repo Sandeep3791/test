@@ -62,21 +62,12 @@ class StaticpagesCreate(LoginPermissionCheckMixin, CreateView):
     template_name = 'static_pages/add.html'
     success_url = reverse_lazy('wayrem_admin:staticpages')
 
-    @method_decorator(login_required(login_url='wayrem_admin:root'))
-    def dispatch(self, *args, **kwargs):
-        return super(StaticpagesCreate, self).dispatch(*args, **kwargs)
-
-
 class StaticpagesUpdate(LoginPermissionCheckMixin, UpdateView):
     permission_required = 'static_page.edit'
     model = StaticPages
     form_class = StaticpagesForm
     template_name = 'static_pages/update.html'
     pk_url_kwarg = 'static_pages_pk'
-
-    @method_decorator(login_required(login_url='wayrem_admin:root'))
-    def dispatch(self, *args, **kwargs):
-        return super(StaticpagesUpdate, self).dispatch(*args, **kwargs)
 
     def get_success_url(self):
         return reverse_lazy('wayrem_admin:updatestaticpages', kwargs={'static_pages_pk': self.get_object().id})
@@ -94,10 +85,6 @@ class StaticpagesView(LoginPermissionCheckMixin, UpdateView):
     form_class = StaticpagesViewForm
     template_name = 'static_pages/view.html'
     pk_url_kwarg = 'static_pages_pk'
-
-    @method_decorator(login_required(login_url='wayrem_admin:root'))
-    def dispatch(self, *args, **kwargs):
-        return super(StaticpagesView, self).dispatch(*args, **kwargs)
 
     def get_success_url(self):
         return reverse_lazy('wayrem_admin:viewemailtemplates', kwargs={'static_pages_pk': self.get_object().id})
