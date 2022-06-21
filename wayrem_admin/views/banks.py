@@ -13,9 +13,10 @@ from wayrem_admin.utils.constants import *
 from wayrem_admin.models.BankModels import Banks
 from wayrem_admin.forms.bank import BankUpdatedForm, BankFilterForm, BankViewForm
 from wayrem_admin.filters.bank_filters import BankFilter
+from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
 
-
-class BanksList(LoginRequiredMixin, ListView):
+class BanksList(LoginPermissionCheckMixin,ListView):
+    permission_required = 'banks_management.list_view'
     login_url = 'wayrem_admin:root'
     model = Banks
     template_name = "bank/list.html"
@@ -34,7 +35,8 @@ class BanksList(LoginRequiredMixin, ListView):
         return context
 
 
-class BankView(LoginRequiredMixin, UpdateView):
+class BankView(LoginPermissionCheckMixin, UpdateView):
+    permission_required = 'banks_management.view'
     login_url = 'wayrem_admin:root'
     model = Banks
     form_class = BankViewForm
@@ -54,7 +56,8 @@ class BankView(LoginRequiredMixin, UpdateView):
         return reverse_lazy('wayrem_admin:updatebank', kwargs={'id': bank_id})
 
 
-class BanksUpdated(LoginRequiredMixin, UpdateView):
+class BanksUpdated(LoginPermissionCheckMixin, UpdateView):
+    permission_required = 'banks_management.edit'
     login_url = 'wayrem_admin:root'
     model = Banks
     form_class = BankUpdatedForm
@@ -74,7 +77,8 @@ class BanksUpdated(LoginRequiredMixin, UpdateView):
         return reverse_lazy('wayrem_admin:updatebank', kwargs={'id': bank_id})
 
 
-class BanksCreate(CreateView):
+class BanksCreate(LoginPermissionCheckMixin,CreateView):
+    permission_required = 'banks_management.add'
     model = Banks
     form_class = BankUpdatedForm
     template_name = 'bank/add.html'
