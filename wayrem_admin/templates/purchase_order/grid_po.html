@@ -6,7 +6,9 @@
             <th scope="col">Purchase Order</th>
             <th scope="col">Supplier</th>
             <th scope="col">Status</th>
+            {% if perms.purchase_orders.view or perms.purchase_orders.delete %}
             <th scope="col">Action</th>
+            {% endif %}
         </tr>
     </thead>
     <tbody class="bg-white">
@@ -17,6 +19,7 @@
             <td>
                 {{item.status|title}}            
             </td>
+            {% if perms.purchase_orders.view or perms.purchase_orders.delete %}
             <td>
                 <div class="btn-group">
                     <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -26,9 +29,13 @@
                         <span class="sr-only">Toggle Dropdown</span>
                     </button>
                     <div class="dropdown-menu">
+                        {% if perms.purchase_orders.view %}
                         <a class="dropdown-item" href="{% url 'wayrem_admin:viewpo' item.po_id %}"><span class="fas fa-eye mr-2"></span>View Details</a>
+                        {% endif %}
                         {% comment %} <a class="dropdown-item" href="{% url 'wayrem_admin:editpo' item.po_id %}"><span class="fas fa-edit mr-2"></span>Edit</a> {% endcomment %}
+                        {% if perms.purchase_orders.delete %}
                         <a class="dropdown-item text-danger"  data-bs-toggle="modal" data-bs-target="#deleteModal{{item.po_id}}" href="#"> <span class="fas fa-trash-alt mr-2"></span>Remove</a>
+                        {% endif %}
                     </div>
                 </div>
                 <!-- Modal -->
@@ -55,6 +62,7 @@
                     </div>
                 </div>
             </td>   
+            {% endif %}
             
         </tr>       
         {% endfor %}        

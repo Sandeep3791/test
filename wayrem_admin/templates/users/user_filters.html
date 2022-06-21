@@ -1,10 +1,12 @@
 <div class="subheader row align-items-center justify-content-between">
     <div class="col-xl-5 col-lg-5 col-5">
         <div class="col-xl-4 col-lg-4 col-md-4">
+            {% if perms.user_management.create_user_list %}
             <a class="btn anchor_btn ps-0 pe-0"
                     href="{% url 'wayrem_admin:sub-admin-register' %}">
                     <button class="btn btn-success create_new">Create New User</button>
             </a>
+            {% endif %}
         </div>
     </div>
 

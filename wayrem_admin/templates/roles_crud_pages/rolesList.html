@@ -82,11 +82,13 @@ endcomment %}
                     {% comment %} <th scope="col">S. No.</th> {% endcomment %}
                     <th scope="col">Role Name</th>
                     {% comment %} <th scope="col">Status</th> {% endcomment %}
+                    {% if perms.roles.view %}
                     <th scope="col">Access</th>
-                    {% if 'Roles Delete' in request.user.role.permission or request.user.is_superuser %}
+                    {% endif %}
+                    {% if perms.roles.activate %}
                     <th scope="col">Status </th>
                     {% endif %}
-                    {% if 'Roles Edit' in request.user.role.permission or request.user.is_superuser %}
+                    {% if perms.roles.edit %}
                     <th scope="col">Actions</th>
                     {% endif %}
                 </tr>
@@ -97,8 +99,10 @@ endcomment %}
                     {% comment %} <th scope="row">{{forloop.counter}}</th> {% endcomment %}
                     <td>{{role.role}}</td>
                     {% comment %} <td>{{role.status}}</td> {% endcomment %}
+                    {% if perms.roles.view %}
                     <td> <a href="{% url 'wayrem_admin:roles_view' %}?id={{role.id}}" class="text-dark">View Permissions</a></td>
-                    {% if 'Roles Delete' in request.user.role.permission or request.user.is_superuser %}
+                    {% endif %}
+                    {% if perms.role.activate %}
                     <td>
                         <a type="button" class="btn-sm text-white" data-bs-toggle="modal"
                             data-bs-target="#deleterole{{role.id}}">
@@ -112,7 +116,7 @@ endcomment %}
 
                     </td>
                     {% endif %}
-                    {% if 'Roles Edit' in request.user.role.permission or request.user.is_superuser %}
+                    {% if perms.roles.edit %}
                     <td>
                         <div class="btn-group">
                             <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

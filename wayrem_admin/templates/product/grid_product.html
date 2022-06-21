@@ -13,7 +13,9 @@
             <th scope="col">Suppliers</th>
             <th scope="col">lowest quoted price</th>
             <th scope="col">lowest delivery time</th>
+            {% if perms.purchase_orders.create %}
             <th scope="col">PO</th>
+            {% endif %}
             <th scope="col">Actions</th>
         </tr>
     </thead>
@@ -90,10 +92,12 @@
                     </div>
                 </div> 
             </div>
+            {% if perms.purchase_orders.create %}
             <td>
                 <a  data-bs-toggle="modal" href="{% url 'wayrem_admin:create_po' %}?product={{prod.SKU}}">Raise PO
                 </a>
             </td>
+            {% endif %}
             <td>
                 <div class="btn-group">
                     <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -103,11 +107,21 @@
                         <span class="sr-only">Toggle Dropdown</span>
                     </button>
                     <div class="dropdown-menu">
+                        {% if perms.product.view %}
                         <a class="dropdown-item" href="{% url 'wayrem_admin:productdetails' prod.id %}"><span class="fas fa-eye mr-2"></span>View Details</a>
+                        {% endif %}
+                        {% if perms.product.edit %}
                         <a class="dropdown-item" href="{% url 'wayrem_admin:updateproduct' prod.id %}"><span class="fas fa-edit mr-2"></span>Edit</a>
+                        {% endif %}
+                        {% if perms.product.add_quantity %}
                         <a class="dropdown-item add_menu_quantity" href="#" data-bs-toggle="modal" data-bs-target="#updateQuantity" data-id="{{prod.id}}"><span class="fas fa-edit mr-2"></span>Add Quantity</a>
+                        {% endif %}
+                        {% if perms.product.remove_quantity %}
                         <a class="dropdown-item remove_menu_quantity" href="#" data-bs-toggle="modal" data-bs-target="#removeQuantity" data-id="{{prod.id}}"><span class="fas fa-edit mr-2"></span>Remove Quantity</a>
+                        {% endif %}
+                        {% if perms.product.delete %}
                         <a class="dropdown-item text-danger"  data-bs-toggle="modal" data-bs-target="#deleteModal{{prod.id}}" href="#"> <span class="fas fa-trash-alt mr-2"></span>Remove</a>
+                        {% endif %}
                     </div>
                 </div>
 

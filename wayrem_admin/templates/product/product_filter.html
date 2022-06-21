@@ -2,12 +2,14 @@
     <div class="d-block mb-4 mb-md-0"></div>
     <div class="btn-toolbar mb-2 mb-md-0">
                 <div class="btn-group">
+                    {% if perms.product_management.import_product_list %}
                     <a class="btn btn-sm btn-outline-primary" type="button" href="{% url 'wayrem_admin:excelproduct' %}">
                         Export
                     </a>
                     <a href="{% url 'wayrem_admin:import_excel' %}" class="btn btn-sm btn-outline-primary" type="button">
                         Import
                     </a>
+                    {% endif %}
                      {% comment %} <button class="btn btn-sm btn-outline-primary" type="button" id="dropdownMenuButton2" onclick="document.getElementById('myFileInput').click()">
                         Import
                     </button> {% endcomment %}
@@ -22,9 +24,11 @@
 <div class="subheader row align-items-center justify-content-between">
             <div class="col-xl-5 col-lg-5 col-5">
                 <div class="col-xl-4 col-lg-4 col-md-4">
+                    {% if perms.product_management.create_product_list %}
                     <a class="btn anchor_btn ps-0 pe-0" href="{% url 'wayrem_admin:product' %}">
                         <button class="btn btn-success create_new">Create Product</button>
                     </a>
+                    {% endif %}
                 </div>
             </div>
 

@@ -24,7 +24,7 @@
             <td>{{user.contact}}</td>
             <td>{{user.role}}</td>
             <td>
-                {% if 'User Edit' in request.user.role.permission or request.user.is_superuser %}
+                {% if perms.user_management.user_activate %}
                 {% if user.is_active %} 
                     <a href="{% url 'wayrem_admin:activeblock' user.id %}" class="btn-sm text-success">
                         <!-- <div class="form-check form-switch">
@@ -45,7 +45,7 @@
 
             <td>
                 <div class="btn-group">
-                    {% if 'User Delete' in request.user.role.permission or request.user.is_superuser %}
+                    {% if perms.user_management.delete_user or perms.user_management.view_user or perms.user_management.edit_user %}
                     <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <span class="icon icon-sm">
                             <span class="fas fa-ellipsis-h icon-dark"></span>
@@ -53,9 +53,15 @@
                         <span class="sr-only">Toggle Dropdown</span>
                     </button>
                     <div class="dropdown-menu" style="">
+                        {% if perms.user_management.view_user %}
                         <a class="dropdown-item" href="{% url 'wayrem_admin:userdetails' user.id %}"><span class="fas fa-eye mr-2"></span>View Details</a>
+                        {% endif %}
+                        {% if perms.user_management.edit_user %}
                         <a class="dropdown-item" href="{% url 'wayrem_admin:updateuser' user.id %}"><span class="fas fa-edit mr-2"></span>Edit</a>
+                        {% endif %}
+                        {% if perms.user_management.delete_user %}
                         <a class="dropdown-item text-danger"  data-bs-toggle="modal" data-bs-target="#deleteModal{{user.id}}" href="#"> <span class="fas fa-trash-alt mr-2"></span>Remove</a>
+                        {% endif %}
                     </div>
                     {% else %}
                     No Permission
