@@ -17,12 +17,14 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic import ListView
 from django.urls import reverse_lazy
 from wayrem_admin.filters.user_filters import UserFilter
+from django.contrib.auth.decorators import permission_required
 
 
 def user_excel(request):
     return generate_excel("users", "users")
 
 
+@permission_required('user_management.create_user_list', raise_exception=True)
 def user_signup(request):
     if request.user.is_authenticated:
         if request.method == 'POST':

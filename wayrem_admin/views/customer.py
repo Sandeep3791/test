@@ -93,6 +93,7 @@ def customer_details(request, id=None):
     return render(request, 'customer/customer_view.html', {'user': user})
 
 
+@permission_required('customer.approve', raise_exception=True)
 def customer_verification(request, id=None):
     status = request.GET.get('status')
     print(status)
@@ -180,6 +181,7 @@ def customer_verification(request, id=None):
     return redirect('wayrem_admin:customerslist')
 
 
+@permission_required('customer.update_email', raise_exception=True)
 def customer_email_update(request, id=None):
     customer = Customer.objects.get(id=id)
     email_id = customer.email
