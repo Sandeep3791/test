@@ -34,6 +34,7 @@
     {% endif %}
     <!-- User's Count  -->
     <div class="row text-white mt-5">
+        {% if perms.dashboard.user_tiles %}
         <div class="col-12 col-sm-6 col-xl-4 mb-4">
             <div class="card border-light shadow-sm">
                 <div class="card-body bg-primary rounded">
@@ -52,12 +53,13 @@
                             <small> <a class="text-success" href="{% url 'wayrem_admin:userlist' %}">More Info <i
                                         class="fas fa-arrow-circle-right"></i></a>
                             </small>
-                        
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        {% endif %}
+        {% if perms.dashboard.suppliers_tiles %}
         <div class="col-12 col-sm-6 col-xl-4 mb-4">
             <div class="card border-light shadow-sm">
                 <div class="card-body bg-primary rounded">
@@ -76,12 +78,13 @@
                             <small> <a class="text-success" href="{% url 'wayrem_admin:supplierlist' %}">More Info <i
                                         class="fas fa-arrow-circle-right"></i></a>
                             </small>
-                            
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        {% endif %}
+        {% if perms.dashboard.products_tiles %}
         <div class="col-12 col-sm-6 col-xl-4 mb-4">
             <div class="card border-light shadow-sm">
                 <div class="card-body bg-primary rounded">
@@ -100,15 +103,16 @@
                             <small> <a class="text-success" href="{% url 'wayrem_admin:productlist' %}">More Info <i
                                         class="fas fa-arrow-circle-right"></i></a>
                             </small>
-                        
                         </div> 
                     </div>
                 </div>
             </div>
         </div>
+        {% endif %}
     </div>
     <!-- User's Count End  -->
     <div class="row justify-content-md-center">
+        {% if perms.dashboard.monthly_orders_chart %}
         <div class="col-12 mb-4">
             <div style="background:#fff;" class="p-2">
                 <h5 class="text-center text-primary" >Monthly Orders Chart</h5>
@@ -135,6 +139,8 @@
                 </div>
             </div> -->
         </div>
+        {% endif %}
+        {% if perms.dashboard.new_customers %}
         <div class="col-12 col-sm-6 col-xl-4 mb-4 box-set-3">
             <div class="card border-light shadow-sm">
                 <div class="card-body">
@@ -162,6 +168,8 @@
                 </div>
             </div>
         </div>
+        {% endif %}
+        {% if perms.dashboard.orders %}
         <div class="col-12 col-sm-6 col-xl-4 mb-4 box-set-3">
             <div class="card border-light shadow-sm">
                 <div class="card-body">
@@ -189,6 +197,8 @@
                 </div>
             </div>
         </div>
+        {% endif %}
+        {% if perms.dashboard.transactions %}
         <div class="col-12 col-sm-6 col-xl-4 mb-4 box-set-3">
             <div class="card border-light shadow-sm">
                 <div class="card-body">
@@ -219,6 +229,8 @@
                 </div>
             </div>
         </div>
+        {% endif %}
+        {% if perms.dashboard.purchase_order %}
         <div class="col-12 col-sm-6 col-xl-6 mb-4">
             <div class="card border-light shadow-sm icon-smallsize">
                 <div class="card-body">
@@ -244,6 +256,7 @@
                 </div>
             </div>
         </div>
+        {% endif %}
         <div class="col-12 col-sm-6 col-xl-6 mb-4">
             {% comment %} <div class="card border-light shadow-sm">
                 <div class="card-header border-bottom border-light">
