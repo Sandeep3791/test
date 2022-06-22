@@ -59,7 +59,7 @@ def get_featured_products(customer_id: int, offset: str, authorize: AuthJWT = De
 
 @router.post('/add/favorite/Product')
 def favorite_product(request: product_schemas.AddFavoriteProduct, authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
-    products = product_services.Favorite_Product(request, db)
+    products = product_services.favorite_Product(request, db)
     return products
 
 
