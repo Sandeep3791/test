@@ -49,9 +49,12 @@ endcomment %}
         <div class="subheader row align-items-center justify-content-between">
             <div class="col-xl-8 col-lg-8 col-12">
                 <div class="col-xl-3 col-lg-3 col-md-3">
+                    {% if perms.role.create %}
                     <a class="btn anchor_btn ps-0 pe-0" href="{% url 'wayrem_admin:roles_create' %}">
                         <button class="btn btn-success  create_new">Create New Role</button>
                     </a>
+                    {% endif %}
+                    
                 </div>
                 {% comment %} <div class="row add_btn col-xl-4 col-lg-4 col-md-5 d-flex align-items-center">
                     <div class="col">
@@ -119,8 +122,9 @@ endcomment %}
                                 </span>
                                 <span class="sr-only">Toggle Dropdown</span>
                             </button>
-                            <div class="dropdown-menu" style="">
-                                <a class="dropdown-item" href="{% url 'wayrem_admin:roles_update' %}?id={{role.id}}"><span class="fas fa-edit mr-2"></span>Edit</a>
+                            <div class="dropdown-menu" >
+                                {% if perms.role.edit %}<a class="dropdown-item" href="{% url 'wayrem_admin:roles_update' role.id %}"><span class="fas fa-edit mr-2"></span>Edit</a>{% endif %}
+                                {% if perms.role.permission %}<a class="dropdown-item" href="{% url 'wayrem_admin:role-permission' role.id %}"><span class="fas fa-edit mr-2"></span>permission</a>{% endif %}
                             </div>
                         </div>
 
