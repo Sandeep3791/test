@@ -48,7 +48,7 @@
     <div class="table-settings mb-4">
         <div class="subheader row mt-3 align-items-center">
             <div class="col-xl-2 col-md-2 col-lg-2 col-md-5">
-                <a class="btn btn-success" href="{% url 'wayrem_admin:add_warehouse' %}">Create Warehouse</a>
+                {% if perms.warehouse.create %}<a class="btn btn-success" href="{% url 'wayrem_admin:add_warehouse' %}">Create Warehouse</a>{% endif %}
             </div>
             <div class="add_btn col-xl-2 col-lg-2 col-md-5 d-flex align-items-righ padding-0 justify-content-center">
                 <div class="col-xl-10 col-md-3 col-lg-10 col-md-5">
@@ -97,9 +97,9 @@
                                 <span class="sr-only">Toggle Dropdown</span>
                             </button>
                             <div class="dropdown-menu">
-                                <a class="dropdown-item" href="{% url 'wayrem_admin:view_warehouse' item.id %}"><span class="fas fa-eye mr-2"></span>View Details</a>
-                                <a class="dropdown-item" href="{% url 'wayrem_admin:update_warehouse' item.id %}"><span class="fas fa-edit mr-2"></span>Edit</a>
-                                <a class="dropdown-item text-danger"  data-bs-toggle="modal" data-bs-target="#deleteModal{{item.id}}" href="#"> <span class="fas fa-trash-alt mr-2"></span>Remove</a>
+                                {% if perms.warehouse.view %}<a class="dropdown-item" href="{% url 'wayrem_admin:view_warehouse' item.id %}"><span class="fas fa-eye mr-2"></span>View Details</a>{% endif %}
+                                {% if perms.warehouse.edit %}<a class="dropdown-item" href="{% url 'wayrem_admin:update_warehouse' item.id %}"><span class="fas fa-edit mr-2"></span>Edit</a>{% endif %}
+                                {% if perms.warehouse.delete %}<a class="dropdown-item text-danger"  data-bs-toggle="modal" data-bs-target="#deleteModal{{item.id}}" href="#"> <span class="fas fa-trash-alt mr-2"></span>Remove</a>{% endif %}
                             </div>
                         </div>
 

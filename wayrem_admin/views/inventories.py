@@ -21,7 +21,7 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.db.models import F
 from django.db.models import Value
 from django.db.models.functions import Concat
-
+from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
 
 class InventoryAutocomplete(View):
     def get(self, request, format=None):
@@ -33,7 +33,8 @@ class InventoryAutocomplete(View):
         return JsonResponse(json, safe=False)
 
 
-class InventoriesList(View):
+class InventoriesList(LoginPermissionCheckMixin,View):
+    permission_required = 'inventory_warehouses.inventories'
     template_name = "inventories/list.html"
     form = SettingsForm()
 
