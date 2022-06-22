@@ -36,7 +36,7 @@ from django.db import models
 from datetime import datetime
 import uuid
 from django.core.files.storage import FileSystemStorage
-from wayrem_admin.models.products import Products,
+from wayrem_admin.models.products import Products
 from wayrem_admin.models.suppliers import SupplierProducts, Supplier
 
 

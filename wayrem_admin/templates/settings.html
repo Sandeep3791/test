@@ -176,9 +176,9 @@
             <div class="row">
                 <div class="col-12 mb-4">
                     <div class="card shadow-sm text-center p-0">
-                        <div class="profile-cover rounded-top" data-background="/static/assets/img/profile-cover.jpg"></div>
+                        {% comment %} <div class="profile-cover rounded-top" data-background="/static/assets/img/profile-cover.jpg"></div> {% endcomment %}
                         <div class="card-body pb-5">
-                            <img src="/static/assets/img/team/profile-picture-2.jpg" class="user-avatar large-avatar rounded-circle mx-auto mt-n7 mb-4" alt="Neil Portrait">
+                            {% comment %} <img src="/static/assets/img/team/profile-picture-2.jpg" class="user-avatar large-avatar rounded-circle mx-auto mt-n7 mb-4" alt="Neil Portrait"> {% endcomment %}
                             <h4 class="h3">
                               {{ request.user.get_full_name }}
                             </h4>
