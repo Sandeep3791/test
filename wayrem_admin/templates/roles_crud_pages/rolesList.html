@@ -49,9 +49,12 @@ endcomment %}
         <div class="subheader row align-items-center justify-content-between">
             <div class="col-xl-8 col-lg-8 col-12">
                 <div class="col-xl-3 col-lg-3 col-md-3">
+                    {% if perms.role.create %}
                     <a class="btn anchor_btn ps-0 pe-0" href="{% url 'wayrem_admin:roles_create' %}">
                         <button class="btn btn-success  create_new">Create New Role</button>
                     </a>
+                    {% endif %}
+                    
                 </div>
                 {% comment %} <div class="row add_btn col-xl-4 col-lg-4 col-md-5 d-flex align-items-center">
                     <div class="col">
@@ -83,12 +86,8 @@ endcomment %}
                     <th scope="col">Role Name</th>
                     {% comment %} <th scope="col">Status</th> {% endcomment %}
                     <th scope="col">Access</th>
-                    {% if 'Roles Delete' in request.user.role.permission or request.user.is_superuser %}
                     <th scope="col">Status </th>
-                    {% endif %}
-                    {% if 'Roles Edit' in request.user.role.permission or request.user.is_superuser %}
                     <th scope="col">Actions</th>
-                    {% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -97,9 +96,11 @@ endcomment %}
                     {% comment %} <th scope="row">{{forloop.counter}}</th> {% endcomment %}
                     <td>{{role.role}}</td>
                     {% comment %} <td>{{role.status}}</td> {% endcomment %}
+                    {% if perms.roles.view %}
                     <td> <a href="{% url 'wayrem_admin:roles_view' %}?id={{role.id}}" class="text-dark">View Permissions</a></td>
-                    {% if 'Roles Delete' in request.user.role.permission or request.user.is_superuser %}
+                    {% endif %}
                     <td>
+                        {% if perms.role.activate %}
                         <a type="button" class="btn-sm text-white" data-bs-toggle="modal"
                             data-bs-target="#deleterole{{role.id}}">
                             {% if role.status == 'Active'%}
@@ -110,10 +111,10 @@ endcomment %}
                             {% endif %}
                         </a>
 
+                        {% endif %}
                     </td>
-                    {% endif %}
-                    {% if 'Roles Edit' in request.user.role.permission or request.user.is_superuser %}
                     <td>
+                        {% if perms.roles.edit %}
                         <div class="btn-group">
                             <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="icon icon-sm">
@@ -121,9 +122,9 @@ endcomment %}
                                 </span>
                                 <span class="sr-only">Toggle Dropdown</span>
                             </button>
-                            <div class="dropdown-menu" style="">
-                                <a class="dropdown-item" href="{% url 'wayrem_admin:roles_update' %}?id={{role.id}}"><span class="fas fa-edit mr-2"></span>Edit</a>
-                          
+                            <div class="dropdown-menu" >
+                                {% if perms.role.edit %}<a class="dropdown-item" href="{% url 'wayrem_admin:roles_update' role.id %}"><span class="fas fa-edit mr-2"></span>Edit</a>{% endif %}
+                                {% if perms.role.permission %}<a class="dropdown-item" href="{% url 'wayrem_admin:role-permission' role.id %}"><span class="fas fa-edit mr-2"></span>permission</a>{% endif %}
                             </div>
                         </div>
 
@@ -160,8 +161,8 @@ endcomment %}
                                 </div>
                             </div>
                         </div>
+                        {% endif %}
                     </td>
-                    {% endif %}
                     
                 </tr>
                 {% endfor %}

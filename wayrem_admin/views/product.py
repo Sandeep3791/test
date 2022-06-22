@@ -1,3 +1,4 @@
+from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
 import imp
 import re
 from django.db import connection
@@ -26,18 +27,18 @@ from django.contrib.auth.decorators import login_required
 from wayrem_admin.services import *
 from wayrem_admin.export import generate_excel
 from wayrem_admin.forms import *
-from wayrem_admin.decorators import role_required
 import biip
 from django.forms import formset_factory
 from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.contrib.auth.decorators import permission_required
 
 
 def product_excel(request):
     return generate_excel("products_master", "products")
 
 
-@role_required('Products Add')
+@permission_required('product_management.create_product_list', raise_exception=True)
 def product(request):
     if request.method == "POST":
         delSession(request)
@@ -131,7 +132,7 @@ def load_category_margin(request):
     return HttpResponse(data, content_type='application/json')
 
 
-@role_required('Products Add')
+@permission_required('product_management.create_product_list', raise_exception=True)
 def product_view_one(request):
     initial = {
         'SKU': request.session.get("SKU", None),
@@ -230,7 +231,7 @@ def product_view_one(request):
     return render(request, 'product1.html', context)
 
 
-@role_required('Products Add')
+@permission_required('product_management.create_product_list', raise_exception=True)
 def product_images(request):
     if request.method == "POST":
         form = ProductImageForm(request.POST, request.FILES)
@@ -294,7 +295,8 @@ def product_images(request):
 # # ----------------------------------------------------------------------------
 
 
-class ProductList(ListView):
+class ProductList(LoginPermissionCheckMixin, ListView):
+    permission_required = 'product_management.manage_product_list'
     model = Products
     template_name = "product/list.html"
     context_object_name = 'productslist'
@@ -317,7 +319,6 @@ class ProductList(ListView):
 #     template_name = "productlist.html"
 
 #     @method_decorator(login_required(login_url='wayrem_admin:root'))
-#     @method_decorator(role_required('Products View'))
 #     def get(self, request, format=None):
 #         productslist = Products.objects.all()
 #         search_filter = Q()
@@ -356,7 +357,7 @@ class ProductList(ListView):
 #         return render(request, self.template_name, context)
 
 
-@role_required('Product View')
+@permission_required('product.view', raise_exception=True)
 def product_details(request, id=None):
     prod = Products.objects.get(id=id)
     ingrd = ProductIngredients.objects.filter(product=id).all()
@@ -368,7 +369,7 @@ def product_details(request, id=None):
     return render(request, 'View_product_copy.html', {'form': form, 'form2': form1, 'image': prod.primary_image, 'prodimg': prodimage, 'id': prod.id})
 
 
-@role_required('Products Edit')
+@permission_required('product.edit', raise_exception=True)
 def update_product(request, id=None, *args, **kwargs):
     # print(id)
 
@@ -408,8 +409,9 @@ def update_product(request, id=None, *args, **kwargs):
     return render(request, 'product_update_latest.html', {'form': form, 'formset': form1, 'form3': form3, 'image': prod.primary_image, 'product_images': product_images, 'id': prod.id})
 
 
-class DeleteProduct(View):
-    @method_decorator(role_required('Products Delete'))
+class DeleteProduct(LoginPermissionCheckMixin, View):
+    permission_required = 'product.delete'
+
     def post(self, request):
         productid = request.POST.get('product_id')
         products = Products.objects.get(id=productid)
@@ -458,6 +460,7 @@ def delete_product_images(request):
     return HttpResponse("Image Delete Successfully!!")
 
 
+@permission_required('product_management.import_product_list', raise_exception=True)
 def import_excel(request):
     if request.method == "POST":
         delSession(request)

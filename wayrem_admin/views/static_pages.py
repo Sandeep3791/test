@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.views import View
@@ -8,7 +9,6 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic.edit import CreateView, UpdateView
 from wayrem_admin.forms import StaticpagesForm, StaticpagesViewForm
 from django.urls import reverse_lazy
-from wayrem_admin.decorators import role_required
 from wayrem_admin.utils.constants import *
 from django.urls import reverse_lazy
 from wayrem_admin.filters.static_pages import StaticPageFilter
@@ -21,7 +21,6 @@ from wayrem_admin.forms.static_pages import StaticPageSearchFilter
 #     form = SettingsForm()
 
 #     @method_decorator(login_required(login_url='wayrem_admin:root'))
-#     @method_decorator(role_required('Static Pages View'))
 #     def get(self, request, format=None):
 #         userlist = StaticPages.objects.all()
 #         paginator = Paginator(userlist, RECORDS_PER_PAGE)
@@ -35,8 +34,11 @@ from wayrem_admin.forms.static_pages import StaticPageSearchFilter
 #             # If page is out of range (e.g. 9999), deliver last page of results.
 #             slist = paginator.page(paginator.num_pages)
 #         return render(request, self.template_name, {"userlist": slist, "form": self.form})
+from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
 
-class StaticpagesList(ListView):
+
+class StaticpagesList(LoginPermissionCheckMixin, ListView):
+    permission_required = 'static_page.list'
     model = StaticPages
     template_name = "static_pages/list.html"
     context_object_name = 'userlist'
@@ -51,31 +53,23 @@ class StaticpagesList(ListView):
     def get_context_data(self, **kwargs):
         context = super(StaticpagesList, self).get_context_data(**kwargs)
         context['filter_form'] = StaticPageSearchFilter(self.request.GET)
-        return context   
+        return context
 
 
-class StaticpagesCreate(CreateView):
+class StaticpagesCreate(LoginPermissionCheckMixin, CreateView):
+    permission_required = 'static_page.create'
     model = StaticPages
     form_class = StaticpagesForm
     template_name = 'static_pages/add.html'
     success_url = reverse_lazy('wayrem_admin:staticpages')
 
-    @method_decorator(login_required(login_url='wayrem_admin:root'))
-    @method_decorator(role_required('Static Pages Add'))
-    def dispatch(self, *args, **kwargs):
-        return super(StaticpagesCreate, self).dispatch(*args, **kwargs)
 
-
-class StaticpagesUpdate(UpdateView):
+class StaticpagesUpdate(LoginPermissionCheckMixin, UpdateView):
+    permission_required = 'static_page.edit'
     model = StaticPages
     form_class = StaticpagesForm
     template_name = 'static_pages/update.html'
     pk_url_kwarg = 'static_pages_pk'
-
-    @method_decorator(login_required(login_url='wayrem_admin:root'))
-    @method_decorator(role_required('Static Pages Edit'))
-    def dispatch(self, *args, **kwargs):
-        return super(StaticpagesUpdate, self).dispatch(*args, **kwargs)
 
     def get_success_url(self):
         return reverse_lazy('wayrem_admin:updatestaticpages', kwargs={'static_pages_pk': self.get_object().id})
@@ -87,16 +81,12 @@ class StaticpagesUpdate(UpdateView):
         return context
 
 
-class StaticpagesView(UpdateView):
+class StaticpagesView(LoginPermissionCheckMixin, UpdateView):
+    permission_required = 'static_page.view'
     model = StaticPages
     form_class = StaticpagesViewForm
     template_name = 'static_pages/view.html'
     pk_url_kwarg = 'static_pages_pk'
-
-    @method_decorator(login_required(login_url='wayrem_admin:root'))
-    @method_decorator(role_required('Static Pages View'))
-    def dispatch(self, *args, **kwargs):
-        return super(StaticpagesView, self).dispatch(*args, **kwargs)
 
     def get_success_url(self):
         return reverse_lazy('wayrem_admin:viewemailtemplates', kwargs={'static_pages_pk': self.get_object().id})
@@ -108,9 +98,9 @@ class StaticpagesView(UpdateView):
         return context
 
 
-class DeleteStaticpages(View):
+class DeleteStaticpages(LoginPermissionCheckMixin, View):
+    permission_required = 'static_page.delete'
 
-    @method_decorator(role_required('Static Pages Delete'))
     def post(self, request):
         pageid = request.POST.get('pageid')
         user = StaticPages.objects.get(pk=pageid)
@@ -118,6 +108,7 @@ class DeleteStaticpages(View):
         return redirect('wayrem_admin:staticpages')
 
 
+@permission_required('static_page.view', raise_exception=True)
 def staticpages_view(request, url):
     data = StaticPages.objects.filter(slug=url).first()
     context = {

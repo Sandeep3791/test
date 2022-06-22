@@ -41,7 +41,10 @@ div.dataTables_wrapper div.dataTables_info{display: none;}
     <div class="table-settings mb-4 pt-2">
         <div class="subheader row mt-3 align-items-center">
             <div class="col-xl-3 col-lg-3 col-md-3 padding-left-0" >
+                {% if perms.static_page.create %}
                 <a href="{% url 'wayrem_admin:addstaticpages' %}" class="btn btn-primary col-sm-12 col-md-12 col-12 create_new">Create Static Page</a>
+                {% endif %}
+                
             </div>
     
             <div class="col-xl-9 col-lg-9 col-9 my-2">

@@ -1,3 +1,4 @@
+from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
 from wayrem_admin.forms.account import UserSearchFilter
 from wayrem_admin.utils.constants import *
 from django.shortcuts import render, redirect
@@ -5,25 +6,25 @@ from django.contrib import messages
 from wayrem_admin.forms import SubAdminForm, ProfileUpdateForm, SubAdminUpdateForm, SupplierForm, SupplierUpdateForm
 import string
 import secrets
-from wayrem_admin.decorators import role_required
 from wayrem_admin.services import send_email
 from wayrem_admin.export import generate_excel
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
-from wayrem_admin.models import User, EmailTemplateModel
+from wayrem_admin.models import Users, EmailTemplateModel
 from django.views import View
 from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.views.generic import ListView
 from django.urls import reverse_lazy
 from wayrem_admin.filters.user_filters import UserFilter
+from django.contrib.auth.decorators import permission_required
 
 
 def user_excel(request):
     return generate_excel("users", "users")
 
 
-@role_required('User Add')
+@permission_required('user_management.create_user_list', raise_exception=True)
 def user_signup(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
@@ -37,6 +38,7 @@ def user_signup(request):
                 print(role)
                 password = form.cleaned_data['password1']
                 print(password)
+                form.is_superuser = 0
                 form.save()
                 to = email
                 obj = EmailTemplateModel.objects.filter(
@@ -64,34 +66,16 @@ def user_signup(request):
         return redirect('wayrem_admin:dashboard')
 
 
-# class UsersList(View):
-#     template_name = "userlist.html"
-
-#     @method_decorator(login_required(login_url='wayrem_admin:root'))
-#     @method_decorator(role_required('User View'))
-#     def get(self, request, format=None):
-#         userlist = User.objects.filter().exclude(is_superuser=True)
-#         paginator = Paginator(userlist, RECORDS_PER_PAGE)
-#         page = request.GET.get('page')
-#         try:
-#             ulist = paginator.page(page)
-#         except PageNotAnInteger:
-#             # If page is not an integer, deliver first page.
-#             ulist = paginator.page(1)
-#         except EmptyPage:
-#             # If page is out of range (e.g. 9999), deliver last page of results.
-#             ulist = paginator.page(paginator.num_pages)
-#         return render(request, self.template_name, {"userlist": ulist})
-
-class UsersList(ListView):
-    model = User
+class UsersList(LoginPermissionCheckMixin, ListView):
+    permission_required = 'user_management.users_list'
+    model = Users
     template_name = "users/list.html"
     context_object_name = 'userlist'
     paginate_by = RECORDS_PER_PAGE
     success_url = reverse_lazy('wayrem_admin:userlist')
 
     def get_queryset(self):
-        qs = User.objects.filter().exclude(is_superuser=True)
+        qs = Users.objects.filter().exclude(is_superuser=True)
         filtered_list = UserFilter(self.request.GET, queryset=qs)
         return filtered_list.qs
 
@@ -101,16 +85,16 @@ class UsersList(ListView):
         return context
 
 
-@role_required('User View')
+@permission_required('user_management.view_user', raise_exception=True)
 def user_details(request, id=None):
-    user = User.objects.filter(id=id).first()
+    user = Users.objects.filter(id=id).first()
     return render(request, 'user_popup.html', {'userdata': user})
 
 
-@role_required('User Edit')
+@permission_required('user_management.edit_user', raise_exception=True)
 def update_user(request, id=None):
     print(id)
-    user = User.objects.get(id=id)
+    user = Users.objects.get(id=id)
     if request.method == "POST":
         # kwargs = { 'data' : request.POST }
         form = SubAdminUpdateForm(request.POST or None, instance=user)
@@ -126,7 +110,7 @@ def update_user(request, id=None):
 def update_profile(request, *args, **kwargs):
     if request.method == "POST":
         # kwargs = { 'data' : request.POST }
-        user = User.objects.get(username=request.user.username)
+        user = Users.objects.get(username=request.user.username)
 
         form = ProfileUpdateForm(request.POST, instance=user)
         if form.is_valid():
@@ -142,7 +126,7 @@ def update_profile(request, *args, **kwargs):
             address = form.cleaned_data['address']
             city = form.cleaned_data['city']
             zip_code = form.cleaned_data['zip_code']
-            user = User.objects.get(username=request.user.username)
+            user = Users.objects.get(username=request.user.username)
             user.email = email
             user.first_name = fname
             user.last_name = lname
@@ -155,27 +139,28 @@ def update_profile(request, *args, **kwargs):
             user.save()
             print("Here")
             return redirect('wayrem_admin:updateprofile')
-    user = User.objects.get(username=request.user.username)
+    user = Users.objects.get(username=request.user.username)
     form = ProfileUpdateForm(instance=user)
     return render(request, 'settings.html', {'form': form})
 
 
-class DeleteUser(View):
+class DeleteUser(LoginPermissionCheckMixin, View):
+    permission_required = 'user_management.delete_user'
 
-    @method_decorator(role_required('User Delete'))
     def post(self, request):
         userid = request.POST.get('userid')
-        user = User.objects.get(pk=userid)
+        user = Users.objects.get(pk=userid)
         user.delete()
         return redirect('wayrem_admin:userlist')
 
 
 # Active/Block
-class Active_BlockUser(View):
+class Active_BlockUser(LoginPermissionCheckMixin, View):
+    permission_required = 'user_management.user_activate'
+
     @method_decorator(login_required(login_url='wayrem_admin:root'))
-    @method_decorator(role_required('User Edit'))
     def get(self, request, id):
-        user = User.objects.get(pk=id)
+        user = Users.objects.get(pk=id)
         if user.is_active:
             user.is_active = False
         else:

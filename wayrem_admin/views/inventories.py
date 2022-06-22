@@ -16,13 +16,12 @@ from wayrem_admin.forms import InventoryForm, InventoryViewForm
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.db.models import Q
-from wayrem_admin.decorators import role_required
 from wayrem_admin.utils.constants import *
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.db.models import F
 from django.db.models import Value
 from django.db.models.functions import Concat
-
+from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
 
 class InventoryAutocomplete(View):
     def get(self, request, format=None):
@@ -34,12 +33,12 @@ class InventoryAutocomplete(View):
         return JsonResponse(json, safe=False)
 
 
-class InventoriesList(View):
+class InventoriesList(LoginPermissionCheckMixin,View):
+    permission_required = 'inventory_warehouses.inventories'
     template_name = "inventories/list.html"
     form = SettingsForm()
 
     @method_decorator(login_required(login_url='wayrem_admin:root'))
-    @method_decorator(role_required('Inventory View'))
     def get(self, request, format=None):
         inventories = Inventory.objects.all().order_by("-id")
         q = request.GET.get('q') if request.GET.get('q') != None else ''
@@ -66,31 +65,30 @@ class InventoryCreate(CreateView):
     success_url = reverse_lazy('wayrem_admin:inventories')
 
     @method_decorator(login_required(login_url='wayrem_admin:root'))
-    @method_decorator(role_required('Inventory Add'))
     def dispatch(self, *args, **kwargs):
         return super(InventoryCreate, self).dispatch(*args, **kwargs)
 
     def form_valid(self, form):
         form = form.save(commit=False)
-        product_id=form.product.id
-        inventory_type_id=form.inventory_type.id
-        form.inventory_type=InventoryType.objects.get(id=inventory_type_id)
-        form.product=Products.objects.get(id=product_id)
-        
+        product_id = form.product.id
+        inventory_type_id = form.inventory_type.id
+        form.inventory_type = InventoryType.objects.get(id=inventory_type_id)
+        form.product = Products.objects.get(id=product_id)
+
         if int(form.quantity) == 0:
-            messages.error(self.request,'Product quantities cannot be Zero.')
+            messages.error(self.request, 'Product quantities cannot be Zero.')
             return HttpResponse("valid")
 
         if inventory_type_id == 5:
             if int(form.quantity) > int(form.product.quantity):
-                messages.error(self.request,'Product quantities cannot be removed more than the available quantities')
+                messages.error(
+                    self.request, 'Product quantities cannot be removed more than the available quantities')
                 return HttpResponse("valid")
         new_form = form.save()
         Inventory().update_product_quantity(form.product.id)
         messages.success(self.request, 'created successfully.')
         return HttpResponse("valid")
-        
-    
+
     def form_invalid(self, form):
         response = super().form_invalid(form)
         print(form.errors)
@@ -105,7 +103,6 @@ class InventoryUpdate(UpdateView):
     pk_url_kwarg = 'inventory_pk'
 
     @method_decorator(login_required(login_url='wayrem_admin:root'))
-    @method_decorator(role_required('Inventory Edit'))
     def dispatch(self, *args, **kwargs):
         return super(InventoryUpdate, self).dispatch(*args, **kwargs)
 
@@ -126,7 +123,6 @@ class InventoryView(UpdateView):
     pk_url_kwarg = 'inventory_pk'
 
     @method_decorator(login_required(login_url='wayrem_admin:root'))
-    @method_decorator(role_required('Inventory Edit'))
     def dispatch(self, *args, **kwargs):
         return super(InventoryView, self).dispatch(*args, **kwargs)
 

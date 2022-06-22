@@ -6,23 +6,26 @@ from wayrem_admin.utils.constants import *
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
-from wayrem_admin.decorators import role_required
 from wayrem_admin.forms import CategoryCreateForm
 from django.views import View
 from django.utils.decorators import method_decorator
 from wayrem_admin.forms.categories import CategoryForm, CategorySearchFilter, CategoryUpdateForm
-from wayrem_admin.models import Categories, SubCategories
+from wayrem_admin.models import Categories
 from wayrem_admin.export import generate_excel
 from wayrem_admin.services import inst_Category
 from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+from django.contrib.auth.decorators import permission_required
+from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
 
 
 def categories_excel(request):
     return generate_excel("categories_master", "categories")
 
 
-class CategoriesList(ListView):
+class CategoriesList(LoginPermissionCheckMixin, ListView):
+    permission_required = 'categories.list'
     model = Categories
     template_name = "category/list.html"
     context_object_name = 'categorieslist'
@@ -41,7 +44,7 @@ class CategoriesList(ListView):
 
 
 @login_required(login_url='wayrem_admin:root')
-@role_required('Categories Edit')
+@permission_required('categories.edit', raise_exception=True)
 def update_categories(request, id=None, *args, **kwargs):
     print(id)
     if request.method == "POST":
@@ -80,14 +83,15 @@ def update_categories(request, id=None, *args, **kwargs):
     return render(request, 'update_category.html', {'form': form, 'id': category.id, 'user': category})
 
 
-@role_required('Categories View')
+@permission_required('categories.view', raise_exception=True)
 def category_details(request, id=None):
     cate = Categories.objects.filter(id=id).first()
     return render(request, 'category_popup.html', {'catedata': cate})
 
 
-class DeleteCategories(View):
-    @method_decorator(role_required('Categories Delete'))
+class DeleteCategories(LoginPermissionCheckMixin, View):
+    permission_required = 'categories.delete'
+
     def post(self, request):
         categoriesid = request.POST.get('category_id')
         categories = Categories.objects.get(id=categoriesid)
@@ -102,8 +106,7 @@ class DeleteCategories(View):
         return redirect('wayrem_admin:categorieslist')
 
 
-@login_required(login_url='wayrem_admin:root')
-@role_required('Categories Add')
+@permission_required('categories.add', raise_exception=True)
 def add_category(request):
     context = {}
     form = CategoryForm(request.POST or None, request.FILES or None)

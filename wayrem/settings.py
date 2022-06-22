@@ -30,6 +30,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'ckeditor',
     'wayrem_admin',
+    'wayrem_admin.users',
     'widget_tweaks',
     'maintenance_mode',
     'django_celery_beat',
@@ -60,6 +61,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'wayrem_admin.users.context_processors.show_menu',
             ],
             'libraries': {
                 'util_tags': 'wayrem_admin.templatetags.util_tags',
@@ -76,10 +78,10 @@ WSGI_APPLICATION = 'wayrem.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'wayrem_uat_v1',
+        'NAME': 'wayrem_stg_v1.2',
         'USER': 'wayremdb_adminuser',
         'PASSWORD': 'r2wXJfUs78NczMFWRXcV',
-        'HOST': 'db',
+        'HOST': '157.175.151.40',
         'PORT': '3306',
         'OPTIONS': {
             "init_command": "SET foreign_key_checks = 0;",
@@ -139,7 +141,12 @@ STATIC_ROOT = 'static/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-AUTH_USER_MODEL = 'wayrem_admin.User'
+#AUTH_USER_MODEL = 'wayrem_admin.User'
+#AUTH_USER_MODEL = 'wayrem_admin.User'
+AUTH_USER_MODEL = 'wayrem_admin.Users'
+AUTHENTICATION_BACKENDS = ('wayrem_admin.users.backends.MyAuthBackend',)
+
+
 MESSAGE_TAGS = {messages_s.ERROR: 'danger'}
 # ! Media Files Local settings
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
@@ -203,7 +210,9 @@ CKEDITOR_CONFIGS = {
 # MAINTENANCE_MODE = True
 # MAINTENANCE_MODE_IGNORE_IP_ADDRESSES = ("49.36.40.132")
 
-
+FLAG_SSL = True
+LOGIN_URL = '/'
+BASE_URL = 'http://localhost:8000'
 # celery
 CELERY_BROKER_URL = 'redis://redis-server:6379'
 CELERY_RESULT_BACKEND = 'redis://redis-server:6379'

@@ -59,10 +59,13 @@
     </div>
     <div class="table-settings mb-4">
         <div class="subheader row align-items-center justify-content-between"> 
-            <div class="col-xl-3 col-lg-3 col-md-5"><a class="btn anchor_btn ps-0 pe-0"
+            <div class="col-xl-3 col-lg-3 col-md-5">
+                {% if perms.ingredient.add %}
+                <a class="btn anchor_btn ps-0 pe-0"
                 href="{% url 'wayrem_admin:createingredients' %}">
                 <button class="btn btn-success create_new">Create New Ingredients</button>
                 </a>
+                {% endif %}
             </div>
             <div class="col-xl-9 col-lg-9 col-12">
                 <div class="row d-flex align-items-center" style="margin-top:2px;">
@@ -107,8 +110,12 @@
                                 <span class="sr-only">Toggle Dropdown</span>
                             </button>
                             <div class="dropdown-menu">
+                                {% if perms.ingredient.edit %}
                                 <a class="dropdown-item" href="{% url 'wayrem_admin:updateingredients' ingre.id %}"><span class="fas fa-edit mr-2"></span>Edit</a>
+                                {% endif %}
+                                {% if perms.ingredient.delete %}
                                 <a class="dropdown-item text-danger"  data-bs-toggle="modal" data-bs-target="#deleteModal{{ingre.id}}" href="#"> <span class="fas fa-trash-alt mr-2"></span>Remove</a>
+                                {% endif %}
                             </div>
                         </div>
                         <!-- Modal -->

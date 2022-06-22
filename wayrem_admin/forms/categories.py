@@ -1,6 +1,6 @@
 from django import forms
 from django.template.defaultfilters import default
-from wayrem_admin.models import Categories, SubCategories
+from wayrem_admin.models import Categories
 
 
 class CategoryCreateForm(forms.ModelForm):
@@ -9,12 +9,11 @@ class CategoryCreateForm(forms.ModelForm):
         fields = ("name", "image", "tag", "margin")
 
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'form-control', 'maxlength':35 }),
+            'name': forms.TextInput(attrs={'class': 'form-control', 'maxlength': 35}),
             'margin': forms.TextInput(attrs={'class': 'form-control'}),
             'image': forms.FileInput(attrs={'class': 'form--control-select'}),
             'tag': forms.Textarea(attrs={'class': 'form-control', 'rows': '3'})
         }
-    
 
 
 UNIT = (
@@ -55,16 +54,9 @@ class CategoryForm(forms.Form):
         if 'name' in form_data:
             name = form_data['name']
             obj = Categories.objects.filter(name=name).first()
-            obj_sub = SubCategories.objects.filter(name=name).first()
             try:
                 if name in obj.name:
                     # Will raise a error message
-                    self._errors["name"] = "Name already exists!"
-                    del form_data['name']
-            except:
-                pass
-            try:
-                if name in obj_sub.name:
                     self._errors["name"] = "Name already exists!"
                     del form_data['name']
             except:

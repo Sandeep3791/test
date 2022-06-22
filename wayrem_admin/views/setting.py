@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import permission_required
+from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
 import uuid
 from django.shortcuts import render, redirect
 from django.contrib import messages
@@ -48,7 +50,8 @@ def settings_excel(request):
 #             userlist = Settings.objects.all()
 #             return render(request, self.template_name, {"userlist": userlist, "form": self.form})
 
-class SettingList(ListView):
+class SettingList(LoginPermissionCheckMixin, ListView):
+    permission_required = 'settings.list'
     model = Settings
     template_name = "settings/list.html"
     context_object_name = 'userlist'
@@ -64,9 +67,10 @@ class SettingList(ListView):
         context = super(SettingList, self).get_context_data(**kwargs)
         context['filter_form'] = SettingSearchFilter(self.request.GET)
         context['form'] = SettingsForm()
-        return context        
-    
+        return context
 
+
+@permission_required('settings.update', raise_exception=True)
 def update_settings(request, id=None):
     print(id)
     if request.method == "POST":
@@ -80,9 +84,10 @@ def update_settings(request, id=None):
         return redirect('wayrem_admin:settingslist')
 
 
-class CreateSetting(View):
+class CreateSetting(LoginPermissionCheckMixin, View):
+    permission_required = 'settings.create'
     template_name = "settings/list.html"
-    form = SettingsForm()   
+    form = SettingsForm()
 
     def post(self, request):
         self.form = SettingsForm(request.POST)

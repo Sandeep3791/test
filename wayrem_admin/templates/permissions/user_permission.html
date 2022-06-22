@@ -1,0 +1,81 @@
+{% extends "common/base.html" %}
+{% block content %} 
+{% load i18n static widget_tweaks %}  
+<link rel="stylesheet" href="{% static "css/checkbox-radio.css" %}" />
+<div class="row">
+  <div class="col-lg-12 col-md-12 col-sm-12 cl-xs-12">
+     <div class="main-card pb-15">
+        <div class="main-card-header">
+           <div class="row">
+              <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                 <h2 class="main-title"><img src="{% static "images/icons/permission.png" %}"  />User Permission</h2>
+              </div>
+              <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                 <div class="btn-group pull-right action-header">
+                    <button type="button" class="btn btn-default" id="submitBtn">Save</button>                               
+                    <a class="btn btn-default" href="{% url 'list-users' %}">Close</a>
+                 </div>
+              </div>
+           </div>
+           </div>
+           <!-- /main-card-header -->
+           <div class="main-card-content">            
+            {% include "permissions/permission_form.html" %}
+            </div>
+           <!-- /main-card-content -->
+        </div>
+     </div>
+  </div>
+</div>         
+<!-- /row --> 
+{% endblock %}
+{% block js%}
+<script src="{%static "/js/custom.js"%}" type="text/javascript"></script>
+<script type="text/javascript">
+$("#submitBtn").on('click', function(e) {
+    $("#newFrm").submit();   
+}); 
+         
+$(document).on('submit',"#newFrm", function(e) {
+var form = $("#newFrm");
+var url = form.attr('action');
+var loading = $(".preloader");
+$.ajax({
+       type: "POST",
+       url: url,
+       data: form.serialize(), // serializes the form's elements.
+       beforeSend:function() {                       
+        loading.show();
+       },
+       success: function(data)
+       {
+          loading.hide();
+          $("#formView").html(data)
+          $.get("/alert-message", function(data, status){
+            $(".alert-container").html(data);                     
+          });
+         
+       }
+});
+e.preventDefault(); // avoid to execute the actual submit of the form.
+}); 
+
+function getModuleFunction(idParam, moduleId){
+  $.ajax({
+         type: "GET",
+         url: "/permission/user/"+idParam+"/"+moduleId,         
+         beforeSend:function() {
+            $(".preloader").show(); 
+         },
+         success: function(data)
+         {           
+            $("#permission_content").html(data);
+            $("#module_id").val(moduleId); 
+         },
+         complete:function(){
+           $(".preloader").hide();
+         }
+    });
+}
+</script>
+{% endblock %}

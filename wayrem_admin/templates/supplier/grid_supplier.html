@@ -6,7 +6,9 @@
             <!-- <th scope="col">S. No.</th> -->
             <th scope="col">Username</th>
             <th scope="col">Email</th>
+            {% if perms.supplier_management.supplier_activate %}
             <th scope="col">Status</th>
+            {% endif %}
             <th scope="col">Products</th>
             <th scope="col">Action</th>
         </tr>
@@ -19,7 +21,7 @@
                     {% comment %} <th scope="row">{{forloop.counter}}</th> {% endcomment %}
                     <td>{{suppl.username}}</td>
                     <td>{{suppl.email}}</td>
-
+                    {% if perms.supplier_management.supplier_activate %}
                     <td> 
                         {% if suppl.is_active %} <a href="{% url 'wayrem_admin:activeblocksupplier' suppl.id %}"
                             class="btn-sm text-success"><i class="fas fa-toggle-on"> Active</i></a> {% else %} <a
@@ -27,11 +29,14 @@
                                 class="fas fa-toggle-off"> Blocked</i> </a>
                         {% endif %} 
                     </td>
+                    {% endif %}
                     <td>
                         {% comment %} <a class="btn btn-sm" href="{% url 'wayrem_admin:viewprodsupplier' %}?product={{prod.SKU}}"> {% endcomment %}
+                        {% if perms.supplier_management.view_supplier %}
                         <a onclick="supplierprodFunc('{{suppl.id}}')">
                         View Products
                         </a>
+                        {% endif %}
                     
                         <!-- Modal View Supplier -->
                         
@@ -81,9 +86,15 @@
                                 <span class="sr-only">Toggle Dropdown</span>
                             </button>
                             <div class="dropdown-menu">
+                                {% if perms.supplier_management.view_supplier %}
                                 <a class="dropdown-item" href="{% url 'wayrem_admin:supplierdetails' suppl.id %}"><span class="fas fa-eye mr-2"></span>View Details</a>
+                                {% endif %}
+                                {% if perms.supplier_management.edit_supplier %}
                                 <a class="dropdown-item" href="{% url 'wayrem_admin:updatesupplier' suppl.id %}"><span class="fas fa-edit mr-2"></span>Edit</a>
+                                {% endif %}
+                                {% if perms.supplier_management.delete_supplier %}
                                 <a class="dropdown-item text-danger"  data-bs-toggle="modal" data-bs-target="#deleteModal{{suppl.id}}" href="#"> <span class="fas fa-trash-alt mr-2"></span>Remove</a>
+                                {% endif %}
                             </div>
                         </div>
                     </td>

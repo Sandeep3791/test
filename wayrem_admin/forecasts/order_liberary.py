@@ -1,7 +1,7 @@
 from wayrem_admin.forms import warehouse
 from wayrem_admin.loginext.liberary.api_base import ApiBase
-from wayrem_admin.models_orders import Orders, ShippingLoginextNotification, OrderDetails, OrderTransactions, StatusMaster, ShippingRates, create_new_ref_number
-from wayrem_admin.models_recurrence import RecurrentType, RecurrenceGrocery, GroceryMaster, GroceryProducts
+from wayrem_admin.models import Orders, ShippingLoginextNotification, OrderDetails, OrderTransactions, StatusMaster, ShippingRates, create_new_ref_number
+from wayrem_admin.models import RecurrentType, RecurrenceGrocery, GroceryMaster, GroceryProducts
 from wayrem_admin.models import Settings, CustomerAddresses, Warehouse, Inventory
 from wayrem_admin.utils.constants import *
 from datetime import timedelta, date, datetime

@@ -4,17 +4,19 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 
 from wayrem_admin.models import Settings
-from wayrem_admin.models_orders import Orders, OrderDetails, StatusMaster, OrderDeliveryLogs, OrderTransactions
+from wayrem_admin.models import Orders, OrderDetails, StatusMaster, OrderDeliveryLogs, OrderTransactions
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import ListView, DetailView
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
 from wayrem_admin.utils.constants import *
 from wayrem_admin.models.BankModels import Banks
-from wayrem_admin.forms.bank import BankUpdatedForm,BankFilterForm,BankViewForm
+from wayrem_admin.forms.bank import BankUpdatedForm, BankFilterForm, BankViewForm
 from wayrem_admin.filters.bank_filters import BankFilter
+from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
 
-class BanksList(LoginRequiredMixin, ListView):
+class BanksList(LoginPermissionCheckMixin,ListView):
+    permission_required = 'banks_management.list_view'
     login_url = 'wayrem_admin:root'
     model = Banks
     template_name = "bank/list.html"
@@ -32,51 +34,58 @@ class BanksList(LoginRequiredMixin, ListView):
         context['filter_form'] = BankFilterForm(self.request.GET)
         return context
 
-class BankView(LoginRequiredMixin,UpdateView):
+
+class BankView(LoginPermissionCheckMixin, UpdateView):
+    permission_required = 'banks_management.view'
     login_url = 'wayrem_admin:root'
     model = Banks
     form_class = BankViewForm
     template_name = "bank/view.html"
     pk_url_kwarg = 'id'
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         id_pk = self.kwargs['id']
         context['id_pk'] = id_pk
         return context
-    
-    def get_success_url(self):
-          # if you are passing 'pk' from 'urls' to 'DeleteView' for company
-          # capture that 'pk' as companyid and pass it to 'reverse_lazy()' function
-          bank_id=self.kwargs['id']
-          return reverse_lazy('wayrem_admin:updatebank', kwargs={'id': bank_id})
 
-class BanksUpdated(LoginRequiredMixin, UpdateView):
+    def get_success_url(self):
+        # if you are passing 'pk' from 'urls' to 'DeleteView' for company
+        # capture that 'pk' as companyid and pass it to 'reverse_lazy()' function
+        bank_id = self.kwargs['id']
+        return reverse_lazy('wayrem_admin:updatebank', kwargs={'id': bank_id})
+
+
+class BanksUpdated(LoginPermissionCheckMixin, UpdateView):
+    permission_required = 'banks_management.edit'
     login_url = 'wayrem_admin:root'
     model = Banks
     form_class = BankUpdatedForm
     template_name = "bank/update.html"
     pk_url_kwarg = 'id'
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         id_pk = self.kwargs['id']
         context['id_pk'] = id_pk
         return context
-    
-    def get_success_url(self):
-          # if you are passing 'pk' from 'urls' to 'DeleteView' for company
-          # capture that 'pk' as companyid and pass it to 'reverse_lazy()' function
-          bank_id=self.kwargs['id']
-          return reverse_lazy('wayrem_admin:updatebank', kwargs={'id': bank_id})
 
-class BanksCreate(CreateView):
+    def get_success_url(self):
+        # if you are passing 'pk' from 'urls' to 'DeleteView' for company
+        # capture that 'pk' as companyid and pass it to 'reverse_lazy()' function
+        bank_id = self.kwargs['id']
+        return reverse_lazy('wayrem_admin:updatebank', kwargs={'id': bank_id})
+
+
+class BanksCreate(LoginPermissionCheckMixin,CreateView):
+    permission_required = 'banks_management.add'
     model = Banks
     form_class = BankUpdatedForm
     template_name = 'bank/add.html'
     success_url = reverse_lazy('wayrem_admin:banklist')
 
+
 class BankUpdateStatusView(View):
-    def get(self,request, id):
-        Banks.objects.filter(id=1).update(is_deleted=1,status=0)
+    def get(self, request, id):
+        Banks.objects.filter(id=1).update(is_deleted=1, status=0)
         return HttpResponse(1)

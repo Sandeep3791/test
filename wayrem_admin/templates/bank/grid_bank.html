@@ -40,9 +40,9 @@
                             <span class="sr-only">Toggle Dropdown</span>
                         </button>
                                     <div class="dropdown-menu">
-                                        <a class="dropdown-item" href="{% url 'wayrem_admin:viewbank' bank.id %}"><span class="fas fa-eye mr-2"></span>View Details</a>
-                                        <a class="dropdown-item" href="{% url 'wayrem_admin:updatebank' bank.id %}"><span class="fas fa-edit mr-2"></span>Edit banks</a>
-                                        <a class="dropdown-item text-danger deletebank" data-id="{{bank.id}}"  href="#"> <span class="fas fa-trash-alt mr-2"></span>Remove</a>
+                                        {% if perms.banks_management.view %}<a class="dropdown-item" href="{% url 'wayrem_admin:viewbank' bank.id %}"><span class="fas fa-eye mr-2"></span>View Details</a>{% endif %}
+                                        {% if perms.banks_management.edit %}<a class="dropdown-item" href="{% url 'wayrem_admin:updatebank' bank.id %}"><span class="fas fa-edit mr-2"></span>Edit banks</a>{% endif %}
+                                        {% if perms.banks_management.remove	 %}<a class="dropdown-item text-danger deletebank" data-id="{{bank.id}}"  href="#"> <span class="fas fa-trash-alt mr-2"></span>Remove</a>{% endif %}
                                     </div>
                                 </div>
                     </td>

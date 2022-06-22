@@ -1,5 +1,5 @@
 from django import forms
-from wayrem_admin.models.StaticModels import CreditSettings, Customer
+from wayrem_admin.models import CreditSettings, Customer
 
 
 class CustomerSearchFilter(forms.Form):

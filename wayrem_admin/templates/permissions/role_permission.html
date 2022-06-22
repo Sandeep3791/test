@@ -1,0 +1,74 @@
+{% extends "layouts/base.html" %}
+{% load static  %}
+{% block title %} Role Permission{% endblock %}
+{% block stylesheets %}{% endblock stylesheets %}
+{% block content %} 
+<div class="dashboard_content_inner">
+   <div class="topbar_pages">
+      <h4 class="text-title">Role Permission</h2>
+      <div class="breadcrumb-section">
+          <nav aria-label="breadcrumb">
+              <ol class="breadcrumb padding-left-0">
+                  <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:role-permission' id_param %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span>Role Permission</a></li>         
+              </ol>
+          </nav>
+      </div>
+  </div>
+  <div class="alert-container"></div>
+  <form action="" method="post" id="newFrm" novalidate>
+    {% csrf_token %}
+  <div class="card card-body border-light shadow-sm table-wrapper table-responsive pt-0">
+   {% include "permissions/permission_checkbox.html" %}
+
+   <div class="row ">
+		<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+		<div class="text-right pt-2 pb-2">
+        
+		   <button type="button" class="btn  btn-danger btn-block col-xl-1 col-md-1 col-12 mt-sm-3 mt-md-0 mt-3" onclick="location.href='/roles/'">Back</button>
+		   <button type="button" class="btn btn-primary border-0 col-xl-1 col-md-1 col-12" id="submitBtn">Save</button>
+		</div>
+		</div>                  
+		</div>
+
+  </div>
+</form>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript">
+$("#submitBtn").on('click', function(e) {
+   e.preventDefault();
+   $("#newFrm").submit();   
+}); 
+$(document).on('submit',"#newFrm", function(e) {
+   e.preventDefault(); // avoid to execute the actual submit of the form.
+   var form = $("#newFrm");
+   var url = form.attr('action');
+   $.ajax({
+       type: "POST",
+       url: url,
+       data: form.serialize(), // serializes the form's elements.
+       success: function(message)
+       {
+
+         var alert_message='<div class="alert-container alert alert-success alert-dismissible fade show" role="alert" ><strong>'+message+'</strong><button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
+         $(".alert-container").html(alert_message);
+         location.reload();
+       }
+});
+
+});
+
+
+   function check_unCheckAllByName(ContainerID, status){ 
+     $("#"+ContainerID).find("input[type=checkbox]").each(function(){
+       this.checked = status;
+     });  
+   }
+   function changeCheckAllByName(ContainerID, chkID) {
+      console.log(ContainerID);
+      $("#"+ContainerID).find("input[type=checkbox]").not("#"+chkID).length == $("#"+ContainerID).find("input:checked").not("#"+chkID).length ? $( "#"+chkID).prop( "checked", true ) : $("#"+chkID).prop('checked',false);
+   } 
+   </script>
+{% endblock javascripts %}

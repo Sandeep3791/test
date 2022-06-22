@@ -1,3 +1,4 @@
+from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
 from wayrem_admin.utils.constants import *
 from wayrem_admin.filters.ingredient_filters import *
 from django.views.generic import ListView
@@ -17,6 +18,7 @@ from pymysql import connect
 from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from wayrem_admin.export import generate_excel
+from django.contrib.auth.decorators import permission_required
 
 
 def ingredient_excel(request):
@@ -24,6 +26,7 @@ def ingredient_excel(request):
 
 
 @login_required(login_url='wayrem_admin:root')
+@permission_required('ingredient.add', raise_exception=True)
 def create_ingredients(request):
     context = {}
     # user = SupplierProfileModel.objects.filter(user_id = request.user.id).first()
@@ -51,7 +54,8 @@ def create_ingredients(request):
 #         return render(request, self.template_name, {"ingredientslist": ingredientslist})
 
 
-class IngredientList(ListView):
+class IngredientList(LoginPermissionCheckMixin, ListView):
+    permission_required = 'product_management.ingredients_list'
     model = Ingredients
     template_name = "ingredient/list.html"
     context_object_name = 'list'
@@ -69,6 +73,7 @@ class IngredientList(ListView):
         return context
 
 
+@permission_required('product_management.ingredients_list', raise_exception=True)
 def ingredientsList(request):
     ingredients_list = Ingredients.objects.all()
     paginator = Paginator(ingredients_list, 25)
@@ -84,7 +89,9 @@ def ingredientsList(request):
     return render(request, "ingredientslist.html", {"list": ingredientslist})
 
 
-class DeleteIngredients(View):
+class DeleteIngredients(LoginPermissionCheckMixin, View):
+    permission_required = 'ingredient.delete'
+
     def post(self, request):
         ingredientsid = request.POST.get('ingredients_id')
         ingredients = Ingredients.objects.get(id=ingredientsid)
@@ -93,6 +100,7 @@ class DeleteIngredients(View):
 
 
 @login_required(login_url='wayrem_admin:root')
+@permission_required('ingredient.edit', raise_exception=True)
 def update_ingredients(request, id=None, *args, **kwargs):
     print(id)
     if request.method == "POST":

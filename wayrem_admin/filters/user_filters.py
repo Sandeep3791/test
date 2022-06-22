@@ -1,6 +1,6 @@
 from django.db.models import Q
 import django_filters
-from wayrem_admin.models import User
+from wayrem_admin.models.users import Users
 
 
 class UserFilter(django_filters.FilterSet):
@@ -8,7 +8,7 @@ class UserFilter(django_filters.FilterSet):
         method='user_filter', label="Search")
 
     class Meta:
-        model = User
+        model = Users
         fields = ['username', 'email', 'contact']
 
     def user_filter(self, queryset, name, value):

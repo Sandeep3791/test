@@ -1,5 +1,7 @@
 from django import forms
-from wayrem_admin.models import User
+from wayrem_admin.models.users import Users
+
+
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 
@@ -20,7 +22,7 @@ class SubAdminForm(UserCreationForm):
         label='Confirm Password', widget=forms.HiddenInput(attrs={'class': 'form-control eye'}))
 
     class Meta:
-        model = User
+        model = Users
         fields = ("username", "email", "contact", "role",
                   "po_notify", "order_notify", "margin_access")
 
@@ -44,7 +46,7 @@ class SubAdminForm(UserCreationForm):
 class SubAdminUpdateForm(forms.ModelForm):
 
     class Meta:
-        model = User
+        model = Users
         fields = ("username", "email", "contact", "role",
                   "po_notify", "order_notify", "margin_access")
 
@@ -64,7 +66,7 @@ class ProfileUpdateForm(forms.ModelForm):
     #     attrs={'class': 'form-control datepicker-input'}))
 
     class Meta:
-        model = User
+        model = Users
         fields = ("first_name", "last_name", "email", "contact",
                   "gender", "role", "dob", "address", "city", "zip_code")
 

@@ -21,7 +21,7 @@
             </div>
             <!-- Navbar links -->
             <ul class="navbar-nav align-items-center me-3">
-              
+              {% if perms.purchase_orders.notifications %}
               <li class="nav-item dropdown">
                 <a class="nav-link text-dark me-lg-3 icon-notifications dropdown-toggle" data-unread-notifications="true" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <span class="icon icon-sm">
@@ -67,6 +67,7 @@
                   </div>
                 </div>
               </li>
+              {% endif %}
               
               
               <li class="nav-item dropdown">

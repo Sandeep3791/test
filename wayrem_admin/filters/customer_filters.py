@@ -1,7 +1,6 @@
 from django.db.models import Q
 import django_filters
-from wayrem_admin.models import Customer
-from wayrem_admin.models.StaticModels import CreditSettings
+from wayrem_admin.models import Customer, CreditSettings
 
 
 class CustomerFilter(django_filters.FilterSet):

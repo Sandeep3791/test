@@ -9,7 +9,7 @@ from wayrem_admin.loginext.webhook_liberary import WebHookLiberary
 from django.http import HttpResponse
 import json
 from wayrem_admin.forecasts.firebase_notify import FirebaseLibrary
-from wayrem_admin.models.StaticModels import CreditSettings
+from wayrem_admin.models import CreditSettings
 from wayrem_admin.services import send_email
 from wayrem_admin.forms import CustomerSearchFilter, CustomerEmailUpdateForm, CreditsForm, CreditsSearchFilter
 from django.urls import reverse_lazy
@@ -23,17 +23,20 @@ from django.contrib.auth.decorators import login_required
 from django.views import View
 from django.utils.decorators import method_decorator
 from wayrem_admin.models import Customer, EmailTemplateModel, CustomerDevice, Settings
-from wayrem_admin.decorators import role_required
 from wayrem_admin.export import generate_pdf, generate_excel
 from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
+from django.contrib.auth.decorators import permission_required
+from django.utils.decorators import method_decorator
 
 
 def customers_excel(request):
     return generate_excel("customers_master", "customers")
 
 
-class CustomersList(ListView):
+class CustomersList(LoginPermissionCheckMixin, ListView):
+    permission_required = 'customer.list'
     model = Customer
     template_name = "customer/list.html"
     context_object_name = 'list'
@@ -55,7 +58,6 @@ class CustomersList(ListView):
 #     template_name = "customerlist.html"
 
 #     @method_decorator(login_required(login_url='wayrem_admin:root'))
-#     @method_decorator(role_required('Customer Profile View'))
 #     def get(self, request, format=None):
 #         userlist = Customer.objects.all()
 #         paginator = Paginator(userlist, 5)
@@ -71,9 +73,10 @@ class CustomersList(ListView):
 #         return render(request, self.template_name, {"userlist": clist})
 
 
-class Active_BlockCustomer(View):
+class Active_BlockCustomer(LoginPermissionCheckMixin, View):
+    permission_required = 'customer.approve'
+
     @method_decorator(login_required(login_url='wayrem_admin:root'))
-    @method_decorator(role_required('Customer Profile Edit'))
     def get(self, request, id):
         user = Customer.objects.filter(id=id).first()
         if user.status:
@@ -84,13 +87,13 @@ class Active_BlockCustomer(View):
         return redirect('wayrem_admin:customerslist')
 
 
-@role_required('Customer Profile View')
+@permission_required('customer.view', raise_exception=True)
 def customer_details(request, id=None):
     user = Customer.objects.filter(id=id).first()
     return render(request, 'customer/customer_view.html', {'user': user})
 
 
-@role_required('Customer Profile View')
+@permission_required('customer.approve', raise_exception=True)
 def customer_verification(request, id=None):
     status = request.GET.get('status')
     print(status)
@@ -178,6 +181,7 @@ def customer_verification(request, id=None):
     return redirect('wayrem_admin:customerslist')
 
 
+@permission_required('customer.update_email', raise_exception=True)
 def customer_email_update(request, id=None):
     customer = Customer.objects.get(id=id)
     email_id = customer.email

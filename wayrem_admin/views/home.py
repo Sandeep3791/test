@@ -1,6 +1,6 @@
 from tracemalloc import start
 from wayrem_admin.models import Customer, Notification, User, Supplier, Products, PurchaseOrder
-from wayrem_admin.models_orders import OrderTransactions, Orders
+from wayrem_admin.models import OrderTransactions, Orders
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 from django.views.generic import RedirectView
@@ -11,6 +11,8 @@ from django.db.models.functions import (
     TruncDate, TruncDay, TruncHour, TruncMinute, TruncSecond, TruncWeek, TruncMonth)
 from django.db.models import Count
 from dateutil import relativedelta
+from wayrem_admin.models.users import Users
+from django.contrib.auth.decorators import permission_required
 
 
 class RootUrlView(RedirectView):
@@ -23,7 +25,7 @@ class RootUrlView(RedirectView):
 
 @ login_required(login_url='wayrem_admin:root')
 def dashboard(request):
-    subadmins = User.objects.exclude(is_superuser=True).count()
+    subadmins = Users.objects.exclude(is_superuser=True).count()
     suppliers = Supplier.objects.count()
     products = Products.objects.count()
     active_po = PurchaseOrder.objects.filter(status="accept").values(
@@ -93,6 +95,7 @@ def dashboard(request):
     return render(request, 'dashboard.html', context)
 
 
+@permission_required('purchase_orders.notifications', raise_exception=True)
 def notification_delete(request, id):
     notify = Notification.objects.filter(id=id).first()
     a = notify.message

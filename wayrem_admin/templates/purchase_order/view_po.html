@@ -202,10 +202,12 @@
 
             {% elif po_logs.3.created_at %}
             <div class="bg-white table_shadow rounded p-3 w-100  mt-3">
+                {% if perms.purchase_orders.delivery %}
                 <span>Order Delivery Confirmation</span>
                 <div class="d-flex justify-content-between my-2">
                     <a href="{% url 'wayrem_admin:confirm_delivery' po.0.po_id %}" class="btn btn-success w-100" type="button">Confirm order Delivery</a>
                 </div>
+                {% endif %}
             </div>
             {% else %}
 

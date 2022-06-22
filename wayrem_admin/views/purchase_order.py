@@ -18,7 +18,6 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from wayrem_admin.services import inst_Product, inst_Supplier, inst_SupplierProduct, inst_Product_SKU, delSession, send_email
 from wayrem_admin.export import generate_excel
-from wayrem_admin.decorators import role_required
 import datetime
 import uuid
 from django.db import connection
@@ -27,15 +26,17 @@ from django.http import HttpResponse
 from django.template.loader import render_to_string
 from weasyprint import HTML
 import tempfile
-from wayrem_admin.models_recurrence import ForecastJobtype
+from wayrem_admin.models import ForecastJobtype
 from django.core import serializers
+from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
+from django.contrib.auth.decorators import permission_required
 
 
 def po_excel(request):
     return generate_excel("po_master", "purchase_order")
 
 
-@role_required('Purchase Order Add')
+@permission_required('purchase_orders.create', raise_exception=True)
 def create_purchase_order(request):
     if request.method == "POST":
         form = POFormOne(request.POST or None, request.FILES or None)
@@ -136,6 +137,7 @@ def create_purchase_order(request):
     return render(request, "po_step1.html", {'form': form, "po": po, 'forecast_day': forecast_day})
 
 
+@permission_required('purchase_orders.create', raise_exception=True)
 def create_po_step2(request):
     if request.method == "POST":
         if request.session['products'] == []:
@@ -219,7 +221,8 @@ def delete_inserted_item(request, id=None):
     return redirect('wayrem_admin:create_po')
 
 
-class POList(ListView):
+class POList(LoginPermissionCheckMixin, ListView):
+    permission_required = 'purchase_orders.list'
     model = PurchaseOrder
     template_name = "purchase_order/list.html"
     context_object_name = 'list'
@@ -240,11 +243,11 @@ class POList(ListView):
         return context
 
 
-class POList1(View):
+class POList1(LoginPermissionCheckMixin, View):
+    permission_required = 'purchase_orders.list'
     template_name = "po_list.html"
 
     @method_decorator(login_required(login_url='wayrem_admin:root'))
-    @method_decorator(role_required('Purchase Order View'))
     def get(self, request, format=None):
         delSession(request)
         # polist = PurchaseOrder.objects.values(
@@ -274,9 +277,9 @@ class POList1(View):
         return render(request, self.template_name, {"list": ulist})
 
 
-class DeletePO(View):
+class DeletePO(LoginPermissionCheckMixin, View):
+    permission_required = 'purchase_orders.delete'
 
-    @method_decorator(role_required('Purchase Order Delete'))
     def post(self, request):
         po_id = request.POST.get('po_id')
         po_obj = PurchaseOrder.objects.filter(po_id=po_id).all()
@@ -284,7 +287,7 @@ class DeletePO(View):
         return redirect('wayrem_admin:polist')
 
 
-@role_required('Purchase Order View')
+@permission_required('purchase_orders.view', raise_exception=True)
 def viewpo(request, id=None):
     po = PurchaseOrder.objects.filter(po_id=id).all()
     poname = po[0].po_name
@@ -296,7 +299,6 @@ def viewpo(request, id=None):
     return render(request, 'purchase_order/view_po.html', context)
 
 
-@role_required('Purchase Order Edit')
 def editpo(request, id=None):
     po = PurchaseOrder.objects.filter(po_id=id).all()
     if request.method == "POST":
@@ -334,7 +336,7 @@ def delete_in_edit(request, id):
     return redirect("wayrem_admin:polist")
 
 
-@role_required('Purchase Order Edit')
+@permission_required('purchase_orders.delivery', raise_exception=True)
 def statuspo(request, id=None):
     po = PurchaseOrder.objects.filter(po_id=id).all()
     if request.method == "POST":
@@ -405,6 +407,7 @@ def load_supplier_products(request):
     return render(request, 'po_supplier_products.html', {'products': products})
 
 
+@permission_required('purchase_orders.delivery', raise_exception=True)
 def confirm_delivery(request, id=None):
     po = PurchaseOrder.objects.filter(po_id=id, available=True)
     Inventory().po_inventory_process(id)
