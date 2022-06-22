@@ -30,9 +30,9 @@
                                     <span class="sr-only">Toggle Dropdown</span>
                                 </button>
                                 <div class="dropdown-menu">
-                                    <a class="dropdown-item" href="{% url 'wayrem_admin:viewstaticpages' user.id %}"><span class="fas fa-eye mr-2"></span>View Details</a>
-                                    <a class="dropdown-item" href="{% url 'wayrem_admin:updatestaticpages' user.id %}"><span class="fas fa-edit mr-2"></span>Edit</a>
-                                    <a class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{user.id}}" href="#"><span class="fas fa-trash-alt mr-2"></span>Remove</a>
+                                    {% if perms.static_page.view %}<a class="dropdown-item" href="{% url 'wayrem_admin:viewstaticpages' user.id %}"><span class="fas fa-eye mr-2"></span>View Details</a>{% endif %}
+                                    {% if perms.static_page.edit %}<a class="dropdown-item" href="{% url 'wayrem_admin:updatestaticpages' user.id %}"><span class="fas fa-edit mr-2"></span>Edit</a>{% endif %}
+                                    {% if perms.static_page.delete %}<a class="dropdown-item text-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{user.id}}" href="#"><span class="fas fa-trash-alt mr-2"></span>Remove</a>{% endif %}
                                     <!-- <a class="dropdown-item text-danger"  data-bs-toggle="modal" data-bs-target="#deleteModal{{prod.id}}" href="#"> <span class="fas fa-trash-alt mr-2"></span>Remove</a> -->
                                     
                                 </div>
