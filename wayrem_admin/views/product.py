@@ -31,12 +31,14 @@ import biip
 from django.forms import formset_factory
 from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.contrib.auth.decorators import permission_required
 
 
 def product_excel(request):
     return generate_excel("products_master", "products")
 
 
+@permission_required('product_management.create_product_list', raise_exception=True)
 def product(request):
     if request.method == "POST":
         delSession(request)
@@ -130,6 +132,7 @@ def load_category_margin(request):
     return HttpResponse(data, content_type='application/json')
 
 
+@permission_required('product_management.create_product_list', raise_exception=True)
 def product_view_one(request):
     initial = {
         'SKU': request.session.get("SKU", None),
@@ -228,6 +231,7 @@ def product_view_one(request):
     return render(request, 'product1.html', context)
 
 
+@permission_required('product_management.create_product_list', raise_exception=True)
 def product_images(request):
     if request.method == "POST":
         form = ProductImageForm(request.POST, request.FILES)
@@ -353,6 +357,7 @@ class ProductList(LoginPermissionCheckMixin, ListView):
 #         return render(request, self.template_name, context)
 
 
+@permission_required('product.view', raise_exception=True)
 def product_details(request, id=None):
     prod = Products.objects.get(id=id)
     ingrd = ProductIngredients.objects.filter(product=id).all()
@@ -364,6 +369,7 @@ def product_details(request, id=None):
     return render(request, 'View_product_copy.html', {'form': form, 'form2': form1, 'image': prod.primary_image, 'prodimg': prodimage, 'id': prod.id})
 
 
+@permission_required('product.edit', raise_exception=True)
 def update_product(request, id=None, *args, **kwargs):
     # print(id)
 
@@ -454,6 +460,7 @@ def delete_product_images(request):
     return HttpResponse("Image Delete Successfully!!")
 
 
+@permission_required('product_management.import_product_list', raise_exception=True)
 def import_excel(request):
     if request.method == "POST":
         delSession(request)

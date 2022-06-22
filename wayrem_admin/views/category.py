@@ -44,6 +44,7 @@ class CategoriesList(LoginPermissionCheckMixin, ListView):
 
 
 @login_required(login_url='wayrem_admin:root')
+@permission_required('categories.edit', raise_exception=True)
 def update_categories(request, id=None, *args, **kwargs):
     print(id)
     if request.method == "POST":
@@ -82,6 +83,7 @@ def update_categories(request, id=None, *args, **kwargs):
     return render(request, 'update_category.html', {'form': form, 'id': category.id, 'user': category})
 
 
+@permission_required('categories.view', raise_exception=True)
 def category_details(request, id=None):
     cate = Categories.objects.filter(id=id).first()
     return render(request, 'category_popup.html', {'catedata': cate})
@@ -104,7 +106,7 @@ class DeleteCategories(LoginPermissionCheckMixin, View):
         return redirect('wayrem_admin:categorieslist')
 
 
-@permission_required('categories.list', raise_exception=True)
+@permission_required('categories.add', raise_exception=True)
 def add_category(request):
     context = {}
     form = CategoryForm(request.POST or None, request.FILES or None)

@@ -12,6 +12,7 @@ from django.db.models.functions import (
 from django.db.models import Count
 from dateutil import relativedelta
 from wayrem_admin.models.users import Users
+from django.contrib.auth.decorators import permission_required
 
 
 class RootUrlView(RedirectView):
@@ -94,6 +95,7 @@ def dashboard(request):
     return render(request, 'dashboard.html', context)
 
 
+@permission_required('purchase_orders.notifications', raise_exception=True)
 def notification_delete(request, id):
     notify = Notification.objects.filter(id=id).first()
     a = notify.message

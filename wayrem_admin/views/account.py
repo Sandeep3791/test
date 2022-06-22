@@ -85,11 +85,13 @@ class UsersList(LoginPermissionCheckMixin, ListView):
         return context
 
 
+@permission_required('user_management.view_user', raise_exception=True)
 def user_details(request, id=None):
     user = Users.objects.filter(id=id).first()
     return render(request, 'user_popup.html', {'userdata': user})
 
 
+@permission_required('user_management.edit_user', raise_exception=True)
 def update_user(request, id=None):
     print(id)
     user = Users.objects.get(id=id)

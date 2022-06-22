@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import permission_required
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.views import View
@@ -62,6 +63,7 @@ class StaticpagesCreate(LoginPermissionCheckMixin, CreateView):
     template_name = 'static_pages/add.html'
     success_url = reverse_lazy('wayrem_admin:staticpages')
 
+
 class StaticpagesUpdate(LoginPermissionCheckMixin, UpdateView):
     permission_required = 'static_page.edit'
     model = StaticPages
@@ -106,6 +108,7 @@ class DeleteStaticpages(LoginPermissionCheckMixin, View):
         return redirect('wayrem_admin:staticpages')
 
 
+@permission_required('static_page.view', raise_exception=True)
 def staticpages_view(request, url):
     data = StaticPages.objects.filter(slug=url).first()
     context = {

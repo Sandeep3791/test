@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import permission_required
 from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
 import uuid
 from django.shortcuts import render, redirect
@@ -69,6 +70,7 @@ class SettingList(LoginPermissionCheckMixin, ListView):
         return context
 
 
+@permission_required('settings.update', raise_exception=True)
 def update_settings(request, id=None):
     print(id)
     if request.method == "POST":

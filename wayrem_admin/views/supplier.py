@@ -34,6 +34,7 @@ from wayrem_admin.forms.supplier import SupplierSearchFilter
 from wayrem_admin.create_prefix_models import create_supplier_models_cluster
 import os
 from wayrem.settings import BASE_DIR
+from django.contrib.auth.decorators import permission_required
 
 
 def supplier_excel(request):
@@ -41,8 +42,8 @@ def supplier_excel(request):
 
 
 @login_required(login_url='wayrem_admin:root')
+@permission_required('supplier_management.create_supplier_list', raise_exception=True)
 def supplier_register(request):
-
     if request.user.is_authenticated:
         alphabet = string.ascii_letters + string.digits
         auto_password = ''.join(secrets.choice(alphabet) for i in range(8))
@@ -158,6 +159,7 @@ class Active_BlockSupplier(LoginPermissionCheckMixin, View):
         return redirect('wayrem_admin:supplierlist')
 
 
+@permission_required('supplier_management.edit_supplier', raise_exception=True)
 def update_supplier(request, id=None):
     print(id)
     if request.method == "POST":

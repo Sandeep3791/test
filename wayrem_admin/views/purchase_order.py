@@ -29,12 +29,14 @@ import tempfile
 from wayrem_admin.models import ForecastJobtype
 from django.core import serializers
 from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
+from django.contrib.auth.decorators import permission_required
 
 
 def po_excel(request):
     return generate_excel("po_master", "purchase_order")
 
 
+@permission_required('purchase_orders.create', raise_exception=True)
 def create_purchase_order(request):
     if request.method == "POST":
         form = POFormOne(request.POST or None, request.FILES or None)
@@ -135,6 +137,7 @@ def create_purchase_order(request):
     return render(request, "po_step1.html", {'form': form, "po": po, 'forecast_day': forecast_day})
 
 
+@permission_required('purchase_orders.create', raise_exception=True)
 def create_po_step2(request):
     if request.method == "POST":
         if request.session['products'] == []:
@@ -284,6 +287,7 @@ class DeletePO(LoginPermissionCheckMixin, View):
         return redirect('wayrem_admin:polist')
 
 
+@permission_required('purchase_orders.view', raise_exception=True)
 def viewpo(request, id=None):
     po = PurchaseOrder.objects.filter(po_id=id).all()
     poname = po[0].po_name
@@ -332,6 +336,7 @@ def delete_in_edit(request, id):
     return redirect("wayrem_admin:polist")
 
 
+@permission_required('purchase_orders.delivery', raise_exception=True)
 def statuspo(request, id=None):
     po = PurchaseOrder.objects.filter(po_id=id).all()
     if request.method == "POST":
@@ -402,6 +407,7 @@ def load_supplier_products(request):
     return render(request, 'po_supplier_products.html', {'products': products})
 
 
+@permission_required('purchase_orders.delivery', raise_exception=True)
 def confirm_delivery(request, id=None):
     po = PurchaseOrder.objects.filter(po_id=id, available=True)
     Inventory().po_inventory_process(id)
