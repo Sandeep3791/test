@@ -175,13 +175,15 @@ class CreditSettings(models.Model):
         db_table = 'credit_settings'
 
 
-# class CreditManagement(models.Model):
-#     id = models.AutoField(primary_key=True, unique=True)
-#     customer = models.ForeignKey("Customer", models.CASCADE)
-#     credit = models.ForeignKey("CreditSettings", models.CASCADE)
-#     used = models.FloatField()
-#     available = models.FloatField()
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     updated_at = models.DateTimeField(auto_now=True)
-#     class Meta:
-#         db_table = 'credit_management'
+class CreditManagement(models.Model):
+    id = models.AutoField(primary_key=True, unique=True)
+    customer = models.ForeignKey("Customer", models.CASCADE)
+    credit_rule = models.ForeignKey("CreditSettings", models.CASCADE)
+    used = models.FloatField()
+    available = models.FloatField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        app_label = "wayrem_admin"
+        db_table = 'credit_management'

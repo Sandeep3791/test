@@ -11,6 +11,7 @@
             <th scope="col">Email</th>
             <th scope="col">Contact</th>
             <th scope="col">Status</th>
+            <th scope="col">Credits</th>
             {% comment %} <th scope="col">Active/Inactive</th> {% endcomment %}
             <th scope="col">Action</th>
         </tr>
@@ -43,7 +44,14 @@
                     No Permission
                 {% endif %}
             </td>
-{% comment %} href="{% url 'wayrem_admin:customerdetails' user.id %}" {% endcomment %}
+            <td>
+                {% if user.creditmanagement_set.first %}
+                    {{user.creditmanagement_set.first.credit_rule.credit_amount}}
+                {% else %}
+                Not Assigned
+                {% endif %}
+            </td>
+            {% comment %} href="{% url 'wayrem_admin:customerdetails' user.id %}" {% endcomment %}
                 <!-- <a type="button" class="btn btn-sm " data-bs-toggle="modal" data-bs-target="#customerModal{{user.id}}" >
                         <i class="mx-1 fas fa-eye text-success" style="font-size:15px;"></i>
                     </a> -->
@@ -62,6 +70,7 @@
                         {% if perms.customer.update_email %}
                         <a class="dropdown-item" href="{% url 'wayrem_admin:customer_email_update' user.id %}"><span class="fas fa-edit mr-2"></span>Update Email</a>
                         {% endif %}
+                        <a class="dropdown-item" href="{% url 'wayrem_admin:assign_credit' user.id %}"><span class="fas fa-edit mr-2"></span>Update Credit</a>
                         {% comment %} <a class="dropdown-item" href=""><span class="fas fa-edit mr-2"></span>Edit</a>
                         <a class="dropdown-item text-danger"  data-bs-toggle="modal" data-bs-target="#deleteModal{{suppl.id}}" href="#"> <span class="fas fa-trash-alt mr-2"></span>Remove</a> {% endcomment %}
                     </div>

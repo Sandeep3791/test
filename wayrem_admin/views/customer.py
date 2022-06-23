@@ -1,5 +1,7 @@
 from django.views.generic.edit import CreateView
-from wayrem_admin.models import PaymentTransaction
+from requests import request
+from wayrem_admin.forms.customers import CreditsAssignForm
+from wayrem_admin.models import PaymentTransaction, CreditManagement
 from email import message
 import imp
 from urllib import response
@@ -52,25 +54,6 @@ class CustomersList(LoginPermissionCheckMixin, ListView):
         context = super(CustomersList, self).get_context_data(**kwargs)
         context['filter_form'] = CustomerSearchFilter(self.request.GET)
         return context
-
-
-# class CustomersList(View):
-#     template_name = "customerlist.html"
-
-#     @method_decorator(login_required(login_url='wayrem_admin:root'))
-#     def get(self, request, format=None):
-#         userlist = Customer.objects.all()
-#         paginator = Paginator(userlist, 5)
-#         page = request.GET.get('page')
-#         try:
-#             clist = paginator.page(page)
-#         except PageNotAnInteger:
-#             # If page is not an integer, deliver first page.
-#             clist = paginator.page(1)
-#         except EmptyPage:
-#             # If page is out of range (e.g. 9999), deliver last page of results.
-#             clist = paginator.page(paginator.num_pages)
-#         return render(request, self.template_name, {"userlist": clist})
 
 
 class Active_BlockCustomer(LoginPermissionCheckMixin, View):
@@ -205,7 +188,7 @@ def customer_email_update(request, id=None):
             return redirect('wayrem_admin:customerslist')
     else:
         form = CustomerEmailUpdateForm(instance=customer)
-    return render(request, 'customer_email_update.html', {'form': form, 'id': customer.id})
+    return render(request, 'customer/customer_email_update.html', {'form': form, 'id': customer.id})
 
 
 class PaymentForm(View):
@@ -321,3 +304,61 @@ class CreditView(UpdateView):
         credit_pk = self.kwargs['credit_pk']
         context['credit_pk'] = credit_pk
         return context
+
+
+class CreditAssign(LoginPermissionCheckMixin, View):
+    permission_required = 'customer.approve'
+    form = CreditsAssignForm()
+
+    def get(self, request, id):
+        try:
+            existing_credit_check = CreditManagement.objects.get(
+                customer_id=id)
+            existing_credit = existing_credit_check.credit_rule
+        except:
+            existing_credit = None
+        self.form = CreditsAssignForm(initial={'credit': existing_credit})
+        return render(request, "customer/credit_assign.html", {"form": self.form})
+
+    @method_decorator(login_required(login_url='wayrem_admin:root'))
+    def post(self, request, id):
+        form = CreditsAssignForm(request.POST)
+        if form.is_valid():
+            credit = form.cleaned_data("credit")
+            assign_credit = CreditManagement(
+                customer=id, credit_rule=credit, used=0, available=15000)
+            assign_credit.save()
+        return redirect('wayrem_admin:customerslist')
+
+
+def creditAssign(request, id=None):
+    try:
+        existing_credit_check = CreditManagement.objects.get(
+            customer_id=id)
+        existing_credit = existing_credit_check
+    except:
+        existing_credit = None
+    if request.method == "POST":
+        form = CreditsAssignForm(request.POST)
+        if form.is_valid():
+            credit = form.cleaned_data.get("credit")
+            available_credit = CreditSettings.objects.get(id=credit)
+            if existing_credit:
+                existing_credit.credit_rule_id = available_credit
+                existing_credit.used = 0
+                existing_credit.available = available_credit.credit_amount
+                existing_credit.save()
+            else:
+                assign_credit = CreditManagement(
+                    customer_id=id, credit_rule=available_credit, used=0, available=available_credit.credit_amount)
+                assign_credit.save()
+            messages.success(request, "Credit Updated!")
+            return redirect('wayrem_admin:customerslist')
+        else:
+            return render(request, "customer/credit_assign.html", {"form": form, "id": id})
+    if existing_credit:
+        form = CreditsAssignForm(
+            initial={'credit': existing_credit.credit_rule.id})
+    else:
+        form = CreditsAssignForm(initial={'credit': existing_credit})
+    return render(request, "customer/credit_assign.html", {"form": form, "id": id})

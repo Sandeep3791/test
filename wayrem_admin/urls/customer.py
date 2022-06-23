@@ -26,6 +26,8 @@ urlpatterns = [
          name='update_credit'),
     path('credit/view/<int:credit_pk>',
          views.CreditView.as_view(), name='view_credit'),
+    path('credit/assign/<int:id>',
+         views.creditAssign, name='assign_credit'),
 
 
 
