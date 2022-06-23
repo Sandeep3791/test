@@ -52,3 +52,16 @@ class ResponsePaymentstatusFinal(BaseModel):
     status: str
     message: str
     data: List[ResponsePaymentstatus]
+
+class ResponseCustomerCredits(BaseModel):
+    id: int
+    customer_id: int
+    used_credits: float
+    available_credits: float
+    total_credits : int
+
+class ResponseCustomerCreditsFinal(BaseModel):
+    status: str
+    message: str
+    data: ResponseCustomerCredits
+

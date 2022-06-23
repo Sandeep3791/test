@@ -56,3 +56,7 @@ def get_payment_status_types(authorize: AuthJWT = Depends(oauth2_schema), db: Se
     response = payment_services.get_payment_status_types(db)
     return response
 
+@router.get('/get/credits')
+def get_user_credits(customer_id: int, authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
+    response = payment_services.get_user_credits(customer_id,db)
+    return response

@@ -1,5 +1,5 @@
 
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey,Float
 from database import Base
 from pytz import timezone
 from utility_services.common_services import get_time
@@ -36,3 +36,23 @@ class CustomerCard(Base):
     card_brand = Column(String(255))
     created_at = Column(DateTime(timezone=True), default=get_time())
     updated_at = Column(DateTime(timezone=True), default=get_time())
+
+
+class CreditSettings(Base):
+    __tablename__ = "credit_settings"
+
+    id = Column(Integer(), autoincrement=True, primary_key=True, index=True)
+    credit_amount  = Column(Integer, nullable=True)
+    time_period  = Column(Integer, nullable=True)
+    
+class CreditManagement(Base):
+    __tablename__ = "credit_management"
+
+    id = Column(Integer(), autoincrement=True, primary_key=True, index=True)
+    customer_id = Column(ForeignKey('customers_master.id'))
+    credit_rule_id = Column(ForeignKey('credit_settings.id'))
+    used = Column(Float)
+    available = Column(Float)
+    updated_at = Column(DateTime(timezone=True), default=get_time())
+    created_at = Column(DateTime(timezone=True), default=get_time())
+

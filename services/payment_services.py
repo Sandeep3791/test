@@ -302,3 +302,22 @@ def get_payment_status_types(db: Session):
     response = payment_schemas.ResponsePaymentstatusFinal(
         status=status.HTTP_200_OK, message="all payments status type!", data=payment_status_list)
     return response
+
+
+def get_user_credits(customer_id, db: Session):
+    user_data = db.query(payment_models.CreditManagement).filter(payment_models.CreditManagement.customer_id == customer_id).first()
+
+    if user_data:
+
+        rule_id_data = db.query(payment_models.CreditSettings).filter(payment_models.CreditSettings.id == user_data.credit_rule_id).first()
+
+        assigned_credit = rule_id_data.credit_amount
+
+        credit_data = payment_schemas.ResponseCustomerCredits(id=user_data.id, customer_id=user_data.customer_id, used_credits=user_data.used, available_credits=user_data.available ,total_credits = assigned_credit )
+
+        response = payment_schemas.ResponseCustomerCreditsFinal(status=status.HTTP_200_OK, message="User Credit Info!", data=credit_data)
+        return response
+    else:
+        common_msg = user_schemas.ResponseCommonMessage(status=status.HTTP_404_NOT_FOUND, message="No user credits found!")
+        return common_msg
+        
