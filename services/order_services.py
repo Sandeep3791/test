@@ -39,8 +39,9 @@ def create_order(request, db: Session, background_tasks: BackgroundTasks):
     if int(request.payment_type) == 10 or int(request.payment_type) == 12:
         cod = True
     if not cod:
-        payment_status = payment_services.get_payment_status(
-            request.checkout_id, request.entityId)
+        # payment_status = payment_services.get_payment_status(request.checkout_id, request.entityId)
+        payment_status = payment_services.HyperPayResponseView(request.entityId).get_payment_status(request.checkout_id)
+
         payment_check = payment_status.get("result").get("code")
         hyperpay_response = payment_status
         hyperpay_response_description = payment_status.get(
@@ -526,14 +527,18 @@ def initial_order(request, db: Session, background_tasks: BackgroundTasks):
 
     if request.registrationId:
         user_request['registrationId'] = request.registrationId
-        checkout_details = payment_services.order_checkout_id(user_request)
+        # checkout_details = payment_services.order_checkout_id(user_request)
+        checkout_details = payment_services.HyperPayResponseView(entityId).generate_checkout_id(user_request)
+
         success_code = checkout_details['result']['code']
 
         if success_code == '000.200.100' or success_code == '000.200.101' or success_code == '000.200.102':
             result = inventory_services.order_checkout_entry(checkout_details, order, ref_no, db)
             return result   
         else:
-            payment_services.delete_card(request.registrationId, entityId)
+            # payment_services.delete_card(request.registrationId, entityId)
+            payment_services.HyperPayResponseView(entityId).delete_card(request.registrationId)
+
             card = db.query(payment_models.CustomerCard).filter(
             payment_models.CustomerCard.registration_id == request.registrationId).first()
             if not card:
@@ -547,7 +552,10 @@ def initial_order(request, db: Session, background_tasks: BackgroundTasks):
             return common_msg          
         
     else:
-        checkout_details = payment_services.order_checkout_id(user_request)
+        # checkout_details = payment_services.order_checkout_id(user_request)
+
+        checkout_details = payment_services.HyperPayResponseView(entityId).generate_checkout_id(user_request)
+
           
         success_code = checkout_details['result']['code']
 
@@ -586,8 +594,9 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
     if int(request.payment_type) == 10 or int(request.payment_type) == 12:
         cod = True
     if not cod:
-        payment_status = payment_services.get_payment_status(
-            request.checkout_id, entityId)
+        # payment_status = payment_services.get_payment_status(request.checkout_id, entityId)
+        payment_status = payment_services.HyperPayResponseView(request.entityId).get_payment_status(request.checkout_id)
+
         payment_check = payment_status.get("result").get("code")
         hyperpay_response = payment_status
         hyperpay_response_description = payment_status.get(
