@@ -199,6 +199,8 @@ class OrderStatusUpdated(LoginRequiredMixin, UpdateView):
         obj = form.save(commit=False)
         status_id = int(self.request.POST.get('status'))
         obj.status = StatusMaster.objects.get(id=status_id)
+        print(status_id)
+        print("ka")
         obj.save()
         return HttpResponse(True)
 
@@ -206,6 +208,7 @@ class OrderStatusUpdated(LoginRequiredMixin, UpdateView):
         get_id = self.get_object().id
         exist_status_id = self.get_object().status.id
         status_id = int(self.request.POST.get('status'))
+        
         data_dic = {}
         data_dic['status'] = 0
         data_dic['loginext_success'] = None
@@ -221,7 +224,11 @@ class OrderStatusUpdated(LoginRequiredMixin, UpdateView):
                 delivery_status = ORDER_STATUS_PREPARING
             if status_id == ORDER_CANCELLED:
                 delivery_status = ORDER_STATUS_CANCELLED
-
+                payment_status=StatusMaster.objects.get(id=PAYMENT_STATUS_DECLINED)
+            
+            if status_id == ORDER_CANCELLED:
+                    OrderTransactions.objects.filter(order=get_id).update(payment_status=payment_status)
+                
             obj_stat_instance = StatusMaster.objects.get(id=status_id)
             deliv_obj_stat_instance = StatusMaster.objects.get(
                 id=delivery_status)
@@ -232,11 +239,11 @@ class OrderStatusUpdated(LoginRequiredMixin, UpdateView):
                     data_dic['message'] = "Reference Id already created. We update the status"
                 else:
                     data_dic['message'] = "Reference Id is created. We update the status"
-                Orders.objects.filter(id=get_id).update(
-                    status=obj_stat_instance, delivery_status=deliv_obj_stat_instance)
+                Orders.objects.filter(id=get_id).update(status=obj_stat_instance, delivery_status=deliv_obj_stat_instance)
                 odl = OrderDeliveryLogs(order_id=get_id, order_status=deliv_obj_stat_instance, order_status_details="status change",
                                         log_date=now, user_id=1, customer_view=deliv_obj_stat_instance.customer_view)
                 odl.save()
+                
                 data_dic['order_status'] = '<span class="badge bg-primary" style="padding: 3px 8px;line-height: 11px;background-color:' + \
                     obj_stat_instance.status_color+' !important">'+obj_stat_instance.name+'</span>'
                 data_dic['delivery_status'] = '<span class="badge bg-primary" style="padding: 3px 8px;line-height: 11px;background-color:' + \
