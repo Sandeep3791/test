@@ -969,7 +969,7 @@ def get_all_orders(offset, customer_id, db: Session):
             product_count = order_details_data.rowcount
             logs_list = []
             delivery_logs_data = db.execute(
-                f"select m.id,m.name,m.description,d.log_date from status_master as m inner join order_delivery_logs as d ON m.id = d.order_status_id where d.order_id={data.id} and d.customer_view = 1 order by d.log_date ")
+                f"select m.id,m.name,m.description,d.log_date from status_master as m inner join order_delivery_logs as d ON m.id = d.order_status_id where d.order_id={data.id} and d.customer_view = 1 order by d.id ")
             for log_data in delivery_logs_data:
                 log_date = str(log_data.log_date.strftime("%Y-%m-%d %H:%M:%S"))
 
