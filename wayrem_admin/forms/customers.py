@@ -31,3 +31,27 @@ class CreditsForm(forms.ModelForm):
 class CreditsSearchFilter(forms.Form):
     credit = forms.IntegerField(widget=forms.NumberInput(
         attrs={'class': 'form-control p-2'}), required=False)
+
+
+def get_credits():
+    obj = CreditSettings.objects.all()
+    choice = [(None, "Select Credit Rule")]
+    ch = [(r.id, r.credit_amount) for r in obj]
+    choice.extend(ch)
+    print(choice)
+    return choice
+
+
+class CreditsAssignForm(forms.Form):
+    credit = forms.ChoiceField(choices=get_credits, widget=forms.Select(
+        attrs={'class': 'form-select'}), required=False)
+
+    def clean_credit(self):
+        cleaned_data = super(CreditsAssignForm, self).clean()
+        credit = cleaned_data.get("credit")
+        if credit == None or credit == "":
+            raise forms.ValidationError(
+                f"Please select a Credit amount!"
+            )
+        else:
+            return credit

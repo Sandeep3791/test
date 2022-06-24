@@ -1,4 +1,5 @@
 from django.db import models
+from django.forms import CharField
 from django.utils.translation import ugettext_lazy as _
 from wayrem_admin.utils.constants import *
 from wayrem.constant import upload_storage
@@ -175,13 +176,31 @@ class CreditSettings(models.Model):
         db_table = 'credit_settings'
 
 
-# class CreditManagement(models.Model):
-#     id = models.AutoField(primary_key=True, unique=True)
-#     customer = models.ForeignKey("Customer", models.CASCADE)
-#     credit = models.ForeignKey("CreditSettings", models.CASCADE)
-#     used = models.FloatField()
-#     available = models.FloatField()
-#     created_at = models.DateTimeField(auto_now_add=True)
-#     updated_at = models.DateTimeField(auto_now=True)
-#     class Meta:
-#         db_table = 'credit_management'
+class CreditManagement(models.Model):
+    id = models.AutoField(primary_key=True, unique=True)
+    customer = models.ForeignKey("Customer", models.CASCADE)
+    credit_rule = models.ForeignKey("CreditSettings", models.CASCADE)
+    used = models.FloatField()
+    available = models.FloatField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        app_label = "wayrem_admin"
+        db_table = 'credit_management'
+
+
+class CreditTransactionLogs(models.Model):
+    id = models.AutoField(primary_key=True, unique=True)
+    customer = models.ForeignKey("Customer", models.CASCADE)
+    order = models.ForeignKey("Orders", models.CASCADE)
+    credit_amount = models.FloatField()
+    available = models.FloatField()
+    credit_date = models.DateTimeField(auto_now_add=True)
+    due_date = models.DateTimeField()
+    payment_status = models.CharField(
+        max_length=255, blank=True, default="Due")
+
+    class Meta:
+        app_label = "wayrem_admin"
+        db_table = 'credit_transactions_logs'
