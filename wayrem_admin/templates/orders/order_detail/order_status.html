@@ -40,6 +40,11 @@
     <div class="d-flex justify-content-between align-items-center"><span class={% if PAYMENT_STATUS_DECLINED == order_transaction.payment_status.id %}"declined_type"{% else %}"paid_type"{% endif %}>
        <span> Order has been {{order_transaction.payment_status}}!</span><span class="payment_status {% if PAYMENT_STATUS_DECLINED == order_transaction.payment_status.id %}bg-danger{% else %}bg-success {% endif %} ms-2">{{order_transaction.payment_status}}</span></span>
     </div>
+    {% if order_transaction.payment_mode.id == 12 %}
+        <p style="padding-top:10px;margin-bottom:-12px">
+            <a href="/media/common_folder/customer_banks/{{order_transaction.bank_payment_image}}" target="_blank" class="small">Download Bank transfer Document</a>
+        </p>
+        {% endif %}
 </div>
 {% else %}
 <div class="card card-body bg-white border-light shadow-sm mb-4 p-4 orderpayment">
