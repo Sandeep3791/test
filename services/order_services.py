@@ -12,7 +12,8 @@ from sqlalchemy.orm import Session
 from datetime import datetime
 import random
 import googlemaps
-import datetime as DT
+import datetime as DT 
+from datetime import timedelta
 import constants
 import re
 from sqlalchemy import null, or_
@@ -582,6 +583,8 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
     paid = False
     cod = False
     pending = False
+    credit = False
+    
     SUCCESS_CODES_REGEX = re.compile(r'^(000\.000\.|000\.100\.1|000\.[36])')
     SUCCESS_MANUAL_REVIEW_CODES_REGEX = re.compile(
         r'^(000\.400\.0[^3]|000\.400\.[0-1]{2}0)')
@@ -591,9 +594,12 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
     hyperpay_response = None
     hyperpay_response_description = None
     entityId = common_services.get_entityId(request.entityId)
+
     if int(request.payment_type) == 10 or int(request.payment_type) == 12:
         cod = True
-    if not cod:
+    if int(request.payment_type) == 13:
+        PVC = True #paying via credit
+    if not cod and not PVC:
         # payment_status = payment_services.get_payment_status(request.checkout_id, entityId)
         payment_status = payment_services.HyperPayResponseView(request.entityId).get_payment_status(request.checkout_id)
 
@@ -721,7 +727,7 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
         price_list = []
         sup_name_list = []
         
-        if not cod:
+        if not cod and not PVC:
             transaction_id = payment_status.get("id")
             checkout_id = request.checkout_id
             response_body = str(payment_status)
@@ -816,18 +822,8 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
             if paid or cod or pending:
                 inventory_update = update_inventory(
                     order_id, product_id, product_qty, db)
-        inv_no = None
-        if paid or cod:
-            transaction_data = db.query(order_models.OrderTransactions).all()
-            if transaction_data:
-                inv_no = len(transaction_data)+1001
-            else:
-                inv_no = 1001
-        order_transact = order_models.OrderTransactions(user_id=request.customer_id,  order_id=order_id, order_type=1,
-                                                        payment_mode_id=request.payment_type, payment_status_id=request.payment_status, invoices_id=inv_no)
-        db.merge(order_transact)
-        db.commit()
-        if paid or cod or pending:
+
+        if paid or cod or pending or credit:
             order_delivery_logs = order_models.OrderDeliveryLogs(
                 order_id=order_id, order_status_id=1, order_status_details="Order is confirmed", user_id=1, customer_view=1, log_date=common_services.get_time())
             db.merge(order_delivery_logs)
@@ -858,7 +854,48 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
             order_data.is_shown = True
         db.merge(order_data)
         db.commit()
-        if paid or cod or pending:
+
+        paying_price= final_grand_total
+        order_id_credit = order_id
+        updated_payment_status = 7
+        if PVC:
+            credit_data = db.query(order_models.CreditManagement).filter(order_models.CreditManagement.customer_id == request.customer_id).first()
+            available_cr = credit_data.available
+
+            if available_cr >= paying_price:
+                updated_credit = float(available_cr - paying_price)
+
+                credit_data.available = updated_credit
+                credit_data.used += float(paying_price)
+                credit_data.updated_at = common_services.get_time()
+                db.merge(credit_data)
+                db.commit()
+
+                update_date = credit_data.updated_at
+                due_date = update_date + timedelta(days=30)
+
+                credit_log = order_models.CreditTransactionsLog(customer_id = request.customer_id,order_id = order_id_credit,credit_amount = float(paying_price),available = updated_credit,credit_date = common_services.get_time(),due_date = due_date,payment_status = updated_payment_status)
+                db.merge(credit_log)
+                db.commit()
+                
+                credit=True
+                    # request.payment_status = updated_payment_status
+            else:
+                result = user_schemas.ResponseCommonMessage(status=status.HTTP_404_NOT_FOUND, message="Not enough credits available !")
+                return result
+
+        inv_no = None
+        if paid or cod or credit:
+            transaction_data = db.query(order_models.OrderTransactions).all()
+            if transaction_data:
+                inv_no = len(transaction_data)+1001
+            else:
+                inv_no = 1001
+        order_transact = order_models.OrderTransactions(user_id=request.customer_id,  order_id=order_id, order_type=1,payment_mode_id=request.payment_type, payment_status_id=request.payment_status, invoices_id=inv_no)
+        db.merge(order_transact)
+        db.commit()
+
+        if paid or cod or pending or credit:
             cart_items = db.query(order_models.CustomerCart).filter(
                 order_models.CustomerCart.customer_id == request.customer_id).all()
             for item in cart_items:
@@ -888,7 +925,7 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
                     common_services.send_otp, to, subject, body, request, db)
 
         # for key = order_placed_customer_notification
-        if paid or cod:
+        if paid or cod or credit:
             invoice_link_mail = f"{constants.global_link}/orders/invoice-orders/{ref_no}"
             common_services.invoice_saver(invoice_link_mail, ref_no)
             path = os.path.abspath('.')
@@ -906,7 +943,7 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
             background_tasks.add_task(common_services.send_otp,
                                     returned[0], returned[1], returned[2], request, db, invoice_path, invoice_delete)
 
-        if paid or cod or pending:
+        if paid or cod or pending or credit:
 
             data_response  = order_schemas.OrderResponseData(order_id=order_id)
 
