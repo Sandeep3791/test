@@ -36,7 +36,6 @@ from wayrem_admin.forms.supplier import SupplierInvoiceSearchFilter
 #         return render(request, self.template_name, {"userlist": ulist})
 
 
-
 class InvoiceList(ListView):
     model = Invoice
     template_name = "supplier_invoice/list.html"
@@ -55,7 +54,6 @@ class InvoiceList(ListView):
         return context
 
 
-
 class DownloadInvoice(View):
     def get(self, request):
         try:
@@ -70,7 +68,7 @@ class DownloadInvoice(View):
 
             return response
         except:
-            messages.error(request, "Something went wrong!")
+            messages.error(request, "File not available!")
             return redirect('wayrem_admin:invoicelist')
 
 
@@ -87,5 +85,5 @@ class DownloadInvoicePO(View):
 
             return response
         except:
-            messages.error(request, "Something went wrong!")
+            messages.error(request, "File not available!")
             return redirect('wayrem_admin:polist')
