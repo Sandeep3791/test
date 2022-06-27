@@ -1,8 +1,8 @@
-from sqlalchemy import Column, Integer, String, Float, DateTime, ForeignKey
+from sqlalchemy import BigInteger, Column, Integer, String, Float, DateTime, ForeignKey
 from sqlalchemy.sql.sqltypes import Boolean
 from database import Base
 import datetime as DT
-from utility_services import common_services
+from utility_services.common_services import get_time
 
 
 class Orders(Base):
@@ -38,7 +38,7 @@ class Orders(Base):
     order_phone = Column(String(255))
     order_email = Column(String(255))
     order_date = Column(DateTime, nullable=False,
-                        default=common_services.get_time())
+                        default=get_time())
     order_shipped = Column(Integer)
     order_tracking_number = Column(String(255))
     content = Column(String(255))
@@ -70,7 +70,7 @@ class OrderDeliveryLogs(Base):
     user_id = Column(Integer)
     order_status_details = Column(String(255))
     log_date = Column(DateTime, nullable=False,
-                      default=common_services.get_time())
+                      default=get_time())
     customer_view = Column(Integer)
 
 
@@ -86,9 +86,9 @@ class OrderTransactions(Base):
     payment_status_id = Column(Integer, nullable=True)
     invoices_id = Column(Integer)
     created_at = Column(DateTime, nullable=False,
-                        default=common_services.get_time())
+                        default=get_time())
     updated_at = Column(DateTime, nullable=False,
-                        default=common_services.get_time())
+                        default=get_time())
     content = Column(String(255), nullable=True)
     bank_payment_image = Column(String(255), nullable=True)
 
@@ -103,9 +103,9 @@ class Inventory(Base):
     inventory_type_id = Column(String(255))
     order_status = Column(String(255))
     created_at = Column(DateTime, nullable=False,
-                        default=common_services.get_time())
+                        default=get_time())
     updated_at = Column(DateTime, nullable=False,
-                        default=common_services.get_time())
+                        default=get_time())
 
 
 class CustomerCart(Base):
@@ -115,9 +115,9 @@ class CustomerCart(Base):
     product_id = Column(Integer)
     product_quantity = Column(Integer)
     created_at = Column(DateTime, nullable=False,
-                        default=common_services.get_time())
+                        default=get_time())
     updated_at = Column(DateTime, nullable=False,
-                        default=common_services.get_time())
+                        default=get_time())
 
 
 class UserGrocery(Base):
@@ -128,9 +128,9 @@ class UserGrocery(Base):
     customer_id = Column(ForeignKey('customers_master.id'))
     address_id = Column(ForeignKey('customer_addresses.id'))
     created_at = Column(DateTime, nullable=False,
-                        default=common_services.get_time())
+                        default=get_time())
     updated_at = Column(DateTime, nullable=False,
-                        default=common_services.get_time())
+                        default=get_time())
 
 
 class GroceryProducts(Base):
@@ -161,6 +161,38 @@ class RecurrenceGrocery(Base):
     recurrence_nextdate = Column(String(255), nullable=False)
     status = Column(Boolean, default=True)
     created_at = Column(DateTime, nullable=False,
-                        default=common_services.get_time())
+                        default=get_time())
     updated_at = Column(DateTime, nullable=False,
-                        default=common_services.get_time())
+                        default=get_time())
+
+
+class CreditSettings(Base):
+    __tablename__ = "credit_settings"
+
+    id = Column(Integer(), autoincrement=True, primary_key=True, index=True)
+    credit_amount  = Column(Integer, nullable=True)
+    time_period  = Column(Integer, nullable=True)
+    
+class CreditManagement(Base):
+    __tablename__ = "credit_management"
+
+    id = Column(Integer(), autoincrement=True, primary_key=True, index=True)
+    customer_id = Column(ForeignKey('customers_master.id'))
+    credit_rule_id = Column(ForeignKey('credit_settings.id'))
+    used = Column(Float)
+    available = Column(Float)
+    updated_at = Column(DateTime(timezone=True), default=get_time())
+    created_at = Column(DateTime(timezone=True), default=get_time())
+
+class CreditTransactionsLog(Base):
+    __tablename__ = 'credit_transactions_logs'
+
+    id = Column(Integer, primary_key=True)
+    credit_amount = Column(Float(asdecimal=True), nullable=False)
+    available = Column(Float(asdecimal=True), nullable=False)
+    credit_date = Column(DateTime(timezone=True), default=get_time())
+    due_date = Column(DateTime(timezone=True), default=get_time())
+    payment_status = Column(String(255), nullable=False)
+    customer_id = Column(ForeignKey('customers_master.id'), nullable=False, index=True)
+    order_id = Column(BigInteger,ForeignKey('orders.id'), nullable=False, index=True)
+

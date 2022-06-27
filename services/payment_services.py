@@ -1,6 +1,6 @@
 import json
 from services import firebase_services
-from schemas import user_schemas, payment_schemas
+from schemas import user_schemas, payment_schemas,order_schemas
 from models import user_models, order_models, payment_models
 from fastapi_jwt_auth import AuthJWT
 from sqlalchemy.orm import Session
@@ -304,18 +304,13 @@ def get_payment_status_types(db: Session):
     return response
 
 
-def get_user_credits(customer_id, db: Session):
-    user_data = db.query(payment_models.CreditManagement).filter(payment_models.CreditManagement.customer_id == customer_id).first()
-
+def get_credits(customer_id, db: Session):
+    user_data = db.query(order_models.CreditManagement).filter(order_models.CreditManagement.customer_id == customer_id).first()
     if user_data:
-
-        rule_id_data = db.query(payment_models.CreditSettings).filter(payment_models.CreditSettings.id == user_data.credit_rule_id).first()
-
+        rule_id_data = db.query(order_models.CreditSettings).filter(order_models.CreditSettings.id == user_data.credit_rule_id).first()
         assigned_credit = rule_id_data.credit_amount
-
-        credit_data = payment_schemas.ResponseCustomerCredits(id=user_data.id, customer_id=user_data.customer_id, used_credits=user_data.used, available_credits=user_data.available ,total_credits = assigned_credit )
-
-        response = payment_schemas.ResponseCustomerCreditsFinal(status=status.HTTP_200_OK, message="User Credit Info!", data=credit_data)
+        credit_data = order_schemas.ResponseCustomerCredits(id=user_data.id, customer_id=user_data.customer_id, used_credits=user_data.used, available_credits=user_data.available ,total_credits = assigned_credit )
+        response = order_schemas.ResponseCustomerCreditsFinal(status=status.HTTP_200_OK, message="User Credit Info!", data=credit_data)
         return response
     else:
         common_msg = user_schemas.ResponseCommonMessage(status=status.HTTP_404_NOT_FOUND, message="No user credits found!")
