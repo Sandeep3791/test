@@ -129,3 +129,9 @@ def forgot_password(request: user_schemas.ForgotPassword, db: Session = Depends(
 #     data = user_services.processing_recurrence_order(db)
 #     return data
 
+@router.put('/account/deactivate')
+def account_deactivate(customer_id: int,authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
+    data = user_services.account_deactivate(customer_id, db)
+    return data
+
+

@@ -334,11 +334,9 @@ def customer_login(request, authorize: AuthJWT, db: Session):
             status=status.HTTP_200_OK, message='Invalid Credentials')
         return common_msg
     customer_id = user.id
-    fire = db.query(firebase_models.CustomerDevice).filter(firebase_models.CustomerDevice.customer_id ==
-                                                           customer_id, firebase_models.CustomerDevice.device_id == request.device_id).first()
+    fire = db.query(firebase_models.CustomerDevice).filter(firebase_models.CustomerDevice.customer_id == customer_id, firebase_models.CustomerDevice.device_id == request.device_id).first()
     if not fire:
-        fire = firebase_models.CustomerDevice(
-            customer_id=customer_id, device_id=request.device_id, device_type=request.device_type)
+        fire = firebase_models.CustomerDevice(customer_id=customer_id, device_id=request.device_id, device_type=request.device_type)
         db.merge(fire)
         db.commit()
     else:
@@ -624,3 +622,21 @@ def refresh_token(authorize: AuthJWT = Depends()):
     current_user = authorize.get_jwt_subject()
     new_access_token = authorize.create_access_token(subject=current_user)
     return {"access_token": new_access_token}
+
+
+def account_deactivate(customer_id, db: Session):
+    data = db.query(user_models.User).filter(user_models.User.id == customer_id).first()
+    try:
+        if data:
+            data.verification_status = "deleted"
+            data.email += "_deleted"
+            data.contact += "_d"
+            db.commit()
+            common_msg = user_schemas.ResponseCommonMessage(status=status.HTTP_200_OK, message="Account Deleted Successfully!")
+            return common_msg
+        else:
+            common_msg = user_schemas.ResponseCommonMessage(status=status.HTTP_404_NOT_FOUND, message="Customer id does not exist!")
+            return common_msg
+    except:
+        common_msg = user_schemas.ResponseCommonMessage(status=status.HTTP_404_NOT_FOUND, message="Action not performed!")
+        return common_msg
