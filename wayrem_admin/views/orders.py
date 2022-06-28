@@ -50,6 +50,7 @@ class OrderReferenceExport(View):
     template_name = "orders/order_invoice.html"
     KEY = 'setting_vat'
     WAYREM_VAT = 'wayrem_vat_registration'
+    WAYREM_CR = 'wayrem_cr_no'
 
     def image_to_base64(self, image):
         buff = BytesIO()
@@ -73,6 +74,8 @@ class OrderReferenceExport(View):
         context['tax_vat'] = Settings.objects.filter(key=self.KEY).first()
         context['wayrem_vat'] = Settings.objects.filter(
             key=self.WAYREM_VAT).first()
+        context['wayrem_cr'] = Settings.objects.filter(
+            key=self.WAYREM_CR).first()
         context['wayrem_seller_name'] = Settings.objects.filter(
             key="wayrem_seller_name").first()
         context['order_details'] = OrderDetails.objects.filter(order=order_id)
@@ -180,7 +183,8 @@ class OrderStatusUpdated(LoginRequiredMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         id_pk = self.kwargs['id']
         context['id_pk'] = id_pk
-        order_transaction=OrderTransactions.objects.filter(order_id=id_pk).first()
+        order_transaction = OrderTransactions.objects.filter(
+            order_id=id_pk).first()
         if (order_transaction.payment_mode_id == BANKTRANSFER_MODE) and (order_transaction.payment_status_id == PAYMENT_STATUS_PENDING or order_transaction.payment_status_id == PAYMENT_STATUS_DECLINED):
             context['message'] = "Please confirm the Bank Transfer document before approving the order"
         else:
@@ -208,7 +212,7 @@ class OrderStatusUpdated(LoginRequiredMixin, UpdateView):
         get_id = self.get_object().id
         exist_status_id = self.get_object().status.id
         status_id = int(self.request.POST.get('status'))
-        
+
         data_dic = {}
         data_dic['status'] = 0
         data_dic['loginext_success'] = None
@@ -224,11 +228,13 @@ class OrderStatusUpdated(LoginRequiredMixin, UpdateView):
                 delivery_status = ORDER_STATUS_PREPARING
             if status_id == ORDER_CANCELLED:
                 delivery_status = ORDER_STATUS_CANCELLED
-                payment_status=StatusMaster.objects.get(id=PAYMENT_STATUS_DECLINED)
-            
+                payment_status = StatusMaster.objects.get(
+                    id=PAYMENT_STATUS_DECLINED)
+
             if status_id == ORDER_CANCELLED:
-                    OrderTransactions.objects.filter(order=get_id).update(payment_status=payment_status)
-                
+                OrderTransactions.objects.filter(order=get_id).update(
+                    payment_status=payment_status)
+
             obj_stat_instance = StatusMaster.objects.get(id=status_id)
             deliv_obj_stat_instance = StatusMaster.objects.get(
                 id=delivery_status)
@@ -239,11 +245,12 @@ class OrderStatusUpdated(LoginRequiredMixin, UpdateView):
                     data_dic['message'] = "Reference Id already created. We update the status"
                 else:
                     data_dic['message'] = "Reference Id is created. We update the status"
-                Orders.objects.filter(id=get_id).update(status=obj_stat_instance, delivery_status=deliv_obj_stat_instance)
+                Orders.objects.filter(id=get_id).update(
+                    status=obj_stat_instance, delivery_status=deliv_obj_stat_instance)
                 odl = OrderDeliveryLogs(order_id=get_id, order_status=deliv_obj_stat_instance, order_status_details="status change",
                                         log_date=now, user_id=1, customer_view=deliv_obj_stat_instance.customer_view)
                 odl.save()
-                
+
                 data_dic['order_status'] = '<span class="badge bg-primary" style="padding: 3px 8px;line-height: 11px;background-color:' + \
                     obj_stat_instance.status_color+' !important">'+obj_stat_instance.name+'</span>'
                 data_dic['delivery_status'] = '<span class="badge bg-primary" style="padding: 3px 8px;line-height: 11px;background-color:' + \
@@ -298,6 +305,7 @@ class OrderInvoiceView(LoginRequiredMixin, View):
     template_name = "orders/order_invoice.html"
     KEY = 'setting_vat'
     WAYREM_VAT = 'wayrem_vat_registration'
+    WAYREM_CR = 'wayrem_cr_no'
 
     def image_to_base64(self, image):
         buff = BytesIO()
@@ -315,6 +323,8 @@ class OrderInvoiceView(LoginRequiredMixin, View):
         context['tax_vat'] = Settings.objects.filter(key=self.KEY).first()
         context['wayrem_vat'] = Settings.objects.filter(
             key=self.WAYREM_VAT).first()
+        context['wayrem_cr'] = Settings.objects.filter(
+            key=self.WAYREM_CR).first()
         context['wayrem_seller_name'] = Settings.objects.filter(
             key="wayrem_seller_name").first()
         context['order_details'] = OrderDetails.objects.filter(order=order_id)
@@ -336,7 +346,7 @@ class OrderInvoiceView(LoginRequiredMixin, View):
                         base_url=request.build_absolute_uri()).write_pdf()
         response = HttpResponse(pdf_file, content_type='application/pdf')
         response['Content-Transfer-Encoding'] = 'binary'
-        response['Content-Disposition'] = 'attachment;filename='+filename
+        response['Content-Disposition'] = 'inline;attachment;filename='+filename
         return response
         # return render(request, self.template_name,context)
 
@@ -363,13 +373,14 @@ class OrderUpdateView(LoginPermissionCheckMixin, DetailView):
         duplicaterequest['status'] = self.get_object().status.id
         duplicaterequest['payment_status'] = context['order_transaction'].payment_status.id
         context['status_form'] = OrderStatusDetailForm(
-            self.get_object().status.id,order_id, duplicaterequest)
+            self.get_object().status.id, order_id, duplicaterequest)
         context['payment_status_form'] = OrderUpdatedPaymentStatusForm(
             duplicaterequest)
         context['currency'] = CURRENCY
         context['PAYMENT_STATUS_CONFIRM'] = PAYMENT_STATUS_CONFIRM
         context['PAYMENT_STATUS_DECLINED'] = PAYMENT_STATUS_DECLINED
-        order_transaction=OrderTransactions.objects.filter(order_id=order_id).first()
+        order_transaction = OrderTransactions.objects.filter(
+            order_id=order_id).first()
         if (order_transaction.payment_mode_id == BANKTRANSFER_MODE) and (order_transaction.payment_status_id == PAYMENT_STATUS_PENDING or order_transaction.payment_status_id == PAYMENT_STATUS_DECLINED):
             context['message'] = "Please confirm the Bank Transfer document before approving the order"
         else:
