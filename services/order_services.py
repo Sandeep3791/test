@@ -5,8 +5,8 @@ from utility_services.inventory_services import product_details, update_inventor
 import os
 from fastapi.encoders import jsonable_encoder
 import logging
-from models import user_models, order_models, firebase_models, payment_models
-from schemas import firebase_schemas, user_schemas, order_schemas, payment_schemas
+from models import user_models, order_models, firebase_models, payment_models,credit_models
+from schemas import firebase_schemas, user_schemas, order_schemas, payment_schemas,credit_schemas
 from fastapi import FastAPI, status, BackgroundTasks
 from sqlalchemy.orm import Session
 from datetime import datetime
@@ -859,7 +859,7 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
         order_id_credit = order_id
         updated_payment_status = 7
         if PVC:
-            credit_data = db.query(order_models.CreditManagement).filter(order_models.CreditManagement.customer_id == request.customer_id).first()
+            credit_data = db.query(credit_models.CreditManagement).filter(credit_models.CreditManagement.customer_id == request.customer_id).first()
             available_cr = credit_data.available
 
             if available_cr >= paying_price:
@@ -874,7 +874,7 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
                 update_date = credit_data.updated_at
                 due_date = update_date + timedelta(days=30)
 
-                credit_log = order_models.CreditTransactionsLog(customer_id = request.customer_id,order_id = order_id_credit,credit_amount = float(paying_price),available = updated_credit,credit_date = common_services.get_time(),due_date = due_date,payment_status = updated_payment_status)
+                credit_log = credit_models.CreditTransactionsLog(customer_id = request.customer_id,order_id = order_id_credit,credit_amount = float(paying_price),available = updated_credit,credit_date = common_services.get_time(),due_date = due_date,payment_status = updated_payment_status)
                 db.merge(credit_log)
                 db.commit()
                 
