@@ -228,7 +228,7 @@ def product_view_one(request):
     else:
         context['form'] = ProductFormOne(initial=initial)
         context['formset'] = ProductIngredientFormset()
-    return render(request, 'product1.html', context)
+    return render(request, 'product/product1.html', context)
 
 
 @permission_required('product_management.create_product_list', raise_exception=True)
@@ -289,7 +289,7 @@ def product_images(request):
 
     else:
         form = ProductImageForm()
-    return render(request, "product4.html", {'form': form})
+    return render(request, "product/product2.html", {'form': form})
 
 
 # # ----------------------------------------------------------------------------
@@ -315,48 +315,6 @@ class ProductList(LoginPermissionCheckMixin, ListView):
         return context
 
 
-# class ProductList(View):
-#     template_name = "productlist.html"
-
-#     @method_decorator(login_required(login_url='wayrem_admin:root'))
-#     def get(self, request, format=None):
-#         productslist = Products.objects.all()
-#         search_filter = Q()
-#         product_name = request.GET.get('product_name')
-#         product_sku = request.GET.get('product_sku')
-#         supplier_name = request.GET.get('suppliers')
-#         product_category = request.GET.get('product_category')
-#         if product_name:
-#             search_filter |= Q(name=product_name)
-#         if product_sku:
-#             search_filter |= Q(SKU=product_sku)
-#         if supplier_name:
-#             search_filter |= Q(supplier__company_name=supplier_name)
-#         if product_category:
-#             search_filter |= Q(category__name=product_category)
-#         productslist = productslist.filter(search_filter)
-#         suppliers = Supplier.objects.values_list('username', flat=True)
-#         paginator = Paginator(productslist, 5)
-#         page = request.GET.get('page')
-#         try:
-#             plist = paginator.page(page)
-#         except PageNotAnInteger:
-#             # If page is not an integer, deliver first page.
-#             plist = paginator.page(1)
-#         except EmptyPage:
-#             # If page is out of range (e.g. 9999), deliver last page of results.
-#             plist = paginator.page(paginator.num_pages)
-#         # return render(request, self.template_name, {"productslist": plist, 'suppliers_name': suppliers})
-#         suppliers = Supplier.objects.values_list('company_name', flat=True)
-#         categories = Categories.objects.values_list('name', flat=True)
-#         context = {
-#             "productslist": plist,
-#             "suppliers_name": suppliers,
-#             "categories": categories
-#         }
-#         return render(request, self.template_name, context)
-
-
 @permission_required('product.view', raise_exception=True)
 def product_details(request, id=None):
     prod = Products.objects.get(id=id)
@@ -366,7 +324,7 @@ def product_details(request, id=None):
     print(form1)
     form = ProductFormView(instance=prod)
     # prod = Products.objects.filter(id=id).first()
-    return render(request, 'View_product_copy.html', {'form': form, 'form2': form1, 'image': prod.primary_image, 'prodimg': prodimage, 'id': prod.id})
+    return render(request, 'product/view_product.html', {'form': form, 'form2': form1, 'image': prod.primary_image, 'prodimg': prodimage, 'id': prod.id})
 
 
 @permission_required('product.edit', raise_exception=True)

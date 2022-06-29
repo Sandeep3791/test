@@ -189,8 +189,9 @@
                         <!-- Form -->
                         <div class="col-lg-6">
                             <div class="form-group mb-4 col-gap">
-                                <label for="name">Weight  <span class="text-danger"><em> {{form.weight.errors | striptags}}
-                                </em><em> {{form.weight_unit.errors | striptags}}
+                                <label for="name">Size  <span class="text-danger"><em> {{form.weight.errors | striptags}}
+                                </em></span></label>
+                                <label for="id_weight_unit" style="margin-left: 71%;">Unit <span class="text-danger"> <em> {{form.weight_unit.errors | striptags}}
                                 </em></span></label>
                                 <div class="input-group first">   
                                     <div class="w-75">{{form.weight}} </div>
@@ -355,6 +356,8 @@
                             <label for="name">Product Quantity <span class="text-danger">*</span><span class="text-danger"><em> {{form.quantity.errors | striptags}}
                             </em>
                             </span></label>
+                            <label for="id_weight_unit" style="margin-left: 53%;">Unit <span class="text-danger"> <em> {{form.quantity_unit.errors | striptags}}
+                            </em></span></label>
                             <div class="input-group">   
                                 <div class="w-75 px-2">
                                 {{form.quantity}}
@@ -518,7 +521,8 @@
                         <div class="col-lg-6">
                             <div class="form-group mb-4">
                                 <label for="name">Wayrem Margin <span class="text-danger">*</span> <span class="text-danger"><em> {{form.wayrem_margin.errors | striptags}}
-                                </em> <em> {{form.margin_unit.errors | striptags}}
+                                </em> </span></label>
+                                <label for="id_weight_unit" style="margin-left: 54%;">Unit <span class="text-danger"> <em> {{form.margin_unit.errors | striptags}}
                                 </em></span></label>
                                 <div class="input-group">
                                     <div class="w-75 px-2">
