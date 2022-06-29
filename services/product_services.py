@@ -792,7 +792,7 @@ def search_filter_products(offset ,customer_id, start_price, end_price, discount
         query += f" left JOIN product_rating AS pr ON pm.id = pr.product_id "
 
     if category:
-        query += f" left join wayrem_uat_v1.products_master_category as pmc on pm.id = pmc.products_id  left join wayrem_uat_v1.categories_master as cm on pmc.categories_id = cm.id "
+        query += f" left join {constants.Database_name}.products_master_category as pmc on pm.id = pmc.products_id  left join {constants.Database_name}.categories_master as cm on pmc.categories_id = cm.id "
 
     query += f" WHERE pm.publish = TRUE "
 
@@ -814,7 +814,7 @@ def search_filter_products(offset ,customer_id, start_price, end_price, discount
     #     rating_check=True
     #     query += f" and id in (select product_id from {constants.Database_name}.product_rating where rating >= 0 Order by rating DESC ) "
     if category:
-        query += f" and pm.id IN (SELECT pmc.products_id WHERE pmc.categories_id IN ({category} , (SELECT pmc.categories_id WHERE pmc.categories_id IN (SELECT cm.id WHERE cm.parent IN (SELECT  cm.name WHERE cm.id IN ({category})))))) "
+        query += f" and pm.id IN (SELECT products_id from {constants.Database_name}.products_master_category WHERE categories_id={category} or categories_id  IN (SELECT id from {constants.Database_name}.categories_master WHERE parent IN (SELECT name from {constants.Database_name}.categories_master WHERE id IN ({category}))))"
     query+= f" order by True "
     if discount:
         query += f" ,LPAD(lower(pm.discount), 2,0) desc "
