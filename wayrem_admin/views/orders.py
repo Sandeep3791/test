@@ -157,6 +157,7 @@ class OrdersList(LoginPermissionCheckMixin, ListView):
     def get_queryset(self):
         qs = Orders.objects.filter().order_by("-id")
         filtered_list = OrderFilter(self.request.GET, queryset=qs)
+        print(filtered_list.qs.query)
         return filtered_list.qs
 
     def get_context_data(self, **kwargs):
@@ -285,10 +286,14 @@ class OrderPaymentStatusUpdated(LoginRequiredMixin, UpdateView):
 
     def post(self, request, *args, **kwargs):
         get_id = self.get_object().id
+        order_trans=OrderTransactions.objects.get(id=get_id)
+        order_id=order_trans.order_id
         status_id = int(self.request.POST.get('payment_status'))
         obj_stat_instance = StatusMaster.objects.get(id=status_id)
-        OrderTransactions.objects.filter(id=get_id).update(
-            payment_status=obj_stat_instance)
+        OrderTransactions.objects.filter(id=get_id).update(payment_status=obj_stat_instance)
+        if status_id == PAYMENT_STATUS_REJECTED:
+            from wayrem_admin.forecasts.firebase_notify import FirebaseLibrary
+            FirebaseLibrary().send_notify(order_id=order_id,order_status=PAYMENT_STATUS_REJECTED)
         return HttpResponse(obj_stat_instance.name)
 
 
@@ -369,6 +374,7 @@ class OrderUpdateView(LoginPermissionCheckMixin, DetailView):
         context['currency'] = CURRENCY
         context['PAYMENT_STATUS_CONFIRM'] = PAYMENT_STATUS_CONFIRM
         context['PAYMENT_STATUS_DECLINED'] = PAYMENT_STATUS_DECLINED
+        context['PAYMENT_STATUS_REJECTED'] = PAYMENT_STATUS_REJECTED
         order_transaction=OrderTransactions.objects.filter(order_id=order_id).first()
         if (order_transaction.payment_mode_id == BANKTRANSFER_MODE) and (order_transaction.payment_status_id == PAYMENT_STATUS_PENDING or order_transaction.payment_status_id == PAYMENT_STATUS_DECLINED):
             context['message'] = "Please confirm the Bank Transfer document before approving the order"

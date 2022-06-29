@@ -157,8 +157,15 @@
 $(".orderpayment").on("click",".modelpaymentstatus",function(e){
     e.preventDefault();
     pst=$(this).data("id");
+    
     $("#id_payment_status").val(pst);
     $('#modal-default').modal('show');
+    if (pst == 7){
+        $("#payment_status").html("Are you sure you want to confirm?");
+    }else{
+        $("#payment_status").html("Are you sure you want to reject?");
+    }
+    
 })
 
 
@@ -251,6 +258,7 @@ $(".orderpayment").on("click",".order_submit_success",function(e){
     }
 
     $('.orderstatus .order_submit_success').on('click', function(){
+        
         order_status_details=$("#id_status :selected").text()
         order_status_val=$("#id_status :selected").val()
         if (order_status_val == 16){

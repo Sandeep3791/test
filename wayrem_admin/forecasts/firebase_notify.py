@@ -74,7 +74,8 @@ class FirebaseLibrary:
             3: "notification_app_order_pickup",
             4: "notification_app_order_delivering",
             5: "notification_app_order_delivered",
-            23: "notification_app_recurrent_order_pending"
+            23: "notification_app_recurrent_order_pending",
+            26: "notification_app_bank_transfer_reject",
         }
         return switcher.get(status_id, None)
 

@@ -22,14 +22,11 @@ class OrderFilter(django_filters.FilterSet):
 
     class Meta:
         model = Orders
-        fields = ['order_ref', 'start_date', 'end_date', 'customer',
-                  'contact', 'status', 'customer_name', 'orderrefer', 'business_type']
+        fields = ['order_ref', 'start_date', 'end_date', 'customer','contact', 'status', 'customer_name', 'orderrefer', 'business_type']
 
     def customer_business_type_filter(self, queryset, name, value):
         business_type_id = int(value)
-        if business_type_id == 1:
+        if business_type_id == 0:
             return queryset.filter()
-        elif business_type_id == 2:
-            return queryset.filter(customer__business_type=BUSINESS_TYPE_ID)
         else:
-            return queryset.exclude(customer__business_type=BUSINESS_TYPE_ID)
+            return queryset.filter(customer__business_type=business_type_id)

@@ -5,6 +5,7 @@ from django.forms import widgets
 from wayrem_admin.models import Orders, OrderTransactions, StatusMaster
 from django.forms import ModelForm
 from wayrem_admin.utils.constants import *
+from wayrem_admin.models import BusinessType
 
 from django.forms import Select
 
@@ -79,10 +80,11 @@ class OrderAdvanceFilterForm(ModelForm):
     end_date = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control p-2'}), required=False)
 
-    choice_status = (("1", "All"), ("2", "Home business"),
-                     ("3", "None home business"))
-    business_type = forms.ChoiceField(
-        choices=choice_status, widget=forms.Select(attrs={'class': 'form-select', }))
+    #choice_status = (("1", "All"), ("2", "Home business"),("3", "None home business"))
+    choice_status = [(get_users_options.pk, get_users_options.business_type) for get_users_options in BusinessType.objects.filter(status=1)]
+    choice_status.insert(0, ('0', 'All'))
+
+    business_type = forms.ChoiceField(choices=choice_status, widget=forms.Select(attrs={'class': 'form-select', }),required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
