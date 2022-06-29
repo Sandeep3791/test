@@ -786,30 +786,43 @@ def search_filter_products(offset ,customer_id, start_price, end_price, discount
     for value in limit_value:
         limit_val = int(value[0])
 
-    query = f"select * from {constants.Database_name}.products_master where publish = {True} "
+    query = f"select pm.* from {constants.Database_name}.products_master as pm "
+
+    if rating or rating_value:
+        query += f" left JOIN product_rating AS pr ON pm.id = pr.product_id "
+
+    if category:
+        query += f" left join wayrem_uat_v1.products_master_category as pmc on pm.id = pmc.products_id  left join wayrem_uat_v1.categories_master as cm on pmc.categories_id = cm.id "
+
+    query += f" WHERE pm.publish = TRUE "
 
     if brand:
-        brand = list(set(brand.rsplit(',')))
-        query += ' and mfr_name in (' + '"{}"'.format('","'.join(brand)) + ')'
+        query += f" and pm.mfr_name = '{brand}' "
     if start_price:
-        query += f" and price > {start_price}"
+        query += f" and pm.price > {start_price}"
     if end_price:
-        query += f" and price < {end_price}"
+        query += f" and pm.price < {end_price}"
     if discount:
-        query += f" and discount > 0"
+        query += f" and pm.discount > 0"
     if featured:
-        query += f" and feature_product = true"
+        query += f" and pm.feature_product = true"
     elif featured == False:
-        query += f" and feature_product = false"
+        query += f" and pm.feature_product = false"
     if rating_value:
-        query += f" and id in (select product_id from {constants.Database_name}.product_rating where rating <= {rating_value} and rating>{rating_value-1} Order by rating DESC ) "
-    if rating:
-        rating_check=True
-        query += f" and id in (select product_id from {constants.Database_name}.product_rating where rating >= 0 Order by rating DESC ) "
+        query += f" and pr.rating <= {rating_value} and pr.rating>{rating_value-1} "
+    # if rating:
+    #     rating_check=True
+    #     query += f" and id in (select product_id from {constants.Database_name}.product_rating where rating >= 0 Order by rating DESC ) "
     if category:
-        query += f" and id in (select products_id from {constants.Database_name}.products_master_category where categories_id in ({category},(SELECT categories_id FROM wayrem_uat_v1.products_master_category where categories_id in (SELECT id FROM wayrem_uat_v1.categories_master where parent in (SELECT name FROM wayrem_uat_v1.categories_master where id in ({category}))))))"
+        query += f" and pm.id IN (SELECT pmc.products_id WHERE pmc.categories_id IN ({category} , (SELECT pmc.categories_id WHERE pmc.categories_id IN (SELECT cm.id WHERE cm.parent IN (SELECT  cm.name WHERE cm.id IN ({category})))))) "
+    query+= f" order by True "
+    if discount:
+        query += f" ,LPAD(lower(pm.discount), 2,0) desc "
     if newest:
-        query += f" order by updated_at ASC "
+        query += f" ,pm.updated_at DESC "
+    if rating or rating_value:
+        query += f" ,pr.rating DESC "
+    
     result = None
     
     query += f" limit {offset_int},{limit_val}"
