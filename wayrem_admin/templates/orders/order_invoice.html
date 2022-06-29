@@ -27,8 +27,14 @@
                             <tr>
                                 <td style="margin: 0; text-align: left;color:#4F4F4F;padding:20px;font-family: 'Roboto', sans-serif;width: 70%;" align="left">
                                     <span align="left" style=" display: flex; flex-direction: row; font-size: 1rem; font-weight: 600; text-align: left;">WAYREM</span>
+                                    {% if order.customer.business_type.business_type == "Home Business" %}
+                                    <span style=" display: flex; flex-direction: row; text-align: left; font-size:.8rem;">Simplified Tax Sales Invoice</span>
+                                    {% else %}
                                     <span style=" display: flex; flex-direction: row; text-align: left; font-size:.8rem;">Tax Sales Invoice</span>
-                                    <span style=" text-align: left;font-size:.8rem;">VAT NO: {{wayrem_vat.value}}</span>
+                                    {% endif %}
+                                    <span style=" text-align: left;font-size:.8rem;">VAT No.: {{wayrem_vat.value}}</span>
+                                    <br>
+                                    <span style=" text-align: left;font-size:.8rem;">CR. No.: {{wayrem_cr.value}}</span>
                                 </td>
                                 <td style="font-size: 1rem; color:#4F4F4F;padding: 20px;font-family: 'Roboto', sans-serif;font-weight: 400;text-align: right;width: 30%;" align="right">
                                     <img src="{% static '/assets/img/logo/wayrem_logo.png' %}" alt="" align="right" style="text-align: right;"></td>
@@ -118,6 +124,7 @@
                 <td style="width: 14.25%; padding: 1rem .5rem; text-align: left;" valign="top" align="left">S.no&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </td>
                 <td style="width: 14.25%; padding: 1rem .5rem; text-align: center;" valign="top" align="left">Description</td>
                 <td style="width: 14.25%; padding: 1rem .5rem; text-align: center;" valign="top" align="center">Qty</td>
+                <td style="width: 14.25%; padding: 1rem .5rem; text-align: center;" valign="top" align="center">Unit</td>
                 <td style="width: 14.25%; padding: 1rem .5rem; text-align: right;" valign="top" align="right">Price&nbsp; </td>
                 <td style="width: 14.25%; padding: 1rem .5rem; text-align: right;" valign="top" align="right">Total</td>
                 <!-- <td style="width: 5%;" valign="top">Vat Amt.</td>
@@ -133,8 +140,9 @@
                 <td style="width: 14.25%; padding: 1rem .4rem; text-align: center;" valign="top" align="left">{{ forloop.counter }}</td>
                 <td style="width: 14.25%; padding: 1rem .4rem;" valign="top" align="left">{{order_detail.product_name}}<br/>SKU: {{order_detail.sku}}</td>
                 <td style="width: 14.25%; padding: 1rem .4rem; text-align: center;" valign="top" align="center">{{order_detail.quantity}}</td>
-                <td style="width: 14.25%; padding: 1rem .4rem; text-align: center;" valign="top" align="right">{{currency}} {{ order_detail.id|display_discount_price }}</td>
-                <td style="width: 14.25%; padding: 1rem .4rem; text-align: right;" valign="top" align="right">{{currency}} {{ order_detail.id|display_discount_price_qty }}</td>
+                <td style="width: 14.25%; padding: 1rem .4rem; text-align: center;" valign="top" align="center">{{order_detail.product.quantity_unit.unit_name}}</td>
+                <td style="width: 14.25%; padding: 1rem .4rem; text-align: center;" valign="top" align="right">{{currency}} {{ order_detail.id|display_discount_price|floatformat:2 }}</td>
+                <td style="width: 14.25%; padding: 1rem .4rem; text-align: right;" valign="top" align="right">{{currency}} {{ order_detail.id|display_discount_price_qty|floatformat:2 }}</td>
             </tr>
         {% endfor %}
         </tbody>
@@ -153,7 +161,7 @@
                         <tbody>
                             <tr>
                                 <td style="width: 65%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" align="left">Subtotal</td>
-                                <td style="width: 42%;font-size: .8rem; color:#4F4F4F; text-align: right;" align="right" valign="top">{{currency}} {{order.sub_total}}</td>
+                                <td style="width: 42%;font-size: .8rem; color:#4F4F4F; text-align: right;" align="right" valign="top">{{currency}} {{order.sub_total|floatformat:2}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -161,8 +169,8 @@
                     <table style="width: 100%;">
                         <tbody>
                             <tr>
-                                <td style="width: 65%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" align="left">Shipping</td>
-                                <td style="width: 42%;font-size: .8rem; color:#4F4F4F; text-align: right;" align="right" valign="top">{{currency}} {{order.shipping}}</td>
+                                <td style="width: 65%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" align="left">Delivery Fees</td>
+                                <td style="width: 42%;font-size: .8rem; color:#4F4F4F; text-align: right;" align="right" valign="top">{{currency}} {{order.shipping|floatformat:2}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -171,7 +179,7 @@
                         <tbody>
                             <tr>
                                 <td style="width: 65%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" align="left">VAT ({{order.tax_vat}}%)</td>
-                                <td style="width: 42%;font-size: .8rem; color:#4F4F4F; text-align: right;" align="right" valign="top">{{currency}} {{order.tax}}</td>
+                                <td style="width: 42%;font-size: .8rem; color:#4F4F4F; text-align: right;" align="right" valign="top">{{currency}} {{order.tax|floatformat:2}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -180,7 +188,7 @@
                         <tbody>
                             <tr>
                                 <td style="width: 65%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" align="left">Grand Total</td>
-                                <td style="width: 42%;font-size: .8rem; color:#4F4F4F; text-align: right;" align="right" valign="top">{{currency}} {{order.grand_total}}</td>
+                                <td style="width: 42%;font-size: .8rem; color:#4F4F4F; text-align: right;" align="right" valign="top">{{currency}} {{order.grand_total|floatformat:2}}</td>
                             </tr>
                         </tbody>
                     </table>
