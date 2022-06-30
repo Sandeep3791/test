@@ -1,5 +1,6 @@
 
 from fastapi.param_functions import Depends
+from sqlalchemy import false
 import constants
 import random
 import logging
@@ -631,6 +632,7 @@ def account_deactivate(customer_id, db: Session):
             data.verification_status = "deleted"
             data.email += "_deleted"
             data.contact += "_d"
+            data.status = False
             db.commit()
             common_msg = user_schemas.ResponseCommonMessage(status=status.HTTP_200_OK, message="Account Deleted Successfully!")
             return common_msg
