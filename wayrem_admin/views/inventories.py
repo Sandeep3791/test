@@ -116,15 +116,12 @@ class InventoryUpdate(UpdateView):
         return context
 
 
-class InventoryView(UpdateView):
+class InventoryView(LoginPermissionCheckMixin,UpdateView):
+    permission_required='inventory.view'
     model = Inventory
     form_class = InventoryViewForm
     template_name = 'inventories/view.html'
     pk_url_kwarg = 'inventory_pk'
-
-    @method_decorator(login_required(login_url='wayrem_admin:root'))
-    def dispatch(self, *args, **kwargs):
-        return super(InventoryView, self).dispatch(*args, **kwargs)
 
     def get_success_url(self):
         return reverse_lazy('wayrem_admin:view_inventory', kwargs={'inventory_pk': self.get_object().id})
