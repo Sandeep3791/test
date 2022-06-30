@@ -1,6 +1,5 @@
 from django.urls import path
 from wayrem_admin import views
-from wayrem_admin.views.customer import PaymentForm
 
 urlpatterns = [
     path('customers-list/', views.CustomersList.as_view(), name='customerslist'),
@@ -19,15 +18,7 @@ urlpatterns = [
     path('hyperpay/registration', views.HyperpayRegistration.as_view(),
          name='hyperpay_registration'),
     path('hyperpay/risk', views.HyperpayRisk.as_view(),
-         name='hyperpay_risk'),
-    path('credits-create/', views.CreditCreate.as_view(), name='create_credit'),
-    path('credits-list/', views.CreditsList.as_view(), name='credits_list'),
-    path('credit/<int:credit_pk>', views.CreditUpdate.as_view(),
-         name='update_credit'),
-    path('credit/view/<int:credit_pk>',
-         views.CreditView.as_view(), name='view_credit'),
-    path('credit/assign/<int:id>',
-         views.creditAssign, name='assign_credit'),
+         name='hyperpay_risk')
 
 
 

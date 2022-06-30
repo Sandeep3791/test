@@ -30,7 +30,7 @@
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb padding-left-0">
                     <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
-                    <li class="breadcrumb-item"><span class="sidebar-icon"><i class="fas fa-box-open"></i></span> <span class="sidebar-text">Credits &nbsp; </span></li>
+                    <li class="breadcrumb-item"><span class="sidebar-icon"><i class="fa fa-credit-card"></i></span> <span class="sidebar-text">Credits &nbsp; </span></li>
                     <li class="breadcrumb-item active" aria-current="page">Manage Credits</li>
                 </ol>
             </nav>
@@ -48,7 +48,9 @@
     <div class="table-settings mb-4">
         <div class="subheader row mt-3 align-items-center">
             <div class="col-xl-2 col-md-2 col-lg-2 col-md-5">
+                {% if perms.credits.settings_add %}
                 <a class="btn btn-success" href="{% url 'wayrem_admin:create_credit' %}">Create Credit</a>
+                {% endif %}
             </div>
             <div class="add_btn col-xl-2 col-lg-2 col-md-5 d-flex align-items-righ padding-0 justify-content-center">
                 <div class="col-xl-10 col-md-3 col-lg-10 col-md-5">
@@ -76,7 +78,9 @@
                     {% comment %} <th scope="col">S. No.</th> {% endcomment %}
                     <th scope="col">Credit Amount</th>
                     <th scope="col">Time Period</th>
+                    {% if perms.credits.settings_view or perms.credits.settings_edit %}
                     <th scope="col">Actions</th>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody class="bg-white">
@@ -85,7 +89,7 @@
                 <tr>
                     <td>{{item.credit_amount}}</td>
                     <td>{{item.time_period}}</td>
-
+                    {% if perms.credits.settings_view or perms.credits.settings_edit %}
                    <td>
                         <div class="btn-group">
                             <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -95,8 +99,12 @@
                                 <span class="sr-only">Toggle Dropdown</span>
                             </button>
                             <div class="dropdown-menu">
+                                {% if perms.credits.settings_view %}
                                 <a class="dropdown-item" href="{% url 'wayrem_admin:view_credit' item.id %}"><span class="fas fa-eye mr-2"></span>View Details</a>
+                                {% endif %}
+                                {% if perms.credits.settings_edit %}
                                 <a class="dropdown-item" href="{% url 'wayrem_admin:update_credit' item.id %}"><span class="fas fa-edit mr-2"></span>Edit</a>
+                                {% endif %}
                                 {% comment %} <a class="dropdown-item text-danger"  data-bs-toggle="modal" data-bs-target="#deleteModal{{item.id}}" href="#"> <span class="fas fa-trash-alt mr-2"></span>Remove</a> {% endcomment %}
                             </div>
                         </div>
@@ -124,6 +132,7 @@
                             </div>
                         </div>
                     </td>
+                    {% endif %}
                 </tr>
                 {% endfor %}
                 {% else %}

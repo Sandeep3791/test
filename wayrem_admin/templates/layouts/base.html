@@ -178,6 +178,11 @@
       $(".simplebar-mask .sidebar-inner ul.nav a[href*='/customer/customers-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
       $(".simplebar-mask .sidebar-inner ul.nav a[href*='/customer/customers-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
     }
+    if((path.indexOf('/credits') != -1)){
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/credits/credits-list/']").addClass("active");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/credits/credits-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("active_div");
+      $(".simplebar-mask .sidebar-inner ul.nav a[href*='/credits/credits-list/']").parent( "li" ).parent( "ul" ).parent( ".multi-level" ).addClass("show");
+    }
 
     if((path.indexOf('/home/pages/') != -1)){
       $(".simplebar-mask .sidebar-inner ul.nav a[href*='/home/pages/list/']").addClass("active");
