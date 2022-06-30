@@ -7,7 +7,7 @@
                     <th scope="col">Slug</th>
                     <th scope="col">Status</th>
                     {% comment %} <th scope="col">Created At</th> {% endcomment %}
-                    <th scope="col">Action</th>
+                    {% if perms.static_page.view or perms.static_page.edit or perms.static_page.delete  %}<th scope="col">Action</th>{% endif %}
                 </tr>
             </thead>
             <tbody class="bg-white">
@@ -21,6 +21,7 @@
                     <td>{% if user.status == True %}<i class="fas fa-toggle-on text-success"> Active</i> {% else %} <i
                         class="fas fa-toggle-off text-danger"> Inactive</i>{% endif %}</td>
                     {% comment %} <td>{{user.created_at|date:"M d, Y" }}</td> {% endcomment %}
+                    {% if perms.static_page.view or perms.static_page.edit or perms.static_page.delete  %}
                     <td>     
                             <div class="btn-group">
                                 <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -60,6 +61,7 @@
                                 </div>
                             </div>
                     </td>    
+                    {% endif %}
                 </tr>
                 {% endif %}
                 {% endfor %}

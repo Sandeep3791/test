@@ -77,7 +77,7 @@
                     <th scope="col">Name</th>
                     <th scope="col">Status</th>
                     <th scope="col">Created At</th>
-                    <th scope="col">Actions</th>
+                    {% if perms.warehouse.view or perms.warehouse.edit or perms.warehouse.delete %} <th scope="col">Actions</th>{% endif %}
                 </tr>
             </thead>
             <tbody class="bg-white">
@@ -88,6 +88,7 @@
                     <td>{{item.status}}</td>
 
                    <td>{{item.created_at|date:"M d, Y" }}</td>
+                   {% if perms.warehouse.view or perms.warehouse.edit or perms.warehouse.delete %}
                    <td>
                         <div class="btn-group">
                             <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -125,7 +126,7 @@
                                 </div>
                             </div>
                         </div>
-                    </td>
+                    </td>{% endif %}
                 </tr>
                 {% endfor %}
                 {% else %}

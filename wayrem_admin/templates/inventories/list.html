@@ -78,7 +78,7 @@
                     <th scope="col">Quantity In</th>
                     <th scope="col">Quantity Out</th>
                     <th scope="col">Created At</th>
-                    <th scope="col">Actions</th>
+                    {% if perms.inventory.view  %} <th scope="col">Actions</th>{% endif %}
                 </tr>
             </thead>
             <tbody class="bg-white">
@@ -103,6 +103,7 @@
                     </td>
 
                    <td>{{item.created_at|date:"M d, Y" }}</td>
+                   {% if perms.inventory.view  %}
                    <td>
                         <div class="btn-group">
                             <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -112,7 +113,7 @@
                                 <span class="sr-only">Toggle Dropdown</span>
                             </button>
                             <div class="dropdown-menu">
-                                {% if perms.inventory_warehouses.inventories %}<a class="dropdown-item" href="{% url 'wayrem_admin:view_inventory' item.id %}"><span class="fas fa-eye mr-2"></span>View Details</a>{% endif %}
+                                {% if perms.inventory.view %}<a class="dropdown-item" href="{% url 'wayrem_admin:view_inventory' item.id %}"><span class="fas fa-eye mr-2"></span>View Details</a>{% endif %}
                                 {% comment %} <a class="dropdown-item" href="{% url 'wayrem_admin:update_inventory' item.id %}"><span class="fas fa-edit mr-2"></span>Edit</a>
                                 <a class="dropdown-item text-danger"  data-bs-toggle="modal" data-bs-target="#deleteModal{{item.id}}" href="#"> <span class="fas fa-trash-alt mr-2"></span>Remove</a> {% endcomment %}
                             </div>
@@ -140,7 +141,7 @@
                                 </div>
                             </div>
                         </div>
-                    </td>
+                    </td>{% endif %}
                 </tr>
                 {% endfor %}
                 {% else %}

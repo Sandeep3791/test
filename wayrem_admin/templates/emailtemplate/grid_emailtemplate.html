@@ -7,7 +7,7 @@
             <th scope="col">To Email</th>
             <th scope="col">From Emails</th>
             {% comment %} <th scope="col">Created At</th> {% endcomment %}
-            <th scope="col">Action</th>
+            {% if perms.email_templates.view or perms.email_templates.edit %}<th scope="col">Action</th>{% endif %}
         </tr>
     </thead>
     <tbody class="bg-white">
@@ -21,6 +21,7 @@
             <td>{{user.to_email}}</td>
             <td>{{user.from_email}}</td>
             {% comment %} <td>{{user.created_at|date:"M d, Y" }}</td> {% endcomment %}
+            {% if perms.email_templates.view or perms.email_templates.edit %}
             <td>     
                     <div class="btn-group">
                         <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -36,6 +37,7 @@
                         </div>
                     </div>          
             </td>    
+            {% endif %}
         </tr>
         {% endif %}
         {% endfor %}
