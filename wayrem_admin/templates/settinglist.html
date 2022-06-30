@@ -38,7 +38,7 @@
     <div class="table-settings mb-4">
         <div class="subheader row align-items-center justify-content-between">
             <div class="col-xl-2 col-lg-2 col-md-2 padding-left-0 my-2" >
-                <button class="btn btn-success create_new" data-bs-toggle="modal" data-bs-target="#exampleModal">Create Settings</button>
+               {% if perms.settings.create %} <button class="btn btn-success create_new" data-bs-toggle="modal" data-bs-target="#exampleModal">Create Settings</button>{% endif %}
                 <!-- Modal -->
                 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog">
@@ -101,7 +101,7 @@
                     <th scope="col">Key</th>
                     <th scope="col">Display Name</th>
                     <th scope="col">Value</th>
-                    <th scope="col">Action</th>
+                    {% if perms.settings.update %}<th scope="col">Action</th>{% endif %}
                 </tr>
             </thead>
             <tbody class="bg-white">
@@ -120,9 +120,11 @@
                     <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="value">{{user.value}}</textarea>
                     {% endif %}
                     </td>
+                    {% if perms.settings.update %}
                     <td>                    
                         <button type="submit" class="btn btn-primary btn-sm">Update</button>                
                     </td>
+                    {% endif %}
                     </form>
                 </tr>
                 {% endif %}

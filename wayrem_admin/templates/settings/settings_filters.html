@@ -1,7 +1,7 @@
 <div class="subheader row align-items-center justify-content-between">
      <div class="col-xl-5 col-lg-5 col-5">        
         <div class="col-xl-11 col-lg-11 col-md-5">
-            <button class="btn btn-success create_new" data-bs-toggle="modal" data-bs-target="#exampleModal">Create Settings</button>
+            {% if perms.settings.create %}<button class="btn btn-success create_new" data-bs-toggle="modal" data-bs-target="#exampleModal">Create Settings</button>{% endif %}
             </a>
         </div>
     </div>

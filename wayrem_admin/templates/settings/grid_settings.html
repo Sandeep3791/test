@@ -7,7 +7,7 @@
             <th scope="col">Key</th>
             <th scope="col">Display Name</th>
             <th scope="col">Value</th>
-            <th scope="col">Action</th>
+            {% if perms.settings.update %}<th scope="col">Action</th>{% endif %}
         </tr>
     </thead>
     <tbody class="bg-white">
@@ -26,9 +26,11 @@
             <textarea class="form-control" id="exampleFormControlTextarea1" rows="3" name="value">{{user.value}}</textarea>
             {% endif %}
             </td>
+            {% if perms.settings.update %}
             <td>                    
                 <button type="submit" class="btn btn-primary btn-sm">Update</button>                
             </td>
+            {% endif %}
             </form>
         </tr>
         {% endif %}
