@@ -77,6 +77,7 @@ class BanksUpdated(LoginPermissionCheckMixin, UpdateView):
         return reverse_lazy('wayrem_admin:updatebank', kwargs={'id': bank_id})
 
 
+
 class BanksCreate(LoginPermissionCheckMixin,CreateView):
     permission_required = 'banks_management.add'
     model = Banks
@@ -89,3 +90,9 @@ class BankUpdateStatusView(View):
     def get(self, request, id):
         Banks.objects.filter(id=1).update(is_deleted=1, status=0)
         return HttpResponse(1)
+
+class BankUpdateInACView(View):
+    def get(self, request, id,status):
+        print(id,status)
+        Banks.objects.filter(id=id).update(status=status)
+        return HttpResponseRedirect('/banks')
