@@ -46,6 +46,8 @@ class ProductForm(forms.ModelForm):
 class ProductImageForm(forms.Form):
     primary_image = forms.ImageField(
         widget=forms.FileInput(attrs={'class': 'form-file-input'}))
+    featured_image = forms.ImageField(
+        widget=forms.FileInput(attrs={'class': 'form-file-input'}), required=False)
     images = forms.FileField(widget=forms.ClearableFileInput(
         attrs={'class': 'form-file-input', 'multiple': True}))
 
@@ -162,7 +164,7 @@ class ProductFormImageView(forms.ModelForm):
     class Meta:
         model = Products
         fields = ("name", "SKU", "category", "meta_key", "feature_product", "publish", "date_of_mfg", "date_of_exp", "mfr_name", "supplier",
-                  "dis_abs_percent", "description", "warehouse", "quantity", "inventory_starting", "inventory_received", "inventory_shipped", "inventory_cancelled", "outofstock_threshold", "quantity_unit", "weight", "weight_unit", "price", "discount", "package_count", "wayrem_margin", "margin_unit", "primary_image")
+                  "dis_abs_percent", "description", "warehouse", "quantity", "inventory_starting", "inventory_received", "inventory_shipped", "inventory_cancelled", "outofstock_threshold", "quantity_unit", "weight", "weight_unit", "price", "discount", "package_count", "wayrem_margin", "margin_unit", "primary_image", "featured_image")
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
@@ -192,6 +194,7 @@ class ProductFormImageView(forms.ModelForm):
             'wayrem_margin': forms.NumberInput(attrs={'class': "form-control"}),
             'margin_unit': forms.Select(attrs={'class': 'form-select'}),
             'primary_image': forms.FileInput(attrs={'class': "form-file-input"}),
+            'featured_image': forms.FileInput(attrs={'class': "form-file-input"}),
             'category': forms.SelectMultiple(attrs={'class': 'form-control'}),
             'supplier': forms.SelectMultiple(attrs={'class': 'form-control'}),
         }

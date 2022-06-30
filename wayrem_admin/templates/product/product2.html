@@ -83,7 +83,7 @@
                                 <div class="row">
                             
                                     <!-- Form -->
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-4">
                                         <div class="form-group mb-4 form-file">
                                             <label for="description">Product Primary Image <span class="text-danger">*</span>  <span class="text-danger"> <em> {{form.primary_image.errors | striptags}}
                                             </em>
@@ -99,10 +99,27 @@
                                     </div>
                                     <!-- End of Form -->
 
+                                    <!-- Form -->
+                                    <div class="col-lg-4">
+                                        <div class="form-group mb-4 form-file">
+                                            <label for="description">Featured Banner <span class="text-danger"></span>  <span class="text-danger"> <em> {{form.featured_image.errors | striptags}}
+                                            </em>
+                                        </span></label>
+                                            {{form.featured_image}}
+                                            <label class="form-file-label" for="id_featured_image">
+                                                    <span class="form-file-text">Choose file...</span>
+                                                    <span class="form-file-button">Browse</span>
+                                            </label>
+                                            <span class="text-danger"> <em> {{form.featured_image.errors | striptags}} </em> </span>
+                                            <span class="input-group submit" id="error" style="color: #d12525;"></span>
+                                        </div>
+                                    </div>
+                                    <!-- End of Form -->
+
                                      <!-- Form -->
-                                    <div class="col-lg-6">
+                                    <div class="col-lg-4">
                                         <div class="form-group mb-4 form-file multiple">
-                                            <label for="description">Product Image <span class="text-danger">*</span>  <span class="text-danger"> <em> {{form.primary_image.errors | striptags}}
+                                            <label for="description">Product Images <span class="text-danger">*</span>  <span class="text-danger"> <em> {{form.primary_image.errors | striptags}}
                                             </em>
                                         </span></span> 
                                             </label>

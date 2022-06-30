@@ -237,6 +237,7 @@ def product_images(request):
         form = ProductImageForm(request.POST, request.FILES)
         if form.is_valid():
             primary_image = request.FILES.get('primary_image', None)
+            featured_image = request.FILES.get('featured_image', None)
             category = [inst_Category(i)
                         for i in request.session["category"]]
             supplier = [inst_Supplier(i)
@@ -273,6 +274,7 @@ def product_images(request):
             obj.warehouse = inst_Warehouse(
                 request.session.get("warehouse", None))
             obj.primary_image = primary_image
+            obj.featured_image = featured_image
             obj.save()
             obj.category.set(category)
             obj.supplier.set(supplier)
@@ -324,7 +326,7 @@ def product_details(request, id=None):
     print(form1)
     form = ProductFormView(instance=prod)
     # prod = Products.objects.filter(id=id).first()
-    return render(request, 'product/view_product.html', {'form': form, 'form2': form1, 'image': prod.primary_image, 'prodimg': prodimage, 'id': prod.id})
+    return render(request, 'product/view_product.html', {'form': form, 'form2': form1, 'primary_image': prod.primary_image, 'featured_image': prod.featured_image, 'prodimg': prodimage, 'id': prod.id})
 
 
 @permission_required('product.edit', raise_exception=True)
@@ -364,7 +366,9 @@ def update_product(request, id=None, *args, **kwargs):
         form1 = ProductIngredientFormset1(queryset=ingrd)
         # form2 = ProductImageFormset(queryset=product_images)
         form3 = ProductImgUpdateForm()
-    return render(request, 'product_update_latest.html', {'form': form, 'formset': form1, 'form3': form3, 'image': prod.primary_image, 'product_images': product_images, 'id': prod.id})
+    context = {'form': form, 'formset': form1, 'form3': form3, 'primary_image': prod.primary_image,
+               'featured_image': prod.featured_image, 'product_images': product_images, 'id': prod.id}
+    return render(request, 'product/product_update.html', context)
 
 
 class DeleteProduct(LoginPermissionCheckMixin, View):
@@ -518,6 +522,7 @@ def import_products(request):
         df['warehouse_id'] = 1
         df['gs1'] = ""
         df['primary_image'] = ""
+        df['featured_image'] = ""
         df['inventory_starting'] = df['quantity']
         df['inventory_shipped'] = 0
         df['inventory_cancelled'] = 0

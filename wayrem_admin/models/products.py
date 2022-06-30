@@ -59,11 +59,14 @@ class Products(models.Model):
     discount = models.CharField(max_length=50, null=True, blank=True)
     package_count = models.CharField(
         max_length=50, null=True, blank=True, default=1)
-    wayrem_margin = models.CharField(max_length=100, blank=True, null=True)
+    wayrem_margin = models.CharField(
+        max_length=100, blank=True, default=0, null=True)
     margin_unit = models.CharField(
         max_length=20, choices=DIS_ABS_PERCENT, null=True, blank=True)
     primary_image = models.ImageField(
-        upload_to=get_file_path, storage=upload_storage, default='product.jpg', null=True)
+        upload_to=get_file_path, storage=upload_storage, null=True)
+    featured_image = models.ImageField(
+        upload_to=get_file_path, storage=upload_storage, null=True)
     gs1 = models.CharField(max_length=255, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
