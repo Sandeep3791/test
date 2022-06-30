@@ -67,7 +67,7 @@ def user_signup(request):
 
 
 class UsersList(LoginPermissionCheckMixin, ListView):
-    permission_required = 'user_management.users_list'
+    permission_required = 'user_management.users'
     model = Users
     template_name = "users/list.html"
     context_object_name = 'userlist'

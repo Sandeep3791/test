@@ -86,7 +86,7 @@ endcomment %}
                     <th scope="col">Role Name</th>
                     {% comment %} <th scope="col">Status</th> {% endcomment %}
                     <th scope="col">Access</th>
-                    <th scope="col">Status </th>
+                    {% comment %} <th scope="col">Status </th> {% endcomment %}
                     <th scope="col">Actions</th>
                 </tr>
             </thead>
@@ -96,10 +96,13 @@ endcomment %}
                     {% comment %} <th scope="row">{{forloop.counter}}</th> {% endcomment %}
                     <td>{{role.role}}</td>
                     {% comment %} <td>{{role.status}}</td> {% endcomment %}
-                    {% if perms.roles.view %}
-                    <td> <a href="{% url 'wayrem_admin:roles_view' %}?id={{role.id}}" class="text-dark">View Permissions</a></td>
+                    <td> 
+                        {% if perms.roles.view %}
+                        <a href="{% url 'wayrem_admin:roles_view' %}?id={{role.id}}" class="text-dark">View Permissions</a></td>
+                        {% else %}
+                        No Permissions
                     {% endif %}
-                    <td>
+                    {% comment %} <td>
                         {% if perms.role.activate %}
                         <a type="button" class="btn-sm text-white" data-bs-toggle="modal"
                             data-bs-target="#deleterole{{role.id}}">
@@ -112,9 +115,8 @@ endcomment %}
                         </a>
 
                         {% endif %}
-                    </td>
+                    </td> {% endcomment %}
                     <td>
-                        {% if perms.roles.edit %}
                         <div class="btn-group">
                             <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="icon icon-sm">
@@ -161,7 +163,6 @@ endcomment %}
                                 </div>
                             </div>
                         </div>
-                        {% endif %}
                     </td>
                     
                 </tr>

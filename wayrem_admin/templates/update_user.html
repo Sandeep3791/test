@@ -28,7 +28,7 @@
                 class="mb-4 mb-lg-0 bg-white shadow-sm rounded p-4 p-lg-4 w-100">
                 <div class="mb-4 mt-md-0">
     <h2 class="h5 mb-4">Update User</h2>
-    <form method="post" action="{% url 'wayrem_admin:updateuser' id %}" novalidate>
+    <form method="post" action="{% url 'wayrem_admin:updateuser' id %}">
 
                  {% csrf_token %}
                     {{form.non_field_errors}}

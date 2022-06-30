@@ -708,15 +708,15 @@
         </div>
         <div class="mt-4">
             <a  href="{% url 'wayrem_admin:productlist' %}" class="btn  btn-danger btn-block col-xl-1 col-md-1 col-12 mt-sm-3 mt-md-0 mt-3">Back</a>
-            <button id="your-id"class="btn btn-dark border-0 col-xl-1 col-md-1 col-12" >Update</button>
+            <button id="your-id" type="submit"class="btn btn-dark border-0 col-xl-1 col-md-1 col-12" >Update</button>
         </div>
-        <script>
+        {% comment %} <script>
             var form = document.getElementById("product1");
         
         document.getElementById("your-id").addEventListener("click", function () {
           form.submit();
         });
-        </script>
+        </script> {% endcomment %}
         
                             </form>
                         </div>  

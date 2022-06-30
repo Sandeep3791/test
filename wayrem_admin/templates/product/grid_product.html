@@ -10,13 +10,17 @@
             <th scope="col">SKU</th>
             <th scope="col">Product Name</th>
             {% comment %} <th scope="col">Category Name</th> {% endcomment %}
+            {% if perms.product.view_product_suppliers %}
             <th scope="col">Suppliers</th>
             <th scope="col">lowest quoted price</th>
             <th scope="col">lowest delivery time</th>
+            {% endif %}
             {% if perms.purchase_orders.create %}
             <th scope="col">PO</th>
             {% endif %}
+            {% if perms.product.view or perms.product.edit or perms.product.add_quantity or perms.product.remove_quantity or perms.product.delete %}
             <th scope="col">Actions</th>
+            {% endif %}
         </tr>
     </thead>
     <tbody class="bg-white">
@@ -31,11 +35,13 @@
                 {{i}}
                 {% endfor %}
                 </td> {% endcomment %}
-                <td>
+            {% if perms.product.view_product_suppliers %}
+            <td>
                 {% comment %} <a class="btn btn-sm" href="{% url 'wayrem_admin:viewprodsupplier' %}?product={{prod.SKU}}"> {% endcomment %}
                 <a onclick="supplierFunc('{{prod.SKU}}')">
                 View Supplier
-                </a></td>
+                </a>
+            </td>
                 <!-- Modal View Supplier -->
             <div class="modal fade" id="supplier{{prod.SKU}}" tabindex="-1" aria-labelledby="exampleModalLabel1"
                 aria-hidden="true">
@@ -53,28 +59,30 @@
                 </div> 
             </div>
             <td>
-            {% comment %} <a class="btn btn-sm" href="{% url 'wayrem_admin:lowest_price' %}?product={{prod.SKU}}"> {% endcomment %}
-            <a onclick="lowestFunc('{{prod.SKU}}')">View</a></td>
-                <!-- Modal Lowest Price -->
-                <div class="modal fade" id="lowest{{prod.SKU}}" tabindex="-1" aria-labelledby="exampleModalLabel1"
-                aria-hidden="true">
-                <div class="modal-dialog  modal-dialog-centered">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="">{{prod.product_name |title}}</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                {% comment %} <a class="btn btn-sm" href="{% url 'wayrem_admin:lowest_price' %}?product={{prod.SKU}}"> {% endcomment %}
+                <a onclick="lowestFunc('{{prod.SKU}}')">View</a></td>
+                    <!-- Modal Lowest Price -->
+                    <div class="modal fade" id="lowest{{prod.SKU}}" tabindex="-1" aria-labelledby="exampleModalLabel1"
+                    aria-hidden="true">
+                    <div class="modal-dialog  modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="">{{prod.product_name |title}}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div id="lowest_price{{prod.SKU}}"></div>
+                                
+                            </div>                    
                         </div>
-                        <div class="modal-body">
-                            <div id="lowest_price{{prod.SKU}}"></div>
-                            
-                        </div>                    
-                    </div>
-                </div> 
-            </div>
+                    </div> 
+                </div>
             <td>
-            <a onclick="lowesttimeFunc('{{prod.SKU}}')">
-            View
-            </a></td>
+                <a onclick="lowesttimeFunc('{{prod.SKU}}')">
+                View
+                </a>
+            </td>
+            {% endif %}
 
             <!-- Modal Lowest Time -->
                 <div class="modal fade" id="lowesttime{{prod.SKU}}" tabindex="-1" aria-labelledby="exampleModalLabel1"
@@ -98,6 +106,7 @@
                 </a>
             </td>
             {% endif %}
+            {% if perms.product.view or perms.product.edit or perms.product.add_quantity or perms.product.remove_quantity or perms.product.delete %}
             <td>
                 <div class="btn-group">
                     <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -148,6 +157,7 @@
                     </div>
                 </div>
             </td>
+            {% endif %}
             
             
         </tr>

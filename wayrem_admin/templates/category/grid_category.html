@@ -8,7 +8,9 @@
             <th scope="col">Parent Category</th>
             <th scope="col">Category Image</th>
             <th scope="col">Description</th>
+            {% if perms.categories.view or perms.categories.edit or perms.categories.delete %}
             <th scope="col">Actions</th>
+            {% endif %}
         </tr>
     </thead>
     <tbody>
@@ -32,6 +34,7 @@
                 {% endif %}
             </td>
             <td>{{cate.tag|truncatechars:15 }}</td>
+            {% if perms.categories.view or perms.categories.edit or perms.categories.delete %}
             <td>
                 <div class="btn-group">
                     <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -76,6 +79,7 @@
                     </div>
                 </div>
             </td>
+            {% endif %}
         </tr>
         {% endfor %}
     </tbody>

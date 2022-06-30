@@ -15,9 +15,11 @@ from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
 from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView, UpdateView
 
+
 class RoleList(LoginPermissionCheckMixin, View):
-    permission_required = 'roles.list'
+    permission_required = 'user_management.roles'
     template_name = "roles_crud_pages/rolesList.html"
+
     def get(self, request, format=None):
         context = {}
         roles = Roles.objects.all().order_by('-pk')
@@ -33,7 +35,9 @@ class RoleList(LoginPermissionCheckMixin, View):
             rolelist = paginator.page(paginator.num_pages)
         context['roles'] = rolelist
         return render(request, 'roles_crud_pages/rolesList.html', context)
-class RolePermissionView(LoginPermissionCheckMixin,View):
+
+
+class RolePermissionView(LoginPermissionCheckMixin, View):
     permission_required = 'role.permission'
     template_name = 'permissions/role_permission.html'
 
@@ -97,12 +101,14 @@ class RolePermissionView(LoginPermissionCheckMixin,View):
         messages.success(self.request, 'Permission updated successfully.')
         return HttpResponse("Menu Permission Set")
 
+
 class RoleCreate(LoginPermissionCheckMixin, CreateView):
     permission_required = 'role.create'
     model = Roles
     form_class = RoleForm
     template_name = 'roles_crud_pages/createRoles.html'
     success_url = reverse_lazy('wayrem_admin:roles_list')
+
 
 class RoleUpdate(LoginPermissionCheckMixin, UpdateView):
     permission_required = 'role.edit'
@@ -111,7 +117,6 @@ class RoleUpdate(LoginPermissionCheckMixin, UpdateView):
     template_name = 'roles_crud_pages/createRoles.html'
     pk_url_kwarg = 'role_pk'
 
-    
     def get_success_url(self):
         return reverse_lazy('wayrem_admin:roles_update', kwargs={'role_pk': self.get_object().id})
 
@@ -120,6 +125,7 @@ class RoleUpdate(LoginPermissionCheckMixin, UpdateView):
         role_pk = self.kwargs['role_pk']
         context['role_pk'] = role_pk
         return context
+
 
 def activeUnactiveRoles(request):
     context = {}
@@ -148,3 +154,44 @@ def viewRoles(request):
             messages.success(request, "Role Updated")
             return redirect('wayrem_admin:roles_list')
     return render(request, 'roles_crud_pages/view_roles.html', context)
+
+
+class RolePermissionViewReadOnly(LoginPermissionCheckMixin, View):
+    permission_required = 'role.permission'
+    template_name = 'roles_crud_pages/view_roles.html'
+
+    def get(self, request, *args, **kwargs):
+        role_id = request.GET.get('id')
+        role = get_object_or_404(Roles, pk=role_id)
+        exist_permission = RolePermissions.objects.filter(
+            role_id=role.id).all()
+        exist_permission = list(
+            exist_permission.values_list('function_id', flat=True))
+        if self.request.is_ajax():
+            self.template_name = 'permissions/permission_checkbox.html'
+        pages_menu = FunctionMaster.objects.filter(Q(status=1) & Q(
+            show_in_permission="yes")).order_by('display_order')
+
+        pages_menu_list = []
+        pages_menu_dict = {}
+        menu_temp_dict = {}
+        sub_list = []
+        if pages_menu:
+            for menu in pages_menu:
+                if menu.parent_id == 0:
+                    pages_menu_list.append(menu.id)
+                    menu_temp_dict[menu.id] = menu.__dict__
+
+            for function_id in pages_menu_list:
+                menu_dict = {}
+                menu_dict['menu'] = menu_temp_dict[function_id]
+                for menu in pages_menu:
+                    if menu.parent_id == function_id:
+                        sub_list.append(menu.__dict__)
+                if sub_list:
+                    menu_dict['submenu'] = sub_list.copy()
+                pages_menu_dict[function_id] = menu_dict
+                sub_list.clear()
+        ctx = {'function_list': pages_menu_dict,
+               'exist_permission': exist_permission, 'id_param': role_id}
+        return render(request, self.template_name, ctx)

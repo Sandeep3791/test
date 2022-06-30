@@ -24,7 +24,8 @@
             <td>{{user.role}}</td>
             <td>
                 {% if perms.user_management.user_activate %}
-                {% if user.is_active %} 
+                {% if not user.id == request.user.id %}
+                    {% if user.is_active %} 
                     <a href="{% url 'wayrem_admin:activeblock' user.id %}" class="btn-sm text-success">
                         <!-- <div class="form-check form-switch">
                             <input class="form-check-input" type="checkbox" id="flexSwitchCheckDefault" url-action="{% url 'wayrem_admin:activeblock' user.id %}">
@@ -34,6 +35,9 @@
                         href="{% url 'wayrem_admin:activeblock' user.id %}" class="btn-sm text-danger"><i
                             class="fas fa-toggle-off"> Blocked</i>
                     </a>
+                    {% endif %}
+                    {% else %}
+                    <i class="fas fa-toggle-on text-success"> Active</i>
 
                 {% endif %}
                 {% else %}

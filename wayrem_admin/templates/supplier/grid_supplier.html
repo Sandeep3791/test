@@ -9,8 +9,12 @@
             {% if perms.supplier_management.supplier_activate %}
             <th scope="col">Status</th>
             {% endif %}
+            {% if perms.supplier_management.view_supplier_products %}
             <th scope="col">Products</th>
+            {% endif %}
+            {% if perms.supplier_management.view_supplier or perms.supplier_management.edit_supplier or perms.supplier_management.delete_supplier %}
             <th scope="col">Action</th>
+            {% endif %}
         </tr>
     </thead>
     <tbody class="bg-white">
@@ -30,13 +34,13 @@
                         {% endif %} 
                     </td>
                     {% endif %}
+                    {% if perms.supplier_management.view_supplier_products %}
                     <td>
                         {% comment %} <a class="btn btn-sm" href="{% url 'wayrem_admin:viewprodsupplier' %}?product={{prod.SKU}}"> {% endcomment %}
-                        {% if perms.supplier_management.view_supplier %}
                         <a onclick="supplierprodFunc('{{suppl.id}}')">
                         View Products
                         </a>
-                        {% endif %}
+                        
                     
                         <!-- Modal View Supplier -->
                         
@@ -77,6 +81,8 @@
                             </div>
                         </div>
                     </td>
+                    {% endif %}
+                    {% if perms.supplier_management.view_supplier or perms.supplier_management.edit_supplier or perms.supplier_management.delete_supplier %}
                     <td>
                         <div class="btn-group">
                             <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -98,6 +104,7 @@
                             </div>
                         </div>
                     </td>
+                    {% endif %}
 
                     
                 </tr>

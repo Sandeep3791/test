@@ -5,7 +5,9 @@
         <tr>
             <th scope="col">Ingredient Name</th>
             <th scope="col">Ingredient Status</th>
+            {% if perms.ingredient.edit or ingredient.delete %}
             <th scope="col">Actions</th>
+            {% endif %}
         </tr>
     </thead>
     <tbody class="bg-white">
@@ -14,6 +16,7 @@
         <tr>
             <td>{{ingre.ingredients_name}}</td>
             <td>{{ingre.ingredients_status}}</td>
+            {% if perms.ingredient.edit or ingredient.delete %}
             <td>
                 <div class="btn-group">
                     <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -23,8 +26,12 @@
                         <span class="sr-only">Toggle Dropdown</span>
                     </button>
                     <div class="dropdown-menu">
+                        {% if perms.ingredient.edit %}
                         <a class="dropdown-item" href="{% url 'wayrem_admin:updateingredients' ingre.id %}"><span class="fas fa-edit mr-2"></span>Edit</a>
+                        {% endif %}
+                        {% if ingredient.delete %}
                         <a class="dropdown-item text-danger"  data-bs-toggle="modal" data-bs-target="#deleteModal{{ingre.id}}" href="#"> <span class="fas fa-trash-alt mr-2"></span>Remove</a>
+                        {% endif %}
                     </div>
                 </div>
                 <!-- Modal -->
@@ -51,6 +58,7 @@
                     </div>
                 </div>
             </td>
+            {% endif %}
             
         </tr>
         {% endfor %}
