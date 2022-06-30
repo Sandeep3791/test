@@ -1186,7 +1186,7 @@ def get_discounted_products(offset, customer_id, db: Session):
 
 def get_all_subcategories(category,db: Session):
 
-    sub_category_data = db.execute(f"select * from {constants.Database_name}.categories_master where is_parent = true and parent='{category}' ")
+    sub_category_data = db.execute( f"SELECT * FROM {constants.Database_name}.categories_master where parent = (SELECT name FROM {constants.Database_name}.categories_master where id = {category}) and is_parent = True")
     if sub_category_data.rowcount > 0:
         cat_list = []
         for data in sub_category_data:
