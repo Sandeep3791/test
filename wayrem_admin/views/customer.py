@@ -43,10 +43,10 @@ class CustomersList(LoginPermissionCheckMixin, ListView):
     template_name = "customer/list.html"
     context_object_name = 'list'
     paginate_by = RECORDS_PER_PAGE
-    success_url = reverse_lazy('wayrem_admin:categorieslist')
+    success_url = reverse_lazy('wayrem_admin:customerslist')
 
     def get_queryset(self):
-        qs = Customer.objects.filter().order_by("-id")
+        qs = Customer.objects.filter(status=True).order_by("-id")
         filtered_list = CustomerFilter(self.request.GET, queryset=qs)
         return filtered_list.qs
 

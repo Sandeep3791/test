@@ -18,11 +18,10 @@
     </thead>
     <tbody class="bg-white">
         {% for user in list %}
-        {% if user.is_superuser %}
-        {% else %}
         <tr>
             {% comment %} <th scope="row">{{forloop.counter}}</th> {% endcomment %}
-            <td>{{user.first_name}} {{user.last_name}}</td>
+            
+            <td>{{user.id}} = {{user.first_name}} {{user.last_name}}</td>
             <td>{{user.email}}</td>
             <td>{{user.contact}}</td>
             <td>
@@ -77,7 +76,6 @@
                 </div>
             </td>            
         </tr>
-        {% endif %}
         {% endfor %}
 
     </tbody>

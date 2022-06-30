@@ -18,7 +18,7 @@ class CustomerFilter(django_filters.FilterSet):
                 email__icontains=value) | Q(
                 business_name__icontains=value) | Q(
                 verification_status__icontains=value) | Q(
-                registration_number__icontains=value)
+                registration_number__icontains=value), status=True
         ).order_by("id")
 
 

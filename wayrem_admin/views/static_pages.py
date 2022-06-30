@@ -72,7 +72,7 @@ class StaticpagesUpdate(LoginPermissionCheckMixin, UpdateView):
     pk_url_kwarg = 'static_pages_pk'
 
     def get_success_url(self):
-        return reverse_lazy('wayrem_admin:updatestaticpages', kwargs={'static_pages_pk': self.get_object().id})
+        return reverse_lazy("wayrem_admin:staticpages")
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

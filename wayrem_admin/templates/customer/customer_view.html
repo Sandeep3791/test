@@ -351,12 +351,13 @@
             </div>
         </div>
     </div>
+    {% if perms.customer.view_docs or perms.customer.approve %}                           
     <div class="justify-content-center form-bg-image mt-5">
         <div class="col-12 col-xl-12">
             <div class="card card-body card_shadow mb-4">
                 <div class="card-body pb-5"> 
-                    {% if perms.customer.view_docs %}                           
                     <div class="container-fluid">
+                        {% if customer.view_docs %}
                         <h5 class="mb-4">Registration Docs</h5>
                         <div class="row">   
                             {% if user.registration_docs_path %}
@@ -390,6 +391,7 @@
                             </div> 
                             {% endif %}
                         </div> 
+                        {% endif %}
                         <div class="mt-4">
                             <a href="{% url 'wayrem_admin:customerslist' %}" class="btn btn-block btn-primary">Cancel</a>
                             {% if perms.customer.approve %}
@@ -410,11 +412,11 @@
                             {% endif %}
                         </div>
                     </div> 
-                    {% endif %}                                                       
                 </div>
             </div>
         </div>
     </div>
+    {% endif %}                                                       
 </div>
 
 <!-- Modal -->
