@@ -584,6 +584,7 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
     cod = False
     pending = False
     credit = False
+    PVC = False
     
     SUCCESS_CODES_REGEX = re.compile(r'^(000\.000\.|000\.100\.1|000\.[36])')
     SUCCESS_MANUAL_REVIEW_CODES_REGEX = re.compile(

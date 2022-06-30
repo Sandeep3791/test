@@ -103,7 +103,7 @@ def get_discounted_products(offset: str, customer_id: int, authorize: AuthJWT = 
     return get_details
 
 @router.get('/get/all/subcategories')
-def get_all_subcategories(category: str,authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
+def get_all_subcategories(category: int,authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
     get_details = product_services.get_all_subcategories(category,db)
     return get_details
 
