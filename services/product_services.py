@@ -958,7 +958,7 @@ def search_products_name(offset, customer_id, name, db: Session):
     for value in limit_value:
         limit_val = int(value[0])
 
-    query = f"SELECT * FROM  {constants.Database_name}.products_master where meta_key REGEXP '{name}$' or name LIKE '%{name}%' and publish = {True} limit {offset_int},{limit_val} "
+    query = f"SELECT * FROM  {constants.Database_name}.products_master where meta_key like '%{name}%' or name LIKE '%{name}%' and publish = {True} limit {offset_int},{limit_val} "
     data = db.execute(query)
 
     fav_product_data = db.execute(
