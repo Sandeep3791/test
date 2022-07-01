@@ -184,7 +184,7 @@ def get_static_pages(db: Session):
     static_page_list = []
     for i in static_pages_data:
         page_url = i.slug
-        page_link = "https://admin-stg.wayrem.com/home/pages/" + page_url
+        page_link = f"{constants.global_link}/home/pages/" + page_url
         data = common_schemas.StaticPages(
             id=i.id, page_title=i.page_title, page_slag=i.slug, page_url=page_link)
         static_page_list.append(data)
