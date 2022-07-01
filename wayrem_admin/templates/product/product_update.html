@@ -657,7 +657,7 @@
                                 <img src="{{featured_image.url}}" style="width:200px;height:150px;" class='me-5'>
                                 {% endif %}
                                 <div class="form-group col-lg-12 mb-4 form-file">
-                                    <label for="description">Featured banner <span class="text-danger">* <em>{{ form.featured_image.errors|striptags}}</em></span> </label>
+                                    <label for="description">Featured banner <span class="text-danger"> <em>{{ form.featured_image.errors|striptags}}</em></span> </label>
                                     {{ form.featured_image}}
                                     <label class="form-file-label ps-2 pe-2" for="customFile">
                                         <span class="form-file-text">Choose file...</span>

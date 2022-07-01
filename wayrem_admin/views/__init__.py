@@ -1,6 +1,7 @@
 from wayrem_admin.views.auth import *
 from wayrem_admin.views.account import *
 from wayrem_admin.views.category import *
+from wayrem_admin.views.credits import *
 from wayrem_admin.views.home import *
 from wayrem_admin.views.invoice import *
 from wayrem_admin.views.ingredients import *

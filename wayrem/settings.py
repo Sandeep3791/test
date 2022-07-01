@@ -81,7 +81,7 @@ DATABASES = {
         'NAME': 'wayrem_stg_v2',
         'USER': 'wayremdb_adminuser',
         'PASSWORD': 'r2wXJfUs78NczMFWRXcV',
-        'HOST': 'db',
+        'HOST': '157.175.151.40',
         'PORT': '3306',
         'OPTIONS': {
             "init_command": "SET foreign_key_checks = 0;",
@@ -134,7 +134,7 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Asia/Kuwait'
 USE_I18N = True
 USE_L10N = True
-USE_TZ = True
+USE_TZ = False
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 STATIC_URL = '/static/'

@@ -66,7 +66,7 @@ class Products(models.Model):
     primary_image = models.ImageField(
         upload_to=get_file_path, storage=upload_storage, null=True)
     featured_image = models.ImageField(
-        upload_to=get_file_path, storage=upload_storage, null=True)
+        upload_to=get_file_path, storage=upload_storage, null=True, blank=True)
     gs1 = models.CharField(max_length=255, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

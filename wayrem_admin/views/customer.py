@@ -123,8 +123,8 @@ def customer_verification(request, id=None):
                         "profile_document": "profile_document"
                     }
                     FirebaseLibrary().push_notification_in_firebase(notf)
-        except:
-            pass
+        except Exception as e:
+            print("Failed to send notifications because ", e)
         # messages.success(request, f"{user.first_name} is now Rejected")
         return redirect('wayrem_admin:customerdetails', id)
     if status == "active":
@@ -156,8 +156,8 @@ def customer_verification(request, id=None):
                         "grocery_id": None
                     }
                     FirebaseLibrary().push_notification_in_firebase(notf)
-        except:
-            pass
+        except Exception as e:
+            print("Failed to send emails because", e)
         messages.success(request, f"{user.first_name} is now Active")
     else:
         messages.error(request, f"{user.first_name} is now Inactive")

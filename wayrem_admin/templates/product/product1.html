@@ -757,7 +757,7 @@
     }
 </script>
 
-<script>
+{% comment %} <script>
     $("#id_category").change(function () {
         const url = $("#product1").attr("data-supplier-url");  // get the url of the load_cities view
         const supplierId = $(this).val();  // get the selected supplier ID from the HTML input
@@ -774,7 +774,7 @@
         });
 
     });
-</script>
+</script> {% endcomment %}
 
 <script>
     $(document).ready(function () {

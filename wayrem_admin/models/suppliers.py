@@ -44,7 +44,7 @@ class Supplier(models.Model):
     delivery_incharge = models.CharField(max_length=500, blank=True, null=True)
     company_name = models.CharField(max_length=100, blank=False, null=True)
     is_active = models.BooleanField(default=True)
-    category_name = models.ManyToManyField('Categories')
+    category_name = models.ManyToManyField('Categories', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
