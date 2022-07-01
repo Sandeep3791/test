@@ -573,20 +573,20 @@ def verify_otp(request, db):
             db.merge(email_verified)
             db.commit()
             common_msg = user_schemas.ResponseCommonMessage(
-                status=status.HTTP_200_OK, message="Your Email verified successfully")
+                status=status.HTTP_200_OK, message="Your Email has been verified successfully.")
             return common_msg
         else:
             common_msg = user_schemas.ResponseCommonMessage(
-                status=status.HTTP_404_NOT_FOUND, message="The OTP You Entered Is Wrong")
+                status=status.HTTP_404_NOT_FOUND, message="The OTP you have entered is incorrect. Please enter the correct OTP.")
             return common_msg
     if not data:
         common_msg = user_schemas.ResponseCommonMessage(
-            status=status.HTTP_404_NOT_FOUND, message="The Email or OTP You Entered is Wrong")
+            status=status.HTTP_404_NOT_FOUND, message="The Email or OTP you have entered is incorrect.")
         return common_msg
 
     if data:
         common_msg = user_schemas.ResponseCommonMessage(
-            status=status.HTTP_200_OK, message="Your OTP verified successfully")
+            status=status.HTTP_200_OK, message="Your OTP has been verified successfully.")
         db.delete(data)
         db.commit()
         return common_msg
