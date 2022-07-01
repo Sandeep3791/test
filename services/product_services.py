@@ -501,6 +501,13 @@ def get_featured_products(customer_id, offset, db: Session):
         else:
             image_path = "null"
 
+        if i.featured_image:
+            featured_image = i.featured_image
+            # img_name = primary_img.split("/")[-1]
+            featured_image_path = constants.IMAGES_DIR_PATH + featured_image
+        else:
+            featured_image_path = "null"
+
         unit1 = db.execute(
             f"select unit_name from {constants.Database_name}.unit_master where id = {quantity_unit}")
         unit2 = db.execute(
@@ -570,7 +577,7 @@ def get_featured_products(customer_id, offset, db: Session):
                     discount_unit_val = None
 
                 res_data = product_schemas.AllProductDetails(id=i.id, name=i.name, SKU=i.SKU, mfr_name=i.mfr_name, description=i.description, quantity=final_qty, quantity_unit=j[0], threshold=qty_thresold, weight=i.weight, weight_unit=k[
-                    0], categories=prod_category_list, price=updated_price, discount=discount_val, discount_unit=discount_unit_val, favorite=favorite, favorite_product_uuid=favorite_product_id, primary_image=image_path, images=image_list, rating=result)
+                    0], categories=prod_category_list, price=updated_price, discount=discount_val, discount_unit=discount_unit_val, favorite=favorite, favorite_product_uuid=favorite_product_id,featured_image = featured_image_path, primary_image=image_path, images=image_list, rating=result)
                 list_data.append(res_data)
     common_msg = product_schemas.GetAllProducts(
         status=status.HTTP_200_OK, message="All Products List", data=list_data)

@@ -30,6 +30,7 @@ class AllProductDetails(BaseModel):
     discount_unit: Optional[str] = None
     favorite: Optional[bool] = None
     favorite_product_uuid: Optional[str] = None
+    featured_image : Optional[str] = None
     primary_image: str
     images: List[str]
     rating: float = None
