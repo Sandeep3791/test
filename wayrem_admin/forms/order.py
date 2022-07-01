@@ -44,7 +44,7 @@ class OrderStatusUpdatedForm(ModelForm):
         order_status_id = Orders.objects.filter(ref_number=order_id).first()
         order_id=order_status_id.id
         order_transaction=OrderTransactions.objects.filter(order_id=order_id).first()
-        if (order_transaction.payment_mode_id == BANKTRANSFER_MODE) and (order_transaction.payment_status_id == PAYMENT_STATUS_PENDING or order_transaction.payment_status_id == PAYMENT_STATUS_DECLINED):
+        if (order_transaction.payment_mode_id == BANKTRANSFER_MODE) and (order_transaction.payment_status_id == PAYMENT_STATUS_PENDING or order_transaction.payment_status_id == PAYMENT_STATUS_DECLINED or order_transaction.payment_status_id == PAYMENT_STATUS_REJECTED):
             self.fields['status'].widget=Select(attrs={'class': 'form-control form-control-select'})
         else:
             self.fields['status'].widget=forms.Select(attrs={'class': 'form-control form-control-select'})
@@ -123,7 +123,7 @@ class OrderStatusDetailForm(ModelForm):
         super().__init__(*args, **kwargs)
         
         order_transaction=OrderTransactions.objects.filter(order_id=order_id).first()
-        if (order_transaction.payment_mode_id == BANKTRANSFER_MODE) and (order_transaction.payment_status_id == PAYMENT_STATUS_PENDING or order_transaction.payment_status_id == PAYMENT_STATUS_DECLINED):
+        if (order_transaction.payment_mode_id == BANKTRANSFER_MODE) and (order_transaction.payment_status_id == PAYMENT_STATUS_PENDING or order_transaction.payment_status_id == PAYMENT_STATUS_DECLINED or order_transaction.payment_status_id == PAYMENT_STATUS_REJECTED):
             self.fields['status'].widget=Select(attrs={'class': 'form-control form-control-select'})
         else:
             self.fields['status'].widget=forms.Select(attrs={'class': 'form-control form-control-select'})
