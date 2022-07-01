@@ -1,7 +1,7 @@
 import constants
 import logging
-from models import user_models,product_models
-from schemas import user_schemas,product_schemas
+from models import user_models, product_models
+from schemas import user_schemas, product_schemas
 from services import user_services
 from fastapi import FastAPI, status
 from fastapi_jwt_auth import AuthJWT
@@ -12,7 +12,6 @@ import uuid
 app = FastAPI()
 
 logger = logging.getLogger(__name__)
-
 
 
 def get_product_details(customer_id, product_id, db: Session):
@@ -55,11 +54,11 @@ def get_product_details(customer_id, product_id, db: Session):
                 if i.margin_unit == '%':
                     margin_value = (intial_price/100)*int(wayrem_margin)
                     abc = intial_price+margin_value
-                    updated_price = round(abc,2)
+                    updated_price = round(abc, 2)
                 else:
                     cde = intial_price + float(wayrem_margin)
                     # cde = intial_price + float(i.wayrem_margin)
-                    updated_price = round(cde,2)
+                    updated_price = round(cde, 2)
 
                 product_category = db.execute(
                     f"select * from {constants.Database_name}.products_master_category where products_id = {product_id}")
@@ -125,7 +124,7 @@ def get_product_details(customer_id, product_id, db: Session):
 
                 discount_val = i.discount
                 discount_unit_val = i.dis_abs_percent
-                if  i.dis_abs_percent == None:
+                if i.dis_abs_percent == None:
                     discount_val = 0
                     discount_unit_val = None
 
@@ -137,7 +136,7 @@ def get_product_details(customer_id, product_id, db: Session):
 
 
 def get_all_products(offset, customer_id, db: Session):
-    
+
     offset_int = int(offset)
     limit_value = db.execute(
         f"select value from {constants.Database_name}.settings where id = 15 ;")
@@ -237,12 +236,12 @@ def get_all_products(offset, customer_id, db: Session):
 
         discount_val = i.discount
         discount_unit_val = i.dis_abs_percent
-        if  i.dis_abs_percent == None:
+        if i.dis_abs_percent == None:
             discount_val = 0
             discount_unit_val = None
 
         res_data = product_schemas.AllProductDetails(id=i.id, name=i.name, SKU=i.SKU, mfr_name=i.mfr_name, description=i.description, quantity=final_qty, quantity_unit=j[0], threshold=qty_thresold, weight=i.weight, weight_unit=k[
-                                                  0], categories=prod_category_list, price=updated_price, discount=discount_val, discount_unit=discount_unit_val, favorite=favorite, favorite_product_uuid=favorite_product_id, primary_image=image_path, images=image_list, rating=result)
+            0], categories=prod_category_list, price=updated_price, discount=discount_val, discount_unit=discount_unit_val, favorite=favorite, favorite_product_uuid=favorite_product_id, primary_image=image_path, images=image_list, rating=result)
         list_data.append(res_data)
     common_msg = product_schemas.GetAllProducts(
         status=status.HTTP_200_OK, message="All Products List", data=list_data)
@@ -344,12 +343,12 @@ def get_category_products(customer_id, category_id, offset, db: Session):
 
             discount_val = i.discount
             discount_unit_val = i.dis_abs_percent
-            if  i.dis_abs_percent == None:
+            if i.dis_abs_percent == None:
                 discount_val = 0
                 discount_unit_val = None
 
             res_data = product_schemas.AllProductDetails(id=i.products_id, name=i.name, SKU=i.SKU, mfr_name=i.mfr_name, description=i.description, quantity=final_qty, quantity_unit=j[0], threshold=qty_thresold, weight=i.weight, weight_unit=k[
-                                                      0], categories=prod_category_list, price=updated_price, discount=discount_val, discount_unit=discount_unit_val, favorite=favorite, favorite_product_uuid=favorite_product_id, primary_image=image_path, images=image_list, rating=result)
+                0], categories=prod_category_list, price=updated_price, discount=discount_val, discount_unit=discount_unit_val, favorite=favorite, favorite_product_uuid=favorite_product_id, primary_image=image_path, images=image_list, rating=result)
             list_data.append(res_data)
     common_msg = product_schemas.GetAllProducts(
         status=status.HTTP_200_OK, message="Category Products List", data=list_data)
@@ -381,7 +380,7 @@ def get_all_categories(db: Session):
 
 
 def get_best_selling_products(db: Session):
-    
+
     data = db.execute(
         f"SELECT product_id, count(product_id) FROM {constants.Database_name}.order_details group by product_id order by count(product_id) desc limit 0,20;")
     if not data:
@@ -456,12 +455,12 @@ def get_best_selling_products(db: Session):
 
                     discount_val = i.discount
                     discount_unit_val = i.dis_abs_percent
-                    if  i.dis_abs_percent == None:
+                    if i.dis_abs_percent == None:
                         discount_val = 0
                         discount_unit_val = None
 
                     res_data = product_schemas.AllProductDetails(id=i.id, name=i.name, SKU=i.SKU, mfr_name=i.mfr_name, description=i.description, quantity=final_qty, quantity_unit=j[0], threshold=qty_thresold, weight=i.weight, weight_unit=k[
-                                                              0], categories=prod_category_list, price=updated_price, discount=discount_val, discount_unit=discount_unit_val, primary_image=image_path, images=image_list, rating=result)
+                        0], categories=prod_category_list, price=updated_price, discount=discount_val, discount_unit=discount_unit_val, primary_image=image_path, images=image_list, rating=result)
                     products_list.append(res_data)
     common_msg = product_schemas.GetAllProducts(
         status=status.HTTP_200_OK, message="All Best Selling Products List", data=products_list)
@@ -469,7 +468,7 @@ def get_best_selling_products(db: Session):
 
 
 def get_featured_products(customer_id, offset, db: Session):
-    
+
     offset_int = int(offset)
     limit_value = db.execute(
         f"select value from {constants.Database_name}.settings where id = 15 ;")
@@ -566,12 +565,12 @@ def get_featured_products(customer_id, offset, db: Session):
 
                 discount_val = i.discount
                 discount_unit_val = i.dis_abs_percent
-                if  i.dis_abs_percent == None:
+                if i.dis_abs_percent == None:
                     discount_val = 0
                     discount_unit_val = None
-                        
+
                 res_data = product_schemas.AllProductDetails(id=i.id, name=i.name, SKU=i.SKU, mfr_name=i.mfr_name, description=i.description, quantity=final_qty, quantity_unit=j[0], threshold=qty_thresold, weight=i.weight, weight_unit=k[
-                                                          0], categories=prod_category_list, price=updated_price, discount=discount_val, discount_unit=discount_unit_val, favorite=favorite, favorite_product_uuid=favorite_product_id, primary_image=image_path, images=image_list, rating=result)
+                    0], categories=prod_category_list, price=updated_price, discount=discount_val, discount_unit=discount_unit_val, favorite=favorite, favorite_product_uuid=favorite_product_id, primary_image=image_path, images=image_list, rating=result)
                 list_data.append(res_data)
     common_msg = product_schemas.GetAllProducts(
         status=status.HTTP_200_OK, message="All Products List", data=list_data)
@@ -579,11 +578,11 @@ def get_featured_products(customer_id, offset, db: Session):
 
 
 def favorite_Product(request, db: Session):
-    
+
     match_products = db.execute(
         f'select * from {constants.Database_name}.products_master where id ="{request.product_id}" and publish = {True}')
     prod_avail = db.query(product_models.FavoriteProduct).filter(product_models.FavoriteProduct.product_id ==
-                                                              request.product_id, product_models.FavoriteProduct.customer_id == request.customer_id).first()
+                                                                 request.product_id, product_models.FavoriteProduct.customer_id == request.customer_id).first()
     if not prod_avail:
         if match_products.rowcount > 0:
             id = str(uuid.uuid4())
@@ -610,10 +609,10 @@ def favorite_Product(request, db: Session):
 
 
 def get_favorite_product_details(customer_id, db: Session):
-    
+
     products = db.execute(
         f'select * from {constants.Database_name}.Favorite_Product where customer_id = "{customer_id}"')
-    if products.rowcount==0:
+    if products.rowcount == 0:
         common_msg = user_schemas.ResponseCommonMessage(
             status=status.HTTP_200_OK, message="No favourite products availabe!")
         return common_msg
@@ -663,16 +662,15 @@ def get_favorite_product_details(customer_id, db: Session):
 
             discount_val = i.discount
             discount_unit_val = i.dis_abs_percent
-            if  i.dis_abs_percent == None:
+            if i.dis_abs_percent == None:
                 discount_val = 0
                 discount_unit_val = None
-                        
 
             qty = int(i.quantity)
             qty_thresold = i.outofstock_threshold
             final_qty = qty
             data2 = product_schemas.FavoriteProduct(favorite_product_id=var.id, product_id=var.product_id, product_qty=final_qty, name=i.name, SKU=i.SKU, mfr_name=i.mfr_name, description=i.description,
-                                                 quantity_unit=j[0], threshold=qty_thresold, weight=i.weight, weight_unit=k[0], price=updated_price, discount=discount_val, discount_unit=discount_unit_val, primary_image=image_path, images=image_list, rating=result)
+                                                    quantity_unit=j[0], threshold=qty_thresold, weight=i.weight, weight_unit=k[0], price=updated_price, discount=discount_val, discount_unit=discount_unit_val, primary_image=image_path, images=image_list, rating=result)
         product_list_data.append(data2)
     response = product_schemas.FavoriteProductResponse(
         status=status.HTTP_200_OK, message="All Favorite Products!", customer_id=customer_id, data=product_list_data)
@@ -680,7 +678,7 @@ def get_favorite_product_details(customer_id, db: Session):
 
 
 def update_favorite_product(request, db: Session):
-    
+
     update_product = db.query(product_models.FavoriteProduct).filter(
         product_models.FavoriteProduct.customer_id == request.customer_id).first()
     if not update_product:
@@ -699,7 +697,7 @@ def update_favorite_product(request, db: Session):
 
 
 def delete_favorite_product(id, db: Session):
-    
+
     delete_product = db.query(product_models.FavoriteProduct).filter(
         product_models.FavoriteProduct.id == id).first()
     if not delete_product:
@@ -715,9 +713,9 @@ def delete_favorite_product(id, db: Session):
 
 
 def create_product_rating(request, db: Session):
-    
+
     db_update_rating = db.query(product_models.RatingReview).filter(product_models.RatingReview.customer_id ==
-                                                                 request.customer_id, product_models.RatingReview.product_id == request.product_id).first()
+                                                                    request.customer_id, product_models.RatingReview.product_id == request.product_id).first()
     x = 0
     if db_update_rating:
         db_update_rating.customer_id = request.customer_id
@@ -777,8 +775,8 @@ def create_product_rating(request, db: Session):
     return response
 
 
-def search_filter_products(offset ,customer_id, start_price, end_price, discount, featured, rating, newest, category,brand,rating_value ,db: Session):
-    
+def search_filter_products(offset, customer_id, start_price, end_price, discount, featured, rating, newest, category, brand, rating_value, db: Session):
+
     rating_check = False
     offset_int = int(offset)
     limit_value = db.execute(
@@ -815,16 +813,16 @@ def search_filter_products(offset ,customer_id, start_price, end_price, discount
     #     query += f" and id in (select product_id from {constants.Database_name}.product_rating where rating >= 0 Order by rating DESC ) "
     if category:
         query += f" and pm.id IN (SELECT products_id from {constants.Database_name}.products_master_category WHERE categories_id={category} or categories_id  IN (SELECT id from {constants.Database_name}.categories_master WHERE parent IN (SELECT name from {constants.Database_name}.categories_master WHERE id IN ({category}))))"
-    query+= f" order by True "
-    if discount:
-        query += f" ,LPAD(lower(pm.discount), 2,0) desc "
+    query += f" order by True "
     if newest:
         query += f" ,pm.updated_at DESC "
     if rating or rating_value:
         query += f" ,pr.rating DESC "
-    
+    if discount:
+        query += f" ,LPAD(lower(pm.discount), 2,0) desc "
+
     result = None
-    
+
     query += f" limit {offset_int},{limit_val}"
 
     data = db.execute(query)
@@ -849,7 +847,6 @@ def search_filter_products(offset ,customer_id, start_price, end_price, discount
             image_path = constants.IMAGES_DIR_PATH + primary_img
         else:
             image_path = "null"
-        
 
         unit1 = db.execute(
             f"select unit_name from {constants.Database_name}.unit_master where id = {quantity_unit}")
@@ -929,24 +926,25 @@ def search_filter_products(offset ,customer_id, start_price, end_price, discount
 
         discount_val = i.discount
         discount_unit_val = i.dis_abs_percent
-        if  i.dis_abs_percent == None:
+        if i.dis_abs_percent == None:
             discount_val = 0
             discount_unit_val = None
-                        
-        res_data = product_schemas.AllProductDetails(id=i.id, name=i.name, SKU=i.SKU, mfr_name=i.mfr_name, description=i.description, quantity=final_qty, quantity_unit=j[0], threshold=qty_thresold, weight=i.weight, weight_unit=k[0], categories=prod_category_list, price=updated_price, discount=discount_val, discount_unit=discount_unit_val, favorite=favorite, favorite_product_uuid=favorite_product_id, primary_image=image_path, rating=result, review=list2, images=image_list)
-        
+
+        res_data = product_schemas.AllProductDetails(id=i.id, name=i.name, SKU=i.SKU, mfr_name=i.mfr_name, description=i.description, quantity=final_qty, quantity_unit=j[0], threshold=qty_thresold, weight=i.weight, weight_unit=k[
+                                                     0], categories=prod_category_list, price=updated_price, discount=discount_val, discount_unit=discount_unit_val, favorite=favorite, favorite_product_uuid=favorite_product_id, primary_image=image_path, rating=result, review=list2, images=image_list)
+
         list_data.append(res_data)
-    
-    if rating_check or rating_value :
-        list_data = sorted(list_data, key=lambda x: x.rating,reverse=True)
+
+    if rating_check or rating_value:
+        list_data = sorted(list_data, key=lambda x: x.rating, reverse=True)
 
     common_msg = product_schemas.GetAllProducts(
         status=status.HTTP_200_OK, message="Filtered Products List", data=list_data)
     return common_msg
 
 
-def search_products_name(offset,customer_id, name, db: Session):
-    
+def search_products_name(offset, customer_id, name, db: Session):
+
     offset_int = int(offset)
     limit_value = db.execute(
         f"select value from {constants.Database_name}.settings where id = 15 ;")
@@ -1054,12 +1052,12 @@ def search_products_name(offset,customer_id, name, db: Session):
 
         discount_val = i.discount
         discount_unit_val = i.dis_abs_percent
-        if  i.dis_abs_percent == None:
+        if i.dis_abs_percent == None:
             discount_val = 0
             discount_unit_val = None
-                        
+
         res_data = product_schemas.AllProductDetails(id=i.id, name=i.name, SKU=i.SKU, mfr_name=i.mfr_name, description=i.description, quantity=final_qty, quantity_unit=j[0], threshold=qty_thresold, weight=i.weight, weight_unit=k[
-                                                  0], categories=prod_category_list, price=updated_price, discount=discount_val, discount_unit=discount_unit_val, favorite=favorite, favorite_product_uuid=favorite_product_id, rating=result, review=list2, primary_image=image_path, images=image_list)
+            0], categories=prod_category_list, price=updated_price, discount=discount_val, discount_unit=discount_unit_val, favorite=favorite, favorite_product_uuid=favorite_product_id, rating=result, review=list2, primary_image=image_path, images=image_list)
         list_data.append(res_data)
     if list_data:
         common_msg = product_schemas.GetAllProducts(
@@ -1071,14 +1069,15 @@ def search_products_name(offset,customer_id, name, db: Session):
         return common_msg
 
 
-
 def get_discounted_products(offset, customer_id, db: Session):
-    
+
     offset_int = int(offset)
-    limit_value = db.execute(f"select value from {constants.Database_name}.settings where id = 15 ;")
+    limit_value = db.execute(
+        f"select value from {constants.Database_name}.settings where id = 15 ;")
     for value in limit_value:
         limit_val = int(value[0])
-    data = db.execute(f"select * from {constants.Database_name}.products_master where publish = {True} and discount>0 ORDER BY LPAD(lower(discount), 2,0) desc limit {offset_int},{limit_val}")
+    data = db.execute(
+        f"select * from {constants.Database_name}.products_master where publish = {True} and discount>0 ORDER BY LPAD(lower(discount), 2,0) desc limit {offset_int},{limit_val}")
 
     fav_product_data = db.execute(
         f"SELECT t1.SKU, t2.id,t2.customer_id,t2.product_id FROM {constants.Database_name}.products_master t1 inner join {constants.Database_name}.Favorite_Product t2 on t2.product_id = t1.id where t2.customer_id = {customer_id} and t1.publish = {True} ;")
@@ -1171,22 +1170,22 @@ def get_discounted_products(offset, customer_id, db: Session):
 
         discount_val = i.discount
         discount_unit_val = i.dis_abs_percent
-        if  i.dis_abs_percent == None:
+        if i.dis_abs_percent == None:
             discount_val = 0
             discount_unit_val = None
-                        
+
         res_data = product_schemas.AllProductDetails(id=i.id, name=i.name, SKU=i.SKU, mfr_name=i.mfr_name, description=i.description, quantity=final_qty, quantity_unit=j[0], threshold=qty_thresold, weight=i.weight, weight_unit=k[
-                                                  0], categories=prod_category_list, price=updated_price, discount=discount_val, discount_unit=discount_unit_val, favorite=favorite, favorite_product_uuid=favorite_product_id, primary_image=image_path, images=image_list, rating=result)
+            0], categories=prod_category_list, price=updated_price, discount=discount_val, discount_unit=discount_unit_val, favorite=favorite, favorite_product_uuid=favorite_product_id, primary_image=image_path, images=image_list, rating=result)
         list_data.append(res_data)
     common_msg = product_schemas.GetAllProducts(
         status=status.HTTP_200_OK, message="All Products List", data=list_data)
     return common_msg
 
 
+def get_all_subcategories(category, db: Session):
 
-def get_all_subcategories(category,db: Session):
-
-    sub_category_data = db.execute( f"SELECT * FROM {constants.Database_name}.categories_master where parent = (SELECT name FROM {constants.Database_name}.categories_master where id = {category}) and is_parent = True")
+    sub_category_data = db.execute(
+        f"SELECT * FROM {constants.Database_name}.categories_master where parent = (SELECT name FROM {constants.Database_name}.categories_master where id = {category}) and is_parent = True")
     if sub_category_data.rowcount > 0:
         cat_list = []
         for data in sub_category_data:
