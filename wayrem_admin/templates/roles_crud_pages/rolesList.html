@@ -85,9 +85,13 @@ endcomment %}
                     {% comment %} <th scope="col">S. No.</th> {% endcomment %}
                     <th scope="col">Role Name</th>
                     {% comment %} <th scope="col">Status</th> {% endcomment %}
+                    {% if perms.roles.view %}
                     <th scope="col">Access</th>
+                    {% endif %}
                     {% comment %} <th scope="col">Status </th> {% endcomment %}
+                    {% if perms.role.edit or perms.role.permission %}
                     <th scope="col">Actions</th>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -96,14 +100,13 @@ endcomment %}
                     {% comment %} <th scope="row">{{forloop.counter}}</th> {% endcomment %}
                     <td>{{role.role}}</td>
                     {% comment %} <td>{{role.status}}</td> {% endcomment %}
+                    {% if perms.roles.view %}
                     <td> 
-                        {% if perms.roles.view %}
-                        <a href="{% url 'wayrem_admin:roles_view' %}?id={{role.id}}" class="text-dark">View Permissions</a></td>
-                        {% else %}
-                        No Permissions
+                        <a href="{% url 'wayrem_admin:roles_view' %}?id={{role.id}}" class="text-dark">View Permissions</a>
+                    </td>
                     {% endif %}
-                    {% comment %} <td>
-                        {% if perms.role.activate %}
+                        {% comment %} <td>
+                            {% if perms.role.activate %}
                         <a type="button" class="btn-sm text-white" data-bs-toggle="modal"
                             data-bs-target="#deleterole{{role.id}}">
                             {% if role.status == 'Active'%}
@@ -113,9 +116,10 @@ endcomment %}
 
                             {% endif %}
                         </a>
-
+                        
                         {% endif %}
                     </td> {% endcomment %}
+                    {% if perms.role.edit or perms.role.permission %}
                     <td>
                         <div class="btn-group">
                             <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -125,8 +129,12 @@ endcomment %}
                                 <span class="sr-only">Toggle Dropdown</span>
                             </button>
                             <div class="dropdown-menu" >
-                                {% if perms.role.edit %}<a class="dropdown-item" href="{% url 'wayrem_admin:roles_update' role.id %}"><span class="fas fa-edit mr-2"></span>Edit</a>{% endif %}
-                                {% if perms.role.permission %}<a class="dropdown-item" href="{% url 'wayrem_admin:role-permission' role.id %}"><span class="fas fa-edit mr-2"></span>permission</a>{% endif %}
+                                {% if perms.role.edit %}
+                                <a class="dropdown-item" href="{% url 'wayrem_admin:roles_update' role.id %}"><span class="fas fa-edit mr-2"></span>Edit</a>
+                                {% endif %}
+                                {% if perms.role.permission %}
+                                <a class="dropdown-item" href="{% url 'wayrem_admin:role-permission' role.id %}"><span class="fas fa-edit mr-2"></span>permission</a>
+                                {% endif %}
                             </div>
                         </div>
 
@@ -164,6 +172,7 @@ endcomment %}
                             </div>
                         </div>
                     </td>
+                    {% endif %}
                     
                 </tr>
                 {% endfor %}
