@@ -41,8 +41,7 @@ class MyAuthBackend(object):
         if not hasattr(user_obj, perm_cache_name):
             perms = RolePermissions.objects.filter(role_id=user_obj.role.id)
 
-            perms_list = perms.values_list(
-                'id', 'function__codename').order_by()
+            perms_list = perms.values_list('id', 'function__codename').order_by()
             parent_list = perms.filter(function__parent_id__gt=0).values_list(
                 'function__parent_id').order_by()
             # print("parent_list==",parent_list)
