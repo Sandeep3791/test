@@ -186,7 +186,7 @@ class OrderStatusUpdated(LoginRequiredMixin, UpdateView):
         context['id_pk'] = id_pk
         order_transaction = OrderTransactions.objects.filter(
             order_id=id_pk).first()
-        if (order_transaction.payment_mode_id == BANKTRANSFER_MODE) and (order_transaction.payment_status_id == PAYMENT_STATUS_PENDING or order_transaction.payment_status_id == PAYMENT_STATUS_DECLINED):
+        if (order_transaction.payment_mode_id == BANKTRANSFER_MODE) and (order_transaction.payment_status_id == PAYMENT_STATUS_PENDING or order_transaction.payment_status_id == PAYMENT_STATUS_DECLINED or order_transaction.payment_status_id == PAYMENT_STATUS_REJECTED):
             context['message'] = "Please confirm the Bank Transfer document before approving the order"
         else:
             context['message'] = ""
@@ -386,7 +386,7 @@ class OrderUpdateView(LoginPermissionCheckMixin, DetailView):
         context['PAYMENT_STATUS_DECLINED'] = PAYMENT_STATUS_DECLINED
         context['PAYMENT_STATUS_REJECTED'] = PAYMENT_STATUS_REJECTED
         order_transaction=OrderTransactions.objects.filter(order_id=order_id).first()
-        if (order_transaction.payment_mode_id == BANKTRANSFER_MODE) and (order_transaction.payment_status_id == PAYMENT_STATUS_PENDING or order_transaction.payment_status_id == PAYMENT_STATUS_DECLINED):
+        if (order_transaction.payment_mode_id == BANKTRANSFER_MODE) and (order_transaction.payment_status_id == PAYMENT_STATUS_PENDING or order_transaction.payment_status_id == PAYMENT_STATUS_DECLINED or order_transaction.payment_status_id == PAYMENT_STATUS_REJECTED):
             context['message'] = "Please confirm the Bank Transfer document before approving the order"
         else:
             context['message'] = ""
