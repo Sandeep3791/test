@@ -85,17 +85,20 @@ def send_otp(to, subject, body, request, db: Session, file_path=None, invoice_de
         print(e)
 
 
-def format_string(view_list, image_list, price_list, sup_name_list):
+def format_string(view_list, image_list, price_list, sup_name_list,unit_list):
     x = f""
     y = 0
-    for i, j, k, m in zip(view_list, image_list, price_list, sup_name_list):
+    for i, j, k, m, n, in zip(view_list, image_list, price_list, sup_name_list,unit_list):
         pro_name = i.product_name
         pro_qty = i.quantity
         pro_price = k
         pro_image_path = j
         sup_name = m
+        unit_name = n
         if sup_name == None:
             sup_name = "Wayrem Supplier"
+        if unit_name == None:
+            unit_name = " "
         y += 2
         x += f"""<tr>
                                             <td width="20%" style="padding-bottom:3rem!important ;">
@@ -108,7 +111,7 @@ def format_string(view_list, image_list, price_list, sup_name_list):
                                                 <div><span style="color:#a8a8a8;font-size:.8rem">{sup_name}</span></div>
                                                 <div><span style="font-weight:600;color:#152f50">{pro_price} SAR</span></div>
                                             </td>
-                                            <td style="min-width:100px;text-align:end ; padding-bottom:3rem!important;">x {pro_qty}
+                                            <td style="min-width:100px;text-align:end ; padding-bottom:3rem!important;">x {pro_qty} {unit_name}
     
                                             </td>
                                     </tr>
@@ -116,7 +119,7 @@ def format_string(view_list, image_list, price_list, sup_name_list):
     return x
 
 
-def email_body(user_mail, order_id, order_view_list, image_list, order_type, ref_no, price_list, sup_name_list, db: Session):
+def email_body(user_mail, order_id, order_view_list, image_list, order_type, ref_no, price_list, sup_name_list,unit_list, db: Session):
     order_placed_query = f"SELECT * FROM {constants.Database_name}.email_template where email_template.key = 'order_placed_customer_notification' "
     if order_placed_query:
         order_template = db.execute(order_placed_query)
@@ -152,7 +155,7 @@ def email_body(user_mail, order_id, order_view_list, image_list, order_type, ref
         pro_order_type = pro3
 
         ret = format_string(order_view_list, image_list,
-                            price_list, sup_name_list)
+                            price_list, sup_name_list,unit_list)
 
         values = {
             'order_number': ref_no,

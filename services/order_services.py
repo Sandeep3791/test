@@ -727,6 +727,7 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
         image_list = []
         price_list = []
         sup_name_list = []
+        unit_list = []
         
         if not cod and not PVC:
             transaction_id = payment_status.get("id")
@@ -770,12 +771,23 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
                 image_list.append(upd_image_path)
                 sup_name_list.append(b)
 
+                quantity_unit = product1.quantity_unit_id
+                if quantity_unit == None :
+                    unit_list.append(None)
+                else:
+                    product_quantity_unit = db.execute(f"select unit_name from {constants.Database_name}.unit_master where id = {quantity_unit}")
+                    for pqu in product_quantity_unit:
+                        unit_name = pqu.unit_name
+                        unit_list.append(unit_name)
+
+
             price_list.append(req_product_price)
             
             discount_value, dicscount_with_qty = product_details(discount_unit, req_product_price, product_qty, product_discount)
             
             discount_list.append(dicscount_with_qty)
 
+        
             if margin_unit == '%':
                 intial_margin_value = (product_price/100) * product_margin
                 margin_value = intial_margin_value
@@ -938,8 +950,7 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
             order_type_email = order.order_type
             user_mail = request.email
 
-            returned = common_services.email_body(
-                user_mail, order_id, order_view_list, image_list, order_type_email, ref_no, price_list, sup_name_list, db)
+            returned = common_services.email_body(user_mail, order_id, order_view_list, image_list, order_type_email, ref_no, price_list, sup_name_list,unit_list ,db)
 
             background_tasks.add_task(common_services.send_otp,
                                     returned[0], returned[1], returned[2], request, db, invoice_path, invoice_delete)
