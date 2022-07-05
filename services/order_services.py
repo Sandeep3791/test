@@ -598,8 +598,10 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
 
     if int(request.payment_type) == 10 or int(request.payment_type) == 12:
         cod = True
+
     if int(request.payment_type) == 13:
         PVC = True #paying via credit
+
     if not cod and not PVC:
         # payment_status = payment_services.get_payment_status(request.checkout_id, entityId)
         payment_status = payment_services.HyperPayResponseView(request.entityId).get_payment_status(request.checkout_id)
@@ -832,15 +834,8 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
             db.commit()
             order_view_list.append(order_details)
 
-            if paid or cod or pending:
-                inventory_update = update_inventory(
-                    order_id, product_id, product_qty, db)
-
-        if paid or cod or pending or credit:
-            order_delivery_logs = order_models.OrderDeliveryLogs(
-                order_id=order_id, order_status_id=1, order_status_details="Order is confirmed", user_id=1, customer_view=1, log_date=common_services.get_time())
-            db.merge(order_delivery_logs)
-            db.commit()
+            if paid or cod or pending or PVC :
+                update_inventory(order_id, product_id, product_qty, db)
 
         final_sub_total = sum(sub_total_list) - sum(discount_list)
         final_discount_total = sum(discount_list)
@@ -863,14 +858,9 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
         order_data.tax_vat = vat_prcnt_value
         order_data.tax = round(vat_amount, 2)
         order_data.shipping = request.delivery_fees
-        if paid or cod or pending:
-            order_data.is_shown = True
-        db.merge(order_data)
-        db.commit()
 
         paying_price= final_grand_total
         order_id_credit = order_id
-        updated_payment_status = 7
         if PVC:
             credit_data = db.query(credit_models.CreditManagement).filter(credit_models.CreditManagement.customer_id == request.customer_id).first()
             available_cr = credit_data.available
@@ -885,9 +875,13 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
                 db.commit()
 
                 update_date = credit_data.updated_at
-                due_date = update_date + timedelta(days=30)
 
-                credit_log = credit_models.CreditTransactionsLog(customer_id = request.customer_id,order_id = order_id_credit,credit_amount = float(paying_price),available = updated_credit,credit_date = common_services.get_time(),due_date = due_date,payment_status = updated_payment_status)
+                credit_settings_data = db.query(credit_models.CreditSettings).filter(credit_models.CreditSettings.id == credit_data.credit_rule_id).first()
+                time_in_days = credit_settings_data.time_period
+                due_date = update_date + timedelta(days=time_in_days)
+
+                    
+                credit_log = credit_models.CreditTransactionsLog(customer_id = request.customer_id,order_id = order_id_credit,credit_amount = float(paying_price),available = updated_credit,credit_date = common_services.get_time(),due_date = due_date,payment_status = request.payment_status)
                 db.merge(credit_log)
                 db.commit()
                 
@@ -897,8 +891,19 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
                 result = user_schemas.ResponseCommonMessage(status=status.HTTP_404_NOT_FOUND, message="Not enough credits available !")
                 return result
 
+        if paid or cod or pending or credit:
+            order_data.is_shown = True
+            db.merge(order_data)
+            db.commit()
+
+        if paid or cod or pending or credit:
+            order_delivery_logs = order_models.OrderDeliveryLogs(
+                order_id=order_id, order_status_id=1, order_status_details="Order is confirmed", user_id=1, customer_view=1, log_date=common_services.get_time())
+            db.merge(order_delivery_logs)
+            db.commit()
+
         inv_no = None
-        if paid or cod or credit:
+        if paid or cod or credit or credit:
             transaction_data = db.query(order_models.OrderTransactions).all()
             if transaction_data:
                 inv_no = len(transaction_data)+1001
@@ -956,11 +961,8 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
                                     returned[0], returned[1], returned[2], request, db, invoice_path, invoice_delete)
 
         if paid or cod or pending or credit:
-
             data_response  = order_schemas.OrderResponseData(order_id=order_id)
-
             response = order_schemas.OrderResponse(status=status.HTTP_200_OK, message="Order Placed Successfully",data=data_response)
-
             try:
                 customer_data = db.execute(
                     f"select * from {constants.Database_name}.customer_device where customer_id = {request.customer_id} and is_active=True ;")
@@ -970,7 +972,6 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
                     message = msg.value
                 values = {
                     "ref_no": ref_no,
-
                 }
                 message = message.format(**values)
                 if customer_data:
