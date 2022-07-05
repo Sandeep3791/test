@@ -76,6 +76,8 @@ class FirebaseLibrary:
             5: "notification_app_order_delivered",
             7: "notification_app_order_payment_confirm",
             15: "notification_app_order_cancelled",
+            17: "notification_app_admin_order_approved",
+            18:"notification_app_admin_order_canceled",
             23: "notification_app_recurrent_order_pending",
             26: "notification_app_bank_transfer_reject",
         }

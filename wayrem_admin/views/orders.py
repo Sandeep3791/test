@@ -233,8 +233,10 @@ class OrderStatusUpdated(LoginRequiredMixin, UpdateView):
                     id=PAYMENT_STATUS_DECLINED)
 
             if status_id == ORDER_CANCELLED:
-                OrderTransactions.objects.filter(order=get_id).update(
-                    payment_status=payment_status)
+                OrderTransactions.objects.filter(order=get_id).update(payment_status=payment_status)
+                if obj_stat_instance.id == ORDER_CANCELLED:
+                    t = threading.Thread(target=self.order_notification_customer,args=(get_id,ORDER_CANCELLED,))
+                    t.start()
 
             obj_stat_instance = StatusMaster.objects.get(id=status_id)
             deliv_obj_stat_instance = StatusMaster.objects.get(
@@ -246,10 +248,16 @@ class OrderStatusUpdated(LoginRequiredMixin, UpdateView):
                     data_dic['message'] = "Reference Id already created. We update the status"
                 else:
                     data_dic['message'] = "Reference Id is created. We update the status"
-                Orders.objects.filter(id=get_id).update(
-                    status=obj_stat_instance, delivery_status=deliv_obj_stat_instance)
+                    if status_id == ORDER_APPROVED:
+                        t = threading.Thread(target=self.order_notification_customer,args=(get_id,ORDER_APPROVED,))
+                        t.start()
+                Orders.objects.filter(id=get_id).update(status=obj_stat_instance, delivery_status=deliv_obj_stat_instance)
                 odl = OrderDeliveryLogs(order_id=get_id, order_status=deliv_obj_stat_instance, order_status_details="status change",
                                         log_date=now, user_id=1, customer_view=deliv_obj_stat_instance.customer_view)
+                
+                
+                
+                
                 odl.save()
 
                 data_dic['order_status'] = '<span class="badge bg-primary" style="padding: 3px 8px;line-height: 11px;background-color:' + \
@@ -276,11 +284,14 @@ class OrderStatusUpdated(LoginRequiredMixin, UpdateView):
                     deliv_obj_stat_instance.name+'</span>'
         else:
             data_dic['message'] = 'Same status not updated.'
-
+        
         data_dic_json = json.dumps(data_dic)
         return HttpResponse(data_dic_json)
 
-
+    def order_notification_customer(self,order_id,status_id):
+        from wayrem_admin.forecasts.firebase_notify import FirebaseLibrary
+        FirebaseLibrary().send_notify(order_id=order_id,order_status=status_id)
+        return 1
 class OrderPaymentStatusUpdated(LoginRequiredMixin, UpdateView):
     login_url = 'wayrem_admin:root'
     model = OrderTransactions
@@ -299,19 +310,19 @@ class OrderPaymentStatusUpdated(LoginRequiredMixin, UpdateView):
         status_id = int(self.request.POST.get('payment_status'))
         obj_stat_instance = StatusMaster.objects.get(id=status_id)
         OrderTransactions.objects.filter(id=get_id).update(payment_status=obj_stat_instance)
-        t = threading.Thread(target=self.notification_send,args=(order_id,status_id,order_payment_mode,))
+        t = threading.Thread(target=self.payment_notification_send,args=(order_id,status_id,order_payment_mode,))
         t.start()    
         return HttpResponse(obj_stat_instance.name)
 
-    def notification_send(self,order_id,status_id,order_payment_mode):
-        if order_payment_mode == 12:
+    def payment_notification_send(self,order_id,status_id,order_payment_mode):
+        if order_payment_mode == BANKTRANSFER_MODE:
             from wayrem_admin.forecasts.firebase_notify import FirebaseLibrary
             if status_id == PAYMENT_STATUS_REJECTED:
                 FirebaseLibrary().send_notify(order_id=order_id,order_status=PAYMENT_STATUS_REJECTED)
             elif status_id == PAYMENT_STATUS_CONFIRM:
                 FirebaseLibrary().send_notify(order_id=order_id,order_status=PAYMENT_STATUS_CONFIRM)
         return 1
-
+    
 class OrderInvoiceView(LoginRequiredMixin, View):
     login_url = 'wayrem_admin:root'
     model = Orders
