@@ -69,10 +69,10 @@ def get_cart_product(customer_id,  db: Session):
                     intial_price = float(i.price)
                     wayrem_margin = i.wayrem_margin if i.wayrem_margin else 0
                     if i.margin_unit == '%':
-                        margin_value = (intial_price/100)*int(i.wayrem_margin)
+                        margin_value = (intial_price/100)*int(wayrem_margin)
                         updated_price = intial_price+margin_value
                     else:
-                        updated_price = intial_price + float(i.wayrem_margin)
+                        updated_price = intial_price + float(wayrem_margin)
             var2 = i.id
             result = None
             rates = db.execute(
