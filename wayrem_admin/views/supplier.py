@@ -12,6 +12,7 @@ from wayrem_admin.forms import SupplierForm, SupplierUpdateForm
 import string
 import secrets
 from wayrem_admin.services import send_email
+import threading
 from wayrem_admin.export import generate_excel
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
@@ -79,7 +80,10 @@ def supplier_register(request):
                 subject = obj.subject
                 body = obj.message_format.format(**values)
                 # Role: {role}
-                send_email(to, subject, body)
+                # send_email(to, subject, body)
+                t = threading.Thread(
+                    target=send_email, args=(to, subject, body))
+                t.start()
                 create_supplier_models_cluster(username)
                 file = str(BASE_DIR) + "/newmigration"
                 print(os.path.exists(file))

@@ -17,6 +17,7 @@ from wayrem_admin.forms import POForm, POEditForm, POSearchFilter, POFormOne
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from wayrem_admin.services import inst_Product, inst_Supplier, inst_SupplierProduct, inst_Product_SKU, delSession, send_email
+import threading
 from wayrem_admin.export import generate_excel
 import datetime
 import uuid
@@ -202,6 +203,9 @@ def create_po_step2(request):
             to = supplier_name.email
             subject = email_setting.subject.format(number=po_name)
             send_email(to, subject, body)
+            t = threading.Thread(
+                target=send_email, args=(to, subject, body))
+            t.start()
             messages.success(
                 request, f"Purchase order created successfully!")
             request.session['products'] = []

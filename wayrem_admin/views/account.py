@@ -18,6 +18,7 @@ from django.views.generic import ListView
 from django.urls import reverse_lazy
 from wayrem_admin.filters.user_filters import UserFilter
 from django.contrib.auth.decorators import permission_required
+import threading
 
 
 def user_excel(request):
@@ -52,7 +53,10 @@ def user_signup(request):
                 subject = obj.subject
                 body = obj.message_format.format(**values)
                 # body = f'Your credential for <strong> Wayrem </strong> are:\n <br> Username: <em>{username}</em>\n  <br> Password: <em>{password}</em>\n <br> Email: <em>{email}</em>\n'
-                send_email(to, subject, body)
+                # send_email(to, subject, body)
+                t = threading.Thread(
+                    target=send_email, args=(to, subject, body))
+                t.start()
                 # Role: {role}
                 messages.success(request, 'User Created Successfully!!')
                 return redirect('wayrem_admin:userlist')

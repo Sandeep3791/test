@@ -31,6 +31,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
 from django.contrib.auth.decorators import permission_required
 from django.utils.decorators import method_decorator
+import threading
 
 
 def customers_excel(request):
@@ -101,7 +102,11 @@ def customer_verification(request, id=None):
             "reason": reason
         }
         body = email_template.message_format.format(**values)
-        send_email(to=email_id, subject=subject, body=body)
+
+        # send_email(to=email_id, subject=subject, body=body)
+        t = threading.Thread(
+            target=send_email, args=(email_id, subject, body))
+        t.start()
         try:
             devices = CustomerDevice.objects.filter(
                 customer=customer_id, is_active=True)
@@ -135,7 +140,10 @@ def customer_verification(request, id=None):
             "customer": full_name
         }
         body = email_template.message_format.format(**values)
-        send_email(to=email_id, subject=subject, body=body)
+        # send_email(to=email_id, subject=subject, body=body)
+        t = threading.Thread(
+            target=send_email, args=(email_id, subject, body))
+        t.start()
         try:
             devices = CustomerDevice.objects.filter(
                 customer=customer_id, is_active=True)
@@ -184,7 +192,10 @@ def customer_email_update(request, id=None):
                 "updated_email": new_email
             }
             body = email_template.message_format.format(**values)
-            send_email(to=email_id, subject=subject, body=body)
+            # send_email(to=email_id, subject=subject, body=body)
+            t = threading.Thread(
+                target=send_email, args=(email_id, subject, body))
+            t.start()
             return redirect('wayrem_admin:customerslist')
     else:
         form = CustomerEmailUpdateForm(instance=customer)
