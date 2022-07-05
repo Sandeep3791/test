@@ -127,7 +127,7 @@
             </div>
             {% endfor %}
             {% endif %}
-            <form method="post" action="{% url 'wayrem_admin:updateproduct' id %}"  id="product1" data-supplier-url = "{% url 'wayrem_admin:ajax_load_supplier' %}" enctype="multipart/form-data" validate>
+            <form method="post" action="{% url 'wayrem_admin:updateproduct' id %}"  id="product1" data-supplier-url = "{% url 'wayrem_admin:ajax_load_supplier' %}" enctype="multipart/form-data" novalidate>
                     {% csrf_token %}
                     {{ form.non_field_errors }}
                 <div class="row bg-white" style="border-radius: 8px; box-shadow: inset 0px 0px 5px 0px #00000014;">

@@ -27,7 +27,7 @@ class RootUrlView(RedirectView):
 def dashboard(request):
     subadmins = Users.objects.exclude(is_superuser=True).count()
     suppliers = Supplier.objects.count()
-    products = Products.objects.count()
+    products = Products.objects.filter(is_deleted=False).count()
     active_po = PurchaseOrder.objects.filter(status="accept").values(
         'po_name', 'supplier_name__company_name', 'po_id', 'status').distinct().count()
     completed_po_count = PurchaseOrder.objects.filter(status="delivered").values(
