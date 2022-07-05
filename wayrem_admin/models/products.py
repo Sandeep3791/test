@@ -46,7 +46,7 @@ class Products(models.Model):
     mfr_name = models.CharField(max_length=100, null=True, blank=True)
     supplier = models.ManyToManyField('Supplier', blank=True)
     dis_abs_percent = models.CharField(
-        max_length=20, choices=DIS_ABS_PERCENT, null=True, blank=False)
+        max_length=20, choices=DIS_ABS_PERCENT, null=True, blank=True)
     description = models.TextField(null=True, blank=True)
     warehouse = models.ForeignKey('Warehouse', models.DO_NOTHING, null=True)
     quantity = models.CharField(max_length=100, null=True, default=1)
