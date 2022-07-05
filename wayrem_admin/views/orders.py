@@ -42,7 +42,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
 from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
-
+import threading
 
 @method_decorator(csrf_exempt, name='dispatch')
 class OrderReferenceExport(View):
@@ -295,14 +295,22 @@ class OrderPaymentStatusUpdated(LoginRequiredMixin, UpdateView):
         get_id = self.get_object().id
         order_trans=OrderTransactions.objects.get(id=get_id)
         order_id=order_trans.order_id
+        order_payment_mode=order_trans.payment_mode_id 
         status_id = int(self.request.POST.get('payment_status'))
         obj_stat_instance = StatusMaster.objects.get(id=status_id)
         OrderTransactions.objects.filter(id=get_id).update(payment_status=obj_stat_instance)
-        if status_id == PAYMENT_STATUS_REJECTED:
-            from wayrem_admin.forecasts.firebase_notify import FirebaseLibrary
-            FirebaseLibrary().send_notify(order_id=order_id,order_status=PAYMENT_STATUS_REJECTED)
+        t = threading.Thread(target=self.notification_send,args=(order_id,status_id,order_payment_mode,))
+        t.start()    
         return HttpResponse(obj_stat_instance.name)
 
+    def notification_send(self,order_id,status_id,order_payment_mode):
+        if order_payment_mode == 12:
+            from wayrem_admin.forecasts.firebase_notify import FirebaseLibrary
+            if status_id == PAYMENT_STATUS_REJECTED:
+                FirebaseLibrary().send_notify(order_id=order_id,order_status=PAYMENT_STATUS_REJECTED)
+            elif status_id == PAYMENT_STATUS_CONFIRM:
+                FirebaseLibrary().send_notify(order_id=order_id,order_status=PAYMENT_STATUS_CONFIRM)
+        return 1
 
 class OrderInvoiceView(LoginRequiredMixin, View):
     login_url = 'wayrem_admin:root'
