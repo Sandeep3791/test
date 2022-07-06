@@ -810,10 +810,13 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
             margin_list.append(margin_wity_qty)
 
             if round(req_product_price, 2) > product_with_margin_price or round(req_product_price, 2) < product_with_margin_price:
-                data1 = order_schemas.OrderedProducts(
-                    product_id=product_id, latest_price=product_with_margin_price)
-                order_intial_data = db.query(order_models.Orders).filter(
-                    order_models.Orders.id == order_id).first()
+                data1 = order_schemas.OrderedProducts(product_id=product_id, latest_price=product_with_margin_price)
+                order_details_data = db.query(order_models.OrderDetails).filter(order_models.OrderDetails.order_id == order_id).all()
+                if len(order_details_data) != 0:
+                    for i in order_details_data:
+                        db.delete(i)
+                        db.commit()
+                order_intial_data = db.query(order_models.Orders).filter(order_models.Orders.id == order_id).first()
                 db.delete(order_intial_data)
                 db.commit()
                 increased = "Price Increased for this product"
