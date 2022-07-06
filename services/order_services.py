@@ -177,7 +177,8 @@ def create_order(request, db: Session, background_tasks: BackgroundTasks):
                 else:
                     product_discount = float(product1.discount)
                 product_price = float(product1.price)
-                product_margin = float(product1.wayrem_margin)
+                wayrem_margin = product1.wayrem_margin if product1.wayrem_margin else 0
+                product_margin = float(wayrem_margin)
                 margin_unit = product1.margin_unit
                 discount_unit = product1.dis_abs_percent
                 product_SKU = product1.SKU
@@ -452,7 +453,8 @@ def initial_order(request, db: Session, background_tasks: BackgroundTasks):
             else:
                 product_discount = float(prod_qty.discount)
             product_price = float(prod_qty.price)
-            product_margin = float(prod_qty.wayrem_margin)
+            wayrem_margin_2 = prod_qty.wayrem_margin if prod_qty.wayrem_margin else 0
+            product_margin = float(wayrem_margin_2)
             margin_unit = prod_qty.margin_unit
             discount_unit = prod_qty.dis_abs_percent
 
@@ -760,7 +762,8 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
                 else:
                     product_discount = float(product1.discount)
                 product_price = float(product1.price)
-                product_margin = float(product1.wayrem_margin)
+                wayrem_margin = product1.wayrem_margin if product1.wayrem_margin else 0
+                product_margin = float(wayrem_margin)
                 margin_unit = product1.margin_unit
                 discount_unit = product1.dis_abs_percent
                 product_SKU = product1.SKU
