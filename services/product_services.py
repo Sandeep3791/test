@@ -358,7 +358,7 @@ def get_category_products(customer_id, category_id, offset, db: Session):
 def get_all_categories(db: Session):
 
     category_data = db.execute(
-        f'select * from {constants.Database_name}.categories_master where is_parent=false')
+        f'select * from {constants.Database_name}.categories_master where is_parent=false order by categories_order ASC')
     if category_data.rowcount > 0:
         cat_list = []
         for data in category_data:
@@ -1192,7 +1192,7 @@ def get_discounted_products(offset, customer_id, db: Session):
 def get_all_subcategories(category, db: Session):
 
     sub_category_data = db.execute(
-        f"SELECT * FROM {constants.Database_name}.categories_master where parent = (SELECT name FROM {constants.Database_name}.categories_master where id = {category}) and is_parent = True")
+        f"SELECT * FROM {constants.Database_name}.categories_master where parent = (SELECT name FROM {constants.Database_name}.categories_master where id = {category} ) and is_parent = True order by categories_order ASC")
     if sub_category_data.rowcount > 0:
         cat_list = []
         for data in sub_category_data:
