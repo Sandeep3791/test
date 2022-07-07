@@ -865,14 +865,14 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
         order_data.tax = round(vat_amount, 2)
         order_data.shipping = request.delivery_fees
 
-        paying_price= final_grand_total
+        paying_price= round(final_grand_total,2)
         order_id_credit = order_id
         if PVC:
             credit_data = db.query(credit_models.CreditManagement).filter(credit_models.CreditManagement.customer_id == request.customer_id).first()
             available_cr = credit_data.available
 
             if available_cr >= paying_price:
-                updated_credit = float(available_cr - paying_price)
+                updated_credit = round(float(available_cr - paying_price),2)
 
                 credit_data.available = updated_credit
                 credit_data.used += float(paying_price)
