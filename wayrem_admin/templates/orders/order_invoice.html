@@ -14,6 +14,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com/">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
     <!-- <link href="newinvoice_files/css2.css" rel="stylesheet"> -->
+    
 </head>
 {% block content %}
 <body style="font-family: 'Roboto', sans-serif; direction: ltr; text-align: left;">
@@ -124,7 +125,6 @@
                 <td style="width: 14.25%; padding: 1rem .5rem; text-align: left;" valign="top" align="left">S.no&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </td>
                 <td style="width: 14.25%; padding: 1rem .5rem; text-align: center;" valign="top" align="left">Description</td>
                 <td style="width: 14.25%; padding: 1rem .5rem; text-align: center;" valign="top" align="center">Qty</td>
-                <td style="width: 14.25%; padding: 1rem .5rem; text-align: center;" valign="top" align="center">Unit</td>
                 <td style="width: 14.25%; padding: 1rem .5rem; text-align: right;" valign="top" align="right">Price&nbsp; </td>
                 <td style="width: 14.25%; padding: 1rem .5rem; text-align: right;" valign="top" align="right">Total</td>
                 <!-- <td style="width: 5%;" valign="top">Vat Amt.</td>
@@ -139,8 +139,7 @@
             <tr>
                 <td style="width: 14.25%; padding: 1rem .4rem; text-align: center;" valign="top" align="left">{{ forloop.counter }}</td>
                 <td style="width: 14.25%; padding: 1rem .4rem;" valign="top" align="left">{{order_detail.product_name}}<br/>SKU: {{order_detail.sku}}</td>
-                <td style="width: 14.25%; padding: 1rem .4rem; text-align: center;" valign="top" align="center">{{order_detail.quantity}}</td>
-                <td style="width: 14.25%; padding: 1rem .4rem; text-align: center;" valign="top" align="center">{{order_detail.product.quantity_unit.unit_name}}</td>
+                <td style="width: 14.25%; padding: 1rem .4rem; text-align: center;" valign="top" align="center">{{order_detail.quantity}} {{order_detail.product.quantity_unit.unit_name}}</td>
                 <td style="width: 14.25%; padding: 1rem .4rem; text-align: center;" valign="top" align="right">{{currency}} {{ order_detail.id|display_discount_price|floatformat:2 }}</td>
                 <td style="width: 14.25%; padding: 1rem .4rem; text-align: right;" valign="top" align="right">{{currency}} {{ order_detail.id|display_discount_price_qty|floatformat:2 }}</td>
             </tr>

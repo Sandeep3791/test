@@ -357,7 +357,7 @@
             <div class="card card-body card_shadow mb-4">
                 <div class="card-body pb-5"> 
                     <div class="container-fluid">
-                        {% if customer.view_docs %}
+                        {% if perms.customer.view_docs %}
                         <h5 class="mb-4">Registration Docs</h5>
                         <div class="row">   
                             {% if user.registration_docs_path %}
