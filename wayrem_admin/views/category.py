@@ -18,6 +18,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from django.contrib.auth.decorators import permission_required
 from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
+from django.http import HttpResponse
 
 
 def categories_excel(request):
@@ -33,7 +34,7 @@ class CategoriesList(LoginPermissionCheckMixin, ListView):
     success_url = reverse_lazy('wayrem_admin:categorieslist')
 
     def get_queryset(self):
-        qs = Categories.objects.filter()
+        qs = Categories.objects.filter().order_by('categories_order')
         filtered_list = CategoriesFilter(self.request.GET, queryset=qs)
         return filtered_list.qs
 
@@ -59,6 +60,7 @@ def update_categories(request, id=None, *args, **kwargs):
             margin = form.cleaned_data.get('margin')
             unit = form.cleaned_data.get('unit')
             tag = form.cleaned_data.get('tag')
+            categories_order = form.cleaned_data.get('categories_order')
             if checkParent:
                 for cat in checkParent:
                     cat.parent = name
@@ -68,6 +70,7 @@ def update_categories(request, id=None, *args, **kwargs):
             category.margin = margin
             category.unit = unit
             category.tag = tag
+            category.categories_order = categories_order
             if parent:
                 category.parent = parent
                 category.is_parent = True
@@ -80,13 +83,13 @@ def update_categories(request, id=None, *args, **kwargs):
     form = CategoryUpdateForm(instance=category, initial={
                               'parent_category': category.parent
                               })
-    return render(request, 'update_category.html', {'form': form, 'id': category.id, 'user': category})
+    return render(request, 'category/update_category.html', {'form': form, 'id': category.id, 'user': category})
 
 
 @permission_required('categories.view', raise_exception=True)
 def category_details(request, id=None):
     cate = Categories.objects.filter(id=id).first()
-    return render(request, 'category_popup.html', {'catedata': cate})
+    return render(request, 'category/category_popup.html', {'catedata': cate})
 
 
 class DeleteCategories(LoginPermissionCheckMixin, View):
@@ -123,6 +126,7 @@ def add_category(request):
                 subcategory.unit = form.cleaned_data.get('unit')
                 subcategory.parent = form.cleaned_data.get('parent_category')
                 subcategory.is_parent = True
+                subcategory.categories_order = 100
                 subcategory.save()
                 return redirect('wayrem_admin:categorieslist')
 
@@ -133,10 +137,23 @@ def add_category(request):
                 category.tag = form.cleaned_data.get('tag')
                 category.margin = form.cleaned_data.get('margin')
                 category.unit = form.cleaned_data.get('unit')
+                category.categories_order = 100
                 category.save()
                 print('valid')
                 return redirect('wayrem_admin:categorieslist')
 
         else:
             print("Invalid")
-    return render(request, 'add_category.html', context)
+    return render(request, 'category/add_category.html', context)
+
+
+class UpdateCategoriesOrder(View):
+    # permission_required = 'categories.delete'
+
+    def post(self, request):
+        categoriesid = request.POST.get('category_id')
+        order = request.POST.get('order')
+        categories = Categories.objects.get(id=categoriesid)
+        categories.categories_order = order
+        categories.save()
+        return HttpResponse(f"Category Order Updated to {order}!!")

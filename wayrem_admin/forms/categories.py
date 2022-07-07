@@ -71,12 +71,13 @@ class CategoryUpdateForm(forms.ModelForm):
 
     class Meta:
         model = Categories
-        fields = ("name", "image", "tag", "margin", "unit")
+        fields = ("name", "image", "tag", "margin", "unit", "categories_order")
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'margin': forms.TextInput(attrs={'class': 'form-control'}),
             'image': forms.FileInput(attrs={'class': 'form-file-input'}),
+            'categories_order': forms.NumberInput(attrs={'class': 'form-control'}),
             'tag': forms.Textarea(attrs={'class': 'form-control', 'rows': '3'})
         }
 

@@ -7,7 +7,7 @@
             <th scope="col">Category Name</th>
             <th scope="col">Parent Category</th>
             <th scope="col">Category Image</th>
-            <th scope="col">Description</th>
+            <th scope="col">Order</th>
             {% if perms.categories.view or perms.categories.edit or perms.categories.delete %}
             <th scope="col">Actions</th>
             {% endif %}
@@ -33,7 +33,13 @@
                 No Image
                 {% endif %}
             </td>
-            <td>{{cate.tag|truncatechars:15 }}</td>
+            <td>
+                <form action="{% url 'wayrem_admin:categories_order_update' %}" id="id_order_update{{cate.id}}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="category_id" value="{{cate.id}}" class="form-control" id="category_id{{cate.id}}">
+                    <input type="number" name="order" onfocusout="myFunction('{{cate.id}}')" value="{{cate.categories_order}}" style="margin-left: 35%;width: 40%;" class="form-control form-control-sm" id="id_order{{cate.id}}">
+                </form>
+            </td>
             {% if perms.categories.view or perms.categories.edit or perms.categories.delete %}
             <td>
                 <div class="btn-group">
@@ -84,4 +90,23 @@
         {% endfor %}
     </tbody>
 </table>
+
+<script>
+    function myFunction(id){
+      
+        const url="{% url 'wayrem_admin:categories_order_update' %}";
+		type_form="POST"
+	   	data_ser=$("#id_order_update" + id).serialize()
+                    //order_status_id=$(this).data("id");
+         $.ajax({
+	            type: type_form,
+	            url: url,
+	            data: data_ser,
+	            cache: false,
+	            success: function (data) {
+                    console.log(data);
+                }
+            });
+         }
+</script>
 {% endblock content %}

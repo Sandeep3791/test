@@ -13,5 +13,7 @@ urlpatterns = [
          views.category_details, name='categorydetails'),
     path('delete-categories/', views.DeleteCategories.as_view(),
          name='deletecategories'),
+    path('categories-order-update/', views.UpdateCategoriesOrder.as_view(),
+         name='categories_order_update'),
 
 ]

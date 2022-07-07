@@ -19,6 +19,7 @@ class Categories(models.Model):
     unit = models.CharField(
         max_length=20, choices=UNIT, null=True, default="%")
     is_parent = models.BooleanField(default=False)
+    categories_order = models.IntegerField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 

@@ -15,4 +15,4 @@ class CategoriesFilter(django_filters.FilterSet):
         return Categories.objects.filter(
             Q(name__icontains=value) | Q(parent__icontains=value) | Q(
                 tag__icontains=value)
-        )
+        ).order_by("categories_order")
