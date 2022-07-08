@@ -887,7 +887,7 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
                 due_date = update_date + timedelta(days=time_in_days)
 
                     
-                credit_log = credit_models.CreditTransactionsLog(customer_id = request.customer_id,order_id = order_id_credit,credit_amount = float(paying_price),available = updated_credit,credit_date = common_services.get_time(),due_date = due_date,payment_status = request.payment_status)
+                credit_log = credit_models.CreditTransactionsLog(customer_id = request.customer_id,order_id = order_id_credit,credit_amount = float(paying_price),available = updated_credit,credit_date = common_services.get_time(),due_date = due_date,payment_status = False)
                 db.merge(credit_log)
                 db.commit()
                 

@@ -32,7 +32,7 @@ class CreditTransactionsLog(Base):
     available = Column(Float(asdecimal=True), nullable=False)
     credit_date = Column(DateTime(timezone=True), default=get_time())
     due_date = Column(DateTime(timezone=True), default=get_time())
-    payment_status = Column(String(255), nullable=False)
+    payment_status = Column(Boolean, default=False)
     customer_id = Column(ForeignKey('customers_master.id'), nullable=False, index=True)
     order_id = Column(BigInteger,ForeignKey('orders.id'), nullable=False, index=True)
 

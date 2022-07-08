@@ -27,6 +27,6 @@ def get_credits(customer_id: int, authorize: AuthJWT = Depends(oauth2_schema), d
     return response
 
 @router.get('/get/credit/transactions')
-def get_credits(customer_id: int, authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
-    response = credit_services.get_credits_txn(customer_id,db)
+def get_credits(customer_id: int, dues: bool = False, authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
+    response = credit_services.get_credits_txn(customer_id,dues,db)
     return response

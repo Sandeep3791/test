@@ -16,17 +16,30 @@ def get_credits(customer_id, db: Session):
         common_msg = user_schemas.ResponseCommonMessage(status=status.HTTP_404_NOT_FOUND, message="No user credits found!")
         return common_msg
         
-def get_credits_txn(customer_id, db: Session):
-    user_data = db.query(credit_models.CreditTransactionsLog).filter(credit_models.CreditTransactionsLog.customer_id == customer_id).order_by(desc(credit_models.CreditTransactionsLog.id)).all()
-    txn_list = []
-    if user_data:
-        for data in user_data:
-            credit_data = credit_schemas.ResponseCustomerCreditsTxn(id = data.id,credit_amount = data.credit_amount,available = data.available,credit_date = str(data.credit_date),due_date = str(data.due_date) )
-            txn_list.append(credit_data)
-        response = credit_schemas.ResponseCustomerCreditsTxnFinal(status=status.HTTP_200_OK, message="User Credit Transactions!", data=txn_list)
-        return response
+def get_credits_txn(customer_id,dues, db: Session):
+    if dues == True:
+        user_data = db.query(credit_models.CreditTransactionsLog).filter(credit_models.CreditTransactionsLog.customer_id == customer_id,credit_models.CreditTransactionsLog.payment_status == False).order_by(desc(credit_models.CreditTransactionsLog.id)).all()
+        txn_list = []
+        if user_data:
+            for data in user_data:
+                credit_data = credit_schemas.ResponseCustomerCreditsTxn(id = data.id,credit_amount = data.credit_amount,available = data.available,credit_date = str(data.credit_date),due_date = str(data.due_date) )
+                txn_list.append(credit_data)
+            response = credit_schemas.ResponseCustomerCreditsTxnFinal(status=status.HTTP_200_OK, message="User Credit Dues!", data=txn_list)
+            return response
+        else:
+            common_msg = user_schemas.ResponseCommonMessage(status=status.HTTP_404_NOT_FOUND, message="No user credit dues found!")
+            return common_msg
     else:
-        common_msg = user_schemas.ResponseCommonMessage(status=status.HTTP_404_NOT_FOUND, message="No user credits transactions found!")
-        return common_msg
+        user_data = db.query(credit_models.CreditTransactionsLog).filter(credit_models.CreditTransactionsLog.customer_id == customer_id).order_by(desc(credit_models.CreditTransactionsLog.id)).all()
+        txn_list = []
+        if user_data:
+            for data in user_data:
+                credit_data = credit_schemas.ResponseCustomerCreditsTxn(id = data.id,credit_amount = data.credit_amount,available = data.available,credit_date = str(data.credit_date),due_date = str(data.due_date) )
+                txn_list.append(credit_data)
+            response = credit_schemas.ResponseCustomerCreditsTxnFinal(status=status.HTTP_200_OK, message="User Credit Transactions!", data=txn_list)
+            return response
+        else:
+            common_msg = user_schemas.ResponseCommonMessage(status=status.HTTP_404_NOT_FOUND, message="No user credits transactions found!")
+            return common_msg
 
         
