@@ -151,6 +151,7 @@ class ProfileResponse(BaseModel):
     billing_region: str
     billing_town_city:  str
     registration_number: int
+    verification_status :  Optional[str] = None
     tax_number: int
     profile_pic: Optional[str] = None
     registration_docs: Optional[str] = None
