@@ -325,6 +325,7 @@ class OrderPaymentStatusUpdated(LoginRequiredMixin, UpdateView):
             if status_id == PAYMENT_STATUS_REJECTED:
                 FirebaseLibrary().send_notify(order_id=order_id,
                                               order_status=PAYMENT_STATUS_REJECTED)
+                print("Surya")
             elif status_id == PAYMENT_STATUS_CONFIRM:
                 FirebaseLibrary().send_notify(order_id=order_id, order_status=PAYMENT_STATUS_CONFIRM)
         return 1

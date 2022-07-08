@@ -612,11 +612,15 @@ def import_result(request):
 
 def check_import_status(request):
     # client_dir = '/home/suryaaa/Music/image_testing/client-images'
-    client_dir = '/opt/app/wayrem-admin-backend/media/wayrem-product-images'
+    # client_dir = '/opt/app/wayrem-admin-backend/media/wayrem-product-images'
+    client_dir = os.path.join(os.path.abspath(
+        "."), "media", "wayrem-product-images")
     sku_folders = [f for f in os.listdir(
         client_dir) if os.path.isdir(os.path.join(client_dir, f))]
     # failed_dir = f"/home/suryaaa/Music/image_testing/failed"
-    failed_dir = f"/opt/app/wayrem-admin-backend/media/common_folder/failed"
+    # failed_dir = f"/opt/app/wayrem-admin-backend/media/common_folder/failed"
+    failed_dir = os.path.join(os.path.abspath(
+        "."), "media", "common_folder", "failed")
     failed_sku_folders = [f for f in os.listdir(
         failed_dir) if os.path.isdir(os.path.join(failed_dir, f))]
     img = Images.objects.values('product_id').distinct().count()
@@ -692,3 +696,28 @@ def import_single_image(request):
             print("failed!!")
     print("done")
     return HttpResponse("Successfully imported!!")
+
+
+def bulk_publish_excel(request):
+    if request.method == "POST":
+        file = request.FILES["myFileInput"]
+        required_cols = ['sku', 'publish']
+        df = pd.read_excel(file)
+        excel_cols = list(df.columns)
+        missing_cols = list(set(required_cols) - set(excel_cols))
+        unwanted_cols = list(set(excel_cols) - set(required_cols))
+        if len(excel_cols) == 2 and required_cols == excel_cols:
+            duplicate_entries = len(df[df.duplicated('sku*')])
+            total_entries = len(df)
+            context = {
+                "total_entries": total_entries,
+                "duplicate_entries": duplicate_entries
+            }
+            return render(request, "product/import_product.html", context)
+        else:
+            context = {
+                "missing_columns": missing_cols,
+                "unwanted_columns": unwanted_cols
+            }
+            return render(request, "product/import_product.html", context)
+    return render(request, 'product/import_product.html')
