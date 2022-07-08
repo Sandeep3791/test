@@ -101,24 +101,48 @@ def customer_user(request, authorize: AuthJWT, db: Session,background_tasks: Bac
         db.merge(user_default_address)
         db.commit()
 
-        email_query = f"SELECT * FROM {constants.Database_name}.email_template where email_template.key = 'customer_registration_notify'"
-        emails = db.execute(email_query)
+        emails_data = db.execute(f"SELECT * FROM {constants.Database_name}.email_template where email_template.key = 'customer_registration_notify' ")
         subject = None
-        email_ids = None
         body = None
-        for email in emails:
-            subject = email.subject
-            email_ids = email.to_email
-            body = email.message_format
-        send_emails_to = email_ids.split(",")
+        for em_Data in emails_data:
+            subject = em_Data.subject
+            body = em_Data.message_format
+
+        emails_query = db.execute(f"SELECT email FROM {constants.Database_name}.users_master where role_id in (SELECT role_id FROM {constants.Database_name}.role_permissions where function_id = (SELECT id FROM {constants.Database_name}.function_master where codename = 'customer.approve')) ")
+
+        raw_email_data = emails_query.mappings().all()
+        email_list = []
+        for i in range(len(raw_email_data)):
+            admin_e = raw_email_data[i].email
+            email_list.append(admin_e)
         values = {
             'fullname': full_name,
-
             'link': f"{constants.global_link}/customer/customer-details/{data.id}/"
         }
         body = body.format(**values)
-        for to in send_emails_to:
+        for to in email_list:
             background_tasks.add_task(common_services.send_otp, to, subject, body, request, db)
+
+        # email_query = f"SELECT * FROM {constants.Database_name}.email_template where email_template.key = 'customer_registration_notify' "
+        # emails = db.execute(email_query)
+        # subject = None
+        # email_ids = None
+        # body = None
+        # for email in emails:
+        #     subject = email.subject
+        #     email_ids = email.to_email
+        #     body = email.message_format
+        # send_emails_to = email_ids.split(",")
+        # values = {
+        #     'fullname': full_name,
+
+        #     'link': f"{constants.global_link}/customer/customer-details/{data.id}/"
+        # }
+        # body = body.format(**values)
+        # for to in send_emails_to:
+        #     background_tasks.add_task(common_services.send_otp, to, subject, body, request, db)
+
+        
             
         sub = {"email": data.email, "id": data.id}
         access_token = authorize.create_access_token(
@@ -179,7 +203,7 @@ def upload_profile_picture(customer_id, profile_picture, db: Session):
     return common_msg
 
 
-def customer_registration_docs(customer_id, registration_docs, tax_docs, marrof_docs, db):
+def customer_registration_docs(customer_id, registration_docs, tax_docs, marrof_docs, db,background_tasks: BackgroundTasks):
     
     path = os.path.abspath('.')
     # print("-----------------------------------------------------------os path")
@@ -259,6 +283,48 @@ def customer_registration_docs(customer_id, registration_docs, tax_docs, marrof_
         user_data.verification_status = "updated"
         db.merge(user_data)
         db.commit()
+        customer_data = db.query(user_models.User).filter(user_models.User.id == customer_id).first()
+        f_name = customer_data.first_name
+        l_name = customer_data.last_name
+        full_name = f_name + l_name
+
+        doc_list= [] 
+        if registration_docs:
+            doc_list.append("registration")
+        if tax_docs:
+            doc_list.append("tax")
+        if marrof_docs:
+            doc_list.append("maroof")
+        docs_value = ",".join(doc_list)
+
+
+        emails_data = db.execute(f"SELECT * FROM {constants.Database_name}.email_template where email_template.key = 'customer_docs_upload' ")
+        subject = None
+        body = None
+        for em_Data in emails_data:
+            subject = em_Data.subject
+            body = em_Data.message_format
+
+        emails_query = db.execute(f"SELECT email FROM {constants.Database_name}.users_master where role_id in (SELECT role_id FROM {constants.Database_name}.role_permissions where function_id = (SELECT id FROM {constants.Database_name}.function_master where codename = 'customer.approve')) ")
+        raw_email_data = emails_query.mappings().all()
+        email_list = []
+        for i in range(len(raw_email_data)):
+            admin_e = raw_email_data[i].email
+            email_list.append(admin_e)
+        values = {
+            'fullname': full_name,
+            'docs' : docs_value,
+            'link': f"{constants.global_link}/customer/customer-details/{customer_data.id}/"
+        }
+
+        sub_values = {
+            'fullname': full_name
+        }
+        body = body.format(**values)
+        subject = subject.format(**sub_values)
+
+        for to in email_list:
+            background_tasks.add_task(common_services.send_otp, to, subject, body, None, db)
     return resp
 
 

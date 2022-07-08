@@ -35,9 +35,9 @@ def upload_profile_picture(customer_id: int, profile_picture: UploadFile = File(
 
 
 @router.post('/upload/registration/docs')
-def customer_registration_docs(customer_id: int, registration_docs: Optional[UploadFile] =File(None), tax_docs: Optional[UploadFile] =File(None),marrof_docs: Optional[UploadFile] =File(None), db: Session = Depends(database.get_db)):
+def customer_registration_docs(customer_id: int, registration_docs: Optional[UploadFile] =File(None), tax_docs: Optional[UploadFile] =File(None),marrof_docs: Optional[UploadFile] =File(None), db: Session = Depends(database.get_db),background : BackgroundTasks = None):
     data = user_services.customer_registration_docs(
-        customer_id, registration_docs, tax_docs,marrof_docs, db)
+        customer_id, registration_docs, tax_docs,marrof_docs, db,background)
     return data
 
 
