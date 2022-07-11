@@ -366,7 +366,7 @@ class ProductAdvanceFilterForm(forms.ModelForm):
 
         category_choice = [(get_users_options.pk, get_users_options.name)
                            for get_users_options in Categories.objects.filter()]
-        category_choice.insert(0, ('', 'Select Status'))
+        category_choice.insert(0, ('', 'Select Category'))
         self.fields['category'].choices = category_choice
         supplier_choice = [(get_users_options.pk, get_users_options.company_name)
                            for get_users_options in Supplier.objects.filter()]

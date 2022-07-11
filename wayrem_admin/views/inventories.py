@@ -1,3 +1,4 @@
+import imp
 import uuid
 from django.shortcuts import render, redirect
 from django.contrib import messages
@@ -12,7 +13,7 @@ from wayrem_admin.export import generate_excel
 from wayrem_admin.models import Inventory, Products, InventoryType
 from django.views.generic.edit import CreateView, UpdateView
 from django.views.generic import ListView
-from wayrem_admin.forms import InventoryForm, InventoryViewForm
+from wayrem_admin.forms import InventoryForm, InventoryViewForm, InventoryAdvanceFilterForm
 from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse_lazy
 from django.db.models import Q
@@ -22,6 +23,8 @@ from django.db.models import F
 from django.db.models import Value
 from django.db.models.functions import Concat
 from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
+from wayrem_admin.filters.inventory import InventoryFilter
+
 
 class InventoryAutocomplete(View):
     def get(self, request, format=None):
@@ -33,29 +36,48 @@ class InventoryAutocomplete(View):
         return JsonResponse(json, safe=False)
 
 
-class InventoriesList(LoginPermissionCheckMixin,View):
-    permission_required = 'inventory_warehouses.inventories'
-    template_name = "inventories/list.html"
-    form = SettingsForm()
+# class InventoriesList(LoginPermissionCheckMixin,View):
+#     permission_required = 'inventory_warehouses.inventories'
+#     template_name = "inventories/list.html"
+#     form = SettingsForm()
 
-    @method_decorator(login_required(login_url='wayrem_admin:root'))
-    def get(self, request, format=None):
-        inventories = Inventory.objects.all().order_by("-id")
-        q = request.GET.get('q') if request.GET.get('q') != None else ''
-        if q != None:
-            inventories = inventories.filter(Q(product__SKU__icontains=q))
-            #inventories = inventories.filter(Q(product__SKU__icontains=q) | Q(inventory_type__icontains=q))
-        paginator = Paginator(inventories, RECORDS_PER_PAGE)
-        page = request.GET.get('page')
-        try:
-            slist = paginator.page(page)
-        except PageNotAnInteger:
-            # If page is not an integer, deliver first page.
-            slist = paginator.page(1)
-        except EmptyPage:
-            # If page is out of range (e.g. 9999), deliver last page of results.
-            slist = paginator.page(paginator.num_pages)
-        return render(request, self.template_name, {"inventories": slist, 'q': q, "form": self.form})
+#     @method_decorator(login_required(login_url='wayrem_admin:root'))
+#     def get(self, request, format=None):
+#         inventories = Inventory.objects.all().order_by("-id")
+#         q = request.GET.get('q') if request.GET.get('q') != None else ''
+#         if q != None:
+#             inventories = inventories.filter(Q(product__SKU__icontains=q))
+#             #inventories = inventories.filter(Q(product__SKU__icontains=q) | Q(inventory_type__icontains=q))
+#         paginator = Paginator(inventories, RECORDS_PER_PAGE)
+#         page = request.GET.get('page')
+#         try:
+#             slist = paginator.page(page)
+#         except PageNotAnInteger:
+#             # If page is not an integer, deliver first page.
+#             slist = paginator.page(1)
+#         except EmptyPage:
+#             # If page is out of range (e.g. 9999), deliver last page of results.
+#             slist = paginator.page(paginator.num_pages)
+#         return render(request, self.template_name, {"inventories": slist, 'q': q, "form": self.form})
+
+
+class InventoriesList(LoginPermissionCheckMixin, ListView):
+    permission_required = 'inventory_warehouses.inventories'
+    model = Inventory
+    template_name = "inventories/list.html"
+    context_object_name = 'inventories'
+    paginate_by = RECORDS_PER_PAGE
+    success_url = reverse_lazy('wayrem_admin:productlist')
+
+    def get_queryset(self):
+        qs = Inventory.objects.all().order_by("-id")
+        filtered_list = InventoryFilter(self.request.GET, queryset=qs)
+        return filtered_list.qs
+
+    def get_context_data(self, **kwargs):
+        context = super(InventoriesList, self).get_context_data(**kwargs)
+        context['filter_form'] = InventoryAdvanceFilterForm(self.request.GET)
+        return context
 
 
 class InventoryCreate(CreateView):
@@ -116,8 +138,8 @@ class InventoryUpdate(UpdateView):
         return context
 
 
-class InventoryView(LoginPermissionCheckMixin,UpdateView):
-    permission_required='inventory.view'
+class InventoryView(LoginPermissionCheckMixin, UpdateView):
+    permission_required = 'inventory.view'
     model = Inventory
     form_class = InventoryViewForm
     template_name = 'inventories/view.html'
