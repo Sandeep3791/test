@@ -8,19 +8,24 @@ class ResponseCustomerCredits(BaseModel):
     customer_id: int
     used_credits: float
     available_credits: float
-    total_credits : int
+    total_credits: int
+
 
 class ResponseCustomerCreditsFinal(BaseModel):
     status: str
     message: str
     data: ResponseCustomerCredits
 
+
 class ResponseCustomerCreditsTxn(BaseModel):
     id: int
     credit_amount: float
-    available : float
+    available: float
     credit_date: str
-    due_date : str
+    due_date: str
+    payment_status: bool
+    order_ref_no: str
+
 
 class ResponseCustomerCreditsTxnFinal(BaseModel):
     status: str
