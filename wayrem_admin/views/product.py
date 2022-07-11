@@ -707,11 +707,40 @@ def bulk_publish_excel(request):
         missing_cols = list(set(required_cols) - set(excel_cols))
         unwanted_cols = list(set(excel_cols) - set(required_cols))
         if len(excel_cols) == 2 and required_cols == excel_cols:
-            duplicate_entries = len(df[df.duplicated('sku*')])
-            total_entries = len(df)
+            con = connect(user=DATABASES['default']['USER'], password=DATABASES['default']['PASSWORD'],
+                          host=DATABASES['default']['HOST'], database=DATABASES['default']['NAME'])
+            df_products = pd.read_sql(
+                'select * from products_master', con)
+            df.rename(columns={"sku": "SKU"}, inplace=True)
+            df = df.drop_duplicates(subset="SKU", keep='first', inplace=False)
+            # NaN values removed from sku and product name
+            df = df[df['SKU'].notna()]
+            df = df[df['publish'].notna()]
+            duplicate_entries = len(df[df.duplicated('SKU')])
+            df['SKU'] = df['SKU'].astype(str)
+            df['publish'] = df['publish'].astype(bool)
+            df_products['SKU'] = df_products['SKU'].astype(str)
+            # df_updated = df_products[df_products.set_index(
+            #     ['SKU']).index.isin(df.set_index(['SKU']).index)]
+            df_updated = df[df.set_index(
+                ['SKU']).index.isin(df_products.set_index(['SKU']).index)]
+            unpublished = df_updated[df_updated['publish'] == False]
+            published = df_updated[df_updated['publish'] == True]
+            unpublished_list = tuple(unpublished['SKU'].tolist())
+            published_list = tuple(published['SKU'].tolist())
+            unpublished_query = f"UPDATE products_master SET publish = False where SKU in {unpublished_list}"
+            published_query = f"UPDATE products_master SET publish = True where SKU in {published_list}"
+            # df_updated = pd.merge(
+            #     df.reset_index(), df_products, how='inner').set_index('index')
+            if len(unpublished_list) > 0:
+                with connection.cursor() as cursor:
+                    cursor.execute(unpublished_query)
+            if len(published_list) > 0:
+                with connection.cursor() as cursor:
+                    cursor.execute(published_query)
             context = {
-                "total_entries": total_entries,
-                "duplicate_entries": duplicate_entries
+                "published": len(published_list),
+                "unpublished": len(unpublished_list)
             }
             return render(request, "product/import_product.html", context)
         else:

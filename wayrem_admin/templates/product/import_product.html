@@ -177,8 +177,23 @@
                                     {% endfor %}</p>
                                     <p class="text-danger" >Please remove unwanted columns!</p>
                                 </div>
-                            </div>
+                        </div>
                         {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+            {% if published or unpublished %}
+                <div class="table-data my-2">
+                    <div class="row">
+                        <div class="col-12 col-sm-6 col-xl-6 p-0 padding-right-2">
+                            <div class="bg-white rounded p-lg-4 shadow-sm">
+                                <div class="col">
+                                    <p class="text-success"><strong>Import Results!!</strong> </p>
+                                    <p class="text-dark" >Published Products: {{published}}</p>
+                                    <p class="text-dark" >Unpublished Products: {{unpublished}}</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             {% endif %}
