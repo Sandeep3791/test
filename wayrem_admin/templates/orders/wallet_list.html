@@ -30,10 +30,23 @@
     </div>
     {% endfor %}
     {% endif %}
-    <div class="card card-body border-light shadow-sm table-wrapper table-responsive pt-0">
-        {% include "orders/wallet/grid.html" %} 
-        {% include "orders/wallet/pagination.html" %}
+    <div class="row dashboard_content_inner">
+        <div class="col-12 col-xl-9">
+            <div class="card card-body bg-white border-light shadow-sm mb-4">
+                {% include "orders/wallet/grid.html" %} 
+                {% include "orders/wallet/pagination.html" %}
+            </div>
+        </div>
+        <div class="col-12 col-xl-3">
+            <div class="card card-body bg-white border-light shadow-sm mb-4 p-4">
+                <div class="">
+                    <label class="my-1 mr-2 text-gray-600" for="country">Total Amount</label>
+                    <p><label>SR {{total_amount}}</label></p>
+                </div>
+            </div>
+        </div>
     </div>
+
 
 </div>
 

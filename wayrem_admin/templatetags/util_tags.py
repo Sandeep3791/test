@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
+from pymysql import DBAPISet
 from wayrem_admin.models import Products
 from wayrem_admin.services import inst_SupplierProduct
 from django import template
@@ -107,3 +108,10 @@ def forecast_quantity(no_of_day, product_id):
     else:
         return get_forecast_quantity['forecast_quantity']
     return product_id
+
+@register.filter(name="transaction_type")
+def transaction_type(transaction_type_id):
+    if transaction_type_id == 1:
+        return "Dr"
+    else:
+        return "Cr"

@@ -286,7 +286,7 @@ class Wallet(models.Model):
     payment_type = models.ForeignKey('StatusMaster', models.DO_NOTHING)
     transaction_type_id = models.SmallIntegerField()
     order = models.ForeignKey('Orders', models.DO_NOTHING)
-    customer_id = models.IntegerField()
+    customer = models.ForeignKey('wayrem_admin.Customer', models.DO_NOTHING)
     created = models.DateTimeField()
 
     class Meta:
