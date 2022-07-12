@@ -280,3 +280,15 @@ class OrderLoginextShipment(models.Model):
     class Meta:
         app_label = "wayrem_admin"
         db_table = 'order_loginext_shipment'
+
+class Wallet(models.Model):
+    amount = models.FloatField()
+    payment_type = models.ForeignKey('StatusMaster', models.DO_NOTHING)
+    transaction_type_id = models.SmallIntegerField()
+    order = models.ForeignKey('Orders', models.DO_NOTHING)
+    customer = models.ForeignKey('wayrem_admin.Customer', models.DO_NOTHING)
+    created = models.DateTimeField()
+
+    class Meta:
+        app_label = "wayrem_admin"
+        db_table = 'wallet'

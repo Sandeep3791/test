@@ -1,5 +1,5 @@
 import django_filters
-from wayrem_admin.models import Orders
+from wayrem_admin.models import Orders,Wallet
 from wayrem_admin.models import BusinessType, Customer
 from wayrem_admin.utils.constants import *
 
@@ -30,3 +30,9 @@ class OrderFilter(django_filters.FilterSet):
             return queryset.filter()
         else:
             return queryset.filter(customer__business_type=business_type_id)
+
+
+class WalletFilter(django_filters.FilterSet):
+    class Meta:
+        model=Wallet
+        fields = ['amount','payment_type_id','transaction_type_id','order_id','customer_id','created']

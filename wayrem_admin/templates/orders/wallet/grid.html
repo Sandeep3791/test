@@ -1,0 +1,35 @@
+ {% load util_tags  %}
+ {% block content %}
+ <table class="table table-hover text-center" id="orders">
+        <thead >
+            <tr>
+                <th scope="col">Order Ref</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Payment type</th>
+                <th scope="col">Transaction type</th>
+                <th scope="col">Customer </th>
+                <th scope="col">Date</th>
+                
+            </tr>
+        </thead>
+        <tbody class="bg-white">
+        {% if wallet %}
+        {% for wallet in wallet %}
+           <tr>
+                <td>{{wallet.order.ref_number}}</td> 
+                <td>{{wallet.amount}}</td>
+                <td>{{wallet.order.id|payment_type}}</td> 
+                <td>{{wallet.transaction_type_id|transaction_type}}</td>
+                <td>{{wallet.order.customer.first_name}} {{wallet.order.customer.last_name|default_if_none:""}}</td>
+                <td>{{wallet.created|date:"M d, Y"}}</td>
+            </tr>
+           <tr></tr>
+           {% endfor %}
+           {% else %}
+                <tr class="odd"><td valign="top" colspan="12" class="dataTables_empty">No data available in table</td></tr>
+
+           {% endif %}
+        </tbody>
+    </table>
+    
+{% endblock content %}

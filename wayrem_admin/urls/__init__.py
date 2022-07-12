@@ -21,6 +21,8 @@ urlpatterns = [
     path('warehouses/', include('wayrem_admin.urls.warehouse')),
     path('inventories/', include('wayrem_admin.urls.inventory')),
     path('orders/', include('wayrem_admin.urls.order')),
+    path('wallet/', include('wayrem_admin.urls.wallet')),
+
     path('shipping-rates/', include('wayrem_admin.urls.shippingrates')),
     path('loginext/', include('wayrem_admin.loginext.urls')),
     path('home/pages/', include('wayrem_admin.urls.static_pages')),

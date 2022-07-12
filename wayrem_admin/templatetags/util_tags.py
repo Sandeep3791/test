@@ -5,7 +5,6 @@ from wayrem_admin.models import Products
 from wayrem_admin.models.orders import Orders
 from wayrem_admin.services import inst_SupplierProduct
 from django import template
-from django.template import Context
 from datetime import date, datetime
 from wayrem_admin.models import OrderDetails, OrderTransactions, OrderDetails
 from wayrem_admin.models import ForecastProduct
@@ -119,3 +118,11 @@ def inventory_customer(order_id):
         return (f"{order.customer.first_name} {order.customer.last_name}")
     else:
         return "-"
+
+
+@register.filter(name="transaction_type")
+def transaction_type(transaction_type_id):
+    if transaction_type_id == 1:
+        return "Dr"
+    else:
+        return "Cr"

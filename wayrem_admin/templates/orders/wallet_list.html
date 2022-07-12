@@ -1,0 +1,54 @@
+{% extends "layouts/base.html" %}
+{% load static  %}
+{% block title %} Wallet {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %}
+{% block head %}
+<link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+{% endblock head %}
+{% block content %}
+<div class="dashboard_content_inner">
+    <div class="topbar_pages">
+        <h4 class="text-title">Wallet</h2>
+        <div class="breadcrumb-section">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb padding-left-0">
+                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>         
+                    <li class="breadcrumb-item active" aria-current="page"> <span class="sidebar-icon"><i class="fas fa-wallet"></i></span> Wallet</li>
+                </ol>
+            </nav>
+        </div>
+    </div>
+    <div class="table-settings mb-4"></div>
+    <div class="alert-container"></div>
+    {% if messages %}
+    {% for message in messages %}
+    <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
+        <strong> {{ message }}!</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    <div class="row dashboard_content_inner">
+        <div class="col-12 col-xl-9">
+            <div class="card card-body bg-white border-light shadow-sm mb-4">
+                {% include "orders/wallet/grid.html" %} 
+                {% include "orders/wallet/pagination.html" %}
+            </div>
+        </div>
+        <div class="col-12 col-xl-3">
+            <div class="card card-body bg-white border-light shadow-sm mb-4 p-4">
+                <div class="">
+                    <label class="my-1 mr-2 text-gray-600" for="country">Total Amount</label>
+                    <p><label>SR {{total_amount}}</label></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+
+{% endblock content %}
