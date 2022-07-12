@@ -31,3 +31,9 @@ class ResponseCustomerCreditsTxnFinal(BaseModel):
     status: str
     message: str
     data: List[ResponseCustomerCreditsTxn]
+
+
+class ResponseCustomerCreditDue(BaseModel):
+    status: str
+    message: str
+    data: Optional[ResponseCustomerCreditsTxn] = "No overdues"
