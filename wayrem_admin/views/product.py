@@ -612,11 +612,15 @@ def import_result(request):
 
 def check_import_status(request):
     # client_dir = '/home/suryaaa/Music/image_testing/client-images'
-    client_dir = '/opt/app/wayrem-admin-backend/media/wayrem-product-images'
+    # client_dir = '/opt/app/wayrem-admin-backend/media/wayrem-product-images'
+    client_dir = os.path.join(os.path.abspath(
+        "."), "media", "wayrem-product-images")
     sku_folders = [f for f in os.listdir(
         client_dir) if os.path.isdir(os.path.join(client_dir, f))]
     # failed_dir = f"/home/suryaaa/Music/image_testing/failed"
-    failed_dir = f"/opt/app/wayrem-admin-backend/media/common_folder/failed"
+    # failed_dir = f"/opt/app/wayrem-admin-backend/media/common_folder/failed"
+    failed_dir = os.path.join(os.path.abspath(
+        "."), "media", "common_folder", "failed")
     failed_sku_folders = [f for f in os.listdir(
         failed_dir) if os.path.isdir(os.path.join(failed_dir, f))]
     img = Images.objects.values('product_id').distinct().count()
@@ -692,3 +696,57 @@ def import_single_image(request):
             print("failed!!")
     print("done")
     return HttpResponse("Successfully imported!!")
+
+
+def bulk_publish_excel(request):
+    if request.method == "POST":
+        file = request.FILES["myFileInput"]
+        required_cols = ['sku', 'publish']
+        df = pd.read_excel(file)
+        excel_cols = list(df.columns)
+        missing_cols = list(set(required_cols) - set(excel_cols))
+        unwanted_cols = list(set(excel_cols) - set(required_cols))
+        if len(excel_cols) == 2 and required_cols == excel_cols:
+            con = connect(user=DATABASES['default']['USER'], password=DATABASES['default']['PASSWORD'],
+                          host=DATABASES['default']['HOST'], database=DATABASES['default']['NAME'])
+            df_products = pd.read_sql(
+                'select * from products_master', con)
+            df.rename(columns={"sku": "SKU"}, inplace=True)
+            df = df.drop_duplicates(subset="SKU", keep='first', inplace=False)
+            # NaN values removed from sku and product name
+            df = df[df['SKU'].notna()]
+            df = df[df['publish'].notna()]
+            duplicate_entries = len(df[df.duplicated('SKU')])
+            df['SKU'] = df['SKU'].astype(str)
+            df['publish'] = df['publish'].astype(bool)
+            df_products['SKU'] = df_products['SKU'].astype(str)
+            # df_updated = df_products[df_products.set_index(
+            #     ['SKU']).index.isin(df.set_index(['SKU']).index)]
+            df_updated = df[df.set_index(
+                ['SKU']).index.isin(df_products.set_index(['SKU']).index)]
+            unpublished = df_updated[df_updated['publish'] == False]
+            published = df_updated[df_updated['publish'] == True]
+            unpublished_list = tuple(unpublished['SKU'].tolist())
+            published_list = tuple(published['SKU'].tolist())
+            unpublished_query = f"UPDATE products_master SET publish = False where SKU in {unpublished_list}"
+            published_query = f"UPDATE products_master SET publish = True where SKU in {published_list}"
+            # df_updated = pd.merge(
+            #     df.reset_index(), df_products, how='inner').set_index('index')
+            if len(unpublished_list) > 0:
+                with connection.cursor() as cursor:
+                    cursor.execute(unpublished_query)
+            if len(published_list) > 0:
+                with connection.cursor() as cursor:
+                    cursor.execute(published_query)
+            context = {
+                "published": len(published_list),
+                "unpublished": len(unpublished_list)
+            }
+            return render(request, "product/import_product.html", context)
+        else:
+            context = {
+                "missing_columns": missing_cols,
+                "unwanted_columns": unwanted_cols
+            }
+            return render(request, "product/import_product.html", context)
+    return render(request, 'product/import_product.html')

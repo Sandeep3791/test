@@ -2,6 +2,7 @@
     <thead class="">
         <tr>
            <th scope="col">Product SKU</th>
+           <th scope="col">Product Brand</th>
            <th scope="col">Inventory Type</th>
            <th scope="col">Quantity In</th>
            <th scope="col">Quantity Out</th>
@@ -15,6 +16,7 @@
         <tr>
        
             <td>{{inventory.product.SKU}}</td>
+            <td>{{inventory.product.mfr_name}}</td>
             <td>{{inventory.inventory_type}}</td>
             <td>
                 {% if inventory.inventory_type == 'Starting' or inventory.inventory_type == 'Received' %}

@@ -123,6 +123,7 @@
         <tbody>
             <tr>
                 <td style="width: 14.25%; padding: 1rem .5rem; text-align: left;" valign="top" align="left">S.no&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </td>
+                <td style="width: 14.25%; padding: 1rem .5rem; text-align: left;" valign="top" align="left">Brand</td>
                 <td style="width: 14.25%; padding: 1rem .5rem; text-align: center;" valign="top" align="left">Description</td>
                 <td style="width: 14.25%; padding: 1rem .5rem; text-align: center;" valign="top" align="center">Qty</td>
                 <td style="width: 14.25%; padding: 1rem .5rem; text-align: right;" valign="top" align="right">Price&nbsp; </td>
@@ -138,6 +139,7 @@
         {% for order_detail in order_details %}
             <tr>
                 <td style="width: 14.25%; padding: 1rem .4rem; text-align: center;" valign="top" align="left">{{ forloop.counter }}</td>
+                <td style="width: 14.25%; padding: 1rem .4rem; text-align: center;" valign="top" align="left"> {% if order_detail.product.mfr_name %} {{ order_detail.product.mfr_name }} {% else %} - {% endif %}</td>
                 <td style="width: 14.25%; padding: 1rem .4rem;" valign="top" align="left">{{order_detail.product_name}}<br/>SKU: {{order_detail.sku}}</td>
                 <td style="width: 14.25%; padding: 1rem .4rem; text-align: center;" valign="top" align="center">{{order_detail.quantity}} {{order_detail.product.quantity_unit.unit_name}}</td>
                 <td style="width: 14.25%; padding: 1rem .4rem; text-align: center;" valign="top" align="right">{{currency}} {{ order_detail.id|display_discount_price|floatformat:2 }}</td>

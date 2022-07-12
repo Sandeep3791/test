@@ -2,7 +2,7 @@ from django.forms import Textarea, ModelChoiceField
 from django import forms
 from django.forms import widgets
 from wayrem_admin.models import Inventory, InventoryType
-from wayrem_admin.models import Products
+from wayrem_admin.models import Products, Categories
 
 
 def get_products():
@@ -54,3 +54,20 @@ class InventoryViewForm(forms.ModelForm):
         widgets = {
             'quantity': forms.NumberInput(attrs={'min': '0', 'step': '1', 'class': 'form-control'}),
         }
+
+
+class InventoryAdvanceFilterForm(forms.Form):
+    category = forms.ChoiceField(required=False, widget=forms.Select(
+        attrs={'class': 'form-control form-control-select'}))
+    name = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'form-control p-2'}), required=False)
+    SKU = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'form-control p-2'}), required=False)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        category_choice = [(get_users_options.pk, get_users_options.name)
+                           for get_users_options in Categories.objects.filter()]
+        category_choice.insert(0, ('', 'Select Category'))
+        self.fields['category'].choices = category_choice

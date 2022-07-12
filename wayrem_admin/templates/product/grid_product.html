@@ -8,6 +8,7 @@
         <tr>
             {% comment %} <th scope="col">S. No.</th> {% endcomment %}
             <th scope="col">SKU</th>
+            <th scope="col">Manufacturer Name</th>
             <th scope="col">Product Name</th>
             {% comment %} <th scope="col">Category Name</th> {% endcomment %}
             {% if perms.product.view_product_suppliers %}
@@ -28,6 +29,7 @@
         <tr>
             {% comment %} <th scope="row">{{forloop.counter}}</th> {% endcomment %}
             <td>{{prod.SKU}}</td>
+            <td>{{prod.mfr_name}}</td>
             <td>{{prod.name}}</td>
             {% comment %} <td>
             {% for i in prod.product_category.all%}

@@ -81,7 +81,7 @@ DATABASES = {
         'NAME': 'wayrem_stg_v2',
         'USER': 'wayremdb_adminuser',
         'PASSWORD': 'r2wXJfUs78NczMFWRXcV',
-        'HOST': '157.175.151.40',
+        'HOST': 'db',
         'PORT': '3306',
         'OPTIONS': {
             "init_command": "SET foreign_key_checks = 0;",
@@ -93,9 +93,9 @@ DATABASES = {
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'wayrem_v7',
+#         'NAME': 'wayrem_stg_v2',
 #         'USER': 'root',
-#         'PASSWORD': '',
+#         'PASSWORD': 'root1234',
 #         'HOST': 'localhost',
 #         'PORT': '3306',
 #         'OPTIONS': {
@@ -130,8 +130,8 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/3.2/topics/i18n/
 LANGUAGE_CODE = 'en-us'
-# TIME_ZONE = 'UTC'
-TIME_ZONE = 'Asia/Kuwait'
+TIME_ZONE = 'UTC'
+# TIME_ZONE = 'Asia/Kuwait'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
@@ -153,8 +153,9 @@ MESSAGE_TAGS = {messages_s.ERROR: 'danger'}
 # MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # MEDIA_URL = '/media/'
 # ! Media Files Server settings
-MEDIA_ROOT = os.path.dirname(
-    "/opt/app/wayrem-admin-backend/media/common_folder/")
+# MEDIA_ROOT = os.path.dirname(
+#     "/opt/app/wayrem-admin-backend/media/common_folder/")
+MEDIA_ROOT = os.path.join(os.path.abspath("."), "media", "common_folder")
 MEDIA_URL = '/media/common_folder/'
 
 

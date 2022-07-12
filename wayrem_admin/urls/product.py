@@ -30,6 +30,7 @@ urlpatterns = [
     path('import-products/', views.import_products, name="importproducts"),
     path('import-products-result/', views.import_result, name="import_result"),
     path('import-image-status/', views.check_import_status, name="image_import"),
+    path('publish-import/', views.bulk_publish_excel, name="bulk_publish"),
     path('import-single-image/', views.import_single_image,
          name="import_single_image"),
 
