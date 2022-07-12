@@ -323,8 +323,7 @@ class OrderPaymentStatusUpdated(LoginRequiredMixin, UpdateView):
         if order_payment_mode == BANKTRANSFER_MODE:
             from wayrem_admin.forecasts.firebase_notify import FirebaseLibrary
             if status_id == PAYMENT_STATUS_REJECTED:
-                FirebaseLibrary().send_notify(order_id=order_id,
-                                              order_status=PAYMENT_STATUS_REJECTED)
+                FirebaseLibrary().send_notify(order_id=order_id,order_status=PAYMENT_STATUS_REJECTED)
             elif status_id == PAYMENT_STATUS_CONFIRM:
                 FirebaseLibrary().send_notify(order_id=order_id, order_status=PAYMENT_STATUS_CONFIRM)
         return 1

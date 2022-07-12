@@ -1,0 +1,35 @@
+ {% load util_tags  %}
+ {% block content %}
+ <table class="table table-hover text-center" id="orders">
+        <thead >
+            <tr>
+                <th scope="col">Order ID</th>
+                <th scope="col">Amount</th>
+                <th scope="col">Payment type</th>
+                <th scope="col">Transaction type</th>
+                <th scope="col">Customer </th>
+                <th scope="col">Created</th>
+                
+            </tr>
+        </thead>
+        <tbody class="bg-white">
+        {% if orders %}
+        {% for order in orders %}
+           <tr>
+                <td>{{order.id|transaction_invoice}}</td> 
+                <td>{{order.ref_number}}</td>
+                <td>{{order.order_date|date:"M d, Y"}}</td>
+                <td>{{order.customer.first_name}} {{order.customer.last_name|default_if_none:""}}</td>
+                <td>{{order.order_phone|default_if_none:""}}</td>
+                <td>{{order.order_type|default_if_none:""}}</td>
+           </tr>
+           <tr></tr>
+           {% endfor %}
+           {% else %}
+                <tr class="odd"><td valign="top" colspan="12" class="dataTables_empty">No data available in table</td></tr>
+
+           {% endif %}
+        </tbody>
+    </table>
+    
+{% endblock content %}

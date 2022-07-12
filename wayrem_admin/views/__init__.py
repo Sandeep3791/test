@@ -18,3 +18,4 @@ from wayrem_admin.views.orders import *
 from wayrem_admin.views.shippingrates import *
 from wayrem_admin.views.static_pages import *
 from wayrem_admin.views.banks import *
+from wayrem_admin.views.wallet import *
