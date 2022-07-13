@@ -56,6 +56,7 @@ upload_storage = FileSystemStorage(
 # upload_storage = FileSystemStorage(
 #     location='/home/fealty/Desktop/Supplier/wayrem-admin-backend/media/common_folder')
 
+
 class Supplier(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
     username = models.CharField(max_length=255, unique=True, null=True)
@@ -77,7 +78,8 @@ class Supplier(models.Model):
     email = models.EmailField(blank=True, unique=True, null=True)
     password = models.CharField(max_length=200)
     contact = models.BigIntegerField(null=True, blank=True)
-    logo = models.ImageField(upload_to='supplier/', storage=upload_storage, null=True, blank=True, default='supplier/default.jpg')
+    logo = models.ImageField(upload_to='supplier/', storage=upload_storage,
+                             null=True, blank=True, default='supplier/default.jpg')
     address = models.TextField(null=True, blank=True)
     delivery_incharge = models.CharField(max_length=500, blank=True, null=True)
     company_name = models.CharField(max_length=100, blank=True, null=True)
@@ -97,7 +99,7 @@ class Categories(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
     name = models.CharField(max_length=35, unique=True)
     image = models.ImageField(
-        upload_to='',storage=upload_storage, blank=False, null=True)
+        upload_to='', storage=upload_storage, blank=False, null=True)
     tag = models.TextField(null=True, blank=True)
     parent = models.CharField(max_length=35,  null=True)
     margin = models.IntegerField()
@@ -181,7 +183,8 @@ class Products(models.Model):
     wayrem_margin = models.CharField(max_length=100, null=True)
     margin_unit = models.CharField(
         max_length=20, choices=DIS_ABS_PERCENT, null=True, blank=False)
-    primary_image = models.ImageField(upload_to='', storage=upload_storage, null=True)
+    primary_image = models.ImageField(
+        upload_to='', storage=upload_storage, null=True)
     gs1 = models.CharField(max_length=255, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -202,7 +205,7 @@ class SupplierProducts(models.Model):
     product_name = models.CharField(max_length=500, null=True, blank=True)
     quantity = models.IntegerField(null=True, default=1)
     price = models.CharField(null=True, max_length=255)
-    available = models.BooleanField(default=True)    
+    available = models.BooleanField(default=True)
     deliverable_days = models.CharField(max_length=20,
                                         choices=deliverable, null=True, blank=True, default='2')
     created_at = models.DateTimeField(auto_now_add=True)
@@ -222,7 +225,7 @@ class PurchaseOrder(models.Model):
         SupplierProducts, on_delete=models.SET_NULL, null=True)
     product_qty = models.IntegerField(null=False, default=1)
     supplier_name = models.ForeignKey(
-        Supplier, on_delete=models.CASCADE, null=False)    
+        Supplier, on_delete=models.CASCADE, null=False)
     available = models.BooleanField(default=True)
     reason = models.TextField(default=None, null=True)
     status = models.CharField(
@@ -233,18 +236,20 @@ class PurchaseOrder(models.Model):
     class Meta:
         db_table = 'po_master'
 
+
 class Invoice(models.Model):
     invoice_id = models.AutoField(primary_key=True, unique=True)
     invoice_no = models.CharField(max_length=250, null=True)
     po_name = models.CharField(max_length=250, null=True)
     file = models.FileField(upload_to='invoices/', storage=upload_storage,
                             null=True)
-    supplier_name = models.CharField(max_length=250, null=True)    
+    supplier_name = models.CharField(max_length=250, null=True)
     status = models.CharField(
         max_length=35, choices=invoice_status, default='released', null=True, blank=True)
     is_active = models.BooleanField(default=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
     class Meta:
         db_table = 'invoice_master'
 
@@ -302,3 +307,19 @@ class PO_log(models.Model):
 
     class Meta:
         db_table = 'po_logs'
+
+
+class EmailTemplateModel(models.Model):
+    name = models.CharField(max_length=255)
+    key = models.CharField(max_length=255)
+    from_email = models.CharField(max_length=255)
+    to_email = models.CharField(max_length=255,)
+    subject = models.CharField(max_length=255,)
+    message_format = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(blank=True, null=True)
+    updated_at = models.DateTimeField(blank=True, null=True)
+    status = models.IntegerField(null=False, default=1)
+
+    class Meta:
+        app_label = "wayrem_admin"
+        db_table = 'email_template'

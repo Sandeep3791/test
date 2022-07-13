@@ -1,8 +1,10 @@
+from django.db import connection
+import constant
 from django.core.checks import messages
 from django.http.response import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.views import View
-from wayrem_supplier.models import Invoice, PO_log, PurchaseOrder, Notification, Supplier, Settings
+from wayrem_supplier.models import Invoice, PO_log, PurchaseOrder, Notification, Supplier, Settings, EmailTemplateModel
 from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from wayrem_supplier.export import generate_excel
@@ -12,8 +14,8 @@ import json
 import datetime
 from django.template.loader import render_to_string
 from weasyprint import HTML
-
-
+import threading
+from wayrem_supplier.services import send_email
 
 
 class PurchaseOrderList(View):
@@ -26,7 +28,8 @@ class PurchaseOrderList(View):
         # supplier_id = SupplierRegister.objects.filter(id= id).first()
         supplier_id = request.session.get("supplier_id")
         print(type(supplier_id))
-        cholist = PurchaseOrder.objects.filter(supplier_name=supplier_id).values('po_id', 'po_name','status',).distinct().order_by('po_name').reverse()               
+        cholist = PurchaseOrder.objects.filter(supplier_name=supplier_id).values(
+            'po_id', 'po_name', 'status',).distinct().order_by('po_name').reverse()
         # cholist = list(data.values('po_id', 'po_name',
         #                'created_at', 'status').distinct())
         paginator = Paginator(cholist, 25)
@@ -45,21 +48,19 @@ class PurchaseOrderList(View):
 
 def po_details(request, id=None):
     if request.session.get('supplier') is None:
-            return redirect('wayrem_supplier:login')
+        return redirect('wayrem_supplier:login')
     po = PurchaseOrder.objects.filter(po_id=id).exclude(available=False)
     # polist = list(po.values())
     poname = po[0].po_name
     polog = PO_log.objects.filter(po=poname).order_by('id')
     invo = Invoice.objects.filter(po_name=poname)
-    return render(request, 'po_details.html', {"polist": po, 'id': id, 'invo':invo, 'polog':polog})
+    return render(request, 'po_details.html', {"polist": po, 'id': id, 'invo': invo, 'polog': polog})
 
 
 def po_details_invoice(request, id=None):
-    po = PurchaseOrder.objects.filter(po_id=id).all()    
+    po = PurchaseOrder.objects.filter(po_id=id).all()
     # polist = list(po.values())
     return render(request, 'po_details_invoice.html', {"polist": po})
-
-
 
 
 def statuspo(request, id=None):
@@ -78,13 +79,32 @@ def statuspo(request, id=None):
             availability.available = False
             availability.save()
             print("Done")
-        
+
         po.update(status="approved")
         v = po[0].po_name
         logs = PO_log(po=v, status='approved')
         logs.save()
         supplier_name = Supplier.objects.filter(
             username=request.session.get('supplier')).first()
+        email_template = get_object_or_404(EmailTemplateModel, key="po_accept")
+        subject = email_template.subject.format(po_number=v)
+        body = email_template.message_format
+        values = {
+            'supplier': supplier_name.company_name,
+            'po_number': v,
+        }
+        body = body.format(**values)
+        emails = None
+        with connection.cursor() as cursor:
+            cursor.execute(
+                f"SELECT email FROM {constant.database}.users_master where role_id in (SELECT role_id FROM {constant.database}.role_permissions where function_id = (SELECT id FROM {constant.database}.function_master where codename = 'purchase_orders.notifications'));")
+            y = constant.dictfetchall(cursor)
+            emails = [i['email'] for i in y]
+        if emails:
+            for to in emails:
+                t = threading.Thread(
+                    target=send_email, args=(to, subject, body))
+                t.start()
         setting = Settings.objects.filter(key="po_approve").first()
         message = setting.value
         msg = message.format(number=po[0].po_name,
@@ -104,8 +124,29 @@ def deny_comment(request, id=None):
     po = PurchaseOrder.objects.filter(po_id=id).all()
     status = "declined"
     po.update(status=status, reason=deny_comment_box)
+    po_name = po[0].po_name
     supplier_id = request.session.get('supplier_id')
     supplier = Supplier.objects.filter(id=supplier_id).first()
+    email_template = get_object_or_404(EmailTemplateModel, key="po_reject")
+    subject = email_template.subject.format(po_number=po_name)
+    body = email_template.message_format
+    values = {
+        'supplier': supplier.company_name,
+        'po_number': po_name,
+        'reason': deny_comment_box
+    }
+    body = body.format(**values)
+    emails = None
+    with connection.cursor() as cursor:
+        cursor.execute(
+            f"SELECT email FROM {constant.database}.users_master where role_id in (SELECT role_id FROM {constant.database}.role_permissions where function_id = (SELECT id FROM {constant.database}.function_master where codename = 'purchase_orders.notifications'));")
+        y = constant.dictfetchall(cursor)
+        emails = [i['email'] for i in y]
+    if emails:
+        for to in emails:
+            t = threading.Thread(
+                target=send_email, args=(to, subject, body))
+            t.start()
     setting = Settings.objects.filter(key="po_declined").first()
     message = setting.value
     msg = message.format(
@@ -121,7 +162,7 @@ def delivered_status(request):
     po = PurchaseOrder.objects.filter(po_id=id).all()
     dstatus = request.GET.get('d_status')
     # status = "delivered"
-    po.update(status=dstatus)   
+    po.update(status=dstatus)
     v = po[0].po_name
     logs = PO_log(po=v, status=dstatus)
     logs.save()
@@ -133,6 +174,27 @@ def delivered_status(request):
         setting = Settings.objects.filter(key="po_shipping").first()
     elif 'delivered' in dstatus:
         setting = Settings.objects.filter(key="po_delivered").first()
+    email_template = get_object_or_404(
+        EmailTemplateModel, key="po_delivery_status")
+    subject = email_template.subject.format(po_number=v, status=dstatus)
+    body = email_template.message_format
+    values = {
+        'supplier': supplier.company_name,
+        'po_number': v,
+        'status': dstatus
+    }
+    body = body.format(**values)
+    emails = None
+    with connection.cursor() as cursor:
+        cursor.execute(
+            f"SELECT email FROM {constant.database}.users_master where role_id in (SELECT role_id FROM {constant.database}.role_permissions where function_id = (SELECT id FROM {constant.database}.function_master where codename = 'purchase_orders.notifications'));")
+        y = constant.dictfetchall(cursor)
+        emails = [i['email'] for i in y]
+    if emails:
+        for to in emails:
+            t = threading.Thread(
+                target=send_email, args=(to, subject, body))
+            t.start()
     message = setting.value
     msg = message.format(number=po[0].po_name, supplier=supplier.company_name)
     notify = Notification(
@@ -147,7 +209,7 @@ def delivered_status(request):
 #     polog = PO_log.objects.filter(po=poname).order_by('id')
 
 #     data = json.dumps({
-#         'id': id, 
+#         'id': id,
 #         'polog':polog,
 #     })
 #     return HttpResponse(data, content_type='application/json')us
@@ -166,7 +228,7 @@ def invoice_status(request):
 
 
 def po_pdf(request):
-    id = request.GET.get('po_id')    
+    id = request.GET.get('po_id')
     wayrem_vat = Settings.objects.filter(key="wayrem_vat").first()
     wayrem_vat = wayrem_vat.value
     po = PurchaseOrder.objects.filter(po_id=id, available=True).all()
@@ -201,4 +263,3 @@ def po_pdf(request):
     response['Content-Transfer-Encoding'] = 'binary'
     response['Content-Disposition'] = 'inline; attachment;filename='+filename
     return response
-    
