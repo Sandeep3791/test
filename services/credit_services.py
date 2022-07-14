@@ -25,7 +25,7 @@ def get_credits(customer_id, db: Session):
         credit_data = credit_schemas.ResponseCustomerCredits(
             id=0, customer_id=customer_id, used_credits=0, available_credits=0, total_credits=0)
         response = credit_schemas.ResponseCustomerCreditsFinal(
-            status=status.HTTP_404_NOT_FOUND, message="User Credit not found!", data=credit_data)
+            status=status.HTTP_200_OK, message="User Credit not found!", data=credit_data)
         return response
 
 
