@@ -16,7 +16,7 @@
     <script src= "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.js">  </script>  
     <link href= "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/ui-lightness/jquery-ui.css" rel="stylesheet" type="text/css" />   {% endcomment %}
 {% endblock head %}
-
+{% load util_tags  %}
 {% block content %}
 
 <div class="filter_width p-4 dropdown_content" id="myProfile">
@@ -127,6 +127,7 @@
                     <th scope="col">SKU</th>
                     <th scope="col">Brand</th>
                     <th scope="col">Product</th>
+                    <th scope="col">Customer</th>
                     <th scope="col">Inventory type</th>
                     <th scope="col">Quantity In</th>
                     <th scope="col">Quantity Out</th>
@@ -139,8 +140,20 @@
                 {% for item in inventories %}
                 <tr>
                     <td>{{item.product.SKU}}</td>
-                    <td>{{item.product.mfr_name}}</td>
+                    <td>
+                        {% if item.product.mfr_name %}
+                        {{item.product.mfr_name}}
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
                     <td>{{item.product.name}}</td>
+                    <td>
+                        {% if item.order_id %}
+                        {{item.order_id|inventory_customer}}
+                        {% else %}
+                          -
+                        {% endif %}</td>
                     <td>{{item.inventory_type.type_name}}</td>
                     <td>
                         {% if item.inventory_type.id == 3 or item.inventory_type.id == 5  %}

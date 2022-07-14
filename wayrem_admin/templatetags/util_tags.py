@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # coding: utf-8
-from pymysql import DBAPISet
+from django.shortcuts import get_object_or_404
 from wayrem_admin.models import Products
+from wayrem_admin.models.orders import Orders
 from wayrem_admin.services import inst_SupplierProduct
 from django import template
-from django.template import Context
 from datetime import date, datetime
 from wayrem_admin.models import OrderDetails, OrderTransactions, OrderDetails
 from wayrem_admin.models import ForecastProduct
@@ -108,6 +108,17 @@ def forecast_quantity(no_of_day, product_id):
     else:
         return get_forecast_quantity['forecast_quantity']
     return product_id
+
+
+@register.filter(name='inventory_customer')
+def inventory_customer(order_id):
+    # return order_id
+    order = get_object_or_404(Orders, pk=order_id)
+    if order:
+        return (f"{order.customer.first_name} {order.customer.last_name}")
+    else:
+        return "-"
+
 
 @register.filter(name="transaction_type")
 def transaction_type(transaction_type_id):
