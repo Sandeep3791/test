@@ -37,3 +37,11 @@ class ResponseCustomerCreditDue(BaseModel):
     status: str
     message: str
     data: Optional[ResponseCustomerCreditsTxn] = "No overdues"
+
+
+class CreditDuesRequest(BaseModel):
+    checkout_id: Optional[str]
+    entityId: Optional[str]
+    credit_dues_ids: List[int]
+    customer_id: int
+    amount: float
