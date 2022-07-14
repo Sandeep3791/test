@@ -51,7 +51,7 @@ def get_credits_txn(customer_id, dues, db: Session):
             return response
         else:
             common_msg = user_schemas.ResponseCommonMessage(
-                status=status.HTTP_404_NOT_FOUND, message="No user credit dues found!")
+                status=status.HTTP_200_OK, message="No user credit dues found!")
             return common_msg
     else:
         user_data = db.query(credit_models.CreditTransactionsLog).filter(
@@ -77,7 +77,7 @@ def get_credits_txn(customer_id, dues, db: Session):
             return response
         else:
             common_msg = user_schemas.ResponseCommonMessage(
-                status=status.HTTP_404_NOT_FOUND, message="No user credits transactions found!")
+                status=status.HTTP_200_OK, message="No user credits transactions found!")
             return common_msg
 
 
