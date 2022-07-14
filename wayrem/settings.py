@@ -93,9 +93,9 @@ DATABASES = {
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'wayrem_stg_v2',
+#         'NAME': 'wayrem_v8',
 #         'USER': 'root',
-#         'PASSWORD': 'root1234',
+#         'PASSWORD': '',
 #         'HOST': 'localhost',
 #         'PORT': '3306',
 #         'OPTIONS': {
@@ -103,7 +103,7 @@ DATABASES = {
 #             "init_command": "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));"
 #         },
 #     }
-# }
+}
 
 # DATABASES = {
 #     'default': {

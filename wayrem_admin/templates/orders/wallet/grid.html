@@ -4,9 +4,8 @@
         <thead >
             <tr>
                 <th scope="col">Order Ref</th>
-                <th scope="col">Amount</th>
-                <th scope="col">Payment type</th>
-                <th scope="col">Transaction type</th>
+                <th scope="col">Debit</th>
+                <th scope="col">Credit</th>
                 <th scope="col">Customer </th>
                 <th scope="col">Date</th>
                 
@@ -17,9 +16,9 @@
         {% for wallet in wallet %}
            <tr>
                 <td>{{wallet.order.ref_number}}</td> 
-                <td>{{wallet.amount}}</td>
-                <td>{{wallet.order.id|payment_type}}</td> 
-                <td>{{wallet.transaction_type_id|transaction_type}}</td>
+                <td>{% if wallet.transaction_type_id == 1  %}{{wallet.amount}} {% else %} --{% endif %}</td>
+                <td>{% if wallet.transaction_type_id == 2  %}{{wallet.amount}} {% else %} --{% endif %}</td>
+                
                 <td>{{wallet.order.customer.first_name}} {{wallet.order.customer.last_name|default_if_none:""}}</td>
                 <td>{{wallet.created|date:"M d, Y"}}</td>
             </tr>
