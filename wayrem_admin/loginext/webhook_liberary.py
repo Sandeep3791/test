@@ -514,6 +514,26 @@ class WebHookLiberary():
             order_dic, createorderrequest, 'reason')
         return order_dic
 
+    def ordercashtransaction(self,createorderrequest):
+        order_dic = {}
+        createorderrequest['referenceId'] = createorderrequest['deliveryMediumReferenceId']
+        createorderrequest['cash_amount'] =createorderrequest['transactionAmount']
+        createorderrequest['track_url'] =createorderrequest['url']
+        createorderrequest['trip_reference_id']=createorderrequest['transactionType']
+        createorderrequest['payment_sub_type']=createorderrequest['transactionType']
+        createorderrequest['transaction_id']=createorderrequest['transactionId']
+
+        order_dic = self.create_dictonary(order_dic, createorderrequest, 'referenceId')
+        order_dic = self.create_dictonary(order_dic, createorderrequest, 'notificationType')
+        order_dic = self.create_dictonary(order_dic, createorderrequest, 'cash_amount')
+        order_dic = self.create_dictonary(order_dic, createorderrequest, 'track_url')
+        order_dic = self.create_dictonary(order_dic, createorderrequest, 'reason')
+        order_dic = self.create_dictonary(order_dic, createorderrequest, 'trip_reference_id')
+        order_dic = self.create_dictonary(order_dic, createorderrequest, 'transaction_id')
+        return order_dic
+
+
+
     def partiallydeliveredorder(self, createorderrequest):
         order_dic = {}
         createorderrequest['shipmentCrateMapping'] = createorderrequest['shipmentCrateMappingList']

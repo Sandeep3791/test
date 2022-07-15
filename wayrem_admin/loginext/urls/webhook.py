@@ -32,5 +32,6 @@ urlpatterns = [
     path('order/pickeduporder',webhook_loginext_order_views.LogiNextPickedupOrderAPI.as_view(),name='pickeduporder'),
     path('order/orderattemptedpickuporder',webhook_loginext_order_views.LogiNextOrderAttemptedPickupOrderAPI.as_view(),name='orderattemptedpickuporder'),
 
+    path('order/cashtransaction',webhook_loginext_order_views.LogiNextCashTransactionAPI.as_view(),name='ordercashtransaction'),
 
 ]

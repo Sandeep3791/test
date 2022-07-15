@@ -202,3 +202,18 @@ class LogiNextOrderAttemptedPickupOrderAPI(View):
         self.webhook.saveorderrequest(create_order_dic,order_reference_id)
         self.webhook.status_update_order(create_order_dic,ORDER_DELIVERY_ATTEMPTED_PICKUP)
         return HttpResponse({'message':'Success'})
+
+@method_decorator(csrf_exempt, name='dispatch')
+class LogiNextCashTransactionAPI(View):
+    webhook=WebHookLiberary()
+    @csrf_exempt
+    def post(self, request, **kwargs):
+        body_unicode = request.body.decode('utf-8')
+        body = json.loads(body_unicode)
+        create=body
+        create_order_dic=self.webhook.ordercashtransaction(create)
+        order_reference_id=self.webhook.get_order(create_order_dic)
+        self.webhook.saveorderrequest(create_order_dic,order_reference_id)
+        self.webhook.status_update_order(create_order_dic,ORDER_DELIVERY_DELIVERED)
+        self.webhook.update_payment_status(create_order_dic)
+        return HttpResponse({'message':'Success'})
