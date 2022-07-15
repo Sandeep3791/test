@@ -20,6 +20,8 @@ class Order(ApiBase):
 
     def create_order(self, order_details, account_code):
         create_order_dic = self.create_order_details(order_details, account_code)
+        print(create_order_dic)
+        return 0
         create_order_dic['shipmentCrateMappings'] = self.shipping_box(
             order_details.id)
         create_order_list = [create_order_dic]
@@ -77,7 +79,10 @@ class Order(ApiBase):
         
         order_transactions=self.get_order_transactions(orderdetail.id)
         if order_transactions is not None:
-            paymentType = order_transactions.payment_mode.name
+            if order_transactions.payment_mode.id == 10:
+                paymentType = 'COD'
+            else:
+                paymentType = order_transactions.payment_mode.name
         else:
             return 0
         packageValue = orderdetail.grand_total
