@@ -1,5 +1,5 @@
 from wayrem_admin.loginext.liberary.api_base import ApiBase
-from wayrem_admin.models import OrderDetails
+from wayrem_admin.models import OrderDetails,OrderTransactions
 from datetime import datetime, timedelta
 import pytz
 from wayrem_admin.models import Settings
@@ -19,8 +19,7 @@ class Order(ApiBase):
         return self.AUTHENTICATE_KEY
 
     def create_order(self, order_details, account_code):
-        create_order_dic = self.create_order_details(
-            order_details, account_code)
+        create_order_dic = self.create_order_details(order_details, account_code)
         create_order_dic['shipmentCrateMappings'] = self.shipping_box(
             order_details.id)
         create_order_list = [create_order_dic]
@@ -51,6 +50,10 @@ class Order(ApiBase):
         branch_name = get_branch_dic.branch_name
         return branch_name
 
+    def get_order_transactions(self,order_id):
+        order_transaction=OrderTransactions.objects.filter(order_id=order_id).first()
+        return order_transaction
+
     def get_time(self):
         delivery_time = Settings.objects.values(
             'value').filter(key=self.DELIVERY_TIME).first()
@@ -71,7 +74,15 @@ class Order(ApiBase):
 
         priority = 'PRIORITY1'
         preparationTime = 20
-        paymentType = 'COD'
+        
+        order_transactions=self.get_order_transactions(orderdetail.id)
+        if order_transactions is not None:
+            if order_transactions.payment_mode.id == 10:
+                paymentType = 'COD'
+            else:
+                paymentType = order_transactions.payment_mode.name
+        else:
+            return 0
         packageValue = orderdetail.grand_total
         noofitems = self.get_total_items(orderdetail.id)
         start_time = datetime.now()
