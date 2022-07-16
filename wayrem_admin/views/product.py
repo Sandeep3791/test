@@ -1,3 +1,4 @@
+from wayrem.celery import app
 from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
 import imp
 import re
@@ -717,6 +718,7 @@ def bulk_publish_excel(request):
             df = df[df['SKU'].notna()]
             df = df[df['publish'].notna()]
             duplicate_entries = len(df[df.duplicated('SKU')])
+            df['SKU'] = df['SKU'].astype(int)
             df['SKU'] = df['SKU'].astype(str)
             df['publish'] = df['publish'].astype(bool)
             df_products['SKU'] = df_products['SKU'].astype(str)
@@ -743,6 +745,148 @@ def bulk_publish_excel(request):
                 "unpublished": len(unpublished_list)
             }
             return render(request, "product/import_product.html", context)
+        else:
+            context = {
+                "missing_columns": missing_cols,
+                "unwanted_columns": unwanted_cols
+            }
+            return render(request, "product/import_product.html", context)
+    return render(request, 'product/import_product.html')
+
+
+@app.task()
+def update_price_bulk(sku_list, price_list):
+    try:
+        for sku, price in zip(sku_list, price_list):
+            product_price = Products.objects.get(SKU=sku)
+            product_price.price = price
+            product_price.save()
+            print(sku, price, "successfull")
+    except Exception as e:
+        print(sku, price, "failed", e)
+
+
+def divide_chunks(l, n):
+    #! divide chunks is for dividing the list into n equal parts
+    # looping till length l
+    for i in range(0, len(l), n):
+        yield l[i:i + n]
+
+
+def bulk_price_excel(request):
+    if request.method == "POST":
+        file = request.FILES["myFileInput"]
+        required_cols = ['sku', 'price']
+        df = pd.read_excel(file)
+        excel_cols = list(df.columns)
+        missing_cols = list(set(required_cols) - set(excel_cols))
+        unwanted_cols = list(set(excel_cols) - set(required_cols))
+        if len(excel_cols) == 2 and required_cols == excel_cols:
+            try:
+                con = connect(user=DATABASES['default']['USER'], password=DATABASES['default']['PASSWORD'],
+                              host=DATABASES['default']['HOST'], database=DATABASES['default']['NAME'])
+                df_products = pd.read_sql(
+                    'select * from products_master', con)
+                df.rename(columns={"sku": "SKU"}, inplace=True)
+                df = df.drop_duplicates(
+                    subset="SKU", keep='first', inplace=False)
+                # NaN values removed from sku and product name
+                df = df[df['SKU'].notna()]
+                df = df[df['price'].notna()]
+                duplicate_entries = len(df[df.duplicated('SKU')])
+                df['SKU'] = df['SKU'].astype(int)
+                df['price'] = df['price'].astype(float)
+                df_products['SKU'] = df_products['SKU'].astype(str)
+                df['SKU'] = df['SKU'].astype(str)
+                # df_updated = df_products[df_products.set_index(
+                #     ['SKU']).index.isin(df.set_index(['SKU']).index)]
+                df_updated = df[df.set_index(
+                    ['SKU']).index.isin(df_products.set_index(['SKU']).index)]
+                sku_s = df_updated['SKU'].tolist()
+                prices = df_updated['price'].tolist()
+                if len(sku_s) > 0:
+                    sku_list = list(divide_chunks(sku_s, 25))
+                    price_list = list(divide_chunks(prices, 25))
+                    for sku, price in zip(sku_list, price_list):
+                        print("working", sku, price)
+                        update_price_bulk.delay(sku, price)
+                context = {
+                    "total_entries_excel": len(df),
+                    "price_sku_count": len(sku_s)
+                }
+                return render(request, "product/import_product.html", context)
+            except Exception as e:
+                print(e)
+                messages.success(request, "Wrong Excel format!")
+                return render(request, "product/import_product.html")
+        else:
+            context = {
+                "missing_columns": missing_cols,
+                "unwanted_columns": unwanted_cols
+            }
+            return render(request, "product/import_product.html", context)
+    return render(request, 'product/import_product.html')
+
+
+@app.task()
+def update_quantity_bulk(sku_list, quantity_list):
+    try:
+        for sku, quantity in zip(sku_list, quantity_list):
+            product = Products.objects.get(SKU=sku)
+            inventory_dict = {'inventory_type_id': 1, 'quantity': quantity, 'product_id': product.id,
+                              'warehouse_id': 1, 'po_id': None, 'supplier_id': None, 'order_id': None, 'order_status': None}
+            Inventory().insert_inventory(inventory_dict)
+            Inventory().update_product_quantity(product.id)
+            print(sku, quantity, "successfull")
+    except Exception as e:
+        print(sku, quantity, "failed", e)
+
+
+def bulk_quantity_excel(request):
+    if request.method == "POST":
+        file = request.FILES["myFileInput"]
+        required_cols = ['sku', 'quantity']
+        df = pd.read_excel(file)
+        excel_cols = list(df.columns)
+        missing_cols = list(set(required_cols) - set(excel_cols))
+        unwanted_cols = list(set(excel_cols) - set(required_cols))
+        if len(excel_cols) == 2 and required_cols == excel_cols:
+            try:
+                con = connect(user=DATABASES['default']['USER'], password=DATABASES['default']['PASSWORD'],
+                              host=DATABASES['default']['HOST'], database=DATABASES['default']['NAME'])
+                df_products = pd.read_sql(
+                    'select * from products_master', con)
+                df.rename(columns={"sku": "SKU"}, inplace=True)
+                df = df.drop_duplicates(
+                    subset="SKU", keep='first', inplace=False)
+                # NaN values removed from sku and product name
+                df = df[df['SKU'].notna()]
+                df = df[df['quantity'].notna()]
+                duplicate_entries = len(df[df.duplicated('SKU')])
+                df['SKU'] = df['SKU'].astype(int)
+                df['quantity'] = df['quantity'].astype(int)
+                df = df[df.quantity != 0]
+                df_products['SKU'] = df_products['SKU'].astype(str)
+                df['SKU'] = df['SKU'].astype(str)
+                df_updated = df[df.set_index(
+                    ['SKU']).index.isin(df_products.set_index(['SKU']).index)]
+                sku_s = df_updated['SKU'].tolist()
+                quantitys = df_updated['quantity'].tolist()
+                if len(sku_s) > 0:
+                    sku_list = list(divide_chunks(sku_s, 25))
+                    quantity_list = list(divide_chunks(quantitys, 25))
+                    for sku, quantity in zip(sku_list, quantity_list):
+                        print("working", sku, quantity)
+                        update_quantity_bulk.delay(sku, quantity)
+                context = {
+                    "total_entries_excel": len(df),
+                    "quantity_sku_count": len(sku_s)
+                }
+                return render(request, "product/import_product.html", context)
+            except Exception as e:
+                print(e)
+                messages.success(request, "Wrong Excel format!")
+                return render(request, "product/import_product.html")
         else:
             context = {
                 "missing_columns": missing_cols,

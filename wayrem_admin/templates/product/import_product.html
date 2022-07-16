@@ -68,7 +68,7 @@
                             <div class="col-12 col-xl-7 px-xl-0">
                                 <div class="d-none d-sm-block">
                                     <h6>Invalid SKU <br> images</h6>
-                                    <h4 class="mb-1 failed_folders">{{failed_folders}}</h4>
+                                    <h5 class="mb-1 failed_folders">{{failed_folders}}</h5>
                                 </div>
                             </div>
                         </div>
@@ -84,8 +84,8 @@
                             </div>
                             <div class="col-12 col-xl-7 px-xl-0">
                                 <div class="d-none d-sm-block">
-                                    <h6>SKU in database with images</h6>
-                                    <h4 class="mb-1"><span class="product_with_imgs">{{product_with_imgs}}</span> out of <span class="total_product_images">{{total_product_images}}</span></h4>
+                                    <h6>SKU with images</h6>
+                                    <h5 class="mb-1"><span class="product_with_imgs">{{product_with_imgs}}</span> <h5> out of </h5><span class="total_product_images">{{total_product_images}}</span></h5>
                                 </div>
                             </div>
                         </div>
@@ -112,7 +112,7 @@
             <div class="bg-white  rounded p-4 p-lg-4 shadow-sm mb-4">
                 <!-- Form -->
                 <div class="row d-flex">
-                    <div class="form-group col-sm-6 col-xl-4">
+                    <div class="form-group col-md-3 col-xl-3">
                         <label for="code" class="h5">Import Products</label>
                         <form action="{% url 'wayrem_admin:import_excel' %}" method="POST" enctype="multipart/form-data" >
                             {% csrf_token %}
@@ -129,13 +129,45 @@
                         </form>
                     </div>
                     <!-- End of Form -->
-                    <div class="form-group col-sm-6 col-xl-4">
+                    <div class="form-group col-md-3 col-xl-3">
                         <label for="code" class="h5">Publish/Unpublish Products</label>
                         <form action="{% url 'wayrem_admin:bulk_publish' %}" method="POST" enctype="multipart/form-data" >
                             {% csrf_token %}
                             <div class="form-file">
                                     <input type="file" class="form-file-input" name="myFileInput" required accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" id="myFileInput1" />
                                     <label class="form-file-label" for="myFileInput1">
+                                        <span class="form-file-text">Choose file...</span>
+                                        <span class="form-file-button">Browse</span>
+                                </label>
+                            </div>
+                            <div class="d-grid col-xl-1 mt-5 col-md-1 col-12">
+                                <button type="submit" class="btn btn-dark">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="form-group col-md-3 col-xl-3">
+                        <label for="code" class="h5">Update Price Products</label>
+                        <form action="{% url 'wayrem_admin:bulk_price' %}" method="POST" enctype="multipart/form-data" >
+                            {% csrf_token %}
+                            <div class="form-file">
+                                    <input type="file" class="form-file-input" name="myFileInput" required accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" id="myFileInput2" />
+                                    <label class="form-file-label" for="myFileInput2">
+                                        <span class="form-file-text">Choose file...</span>
+                                        <span class="form-file-button">Browse</span>
+                                </label>
+                            </div>
+                            <div class="d-grid col-xl-1 mt-5 col-md-1 col-12">
+                                <button type="submit" class="btn btn-dark">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="form-group col-md-3 col-xl-3">
+                        <label for="code" class="h5">Update Quantity Products</label>
+                        <form action="{% url 'wayrem_admin:bulk_quantity' %}" method="POST" enctype="multipart/form-data" >
+                            {% csrf_token %}
+                            <div class="form-file">
+                                    <input type="file" class="form-file-input" name="myFileInput" required accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" id="myFileInput3" />
+                                    <label class="form-file-label" for="myFileInput3">
                                         <span class="form-file-text">Choose file...</span>
                                         <span class="form-file-button">Browse</span>
                                 </label>
@@ -191,6 +223,26 @@
                                     <p class="text-success"><strong>Import Results!!</strong> </p>
                                     <p class="text-dark" >Published Products: {{published}}</p>
                                     <p class="text-dark" >Unpublished Products: {{unpublished}}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
+            {% if total_entries_excel or price_sku_count %}
+                <div class="table-data my-2">
+                    <div class="row">
+                        <div class="col-12 col-sm-6 col-xl-6 p-0 padding-right-2">
+                            <div class="bg-white rounded p-lg-4 shadow-sm">
+                                <div class="col">
+                                    <p class="text-success"><strong>Price import!!</strong> </p>
+                                    <p class="text-dark" >Total SKU in Excel: {{total_entries_excel}}</p>
+                                    {% if price_sku_count %}
+                                    <p class="text-dark" >Price of SKU's to be updated: {{price_sku_count}}</p>
+                                    {% endif %}
+                                    {% if quantity_sku_count %}
+                                    <p class="text-dark" >Quantity of SKU's to be updated: {{quantity_sku_count}}</p>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
