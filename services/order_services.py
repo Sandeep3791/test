@@ -5,14 +5,14 @@ from utility_services.inventory_services import product_details, update_inventor
 import os
 from fastapi.encoders import jsonable_encoder
 import logging
-from models import user_models, order_models, firebase_models, payment_models,credit_models
-from schemas import firebase_schemas, user_schemas, order_schemas, payment_schemas,credit_schemas
+from models import user_models, order_models, firebase_models, payment_models, credit_models
+from schemas import firebase_schemas, user_schemas, order_schemas, payment_schemas, credit_schemas
 from fastapi import FastAPI, status, BackgroundTasks
 from sqlalchemy.orm import Session
 from datetime import datetime
 import random
 import googlemaps
-import datetime as DT 
+import datetime as DT
 from datetime import timedelta
 import constants
 import re
@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 
 
 def create_order(request, db: Session, background_tasks: BackgroundTasks):
-    
+
     paid = False
     cod = False
     pending = False
@@ -41,7 +41,8 @@ def create_order(request, db: Session, background_tasks: BackgroundTasks):
         cod = True
     if not cod:
         # payment_status = payment_services.get_payment_status(request.checkout_id, request.entityId)
-        payment_status = payment_services.HyperPayResponseView(request.entityId).get_payment_status(request.checkout_id)
+        payment_status = payment_services.HyperPayResponseView(
+            request.entityId).get_payment_status(request.checkout_id)
 
         payment_check = payment_status.get("result").get("code")
         hyperpay_response = payment_status
@@ -438,7 +439,7 @@ def initial_order(request, db: Session, background_tasks: BackgroundTasks):
         common_msg = user_schemas.ResponseCommonMessage(
             status=status.HTTP_404_NOT_FOUND, message="User is not approved to place the order !")
         return common_msg
-    
+
     for product in request.products:
         product_qty = product.product_quantity
         product_quantity_check = db.execute(
@@ -462,7 +463,8 @@ def initial_order(request, db: Session, background_tasks: BackgroundTasks):
         req_product_price = product.product_price
         final_request_price_with_qty = req_product_price*product_qty
 
-        discount_value, dicscount_with_qty = product_details(discount_unit, req_product_price, product_qty, product_discount)
+        discount_value, dicscount_with_qty = product_details(
+            discount_unit, req_product_price, product_qty, product_discount)
 
         if margin_unit == '%':
             intial_margin_value = (product_price/100) * product_margin
@@ -486,9 +488,9 @@ def initial_order(request, db: Session, background_tasks: BackgroundTasks):
             result = order_schemas.OrderResponse1(
                 status=status.HTTP_401_UNAUTHORIZED, message=message, data=data1)
             return result
-    
+
     ref_no = generate_ref_number(db)
-    
+
     order = order_models.Orders(
         ref_number=ref_no,
         customer_id=request.customer_id,
@@ -523,27 +525,30 @@ def initial_order(request, db: Session, background_tasks: BackgroundTasks):
     )
     entityId = common_services.get_entityId(request.entityId)
 
-    checkout_request = payment_schemas.CheckoutIdRequest(entityId = entityId, amount = request.amount, currency = 'SAR', 
-                    paymentType = request.hyperpay_payment_type, customer_id = request.customer_id)
-    
+    checkout_request = payment_schemas.CheckoutIdRequest(entityId=entityId, amount=request.amount, currency='SAR',
+                                                         paymentType=request.hyperpay_payment_type, customer_id=request.customer_id)
+
     user_request = jsonable_encoder(checkout_request)
 
     if request.registrationId:
         user_request['registrationId'] = request.registrationId
         # checkout_details = payment_services.order_checkout_id(user_request)
-        checkout_details = payment_services.HyperPayResponseView(request.entityId).generate_checkout_id(user_request)
+        checkout_details = payment_services.HyperPayResponseView(
+            request.entityId).generate_checkout_id(user_request)
 
         success_code = checkout_details['result']['code']
 
         if success_code == '000.200.100' or success_code == '000.200.101' or success_code == '000.200.102':
-            result = inventory_services.order_checkout_entry(checkout_details, order, ref_no, db)
-            return result   
+            result = inventory_services.order_checkout_entry(
+                checkout_details, order, ref_no, db)
+            return result
         else:
             # payment_services.delete_card(request.registrationId, entityId)
-            payment_services.HyperPayResponseView(entityId).delete_card(request.registrationId)
+            payment_services.HyperPayResponseView(
+                entityId).delete_card(request.registrationId)
 
             card = db.query(payment_models.CustomerCard).filter(
-            payment_models.CustomerCard.registration_id == request.registrationId).first()
+                payment_models.CustomerCard.registration_id == request.registrationId).first()
             if not card:
                 common_msg = user_schemas.ResponseCommonMessage(
                     status=status.HTTP_404_NOT_FOUND, message="Registration id Doesn't Exist!")
@@ -551,43 +556,47 @@ def initial_order(request, db: Session, background_tasks: BackgroundTasks):
             db.delete(card)
             db.commit()
 
-            common_msg = user_schemas.ResponseCommonMessage(status = status.HTTP_400_BAD_REQUEST, message = "Invalid registration id!")
-            return common_msg          
-        
+            common_msg = user_schemas.ResponseCommonMessage(
+                status=status.HTTP_400_BAD_REQUEST, message="Invalid registration id!")
+            return common_msg
+
     else:
         # checkout_details = payment_services.order_checkout_id(user_request)
 
-        checkout_details = payment_services.HyperPayResponseView(request.entityId).generate_checkout_id(user_request)
+        checkout_details = payment_services.HyperPayResponseView(
+            request.entityId).generate_checkout_id(user_request)
 
-          
         success_code = checkout_details['result']['code']
 
         if success_code == '000.200.100' or success_code == '000.200.101' or success_code == '000.200.102':
-            result = inventory_services.order_checkout_entry(checkout_details, order, ref_no, db)
-            return result 
+            result = inventory_services.order_checkout_entry(
+                checkout_details, order, ref_no, db)
+            return result
         else:
-            common_msg = user_schemas.ResponseCommonMessage(status = status.HTTP_404_NOT_FOUND, message = "Transaction Failed !")
+            common_msg = user_schemas.ResponseCommonMessage(
+                status=status.HTTP_404_NOT_FOUND, message="Transaction Failed !")
             return common_msg
 
 
 def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
-    
+
     try:
         if request.ref_number:
-            db.query(order_models.Orders).filter(order_models.Orders.ref_number == request.ref_number).delete(synchronize_session = False)
+            db.query(order_models.Orders).filter(order_models.Orders.ref_number ==
+                                                 request.ref_number).delete(synchronize_session=False)
             db.commit()
 
     except Exception as e:
         common_msg = user_schemas.ResponseCommonMessage(
-                status=status.HTTP_406_NOT_ACCEPTABLE, message="Order already created !!")
+            status=status.HTTP_406_NOT_ACCEPTABLE, message="Order already created !!")
         return common_msg
-        
+
     paid = False
     cod = False
     pending = False
     credit = False
     PVC = False
-    
+
     SUCCESS_CODES_REGEX = re.compile(r'^(000\.000\.|000\.100\.1|000\.[36])')
     SUCCESS_MANUAL_REVIEW_CODES_REGEX = re.compile(
         r'^(000\.400\.0[^3]|000\.400\.[0-1]{2}0)')
@@ -602,11 +611,12 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
         cod = True
 
     if int(request.payment_type) == 13:
-        PVC = True #paying via credit
+        PVC = True  # paying via credit
 
     if not cod and not PVC:
         # payment_status = payment_services.get_payment_status(request.checkout_id, entityId)
-        payment_status = payment_services.HyperPayResponseView(request.entityId).get_payment_status(request.checkout_id)
+        payment_status = payment_services.HyperPayResponseView(
+            request.entityId).get_payment_status(request.checkout_id)
 
         payment_check = payment_status.get("result").get("code")
         hyperpay_response = payment_status
@@ -614,25 +624,25 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
             "result").get("description")
         if re.search(PENDING_CHANGEABLE_SOON_CODES_REGEX, payment_check) or re.search(PENDING_NOT_CHANGEABLE_SOON_CODES_REGEX, payment_check) or re.search(SUCCESS_CODES_REGEX, payment_check) or re.search(SUCCESS_MANUAL_REVIEW_CODES_REGEX, payment_check):
             failed = False
-        
+
         else:
             failed = True
-        
+
         if failed:
             response = user_schemas.ResponseCommonMessage(
                 status=status.HTTP_424_FAILED_DEPENDENCY, message="Transaction Failed!!", data=str(hyperpay_response))
             return response
-        
+
         if re.search(PENDING_CHANGEABLE_SOON_CODES_REGEX, payment_check) or re.search(PENDING_NOT_CHANGEABLE_SOON_CODES_REGEX, payment_check):
             request.payment_status = 6
             pending = True
-        
+
         if re.search(SUCCESS_CODES_REGEX, payment_check) or re.search(SUCCESS_MANUAL_REVIEW_CODES_REGEX, payment_check):
             paid = True
         # if payment_check == "000.100.110" or payment_check == "000.000.000" or payment_check == payment_check.startswith("000.400."):
         #     paid = True
         registrationId = payment_status.get("registrationId")
-        
+
         if registrationId:
             card_body = payment_status.get("card")
             card_number = card_body.get("last4Digits")
@@ -682,7 +692,7 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
 
         if not request.ref_number:
             ref_no = generate_ref_number(db)
-            
+
         else:
             ref_no = request.ref_number
         order = order_models.Orders(
@@ -725,14 +735,14 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
             order_models.Orders.ref_number == order.ref_number).first()
         order_id = order_data.id
         sub_total_list = []
-        discount_list = [] 
+        discount_list = []
         margin_list = []
         order_view_list = []
         image_list = []
         price_list = []
         sup_name_list = []
         unit_list = []
-        
+
         if not cod and not PVC:
             transaction_id = payment_status.get("id")
             checkout_id = request.checkout_id
@@ -777,22 +787,22 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
                 sup_name_list.append(b)
 
                 quantity_unit = product1.quantity_unit_id
-                if quantity_unit == None :
+                if quantity_unit == None:
                     unit_list.append(None)
                 else:
-                    product_quantity_unit = db.execute(f"select unit_name from {constants.Database_name}.unit_master where id = {quantity_unit}")
+                    product_quantity_unit = db.execute(
+                        f"select unit_name from {constants.Database_name}.unit_master where id = {quantity_unit}")
                     for pqu in product_quantity_unit:
                         unit_name = pqu.unit_name
                         unit_list.append(unit_name)
 
-
             price_list.append(req_product_price)
-            
-            discount_value, dicscount_with_qty = product_details(discount_unit, req_product_price, product_qty, product_discount)
-            
+
+            discount_value, dicscount_with_qty = product_details(
+                discount_unit, req_product_price, product_qty, product_discount)
+
             discount_list.append(dicscount_with_qty)
 
-        
             if margin_unit == '%':
                 intial_margin_value = (product_price/100) * product_margin
                 margin_value = intial_margin_value
@@ -810,13 +820,16 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
             margin_list.append(margin_wity_qty)
 
             if round(req_product_price, 2) > product_with_margin_price or round(req_product_price, 2) < product_with_margin_price:
-                data1 = order_schemas.OrderedProducts(product_id=product_id, latest_price=product_with_margin_price)
-                order_details_data = db.query(order_models.OrderDetails).filter(order_models.OrderDetails.order_id == order_id).all()
+                data1 = order_schemas.OrderedProducts(
+                    product_id=product_id, latest_price=product_with_margin_price)
+                order_details_data = db.query(order_models.OrderDetails).filter(
+                    order_models.OrderDetails.order_id == order_id).all()
                 if len(order_details_data) != 0:
                     for i in order_details_data:
                         db.delete(i)
                         db.commit()
-                order_intial_data = db.query(order_models.Orders).filter(order_models.Orders.id == order_id).first()
+                order_intial_data = db.query(order_models.Orders).filter(
+                    order_models.Orders.id == order_id).first()
                 db.delete(order_intial_data)
                 db.commit()
                 increased = "Price Increased for this product"
@@ -840,7 +853,7 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
             db.commit()
             order_view_list.append(order_details)
 
-            if paid or cod or pending or PVC :
+            if paid or cod or pending or PVC:
                 update_inventory(order_id, product_id, product_qty, db)
 
         final_sub_total = sum(sub_total_list) - sum(discount_list)
@@ -865,14 +878,15 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
         order_data.tax = round(vat_amount, 2)
         order_data.shipping = request.delivery_fees
 
-        paying_price= round(final_grand_total,2)
+        paying_price = round(final_grand_total, 2)
         order_id_credit = order_id
         if PVC:
-            credit_data = db.query(credit_models.CreditManagement).filter(credit_models.CreditManagement.customer_id == request.customer_id).first()
+            credit_data = db.query(credit_models.CreditManagement).filter(
+                credit_models.CreditManagement.customer_id == request.customer_id).first()
             available_cr = credit_data.available
 
             if available_cr >= paying_price:
-                updated_credit = round(float(available_cr - paying_price),2)
+                updated_credit = round(float(available_cr - paying_price), 2)
 
                 credit_data.available = updated_credit
                 credit_data.used += float(paying_price)
@@ -882,19 +896,21 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
 
                 update_date = credit_data.updated_at
 
-                credit_settings_data = db.query(credit_models.CreditSettings).filter(credit_models.CreditSettings.id == credit_data.credit_rule_id).first()
+                credit_settings_data = db.query(credit_models.CreditSettings).filter(
+                    credit_models.CreditSettings.id == credit_data.credit_rule_id).first()
                 time_in_days = credit_settings_data.time_period
                 due_date = update_date + timedelta(days=time_in_days)
 
-                    
-                credit_log = credit_models.CreditTransactionsLog(customer_id = request.customer_id,order_id = order_id_credit,credit_amount = float(paying_price),available = updated_credit,credit_date = common_services.get_time(),due_date = due_date,payment_status = False)
+                credit_log = credit_models.CreditTransactionsLog(customer_id=request.customer_id, order_id=order_id_credit, credit_amount=float(
+                    paying_price), available=updated_credit, credit_date=common_services.get_time(), due_date=due_date, payment_status=False)
                 db.merge(credit_log)
                 db.commit()
-                
-                credit=True
-                    # request.payment_status = updated_payment_status
+
+                credit = True
+                # request.payment_status = updated_payment_status
             else:
-                result = user_schemas.ResponseCommonMessage(status=status.HTTP_404_NOT_FOUND, message="Not enough credits available !")
+                result = user_schemas.ResponseCommonMessage(
+                    status=status.HTTP_404_NOT_FOUND, message="Not enough credits available !")
                 return result
 
         if paid or cod or pending or credit:
@@ -915,7 +931,8 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
                 inv_no = len(transaction_data)+1001
             else:
                 inv_no = 1001
-        order_transact = order_models.OrderTransactions(user_id=request.customer_id,  order_id=order_id, order_type=1,payment_mode_id=request.payment_type, payment_status_id=request.payment_status, invoices_id=inv_no)
+        order_transact = order_models.OrderTransactions(user_id=request.customer_id,  order_id=order_id, order_type=1,
+                                                        payment_mode_id=request.payment_type, payment_status_id=request.payment_status, invoices_id=inv_no)
         db.merge(order_transact)
         db.commit()
 
@@ -961,14 +978,16 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
             order_type_email = order.order_type
             user_mail = request.email
 
-            returned = common_services.email_body(user_mail, order_id, order_view_list, image_list, order_type_email, ref_no, price_list, sup_name_list,unit_list ,db)
+            returned = common_services.email_body(
+                user_mail, order_id, order_view_list, image_list, order_type_email, ref_no, price_list, sup_name_list, unit_list, db)
 
             background_tasks.add_task(common_services.send_otp,
-                                    returned[0], returned[1], returned[2], request, db, invoice_path, invoice_delete)
+                                      returned[0], returned[1], returned[2], request, db, invoice_path, invoice_delete)
 
         if paid or cod or pending or credit:
-            data_response  = order_schemas.OrderResponseData(order_id=order_id)
-            response = order_schemas.OrderResponse(status=status.HTTP_200_OK, message="Order Placed Successfully",data=data_response)
+            data_response = order_schemas.OrderResponseData(order_id=order_id)
+            response = order_schemas.OrderResponse(
+                status=status.HTTP_200_OK, message="Order Placed Successfully", data=data_response)
             try:
                 customer_data = db.execute(
                     f"select * from {constants.Database_name}.customer_device where customer_id = {request.customer_id} and is_active=True ;")
@@ -1008,7 +1027,7 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
 
 
 def get_all_orders(offset, customer_id, db: Session):
-    
+
     offset_int = int(offset)
     limit_value = db.execute(
         f"select value from {constants.Database_name}.settings where id = 15 ;")
@@ -1122,7 +1141,7 @@ def get_all_orders(offset, customer_id, db: Session):
 
 
 def get_order_details(order_id, db: Session):
-    
+
     orders_data = db.execute(
         f'SELECT t1.*, t2.id as transaction_id, t2.payment_mode_id,t2.bank_payment_image, t2.payment_status_id , t2.invoices_id, t4.name as payment_mode , t3.name as payment_status FROM {constants.Database_name}.orders t1 inner join {constants.Database_name}.order_transactions t2 on t1.id = t2.order_id inner join {constants.Database_name}.status_master t3 on  t3.id = t2.payment_status_id inner join {constants.Database_name}.status_master t4 on t4.id = t2.payment_mode_id  where t1.id = {order_id};')
     if orders_data.rowcount > 0:
@@ -1133,7 +1152,7 @@ def get_order_details(order_id, db: Session):
             final_bank_re = None
             if data.bank_payment_image:
                 final_bank_re = constants.BANK_PAYMENT_IMAGES_PATH + data.bank_payment_image
-                
+
             order_details_data = db.execute(
                 f'select * from {constants.Database_name}.order_details where order_id = {data.id}')
             for data2 in order_details_data:
@@ -1234,11 +1253,10 @@ def get_order_details(order_id, db: Session):
             invoice_link = None
             if data.invoices_id:
                 invoice_link = f"{constants.global_link}/orders/invoice-orders/{data.ref_number}"
-            
-            
+
             data_order = order_schemas.OrderDetailsbyid(order_id=data.id, order_ref_no=data.ref_number, sub_total=data.sub_total, item_discount=data.item_discount, tax_vat=vat_with_prcnt, total=data.total, grand_total=data.grand_total, email=data.order_email, contact=data.order_phone, country=data.order_country, city=data.order_city, billing_name=data.order_billing_name,
                                                         billing_address=data.order_billing_address, shipping_name=data.order_ship_name, shipping_address=data.order_ship_address, payment_type=payment_type, payment_status=payment_status, order_date=date, product_count=product_count, order_status=order_status, order_type=order_value, invoice_id=data.invoices_id, invoice_link=invoice_link, delivery_charges=delivery_charge,
-bank_receipt=final_bank_re, order_delivery_logs=logs_list, products=order_product_list)
+                                                        bank_receipt=final_bank_re, order_delivery_logs=logs_list, products=order_product_list)
             order_list.append(data_order)
         data4 = order_schemas.ResponseMyOrdersbyid(
             customer_id=data.customer_id, orders=order_list)
@@ -1254,7 +1272,7 @@ bank_receipt=final_bank_re, order_delivery_logs=logs_list, products=order_produc
 
 
 def create_recurrence_order(request, db: Session):
-    
+
     grocery = db.query(order_models.UserGrocery).filter(order_models.UserGrocery.id ==
                                                         request.grocery_id, order_models.UserGrocery.customer_id == request.customer_id).first()
     if not grocery:
@@ -1304,7 +1322,7 @@ def create_recurrence_order(request, db: Session):
 
 
 def update_recurrence_order(request, db: Session):
-    
+
     recurrent = db.query(order_models.RecurrenceGrocery).filter(
         order_models.RecurrenceGrocery.id == request.recurrent_order_id).first()
     if not recurrent:
@@ -1346,7 +1364,7 @@ def update_recurrence_order(request, db: Session):
 
 
 def get_all_recurrent_type(db: Session):
-    
+
     recurrent_data = db.execute(
         f'select * from {constants.Database_name}.recurrent_type')
     cat_list = []
@@ -1360,7 +1378,7 @@ def get_all_recurrent_type(db: Session):
 
 
 def get_delivery_fees(address_id, db: Session):
-    
+
     try:
         delivery_charge_data = db.execute(
             f"""SELECT * FROM {constants.Database_name}.settings WHERE settings.key = 'setting_vat' OR settings.key = 'delivery_fee_distance_charge' OR settings.key = 'delivery_charge_base_fee' OR settings.key = 'delivery_free_charge_after_amount' OR settings.key = 'delivery_free_charge_below_range'OR settings.key = 'shipping_rates_after_basefare' order by id ;""")
@@ -1428,7 +1446,7 @@ def get_delivery_fees(address_id, db: Session):
 
 
 def get_filters_orders(offset, customer_id, filter_id, db: Session):
-    
+
     offset_int = int(offset)
     limit_value = db.execute(
         f"select value from {constants.Database_name}.settings where id = 15 ;")

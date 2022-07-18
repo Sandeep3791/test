@@ -24,9 +24,6 @@ class CreditManagement(Base):
     available = Column(Float)
     updated_at = Column(DateTime(timezone=True), default=get_time())
     created_at = Column(DateTime(timezone=True), default=get_time())
-    credit_id = Column(Integer)
-    paid_date = Column(DateTime)
-    paid_amount = Column(Float)
 
 
 class CreditTransactionsLog(Base):
@@ -42,3 +39,6 @@ class CreditTransactionsLog(Base):
                          nullable=False, index=True)
     order_id = Column(BigInteger, ForeignKey(
         'orders.id'), nullable=False, index=True)
+    credit_id = Column(Integer)
+    paid_date = Column(DateTime)
+    paid_amount = Column(Float)
