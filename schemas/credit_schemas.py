@@ -25,7 +25,7 @@ class ResponseCustomerCreditsTxn(BaseModel):
     due_date: str
     payment_status: bool
     order_ref_no: str
-    valid_date: bool
+    valid_date: bool = Optional
 
 
 class ResponseCustomerCreditsTxnFinal(BaseModel):
