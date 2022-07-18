@@ -1,14 +1,15 @@
 import json
-
+from fastapi.encoders import jsonable_encoder
 from sqlalchemy import desc
 from services import firebase_services
-from schemas import user_schemas, payment_schemas,order_schemas
+from schemas import user_schemas, payment_schemas, order_schemas
 from models import user_models, order_models, payment_models
 from fastapi_jwt_auth import AuthJWT
 from sqlalchemy.orm import Session
 from fastapi import status, BackgroundTasks
 import constants
-import os ,re
+import os
+import re
 from dotenv import load_dotenv
 from utility_services import common_services
 try:
@@ -66,15 +67,15 @@ class HyperPayResponseView:
 
         return pending, paid
 
-    def generate_checkout_id(self, request):
+    def generate_checkout_id(self, user_request2):
         data = {
             'entityId': self.ENTITY_ID,
-            'amount': request.get("amount"),
-            'currency': request.get("currency"),
-            'paymentType': request.get("paymentType")
+            'amount': user_request2.get("amount"),
+            'currency': user_request2.get("currency"),
+            'paymentType': user_request2.get("paymentType")
         }
-        if request.get("registrationId"):
-            data['registrations[0].id'] = request.get("registrationId")
+        if user_request2.get("registrationId"):
+            data['registrations[0].id'] = user_request2.get("registrationId")
             data['standingInstruction.source'] = 'CIT'
             data['standingInstruction.mode'] = 'REPEATED'
             data['standingInstruction.type'] = 'UNSCHEDULED'
@@ -181,7 +182,6 @@ class HyperPayResponseView:
 #         return e.reason
 
 
-
 # def get_payment_status(id, entityId=None):
 #     url = f"https://eu-test.oppwa.com/v1/checkouts/{id}/payment"
 #     url += f'?entityId={entityId}'
@@ -217,13 +217,25 @@ class HyperPayResponseView:
 
 
 def get_payment_checkout_id(user_request, db: Session):
-    
+
     customer_id = user_request.customer_id
     db_user_active = db.query(user_models.User).filter(
         user_models.User.id == customer_id).first()
     if db_user_active:
         if db_user_active.verification_status == "active":
-            return HyperPayResponseView(user_request.entityId).generate_checkout_id(user_request)
+            entityId = common_services.get_entityId(user_request.entityId)
+
+            checkout_request = payment_schemas.CheckoutIdRequest(
+                entityId=entityId, amount=user_request.amount, currency='SAR', paymentType=user_request.paymentType, customer_id=user_request.customer_id)
+
+            user_request2 = jsonable_encoder(checkout_request)
+
+            if user_request.registrationId:
+                user_request2['registrationId'] = user_request.registrationId
+                return HyperPayResponseView(user_request.entityId).generate_checkout_id(user_request2)
+            else:
+                return HyperPayResponseView(user_request.entityId).generate_checkout_id(user_request2)
+
         else:
             common_msg = user_schemas.ResponseCommonMessage(
                 status=status.HTTP_404_NOT_FOUND, message="User is not approved to place the order")
@@ -235,12 +247,12 @@ def get_payment_checkout_id(user_request, db: Session):
 
 
 def get_payment_status_api(entityId, checkout_id, db: Session):
-    
+
     return HyperPayResponseView(entityId).get_payment_status(checkout_id)
 
 
 def get_customer_cards(customer_id, db: Session):
-    
+
     user_cards = db.execute(
         f'select * from {constants.Database_name}.customer_cards where customer_id = "{customer_id}"')
     if user_cards:
@@ -260,7 +272,7 @@ def get_customer_cards(customer_id, db: Session):
 
 
 def delete_customer_card(card_id, entityId, db: Session):
-    
+
     card = db.query(payment_models.CustomerCard).filter(
         payment_models.CustomerCard.registration_id == card_id).first()
     if not card:
@@ -279,7 +291,7 @@ def delete_customer_card(card_id, entityId, db: Session):
 
 
 def get_payment_types(db: Session):
-    
+
     payment_types = db.execute(
         f'select * from {constants.Database_name}.status_master where status_type = 3 and status = 1')
     payment_type_list = []
@@ -293,7 +305,7 @@ def get_payment_types(db: Session):
 
 
 def get_payment_status_types(db: Session):
-    
+
     payment_status_types = db.execute(
         f'select * from {constants.Database_name}.status_master where status_type = 2')
     payment_status_list = []
@@ -304,4 +316,3 @@ def get_payment_status_types(db: Session):
     response = payment_schemas.ResponsePaymentstatusFinal(
         status=status.HTTP_200_OK, message="all payments status type!", data=payment_status_list)
     return response
-        

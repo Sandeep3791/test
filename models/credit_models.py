@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, BigInteger, DateTime, ForeignKey,Float
+from sqlalchemy import Column, Integer, String, BigInteger, DateTime, ForeignKey, Float
 from sqlalchemy.dialects.mysql import LONGTEXT
 from sqlalchemy.sql.sqltypes import Boolean
 from database import Base
@@ -10,9 +10,10 @@ class CreditSettings(Base):
     __tablename__ = "credit_settings"
 
     id = Column(Integer(), autoincrement=True, primary_key=True, index=True)
-    credit_amount  = Column(Integer, nullable=True)
-    time_period  = Column(Integer, nullable=True)
-    
+    credit_amount = Column(Integer, nullable=True)
+    time_period = Column(Integer, nullable=True)
+
+
 class CreditManagement(Base):
     __tablename__ = "credit_management"
 
@@ -23,6 +24,10 @@ class CreditManagement(Base):
     available = Column(Float)
     updated_at = Column(DateTime(timezone=True), default=get_time())
     created_at = Column(DateTime(timezone=True), default=get_time())
+    credit_id = Column(Integer)
+    paid_date = Column(DateTime)
+    paid_amount = Column(Float)
+
 
 class CreditTransactionsLog(Base):
     __tablename__ = 'credit_transactions_logs'
@@ -33,6 +38,7 @@ class CreditTransactionsLog(Base):
     credit_date = Column(DateTime(timezone=True), default=get_time())
     due_date = Column(DateTime(timezone=True), default=get_time())
     payment_status = Column(Boolean, default=False)
-    customer_id = Column(ForeignKey('customers_master.id'), nullable=False, index=True)
-    order_id = Column(BigInteger,ForeignKey('orders.id'), nullable=False, index=True)
-
+    customer_id = Column(ForeignKey('customers_master.id'),
+                         nullable=False, index=True)
+    order_id = Column(BigInteger, ForeignKey(
+        'orders.id'), nullable=False, index=True)

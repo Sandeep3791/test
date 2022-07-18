@@ -52,6 +52,3 @@ class ResponsePaymentstatusFinal(BaseModel):
     status: str
     message: str
     data: List[ResponsePaymentstatus]
-
-
-
