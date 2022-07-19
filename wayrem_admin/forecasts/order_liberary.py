@@ -83,10 +83,8 @@ class OrderLiberary:
         cur_grocery_id = order_recurrence.grocery_id
         grocery_product_list = self.get_grocery_product(order_recurrence)
         order_id = self.create_order(order_recurrence, grocery_product_list)
-
         if order_id:
-            self.create_order_detail(
-                order_id, order_recurrence, grocery_product_list)
+            self.create_order_detail(order_id, order_recurrence, grocery_product_list)
             self.create_order_transactions(order_id, order_recurrence)
             Inventory().order_inventory_process(order_id)
             FirebaseLibrary().send_notify(order_id=order_id,
@@ -188,7 +186,6 @@ class OrderLiberary:
             order_dic = {'ref_number': ref_number, 'sub_total': sub_total, 'item_discount': item_discount, 'item_margin': item_margin, 'tax': tax, 'tax_vat': tax_vat, 'shipping': shipping, 'total': total, 'promo': promo, 'discount': discount, 'grand_total': grand_total, 'order_ship_name': order_ship_name, 'order_ship_address': order_ship_address, 'order_ship_building_name': order_ship_building_name, 'order_ship_landmark': order_ship_landmark, 'order_ship_region': order_ship_region, 'order_ship_latitude': order_ship_latitude, 'order_ship_longitude': order_ship_longitude, 'order_billing_name': order_billing_name,
                          'order_billing_address': order_billing_address, 'order_city': order_city, 'order_country': order_country, 'order_phone': order_phone, 'order_email': order_email, 'order_date': order_date, 'order_shipped': order_shipped, 'order_tracking_number': order_tracking_number, 'content': content, 'customer_id': customer_id, 'delivery_status': delivery_status, 'status': status,
                          'order_shipping_response': order_shipping_response, 'order_type': order_type}
-
             order_cr = Orders(**order_dic)
             order_cr.save()
             return order_cr.id
@@ -284,6 +281,8 @@ class OrderLiberary:
         return grand_total, tax_amount
 
     def calculate_price_unit_type(self, specialprice, product_price, unit_type):
+        if specialprice is None:
+            specialprice=float(0)    
         if unit_type == PRODUCT_MARGIN_PERC_UNIT:
             total_amount = (float(specialprice) * float(product_price))/100
         else:
@@ -312,8 +311,7 @@ class OrderLiberary:
             quantity = self.total_product_qty_exist(
                 product, float(grocery_product.product_qty))
             if quantity:
-                self.create_product(
-                    order_id, grocery_product.product_qty, product)
+                self.create_product(order_id, grocery_product.product_qty, product)
         return 1
 
     def create_product(self, order_id, pro_quantity, product):
@@ -330,10 +328,9 @@ class OrderLiberary:
 
         if item_margin is None:
             product_margin = 0
-            total_price = product.price + 0
+            total_price = float(product.price) + float(0)
         else:
-            product_margin = self.calculate_price_unit_type(
-                item_margin, product.price, product.margin_unit)
+            product_margin = self.calculate_price_unit_type(item_margin, product.price, product.margin_unit)
             total_price = float(product.price)+float(product_margin)
         total_product_discount = self.calculate_price_unit_type(
             discount_price, total_price, product.dis_abs_percent)
