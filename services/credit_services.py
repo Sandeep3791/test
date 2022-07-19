@@ -7,6 +7,7 @@ from datetime import date, datetime
 import re
 from services import payment_services
 from sqlalchemy import null, or_
+from utility_services import common_services
 
 
 def get_credits(customer_id, db: Session):
@@ -157,3 +158,25 @@ def pay_overdue_credits(request, db: Session):
                                                     expiry_year=expiry_year, card_holder=card_holder, card_type=card_type, card_body=str(card_body), card_brand=card_brand)
             db.merge(save_card)
             db.commit()
+
+    for i in request.credit_dues_ids:
+        credit_info = db.query(credit_models.CreditTransactionsLog).filter(
+            credit_models.CreditTransactionsLog.id == i, credit_models.CreditTransactionsLog.payment_status == False).first()
+        present_date = common_services.get_time()
+        amount_to_paid = credit_info.credit_amount
+
+        if credit_info:
+            if request.amount >= amount_to_paid:
+                paid_data = credit_models.CreditTransactionsLog(
+                    credit_id=i, paid_date=present_date, paid_amount=amount_to_paid, payment_status=True, order_id=credit_info.order_id, customer_id=request.customer_id)
+                db.merge(paid_data)
+                db.commit()
+            data = credit_schemas.CreditDuesResponse(total_amount=request.amount, date=str(
+                present_date), customer_id=request.customer_id)
+            data2 = credit_schemas.FinalDuesPayResponse(
+                status=status.HTTP_200_OK, message="credit id doesn't exit!", data=data)
+            return data2
+        else:
+            common_msg = user_schemas.ResponseCommonMessage(
+                status=status.HTTP_200_OK, message="credit id doesn't exit!")
+            return common_msg

@@ -164,4 +164,3 @@ class RecurrenceGrocery(Base):
                         default=get_time())
     updated_at = Column(DateTime, nullable=False,
                         default=get_time())
-

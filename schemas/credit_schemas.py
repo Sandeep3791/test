@@ -46,3 +46,15 @@ class CreditDuesRequest(BaseModel):
     credit_dues_ids: List[int]
     customer_id: int
     amount: float
+
+
+class CreditDuesResponse(BaseModel):
+    total_amount: float
+    date: str
+    customer_id: int
+
+
+class FinalDuesPayResponse(BaseModel):
+    status: str
+    message: str
+    data: CreditDuesResponse
