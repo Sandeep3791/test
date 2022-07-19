@@ -756,14 +756,16 @@ def bulk_publish_excel(request):
 
 @app.task()
 def update_price_bulk(sku_list, price_list):
-    try:
-        for sku, price in zip(sku_list, price_list):
+    print(sku_list, price_list)
+    for sku, price in zip(sku_list, price_list):
+        try:
             product_price = Products.objects.get(SKU=sku)
             product_price.price = price
             product_price.save()
             print(sku, price, "successfull")
-    except Exception as e:
-        print(sku, price, "failed", e)
+        except Exception as e:
+            print(sku, price, "failed", e)
+    print("Price Updation Done")
 
 
 def divide_chunks(l, n):
@@ -830,16 +832,18 @@ def bulk_price_excel(request):
 
 @app.task()
 def update_quantity_bulk(sku_list, quantity_list):
-    try:
-        for sku, quantity in zip(sku_list, quantity_list):
+    print(sku_list, quantity_list)
+    for sku, quantity in zip(sku_list, quantity_list):
+        try:
             product = Products.objects.get(SKU=sku)
             inventory_dict = {'inventory_type_id': 1, 'quantity': quantity, 'product_id': product.id,
                               'warehouse_id': 1, 'po_id': None, 'supplier_id': None, 'order_id': None, 'order_status': None}
             Inventory().insert_inventory(inventory_dict)
             Inventory().update_product_quantity(product.id)
             print(sku, quantity, "successfull")
-    except Exception as e:
-        print(sku, quantity, "failed", e)
+        except Exception as e:
+            print(sku, quantity, "failed", e)
+    print("Quantity Updation Done")
 
 
 def bulk_quantity_excel(request):
