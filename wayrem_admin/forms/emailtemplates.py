@@ -32,7 +32,7 @@ class EmailtemplatesViewForm(forms.ModelForm):
     status_choices = list(get_status_dict.items())
     #status_choices.insert(0,('','Select Status'))
     status = forms.ChoiceField(
-        choices=status_choices, widget=forms.Select(attrs={'class': 'form-select'}))
+        choices=status_choices, widget=forms.Select(attrs={'class': 'form-control form-control-select','disabled':'disabled'}))
     message_format = forms.CharField(widget=CKEditorWidget())
 
     def __init__(self, *args, **kwargs):

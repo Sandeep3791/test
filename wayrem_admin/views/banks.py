@@ -74,7 +74,7 @@ class BanksUpdated(LoginPermissionCheckMixin, UpdateView):
         # if you are passing 'pk' from 'urls' to 'DeleteView' for company
         # capture that 'pk' as companyid and pass it to 'reverse_lazy()' function
         bank_id = self.kwargs['id']
-        return reverse_lazy('wayrem_admin:updatebank', kwargs={'id': bank_id})
+        return reverse_lazy('wayrem_admin:banklist')
 
 
 
@@ -85,14 +85,12 @@ class BanksCreate(LoginPermissionCheckMixin,CreateView):
     template_name = 'bank/add.html'
     success_url = reverse_lazy('wayrem_admin:banklist')
 
-
 class BankUpdateStatusView(View):
     def get(self, request, id):
-        Banks.objects.filter(id=1).update(is_deleted=1, status=0)
+        Banks.objects.filter(id=id).update(is_deleted=1, status=0)
         return HttpResponse(1)
 
 class BankUpdateInACView(View):
-    def get(self, request, id,status):
-        print(id,status)
+    def get(self, request,id,status):
         Banks.objects.filter(id=id).update(status=status)
         return HttpResponseRedirect('/banks')

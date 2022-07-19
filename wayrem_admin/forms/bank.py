@@ -42,7 +42,7 @@ class BankViewForm(forms.ModelForm):
     status_choices = list(get_status_dict.items())
     #status_choices.insert(0,('','Select Status'))
     status = forms.ChoiceField(choices=status_choices, widget=forms.Select(
-        attrs={'class': 'form-control form-control-select'}))
+        attrs={'class': 'form-control form-control-select','disabled':'disabled'}))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -53,7 +53,7 @@ class BankViewForm(forms.ModelForm):
         self.fields['branch'].widget.attrs['readonly'] = True
         self.fields['iban'].widget.attrs['readonly'] = True
         self.fields['status'].widget.attrs['readonly'] = True
-
+        
     class Meta:
         model = Banks
         fields = ['title', 'bank_name', 'account_name',

@@ -25,14 +25,14 @@
     <div class="col-12 d-flex align-items-center justify-content-center">
         <div class="bg-white  rounded p-4 p-lg-4 w-100 shadow-sm">
             
-            <form action="{% url 'wayrem_admin:bankadd'%}" method="POST" enctype="multipart/form-data" validate>
+            <form action="{% url 'wayrem_admin:bankadd'%}" method="POST" class="formsubmit" enctype="multipart/form-data" validate>
               {% csrf_token %}
                 <div class="row">
                     <div class="col-md-12 mb-2">
                         <div>
                             <label for="name">Title  <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.code_name.errors | striptags}}</em></span></label>
                             {{form.title}}
-                            <div class="input-group" id="name_error_message" style="color: #d12525;"></div>
+                            <div class="input-group" id="id_title_error_message" style="color: #d12525;"></div>
                         </div>
                     </div>
 
@@ -40,7 +40,7 @@
                             <div>
                                 <label for="name">Bank Name<span class="text-danger">*</span>  <span class="text-danger"><em>{{form.branch_name.errors | striptags}}</em></span></label>
                                 {{form.bank_name}}
-                                <div class="input-group" id="branch_name_error_message" style="color: #d12525;"></div>
+                                <div class="input-group" id="id_bank_name_error_message" style="color: #d12525;"></div>
                             </div>
                         </div>
                     
@@ -48,7 +48,7 @@
                             <div>
                                 <label for="name">Account Name <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.latitude.errors | striptags}}</em></span></label>
                                 {{form.account_name}}
-                                <div class="input-group" id="branch_name_error_message" style="color: #d12525;"></div>
+                                <div class="input-group" id="id_account_name_error_message" style="color: #d12525;"></div>
                             </div>
                         </div>
 
@@ -56,7 +56,7 @@
                             <div>
                                 <label for="name">City <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.longitude.errors | striptags}}</em></span></label>
                                 {{form.city}}
-                                <div class="input-group" id="branch_name_error_message" style="color: #d12525;"></div>
+                                <div class="input-group" id="id_city_error_message" style="color: #d12525;"></div>
                             </div>
                         </div>
 
@@ -64,14 +64,14 @@
                         <div>
                             <label for="address">Branch <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.address.errors | striptags}}</em></span></label>
                             {{form.branch}}
-                            <div class="input-group"  id="message_format_error_message" style="color: #d12525;"></div>
+                            <div class="input-group"  id="id_branch_error_message" style="color: #d12525;"></div>
                         </div>
                     </div>
                     <div class="col-md-12 mb-2">
                         <div>
                             <label for="address">IBAN <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.address.errors | striptags}}</em></span></label>
                             {{form.iban}}
-                            <div class="input-group"  id="message_format_error_message" style="color: #d12525;"></div>
+                            <div class="input-group"  id="id_iban_error_message" style="color: #d12525;"></div>
                         </div>
                     </div>
 
@@ -104,4 +104,63 @@
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
 
+<script>
+function validateform(){
+    var error_n = false;
+    var error_d = false;
+    c1=check_title("#id_title","Please enter title");
+    c2=check_title("#id_bank_name","Please enter Bank name");
+    c3=check_title("#id_account_name","Please enter Account name");
+    c4=check_title("#id_city","Please enter City");
+    c5=check_title("#id_branch","Please enter Branch");
+    c6=check_title("#id_iban","Please enter IBAN");
+    
+    if (c1 && c2 && c3 && c4 && c5 && c6){
+      return true;
+
+    }else{
+        return false;
+    }
+    
+    
+}
+
+function check_title(key,error_message) {
+    error_n = true;
+    var name = $(key).val();
+    if (name !== '') {
+        $(key+"_error_message").hide();
+        // $("#id_name").css("border-bottom", "2px solid #34F458");
+    } else {
+        $(key+"_error_message").html(error_message);
+        $(key+"_error_message").show();
+        error_n = false;
+    }
+    return error_n
+}
+
+
+
+
+$(function () {
+    $('.formsubmit').on('submit', function(e) {
+         e.preventDefault();
+         form_status=validateform()
+         console.log(form_status)
+         if (form_status){
+            this.submit();
+        }
+     });
+
+
+
+     
+
+            
+
+
+    
+        });
+    
+    </script>
 {% endblock javascripts %}
