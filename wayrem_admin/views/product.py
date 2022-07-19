@@ -1,6 +1,7 @@
 from wayrem.celery import app
 from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
 import imp
+import time
 import re
 from django.db import connection
 from django.http import response
@@ -765,7 +766,9 @@ def update_price_bulk(sku_list, price_list):
             print(sku, price, "successfull")
         except Exception as e:
             print(sku, price, "failed", e)
+        time.sleep(5)
     print("Price Updation Done")
+    return {"status": True}
 
 
 def divide_chunks(l, n):
@@ -844,6 +847,7 @@ def update_quantity_bulk(sku_list, quantity_list):
         except Exception as e:
             print(sku, quantity, "failed", e)
     print("Quantity Updation Done")
+    return {"status": True}
 
 
 def bulk_quantity_excel(request):
