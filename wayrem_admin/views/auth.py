@@ -68,7 +68,7 @@ class Forgot_Password(View):
     def post(self, request, *args, **kwargs):
         email = request.POST.get('email')
         request.session['fpemail'] = email
-        user = User.objects.filter(email=email).first()
+        user = Users.objects.filter(email=email).first()
         if not user:
             messages.error(request, "Email Doesn't Exist!")
             return redirect('wayrem_admin:forgot-password')
