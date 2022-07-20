@@ -32,13 +32,13 @@ class CreditTransactionsLog(Base):
     id = Column(Integer, primary_key=True)
     credit_amount = Column(Float(asdecimal=True), nullable=False)
     available = Column(Float(asdecimal=True), nullable=False)
-    credit_date = Column(DateTime(timezone=True), default=get_time())
-    due_date = Column(DateTime(timezone=True), default=get_time())
+    credit_date = Column(DateTime(timezone=True), nullable=True)
+    due_date = Column(DateTime(timezone=True), nullable=True)
     payment_status = Column(Boolean, default=False)
     customer_id = Column(ForeignKey('customers_master.id'),
                          nullable=False, index=True)
     order_id = Column(BigInteger, ForeignKey(
         'orders.id'), nullable=False, index=True)
-    credit_id = Column(Integer)
-    paid_date = Column(DateTime)
-    paid_amount = Column(Float)
+    credit_id = Column(Integer, nullable=True)
+    paid_date = Column(DateTime, nullable=True)
+    paid_amount = Column(Float, nullable=True)

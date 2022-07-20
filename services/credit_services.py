@@ -88,16 +88,19 @@ def get_overdue_credits(customer_id, db: Session):
         credit_models.CreditManagement.customer_id == customer_id).first()
 
     if user_data:
-        credit_data = db.query(credit_models.CreditTransactionsLog).filter(
-            credit_models.CreditTransactionsLog.customer_id == customer_id).order_by(desc(credit_models.CreditTransactionsLog.id)).all()
+        unpaid_credit_data = db.query(credit_models.CreditTransactionsLog).filter(
+            credit_models.CreditTransactionsLog.customer_id == customer_id, credit_models.CreditTransactionsLog.payment_status == False).order_by(desc(credit_models.CreditTransactionsLog.id)).all()
         due_credit_data = None
-        for i in credit_data:
-            credit_due_date = i.due_date
-            user_oder_data = db.query(order_models.Orders).filter(
-                order_models.Orders.id == i.order_id).first()
-            if present_date > credit_due_date:
-                due_credit_data = credit_schemas.ResponseCustomerCreditsTxn(id=i.id, credit_amount=i.credit_amount, available=i.available, credit_date=str(
-                    i.credit_date), due_date=str(i.due_date), payment_status=i.payment_status, order_ref_no=user_oder_data.ref_number)
+        for i in unpaid_credit_data:
+            paid_credit_data = db.query(credit_models.CreditTransactionsLog).filter(
+                credit_models.CreditTransactionsLog.credit_id == i.id, credit_models.CreditTransactionsLog.payment_status == True).first()
+            if not paid_credit_data:
+                credit_due_date = i.due_date
+                user_oder_data = db.query(order_models.Orders).filter(
+                    order_models.Orders.id == i.order_id).first()
+                if present_date > credit_due_date:
+                    due_credit_data = credit_schemas.ResponseCustomerCreditsTxn(id=i.id, credit_amount=i.credit_amount, available=i.available, credit_date=str(
+                        i.credit_date), due_date=str(i.due_date), payment_status=i.payment_status, order_ref_no=user_oder_data.ref_number)
         response = credit_schemas.ResponseCustomerCreditDue(
             status=status.HTTP_200_OK, message="User Overdue Credit Info!", data=due_credit_data)
         return response
@@ -132,11 +135,6 @@ def pay_overdue_credits(request, db: Session):
         response = user_schemas.ResponseCommonMessage(
             status=status.HTTP_424_FAILED_DEPENDENCY, message="Transaction Failed!!", data=str(hyperpay_response))
         return response
-    if re.search(PENDING_CHANGEABLE_SOON_CODES_REGEX, payment_check) or re.search(PENDING_NOT_CHANGEABLE_SOON_CODES_REGEX, payment_check):
-        request.payment_status = 6
-        pending = True
-    if re.search(SUCCESS_CODES_REGEX, payment_check) or re.search(SUCCESS_MANUAL_REVIEW_CODES_REGEX, payment_check):
-        paid = True
     registrationId = payment_status.get("registrationId")
 
     if registrationId:
@@ -158,20 +156,23 @@ def pay_overdue_credits(request, db: Session):
                                                     expiry_year=expiry_year, card_holder=card_holder, card_type=card_type, card_body=str(card_body), card_brand=card_brand)
             db.merge(save_card)
             db.commit()
+
     if request.credit_dues_ids:
-
         for i in request.credit_dues_ids:
-            credit_info = db.query(credit_models.CreditTransactionsLog).filter(
-                credit_models.CreditTransactionsLog.id == i, credit_models.CreditTransactionsLog.payment_status == False).first()
-            present_date = common_services.get_time()
-            amount_to_paid = credit_info.credit_amount
+            exist_credit_info = db.query(credit_models.CreditTransactionsLog).filter(
+                credit_models.CreditTransactionsLog.credit_id == i, credit_models.CreditTransactionsLog.payment_status == True).first()
+            if not exist_credit_info:
+                credit_info = db.query(credit_models.CreditTransactionsLog).filter(
+                    credit_models.CreditTransactionsLog.id == i, credit_models.CreditTransactionsLog.payment_status == False).first()
+                present_date = common_services.get_time()
+                amount_to_paid = credit_info.credit_amount
 
-            if credit_info:
-                if request.amount >= amount_to_paid:
-                    paid_data = credit_models.CreditTransactionsLog(
-                        credit_id=i, paid_date=present_date, paid_amount=amount_to_paid, payment_status=True, order_id=credit_info.order_id, customer_id=request.customer_id, credit_date=null,  due_date=null)
-                    db.merge(paid_data)
-                    db.commit()
+                if credit_info:
+                    if request.amount >= amount_to_paid:
+                        paid_data = credit_models.CreditTransactionsLog(
+                            credit_id=i, paid_date=present_date, paid_amount=amount_to_paid, payment_status=True, order_id=credit_info.order_id, customer_id=request.customer_id, credit_date=None,  due_date=None)
+                        db.merge(paid_data)
+                        db.commit()
         data = credit_schemas.CreditDuesResponse(total_amount=request.amount, date=str(
             present_date), customer_id=request.customer_id)
         data2 = credit_schemas.FinalDuesPayResponse(
