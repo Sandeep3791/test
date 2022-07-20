@@ -54,7 +54,7 @@ class Orders(models.Model):
         'StatusMaster', models.DO_NOTHING, db_column='order_type', blank=True, null=True)
     delivery_charge = models.CharField(max_length=100, null=True)
     checkout_id = models.CharField(max_length=255, null=True)
-    is_shown = models.BooleanField(default=False)
+    is_shown = models.BooleanField(default=True)
 
     def __str__(self):
         return self.ref_number

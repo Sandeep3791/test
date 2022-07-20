@@ -159,7 +159,7 @@ class OrdersList(LoginPermissionCheckMixin, ListView):
     success_url = reverse_lazy('wayrem_admin:orderlist')
 
     def get_queryset(self):
-        qs = Orders.objects.filter().order_by("-id")
+        qs = Orders.objects.filter(is_shown=1).order_by("-id")
         filtered_list = OrderFilter(self.request.GET, queryset=qs)
         print(filtered_list.qs.query)
         return filtered_list.qs
