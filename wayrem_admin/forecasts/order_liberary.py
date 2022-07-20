@@ -185,7 +185,7 @@ class OrderLiberary:
 
             order_dic = {'ref_number': ref_number, 'sub_total': sub_total, 'item_discount': item_discount, 'item_margin': item_margin, 'tax': tax, 'tax_vat': tax_vat, 'shipping': shipping, 'total': total, 'promo': promo, 'discount': discount, 'grand_total': grand_total, 'order_ship_name': order_ship_name, 'order_ship_address': order_ship_address, 'order_ship_building_name': order_ship_building_name, 'order_ship_landmark': order_ship_landmark, 'order_ship_region': order_ship_region, 'order_ship_latitude': order_ship_latitude, 'order_ship_longitude': order_ship_longitude, 'order_billing_name': order_billing_name,
                          'order_billing_address': order_billing_address, 'order_city': order_city, 'order_country': order_country, 'order_phone': order_phone, 'order_email': order_email, 'order_date': order_date, 'order_shipped': order_shipped, 'order_tracking_number': order_tracking_number, 'content': content, 'customer_id': customer_id, 'delivery_status': delivery_status, 'status': status,
-                         'order_shipping_response': order_shipping_response, 'order_type': order_type}
+                         'order_shipping_response': order_shipping_response, 'order_type': order_type,'is_shown':1}
             order_cr = Orders(**order_dic)
             order_cr.save()
             return order_cr.id
