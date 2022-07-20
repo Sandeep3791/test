@@ -112,7 +112,7 @@ class Reset_Password(View):
 
         if user:
             print("Working")
-            new_user = User.objects.get(email=email)
+            new_user = Users.objects.get(email=email)
             new_user.password = make_password(newpassword)
             new_user.save()
             messages.success(request, "Password Changed Successfully!")
