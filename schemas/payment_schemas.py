@@ -52,3 +52,13 @@ class ResponsePaymentstatusFinal(BaseModel):
     status: str
     message: str
     data: List[ResponsePaymentstatus]
+
+
+class ResponseCreditPay(BaseModel):
+    checkout_id: str
+
+
+class ResponseCreditPAyCheckout(BaseModel):
+    status: str
+    message: str
+    data: ResponseCreditPay

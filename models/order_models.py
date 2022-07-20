@@ -11,7 +11,7 @@ class Orders(Base):
     id = Column(Integer(), autoincrement=True, primary_key=True, index=True)
     ref_number = Column(String(255))
     customer_id = Column(ForeignKey('customers_master.id'))
-    is_shown = Column(Boolean, default=False)
+    is_shown = Column(Boolean, default=True)
     status = Column(Integer, nullable=True)
     sub_total = Column(Float())
     item_discount = Column(Float())

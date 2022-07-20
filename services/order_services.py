@@ -521,7 +521,8 @@ def initial_order(request, db: Session, background_tasks: BackgroundTasks):
         order_email=request.email,
         order_type=24,
         delivery_charge=request.delivery_fees,
-        order_date=common_services.get_time()
+        order_date=common_services.get_time(),
+        is_shown=False
     )
     entityId = common_services.get_entityId(request.entityId)
 

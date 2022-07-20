@@ -232,10 +232,22 @@ def get_payment_checkout_id(user_request, db: Session):
 
             if user_request.registrationId:
                 user_request2['registrationId'] = user_request.registrationId
-                return HyperPayResponseView(user_request.entityId).generate_checkout_id(user_request2)
-            else:
-                return HyperPayResponseView(user_request.entityId).generate_checkout_id(user_request2)
 
+            checkout_details = HyperPayResponseView(
+                user_request.entityId).generate_checkout_id(user_request2)
+            success_code = checkout_details['result']['code']
+            if success_code == '000.200.100' or success_code == '000.200.101' or success_code == '000.200.102':
+                checkout_id = checkout_details['id']
+                data = payment_schemas.ResponseCreditPay(
+                    checkout_id=checkout_id)
+                resp = payment_schemas.ResponseCreditPAyCheckout(
+                    status=status.HTTP_200_OK, message="Checkout ID created successfully", data=data)
+                return resp
+
+            else:
+                common_msg = user_schemas.ResponseCommonMessage(
+                    status=status.HTTP_404_NOT_FOUND, message="Transaction failed!")
+                return common_msg
         else:
             common_msg = user_schemas.ResponseCommonMessage(
                 status=status.HTTP_404_NOT_FOUND, message="User is not approved to place the order")
