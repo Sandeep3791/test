@@ -162,7 +162,7 @@
                         </form>
                     </div>
                     <div class="form-group col-md-3 col-xl-3">
-                        <label for="code" class="h5">Update Quantity Products</label>
+                        <label for="code" class="h5">Add Products Quantity</label>
                         <form action="{% url 'wayrem_admin:bulk_quantity' %}" method="POST" enctype="multipart/form-data" >
                             {% csrf_token %}
                             <div class="form-file">
@@ -235,7 +235,11 @@
                         <div class="col-12 col-sm-6 col-xl-6 p-0 padding-right-2">
                             <div class="bg-white rounded p-lg-4 shadow-sm">
                                 <div class="col">
+                                    {% if quantity_sku_count %}
+                                    <p class="text-success"><strong>Quantity import!!</strong> </p>
+                                    {% else %}
                                     <p class="text-success"><strong>Price import!!</strong> </p>
+                                    {% endif %}
                                     <p class="text-dark" >Total SKU in Excel: {{total_entries_excel}}</p>
                                     {% if price_sku_count %}
                                     <p class="text-dark" >Price of SKU's to be updated: {{price_sku_count}}</p>
