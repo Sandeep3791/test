@@ -173,15 +173,15 @@ def pay_overdue_credits(request, db: Session):
                             credit_id=i, paid_date=present_date, paid_amount=amount_to_paid, payment_status=True, order_id=credit_info.order_id, customer_id=request.customer_id, credit_date=None,  due_date=None)
                         db.merge(paid_data)
                         db.commit()
-                data = credit_schemas.CreditDuesResponse(total_amount=request.amount, date=str(
-                    present_date), customer_id=request.customer_id)
-                data2 = credit_schemas.FinalDuesPayResponse(
-                    status=status.HTTP_200_OK, message="credit paid successfully!", data=data)
-                return data2
             else:
                 response = user_schemas.ResponseCommonMessage(
                     status=status.HTTP_400_BAD_REQUEST, message="Dues for this ids are already paid!!")
-        return response
+                return response
+        data = credit_schemas.CreditDuesResponse(total_amount=request.amount, date=str(
+            present_date), customer_id=request.customer_id)
+        data2 = credit_schemas.FinalDuesPayResponse(
+            status=status.HTTP_200_OK, message="credit paid successfully!", data=data)
+        return data2
 
     else:
         response = user_schemas.ResponseCommonMessage(
