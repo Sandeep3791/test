@@ -108,7 +108,7 @@ class DeleteStaticpages(LoginPermissionCheckMixin, View):
         return redirect('wayrem_admin:staticpages')
 
 
-@permission_required('static_page.view', raise_exception=True)
+# @permission_required('static_page.view', raise_exception=True)
 def staticpages_view(request, url):
     data = StaticPages.objects.filter(slug=url).first()
     context = {
