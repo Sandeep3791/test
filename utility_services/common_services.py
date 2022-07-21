@@ -34,9 +34,13 @@ load_dotenv()
 
 def get_time():
     now_utc = datetime.now(timezone('UTC'))
+    # time_now = now_utc.astimezone(timezone(constants.Default_time_zone))
+    return now_utc
+
+
+def utc_to_tz(now_utc):
     time_now = now_utc.astimezone(timezone(constants.Default_time_zone))
     return time_now
-
 
 def send_otp(to, subject, body, request, db: Session, file_path=None, invoice_delete=None):
     try:

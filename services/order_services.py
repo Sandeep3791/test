@@ -1,4 +1,6 @@
 import math
+
+from pytz import utc
 from services import firebase_services, payment_services
 from utility_services import common_services, inventory_services
 from utility_services.inventory_services import product_details, update_inventory, generate_ref_number
@@ -1047,7 +1049,8 @@ def get_all_orders(offset, customer_id, db: Session):
             delivery_logs_data = db.execute(
                 f"select m.id,m.name,m.description,d.log_date from status_master as m inner join order_delivery_logs as d ON m.id = d.order_status_id where d.order_id={data.id} and d.customer_view = 1 order by d.id ")
             for log_data in delivery_logs_data:
-                log_date = str(log_data.log_date.strftime("%Y-%m-%d %H:%M:%S"))
+                log_date = common_services.utc_to_tz(log_data.log_date)
+                log_date = str(log_date.strftime("%Y-%m-%d %H:%M:%S"))
 
                 data_logs = order_schemas.OrderByIdDeliveryLogs(
                     id=log_data.id, status_name=log_data.name, status_description=log_data.description, log_date=log_date)
@@ -1234,7 +1237,8 @@ def get_order_details(order_id, db: Session):
             delivery_logs_data = db.execute(
                 f"select m.id,m.name,m.description,d.log_date from status_master as m inner join order_delivery_logs as d ON m.id = d.order_status_id where d.order_id={data.id} and d.customer_view = 1 order by d.order_status_id desc ")
             for log_data in delivery_logs_data:
-                log_date = str(log_data.log_date.strftime("%Y-%m-%d %H:%M:%S"))
+                log_date = common_services.utc_to_tz(log_data.log_date)
+                log_date = str(log_date.strftime("%Y-%m-%d %H:%M:%S"))
 
                 data_logs = order_schemas.OrderByIdDeliveryLogs(
                     id=log_data.id, status_name=log_data.name, status_description=log_data.description, log_date=log_date)
@@ -1466,7 +1470,8 @@ def get_filters_orders(offset, customer_id, filter_id, db: Session):
             delivery_logs_data = db.execute(
                 f"select m.id,m.name,m.description,d.log_date from status_master as m inner join order_delivery_logs as d ON m.id = d.order_status_id where d.order_id={data.id} and d.customer_view = 1 order by d.log_date ")
             for log_data in delivery_logs_data:
-                log_date = str(log_data.log_date.strftime("%Y-%m-%d %H:%M:%S"))
+                log_date = common_services.utc_to_tz(log_data.log_date)
+                log_date = str(log_date.strftime("%Y-%m-%d %H:%M:%S"))
 
                 data_logs = order_schemas.OrderByIdDeliveryLogs(
                     id=log_data.id, status_name=log_data.name, status_description=log_data.description, log_date=log_date)
