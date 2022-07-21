@@ -12,6 +12,10 @@ class FunctionMaster(models.Model):
     show_in_permission = models.CharField(max_length=3)
     #child_permission = models.CharField(max_length=3)
     display_order = models.IntegerField(blank=True, null=True)
+    permission_menu = models.CharField(max_length=3, blank=True, null=True,default="no")
+    permission_menu_order = models.IntegerField(blank=True, null=True)
+
+
 
     class Meta:
         app_label = "wayrem_admin"
