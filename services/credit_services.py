@@ -64,13 +64,16 @@ def get_credits_txn(customer_id, dues, db: Session):
                 user_oder_data = db.query(order_models.Orders).filter(
                     order_models.Orders.id == data.order_id).first()
                 present_date = datetime.now()
-                if present_date > data.due_date:
-                    is_due = False
+                if data.due_date:
+                    if present_date > data.due_date:
+                        is_due = False
+                    else:
+                        is_due = True
                 else:
                     is_due = True
 
                 credit_data = credit_schemas.ResponseCustomerCreditsTxn(id=data.id, credit_amount=data.credit_amount, available=data.available, credit_date=str(
-                    data.credit_date), due_date=str(data.due_date), payment_status=data.payment_status, order_ref_no=user_oder_data.ref_number, valid_date=is_due)
+                    data.credit_date), due_date=str(data.due_date), payment_status=data.payment_status, order_ref_no=user_oder_data.ref_number, valid_date=is_due, paid_date=str(data.paid_date), paid_amount=data.paid_amount, paid_credit_id=data.credit_id)
 
                 txn_list.append(credit_data)
             response = credit_schemas.ResponseCustomerCreditsTxnFinal(

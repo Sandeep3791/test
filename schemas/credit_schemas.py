@@ -19,13 +19,16 @@ class ResponseCustomerCreditsFinal(BaseModel):
 
 class ResponseCustomerCreditsTxn(BaseModel):
     id: int
-    credit_amount: float
-    available: float
-    credit_date: str
-    due_date: str
+    credit_amount: Optional[float] = None
+    available: Optional[float] = None
+    credit_date: Optional[str] = None
+    due_date: Optional[str] = None
     payment_status: bool
     order_ref_no: str
     valid_date: bool = Optional
+    paid_date: Optional[str] = None
+    paid_amount: Optional[float] = None
+    paid_credit_id: Optional[int] = None
 
 
 class ResponseCustomerCreditsTxnFinal(BaseModel):
