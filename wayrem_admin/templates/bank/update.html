@@ -45,12 +45,35 @@
                                 <div class="input-group" id="id_bank_name_error_message" style="color: #d12525;"></div>
                             </div>
                         </div>
+                        <div class="col-md-12 mb-2">
+                            <div>
+                                <label for="name">Bank Key <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.latitude.errors | striptags}}</em></span></label>
+                                {{form.bank_key}}
+                                <div class="input-group" id="id_account_name_error_message" style="color: #d12525;"></div>
+                            </div>
+                        </div>
                     
                         <div class="col-md-12 mb-2">
                             <div>
                                 <label for="name">Account Name <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.latitude.errors | striptags}}</em></span></label>
                                 {{form.account_name}}
                                 <div class="input-group" id="id_account_name_error_message" style="color: #d12525;"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 mb-2">
+                            <div>
+                                <label for="name">Account Number <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.account_no.errors | striptags}}</em></span></label>
+                                {{form.account_no}}
+                                <div class="input-group" id="id_account_no_error_message" style="color: #d12525;"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 mb-2">
+                            <div>
+                                <label for="name">Swift Code<span class="text-danger">*</span>  <span class="text-danger"><em>{{form.swift_code.errors | striptags}}</em></span></label>
+                                {{form.swift_code}}
+                                <div class="input-group" id="id_swift_code_error_message" style="color: #d12525;"></div>
                             </div>
                         </div>
 

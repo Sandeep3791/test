@@ -52,21 +52,41 @@ class RolePermissionView(LoginPermissionCheckMixin, View):
             self.template_name = 'permissions/permission_checkbox.html'
         pages_menu = FunctionMaster.objects.filter(Q(status=1) & Q(
             show_in_permission="yes")).order_by('display_order')
+        pages_menu_2 = FunctionMaster.objects.filter(Q(status=1) & Q(
+            show_in_permission="yes")).order_by('permission_menu_order')
 
         pages_menu_list = []
         pages_menu_dict = {}
         menu_temp_dict = {}
         sub_list = []
+        # if pages_menu:
+        #     for menu in pages_menu:
+        #         if menu.parent_id == 0:
+        #             pages_menu_list.append(menu.id)
+        #             menu_temp_dict[menu.id] = menu.__dict__
+
+        #     for function_id in pages_menu_list:
+        #         menu_dict = {}
+        #         menu_dict['menu'] = menu_temp_dict[function_id]
+        #         for menu in pages_menu:
+        #             if menu.parent_id == function_id:
+        #                 sub_list.append(menu.__dict__)
+        #         if sub_list:
+        #             menu_dict['submenu'] = sub_list.copy()
+        #         pages_menu_dict[function_id] = menu_dict
+        #         sub_list.clear()
+
+
         if pages_menu:
             for menu in pages_menu:
-                if menu.parent_id == 0:
+                if menu.permission_menu == "yes":
                     pages_menu_list.append(menu.id)
                     menu_temp_dict[menu.id] = menu.__dict__
 
             for function_id in pages_menu_list:
                 menu_dict = {}
                 menu_dict['menu'] = menu_temp_dict[function_id]
-                for menu in pages_menu:
+                for menu in pages_menu_2:
                     if menu.parent_id == function_id:
                         sub_list.append(menu.__dict__)
                 if sub_list:

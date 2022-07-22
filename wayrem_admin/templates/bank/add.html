@@ -43,6 +43,13 @@
                                 <div class="input-group" id="id_bank_name_error_message" style="color: #d12525;"></div>
                             </div>
                         </div>
+                        <div class="col-md-12 mb-2">
+                            <div>
+                                <label for="name">Bank Key <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.latitude.errors | striptags}}</em></span></label>
+                                {{form.bank_key}}
+                                <div class="input-group" id="id_account_name_error_message" style="color: #d12525;"></div>
+                            </div>
+                        </div>
                     
                         <div class="col-md-12 mb-2">
                             <div>
@@ -54,7 +61,23 @@
 
                         <div class="col-md-12 mb-2">
                             <div>
-                                <label for="name">City <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.longitude.errors | striptags}}</em></span></label>
+                                <label for="name">Account Number <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.account_no.errors | striptags}}</em></span></label>
+                                {{form.account_no}}
+                                <div class="input-group" id="id_account_no_error_message" style="color: #d12525;"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 mb-2">
+                            <div>
+                                <label for="name">Swift Code<span class="text-danger">*</span>  <span class="text-danger"><em>{{form.swift_code.errors | striptags}}</em></span></label>
+                                {{form.swift_code}}
+                                <div class="input-group" id="id_swift_code_error_message" style="color: #d12525;"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 mb-2">
+                            <div>
+                                <label for="name">City <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.city.errors | striptags}}</em></span></label>
                                 {{form.city}}
                                 <div class="input-group" id="id_city_error_message" style="color: #d12525;"></div>
                             </div>
@@ -62,14 +85,14 @@
 
                     <div class="col-md-12 mb-2">
                         <div>
-                            <label for="address">Branch <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.address.errors | striptags}}</em></span></label>
+                            <label for="address">Branch <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.branch.errors | striptags}}</em></span></label>
                             {{form.branch}}
                             <div class="input-group"  id="id_branch_error_message" style="color: #d12525;"></div>
                         </div>
                     </div>
                     <div class="col-md-12 mb-2">
                         <div>
-                            <label for="address">IBAN <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.address.errors | striptags}}</em></span></label>
+                            <label for="address">IBAN <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.iban.errors | striptags}}</em></span></label>
                             {{form.iban}}
                             <div class="input-group"  id="id_iban_error_message" style="color: #d12525;"></div>
                         </div>
