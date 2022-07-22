@@ -70,6 +70,7 @@ class BankViewForm(forms.ModelForm):
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'bank_name': forms.TextInput(attrs={'class': 'form-control'}),
+            'bank_key': forms.TextInput(attrs={'class': 'form-control'}),
             'account_name': forms.TextInput(attrs={'class': 'form-control'}),
             'account_no': forms.NumberInput(attrs={'class': 'form-control'}),
             'swift_code': forms.TextInput(attrs={'class': 'form-control'}),
