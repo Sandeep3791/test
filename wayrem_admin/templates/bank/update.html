@@ -45,14 +45,14 @@
                                 <div class="input-group" id="id_bank_name_error_message" style="color: #d12525;"></div>
                             </div>
                         </div>
-                        <div class="col-md-12 mb-2">
+                        {% comment %} <div class="col-md-12 mb-2">
                             <div>
                                 <label for="name">Bank Key <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.latitude.errors | striptags}}</em></span></label>
                                 {{form.bank_key}}
                                 <div class="input-group" id="id_account_name_error_message" style="color: #d12525;"></div>
                             </div>
                         </div>
-                    
+                     {% endcomment %}
                         <div class="col-md-12 mb-2">
                             <div>
                                 <label for="name">Account Name <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.latitude.errors | striptags}}</em></span></label>
@@ -71,7 +71,7 @@
 
                         <div class="col-md-12 mb-2">
                             <div>
-                                <label for="name">Swift Code<span class="text-danger">*</span>  <span class="text-danger"><em>{{form.swift_code.errors | striptags}}</em></span></label>
+                                <label for="name">Swift Code<span class="text-danger"></span>  <span class="text-danger"><em>{{form.swift_code.errors | striptags}}</em></span></label>
                                 {{form.swift_code}}
                                 <div class="input-group" id="id_swift_code_error_message" style="color: #d12525;"></div>
                             </div>
@@ -102,7 +102,7 @@
 
                     <div class="col-md-12 mb-2">
                         <div>
-                            <label for="status">Status <span class="text-danger">*</span>  <span class="text-danger"><em>{{form.status.errors | striptags}}</em></span></label>
+                            <label for="status">Status <span class="text-danger"></span>  <span class="text-danger"><em>{{form.status.errors | striptags}}</em></span></label>
                             {{form.status}}
                             <div class="input-group" id="status_error_message" style="color: #d12525;"></div>
                         </div>

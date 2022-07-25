@@ -15,8 +15,6 @@ class BankUpdatedForm(ModelForm):
         attrs={'class': 'form-control p-2'}), required=False)
     bank_name = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control p-2'}), required=False)
-    bank_key = forms.CharField(widget=forms.TextInput(
-        attrs={'class': 'form-control p-2'}), required=False)
     account_name = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control p-2'}), required=False)
     account_no = forms.CharField(widget=forms.TextInput(
@@ -39,7 +37,7 @@ class BankUpdatedForm(ModelForm):
 
     class Meta:
         model = Banks
-        fields = ['title', 'bank_name', 'bank_key', 'account_name', 'account_no',
+        fields = ['title', 'bank_name', 'account_name', 'account_no',
                   'swift_code', 'city', 'branch', 'iban', 'status']
 
 
@@ -54,7 +52,6 @@ class BankViewForm(forms.ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['title'].widget.attrs['readonly'] = True
         self.fields['bank_name'].widget.attrs['readonly'] = True
-        self.fields['bank_key'].widget.attrs['readonly'] = True
         self.fields['account_name'].widget.attrs['readonly'] = True
         self.fields['account_no'].widget.attrs['readonly'] = True
         self.fields['swift_code'].widget.attrs['readonly'] = True
@@ -65,12 +62,11 @@ class BankViewForm(forms.ModelForm):
 
     class Meta:
         model = Banks
-        fields = ['title', 'bank_name', 'bank_key', 'account_name', 'account_no',
+        fields = ['title', 'bank_name', 'account_name', 'account_no',
                   'swift_code', 'city', 'branch', 'iban', 'status']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'bank_name': forms.TextInput(attrs={'class': 'form-control'}),
-            'bank_key': forms.TextInput(attrs={'class': 'form-control'}),
             'account_name': forms.TextInput(attrs={'class': 'form-control'}),
             'account_no': forms.NumberInput(attrs={'class': 'form-control'}),
             'swift_code': forms.TextInput(attrs={'class': 'form-control'}),
