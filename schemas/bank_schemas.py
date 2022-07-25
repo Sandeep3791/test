@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from typing import List
+from typing import List, Optional
 
 
 class BankResponse(BaseModel):
@@ -9,6 +9,10 @@ class BankResponse(BaseModel):
     city: str
     branch: str
     iban: str
+    account_no: Optional[str] = None
+    swift_code: Optional[str] = None
+    bank_key: Optional[str] = None
+
 
 class ResponseBankData(BaseModel):
     status: str

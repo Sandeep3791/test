@@ -1,6 +1,6 @@
 from services import firebase_services
-from schemas import user_schemas, bank_schemas,firebase_schemas
-from models import  order_models,firebase_models
+from schemas import user_schemas, bank_schemas, firebase_schemas
+from models import order_models, firebase_models
 from sqlalchemy.orm import Session
 from fastapi import status
 import constants
@@ -8,16 +8,15 @@ import os
 from utility_services import common_services
 
 
-
-
 def get_all_banks(db: Session):
-    
+
     bank_data = db.execute(
         f"select * from {constants.Database_name}.banks where status = True ; ")
     if bank_data.rowcount > 0:
         banks_list = []
         for data in bank_data:
-            result = bank_schemas.BankResponse(title=data.title, bank_name=data.bank_name, account_name=data.account_name,city=data.city, branch=data.branch, iban=data.iban)
+            result = bank_schemas.BankResponse(title=data.title, bank_name=data.bank_name, account_name=data.account_name,
+                                               city=data.city, branch=data.branch, iban=data.iban, account_no=data.account_no, swift_code=data.swift_code, bank_key=data.bank_key)
             banks_list.append(result)
         response = bank_schemas.ResponseBankData(
             status=status.HTTP_200_OK, message="All banks list", data=banks_list)
@@ -29,7 +28,7 @@ def get_all_banks(db: Session):
 
 
 def upload_bank_payment_image(customer_id, order_id, image, db: Session):
-    
+
     order_data = db.query(order_models.OrderTransactions).filter(
         order_models.OrderTransactions.order_id == order_id).first()
     if not order_data:
@@ -85,11 +84,13 @@ def upload_bank_payment_image(customer_id, order_id, image, db: Session):
 
         if customer_data:
             for data in customer_data:
-                notf = firebase_schemas.PushNotificationFirebase(title=title_message, message=message, device_token=data.device_id, order_id=order_id)
+                notf = firebase_schemas.PushNotificationFirebase(
+                    title=title_message, message=message, device_token=data.device_id, order_id=order_id)
                 firebase_services.push_notification_in_firebase(notf)
 
             if notf:
-                fire = firebase_models.CustomerNotification(customer_id=customer_id, order_id=order_id, title=notf.title, message=notf.message, created_at=common_services.get_time())
+                fire = firebase_models.CustomerNotification(
+                    customer_id=customer_id, order_id=order_id, title=notf.title, message=notf.message, created_at=common_services.get_time())
                 db.merge(fire)
                 db.commit()
     except Exception as e:
@@ -98,7 +99,7 @@ def upload_bank_payment_image(customer_id, order_id, image, db: Session):
 
 
 def download_bank_payment_image(order_id, db: Session):
-    
+
     path = os.path.abspath('.')
 
     image_path = os.path.join(path, 'common_folder')
@@ -118,4 +119,3 @@ def download_bank_payment_image(order_id, db: Session):
     common_msg = user_schemas.ResponseCommonMessage(
         status=status.HTTP_404_NOT_FOUND, message=f"No file available for {file_name}")
     return common_msg
-
