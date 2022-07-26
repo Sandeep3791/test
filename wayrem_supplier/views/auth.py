@@ -1,5 +1,5 @@
 from django.contrib.messages.api import success
-from wayrem_supplier.models import PurchaseOrder, Supplier, OtpDetails, Notification,PO_log,Invoice
+from wayrem_supplier.models import PurchaseOrder, Supplier, OtpDetails, Notification, PO_log, Invoice
 from django.contrib import messages
 from django.shortcuts import render, redirect
 from wayrem_supplier.forms import ProfileUpdateForm
@@ -9,14 +9,12 @@ import uuid
 from datetime import *
 from django.views.generic import RedirectView
 from django.urls import reverse
+from wayrem_supplier.models.StaticModels import EmailTemplateModel
 from wayrem_supplier.services import send_email
 from wayrem_supplier.views import purchase_order
 from rest_framework.decorators import api_view
 from wayrem_supplier.create_prefix_models import create_supplier_models_cluster, runtime_migrations
 from django.http import JsonResponse
-
-
-
 
 
 def login(request):
@@ -46,28 +44,35 @@ def supplier_profile(request):
     if request.session.get('supplier'):
         user = Supplier.objects.get(username=request.session.get('supplier'))
         supplier_id = request.session.get("supplier_id")
-        po_status = PurchaseOrder.objects.filter(supplier_name=supplier_id).values('status')   
-        waiting_po = po_status.filter(status='waiting for approval').values('po_name', 'supplier_name__company_name', 'po_id', 'status').distinct().count()         
-        approved_po = po_status.filter(status='approved').values('po_name', 'supplier_name__company_name', 'po_id', 'status').distinct().count()
+        po_status = PurchaseOrder.objects.filter(
+            supplier_name=supplier_id).values('status')
+        waiting_po = po_status.filter(status='waiting for approval').values(
+            'po_name', 'supplier_name__company_name', 'po_id', 'status').distinct().count()
+        approved_po = po_status.filter(status='approved').values(
+            'po_name', 'supplier_name__company_name', 'po_id', 'status').distinct().count()
         active_po = waiting_po + approved_po
-        complete_po = po_status.filter(status='delivered').values('po_name', 'supplier_name__company_name', 'po_id', 'status').distinct().count()
-        po_delivered_price = PurchaseOrder.objects.filter(supplier_name=supplier_id, status='delivered')
-        total_sales = sum([float(po_price.supplier_product.price) for po_price in po_delivered_price])
-        return render(request, 'dashboard.html', {'user': user, 'active_po': active_po, 'complete_po': complete_po, 'total_sales':total_sales})
+        complete_po = po_status.filter(status='delivered').values(
+            'po_name', 'supplier_name__company_name', 'po_id', 'status').distinct().count()
+        po_delivered_price = PurchaseOrder.objects.filter(
+            supplier_name=supplier_id, status='delivered')
+        total_sales = sum([float(po_price.supplier_product.price)
+                          for po_price in po_delivered_price])
+        return render(request, 'dashboard.html', {'user': user, 'active_po': active_po, 'complete_po': complete_po, 'total_sales': total_sales})
     else:
         return redirect('wayrem_supplier:login')
 
 
 def update_supplier_profile(request):
     if request.session.get('supplier') is None:
-            return redirect('wayrem_supplier:login')
+        return redirect('wayrem_supplier:login')
     obj = request.session.get('supplier')
     user = Supplier.objects.filter(username=obj).first()
-    
+
     context = {}
     form = ProfileUpdateForm(request.POST or None,
                              request.FILES or None, instance=user)
-    context = {'form':form, 'username':user.username, 'email':user.email, 'logo':user.logo}
+    context = {'form': form, 'username': user.username,
+               'email': user.email, 'logo': user.logo}
     if request.method == "POST":
         if form.is_valid():
             email = form.cleaned_data['email']
@@ -102,7 +107,7 @@ def update_supplier_profile(request):
             supplier_record.to_time = to_time
             supplier_record.contact_person_name = contact_person_name
             supplier_record.contact_phone_no = contact_phone_no
-            supplier_record.save()        
+            supplier_record.save()
         return redirect('wayrem_supplier:supplier_profile')
 
     return render(request, 'update_supplier_profile.html', context)
@@ -123,10 +128,12 @@ def forgot_password(request):
         else:
             no = random.randint(1000, 99999)
             to = email
-            subject = 'Your Wayrem password reset request !'
-            body = f'Your One time password is: <strong><em>{no}</em></strong>'
+            email_template = EmailTemplateModel.objects.get(key="otp_supplier")
+            subject = email_template.subject
+            body = email_template.message_format.format(
+                supplier=user.username, otp=no)
             send_email(to, subject, body)
-            
+
             data1 = {"email": request.POST['email'], "otp": no}
             print(data1)
             user = OtpDetails(email=email, otp=no, created_at=datetime.now())
@@ -194,8 +201,8 @@ class RootUrlView(RedirectView):
 def notifications_seen(request, id=None):
     notify = Notification.objects.filter(id=id).first()
     a = notify.message
-    po_no = list(filter(lambda word: word[0:3]=='PO/', a.split()))[0]
-    po = PurchaseOrder.objects.filter(po_name = po_no).first()
+    po_no = list(filter(lambda word: word[0:3] == 'PO/', a.split()))[0]
+    po = PurchaseOrder.objects.filter(po_name=po_no).first()
     po_id = po.po_id
     notify.delete()
     return redirect('wayrem_supplier:podetails', po_id)
@@ -214,4 +221,3 @@ def SupplierAddApi(request):
 def SupplierAddMigrationsApi(request):
     runtime_migrations()
     return JsonResponse({"status": True, "message": "model migrated successfully"})
-    
