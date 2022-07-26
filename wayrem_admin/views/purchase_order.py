@@ -199,7 +199,8 @@ def create_po_step2(request):
             # sending mail to supplier
             email_setting = EmailTemplateModel.objects.filter(
                 key="po_create").first()
-            body = email_setting.message_format.format(number=po_name)
+            body = email_setting.message_format.format(
+                supplier=supplier_name.username, number=po_name)
             to = supplier_name.email
             subject = email_setting.subject.format(number=po_name)
             send_email(to, subject, body)
