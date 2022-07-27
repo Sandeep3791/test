@@ -45,7 +45,7 @@ class CreditTransactionsLog(Base):
 
 
 class UserCreditRequest(Base):
-    __tablename__ = 'user_creadit_request'
+    __tablename__ = 'customer_credit_request'
 
     id = Column(Integer(), autoincrement=True, primary_key=True, index=True)
     customer_id = Column(ForeignKey('customers_master.id'))
