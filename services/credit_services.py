@@ -233,6 +233,7 @@ def check_user_credit(customer_id, db: Session):
                 new_user=new_user)
         response = credit_schemas.CheckUserCredit(
             status=status.HTTP_200_OK, message="Successfully fetched!!", data=fetched_credit)
+        return response
     else:
         response = user_schemas.ResponseCommonMessage(
             status=status.HTTP_404_NOT_FOUND, message="Customer id not found!!")
