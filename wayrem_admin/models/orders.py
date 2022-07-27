@@ -55,6 +55,8 @@ class Orders(models.Model):
     delivery_charge = models.CharField(max_length=100, null=True)
     checkout_id = models.CharField(max_length=255, null=True)
     is_shown = models.BooleanField(default=True)
+    from_clone = models.BigIntegerField(blank=True, null=True)
+    to_clone = models.BigIntegerField(blank=True, null=True)
 
     def __str__(self):
         return self.ref_number
@@ -280,6 +282,7 @@ class OrderLoginextShipment(models.Model):
     class Meta:
         app_label = "wayrem_admin"
         db_table = 'order_loginext_shipment'
+
 
 class Wallet(models.Model):
     amount = models.FloatField()

@@ -204,3 +204,14 @@ class CreditTransactionLogs(models.Model):
     class Meta:
         app_label = "wayrem_admin"
         db_table = 'credit_transactions_logs'
+
+
+class UserCreditRequest(models.Model):
+    customer = models.ForeignKey("Customer", models.CASCADE)
+    requested_amount = models.FloatField(null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        app_label = "wayrem_admin"
+        db_table = 'customer_credit_request'
