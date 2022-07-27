@@ -42,3 +42,13 @@ class CreditTransactionsLog(Base):
     credit_id = Column(Integer, nullable=True)
     paid_date = Column(DateTime, nullable=True)
     paid_amount = Column(Float, nullable=True)
+
+
+class UserCreditRequest(Base):
+    __tablename__ = 'user_creadit_request'
+
+    id = Column(Integer(), autoincrement=True, primary_key=True, index=True)
+    customer_id = Column(ForeignKey('customers_master.id'))
+    requested_amount = Column(Float, nullable=True)
+    updated_at = Column(DateTime(timezone=True), default=get_time())
+    created_at = Column(DateTime(timezone=True), default=get_time())

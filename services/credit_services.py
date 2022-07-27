@@ -192,3 +192,24 @@ def pay_overdue_credits(request, db: Session):
         response = user_schemas.ResponseCommonMessage(
             status=status.HTTP_424_FAILED_DEPENDENCY, message="Please provide credit id's!!")
         return response
+
+
+def user_credit_request(request, db: Session):
+    user_data = db.query(user_models.User).filter(
+        user_models.User.id == request.customer_id).first()
+
+    if user_data:
+        requested_data = credit_models.UserCreditRequest(
+            customer_id=request.customer_id, requested_amount=request.requested_amount)
+        db.merge(requested_data)
+        db.commit()
+        saved_data = credit_schemas.UserCreditResponse(
+            customer_id=request.customer_id, requested_amount=request.requested_amount)
+        result = credit_schemas.FinalUserCreditResponse(
+            status=status.HTTP_200_OK, message="Your credit request has been forwarded to admin", data=saved_data)
+        return result
+
+    else:
+        response = user_schemas.ResponseCommonMessage(
+            status=status.HTTP_404_NOT_FOUND, message="Customer id not found!!")
+        return response

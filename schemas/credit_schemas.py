@@ -61,3 +61,19 @@ class FinalDuesPayResponse(BaseModel):
     status: str
     message: str
     data: CreditDuesResponse
+
+
+class UserCreditRequest(BaseModel):
+    customer_id: int
+    requested_amount: float
+
+
+class UserCreditResponse(BaseModel):
+    customer_id: int
+    requested_amount: float
+
+
+class FinalUserCreditResponse(BaseModel):
+    status: str
+    message: str
+    data: UserCreditResponse

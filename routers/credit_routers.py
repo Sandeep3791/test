@@ -40,7 +40,12 @@ def get_overdue_credits(customer_id: int, authorize: AuthJWT = Depends(oauth2_sc
 
 
 @router.post('/credit/dues/pay')
-def pay_overdue_credits(request:credit_schemas.CreditDuesRequest,authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
+def pay_overdue_credits(request: credit_schemas.CreditDuesRequest, authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
     response = credit_services.pay_overdue_credits(request, db)
     return response
 
+
+@router.post('/credit/request')
+def user_credit_request(request: credit_schemas.UserCreditRequest, customer_id: int, authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
+    response = credit_services.user_credit_request(request, db)
+    return response
