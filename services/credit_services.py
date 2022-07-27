@@ -1,6 +1,6 @@
 from sqlalchemy import desc
 from schemas import user_schemas, credit_schemas
-from models import credit_models, order_models, payment_models
+from models import credit_models, order_models, payment_models, user_models
 from sqlalchemy.orm import Session
 from fastapi import status
 from datetime import date, datetime
