@@ -213,3 +213,27 @@ def user_credit_request(request, db: Session):
         response = user_schemas.ResponseCommonMessage(
             status=status.HTTP_404_NOT_FOUND, message="Customer id not found!!")
         return response
+
+
+def check_user_credit(customer_id, db: Session):
+    user_data = db.query(user_models.User).filter(
+        user_models.User.id == customer_id).first()
+
+    if user_data:
+        new_user = False
+        credit_exist = db.query(credit_models.CreditManagement).filter(
+            credit_models.CreditManagement.customer_id == customer_id).first()
+        if credit_exist:
+            new_user = False
+            fetched_credit = credit_schemas.CreditCheckNewUser(
+                new_user=new_user)
+        else:
+            new_user = True
+            fetched_credit = credit_schemas.CreditCheckNewUser(
+                new_user=new_user)
+        response = credit_schemas.CheckUserCredit(
+            status=status.HTTP_200_OK, message="Successfully fetched!!", data=fetched_credit)
+    else:
+        response = user_schemas.ResponseCommonMessage(
+            status=status.HTTP_404_NOT_FOUND, message="Customer id not found!!")
+        return response

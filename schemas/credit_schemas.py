@@ -77,3 +77,13 @@ class FinalUserCreditResponse(BaseModel):
     status: str
     message: str
     data: UserCreditResponse
+
+
+class CreditCheckNewUser(BaseModel):
+    new_user: bool
+
+
+class CheckUserCredit(BaseModel):
+    status: str
+    message: str
+    data: CreditCheckNewUser
