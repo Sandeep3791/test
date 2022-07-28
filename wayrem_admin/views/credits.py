@@ -173,10 +173,15 @@ class CustomerCreditTransactionLogs(LoginPermissionCheckMixin, ListView):
     context_object_name = 'list'
     paginate_by = RECORDS_PER_PAGE
     success_url = reverse_lazy('wayrem_admin:customerslist')
+    total_credit = 0
+    total_debit = 0
 
     def get_queryset(self):
         qs = CreditTransactionLogs.objects.filter(
             customer=self.kwargs['customer_id']).order_by("-id")
+        self.total_credit = qs.aggregate(
+            total=Sum('credit_amount'))['total'] or 0
+        self.total_debit = qs.aggregate(total=Sum('paid_amount'))['total'] or 0
         return qs
 
     def get_context_data(self, **kwargs):
@@ -184,8 +189,12 @@ class CustomerCreditTransactionLogs(LoginPermissionCheckMixin, ListView):
                         self).get_context_data(**kwargs)
         context['customer'] = get_object_or_404(
             Customer, id=self.kwargs['customer_id'])
-        context['total_credit'] = self.get_queryset().aggregate(
-            total=Sum('credit_amount'))['total'] or 0
-        context['total_debit'] = self.get_queryset().aggregate(
-            total=Sum('paid_amount'))['total'] or 0
+        context['total_credit'] = self.total_credit
+        context['total_debit'] = self.total_debit
         return context
+
+
+def credit_reminder():
+    credit_management = CreditManagement.objects.all()
+    for customer in credit_management:
+        credit_logs = CreditTransactionLogs.objects.filter()
