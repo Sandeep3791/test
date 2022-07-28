@@ -1,3 +1,4 @@
+from django.db.models import Sum
 from django.views.generic.edit import CreateView
 from requests import request
 from wayrem_admin.forms.customers import CreditsAssignForm
@@ -19,12 +20,12 @@ from wayrem_admin.utils.constants import *
 from wayrem_admin.filters.customer_filters import *
 from django.views.generic import ListView, UpdateView
 import uuid
-from django.shortcuts import render, redirect
+from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views import View
 from django.utils.decorators import method_decorator
-from wayrem_admin.models import Customer, EmailTemplateModel, CustomerDevice, Settings
+from wayrem_admin.models import Customer, EmailTemplateModel, CustomerDevice, Settings, CreditTransactionLogs
 from wayrem_admin.export import generate_pdf, generate_excel
 from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -163,3 +164,28 @@ def creditAssign(request, id=None):
     else:
         form = CreditsAssignForm(initial={'credit': existing_credit})
     return render(request, "customer/credit_assign.html", {"form": form, "id": id})
+
+
+class CustomerCreditTransactionLogs(LoginPermissionCheckMixin, ListView):
+    permission_required = 'credits.transaction_logs'
+    model = CreditTransactionLogs
+    template_name = "credits/transaction_logs.html"
+    context_object_name = 'list'
+    paginate_by = RECORDS_PER_PAGE
+    success_url = reverse_lazy('wayrem_admin:customerslist')
+
+    def get_queryset(self):
+        qs = CreditTransactionLogs.objects.filter(
+            customer=self.kwargs['customer_id']).order_by("-id")
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super(CustomerCreditTransactionLogs,
+                        self).get_context_data(**kwargs)
+        context['customer'] = get_object_or_404(
+            Customer, id=self.kwargs['customer_id'])
+        context['total_credit'] = self.get_queryset().aggregate(
+            total=Sum('credit_amount'))['total'] or 0
+        context['total_debit'] = self.get_queryset().aggregate(
+            total=Sum('paid_amount'))['total'] or 0
+        return context

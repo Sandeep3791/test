@@ -76,7 +76,7 @@
                                 </div> 
                                 {% if user.profile_pic %}
                                 <div class="col-md-6">
-                                    <img src="http://admin-stg.wayrem.com/media/common_folder/{% image_tag user.profile_pic %}" class="user-avatar large-avatar rounded-circle mx-auto  mb-4" alt="Neil Portrait">
+                                    <img src="{{DOCUMENT_URL}}{% image_tag user.profile_pic %}" class="user-avatar large-avatar rounded-circle mx-auto  mb-4" alt="Neil Portrait">
                                 </div>
                                 {% endif %}
                                
@@ -365,7 +365,7 @@
                                 <div class="form-group mb-4 text-left">
                                     <label class="" for="email">Registration Document</label>
                                     <div class="input-group"> 
-                                        <a href="http://admin-stg.wayrem.com/media/common_folder/{% image_tag user.registration_docs_path %}">View</a>                                
+                                        <a href="{{DOCUMENT_URL}}{% image_tag user.registration_docs_path %}">View</a>                                
                                     </div>                                            
                                 </div>  
                             </div> 
@@ -375,7 +375,7 @@
                                 <div class="form-group mb-4 text-left">
                                     <label class="" for="email">Tax Document:</label>
                                     <div class="input-group">
-                                        <a href="http://admin-stg.wayrem.com/media/common_folder/{% image_tag user.tax_docs_path %}">View</a>
+                                        <a href="{{DOCUMENT_URL}}{% image_tag user.tax_docs_path %}">View</a>
                                     </div>                                            
                                 </div>
                             </div> 
@@ -385,7 +385,7 @@
                                 <div class="form-group mb-4 text-left">
                                     <label class="" for="email">Maroof Document:</label>
                                     <div class="input-group">
-                                        <a href="http://admin-stg.wayrem.com/media/common_folder/{% image_tag user.marrof_docs_path %}">View</a>
+                                        <a href="{{DOCUMENT_URL}}{% image_tag user.marrof_docs_path %}">View</a>
                                     </div>                                            
                                 </div>
                             </div> 

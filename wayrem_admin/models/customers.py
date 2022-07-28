@@ -194,10 +194,12 @@ class CreditTransactionLogs(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
     customer = models.ForeignKey("Customer", models.CASCADE)
     order = models.ForeignKey("Orders", models.CASCADE)
-    credit_amount = models.FloatField()
-    available = models.FloatField()
+    credit_amount = models.FloatField(null=True)
+    paid_amount = models.FloatField(null=True)
+    available = models.FloatField(null=True)
     credit_date = models.DateTimeField(auto_now_add=True)
     due_date = models.DateTimeField()
+    paid_date = models.DateTimeField()
     payment_status = models.CharField(
         max_length=255, blank=True, default="Due")
 

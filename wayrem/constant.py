@@ -2,6 +2,7 @@
 from django.core.files.storage import FileSystemStorage
 WAYREM_ADMIN_BASE_URL = "https://admin-stg.wayrem.com/"
 WAYREM_SUPPLIER_BASE_URL = "https://supplier-stg.wayrem.com/"
+DOCUMENT_URL = "http://admin-stg.wayrem.com/media/common_folder/"
 
 # For Local
 # WAYREM_ADMIN_BASE_URL = "http://127.0.0.1:8000/"
