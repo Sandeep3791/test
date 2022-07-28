@@ -171,13 +171,21 @@ def pay_overdue_credits(request, db: Session):
                     credit_models.CreditTransactionsLog.id == i, credit_models.CreditTransactionsLog.payment_status == False).first()
                 present_date = common_services.get_time()
                 amount_to_paid = credit_info.credit_amount
+                available_limit = credit_info.available
 
                 if credit_info:
                     if request.amount >= amount_to_paid:
+                        new_available_limit = available_limit + amount_to_paid
                         paid_data = credit_models.CreditTransactionsLog(
-                            credit_id=i, paid_date=present_date, paid_amount=amount_to_paid, payment_status=True, order_id=credit_info.order_id, customer_id=request.customer_id, credit_date=None,  due_date=None)
+                            credit_id=i, paid_date=present_date, paid_amount=amount_to_paid, payment_status=True, order_id=credit_info.order_id, customer_id=request.customer_id, credit_date=None,  due_date=None, available=new_available_limit)
                         db.merge(paid_data)
                         db.commit()
+                        user_Credit_data = db.query(credit_models.CreditManagement).filter(
+                            credit_models.CreditManagement.customer_id == request.customer_id).first()
+                        user_Credit_data.available = new_available_limit
+                        db.merge(user_Credit_data)
+                        db.commit()
+
             else:
                 response = user_schemas.ResponseCommonMessage(
                     status=status.HTTP_400_BAD_REQUEST, message="Dues for this ids are already paid!!")
