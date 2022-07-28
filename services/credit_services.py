@@ -178,7 +178,8 @@ def pay_overdue_credits(request, db: Session):
                 if credit_info:
                     if request.amount >= amount_to_paid:
                         new_available_limit = available_limit + amount_to_paid
-                        paid_data = credit_models.CreditTransactionsLog(credit_date=exist_credit_date, due_date=exist_due_date, credit_id=i, paid_date=present_date, paid_amount=amount_to_paid, payment_status=True, order_id=credit_info.order_id, customer_id=request.customer_id, credit_date=None,  due_date=None, available=new_available_limit)
+                        paid_data = credit_models.CreditTransactionsLog(credit_date=exist_credit_date, due_date=exist_due_date, credit_id=i, paid_date=present_date,
+                                                                        paid_amount=amount_to_paid, payment_status=True, order_id=credit_info.order_id, customer_id=request.customer_id, available=new_available_limit)
                         db.merge(paid_data)
                         db.commit()
                         user_Credit_data = db.query(credit_models.CreditManagement).filter(
