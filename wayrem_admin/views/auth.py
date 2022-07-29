@@ -79,6 +79,7 @@ class Forgot_Password(View):
             to = email
             obj = EmailTemplateModel.objects.filter(key='otp_user').first()
             values = {
+                'user': user.username,
                 'otp': no
             }
             subject = obj.subject
