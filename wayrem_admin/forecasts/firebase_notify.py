@@ -36,10 +36,9 @@ class FirebaseLibrary:
             response = requests.post(
                 self.FIREBASE_URL, headers=headers, data=json.dumps(body))
             print("sent successfully!!")
+            return response
         except:
             print("Failed!!")
-
-        return response
 
     def send_email_notification(self, order_id, order_ref, status):
         try:
@@ -77,7 +76,7 @@ class FirebaseLibrary:
             7: "notification_app_order_payment_confirm",
             15: "notification_app_order_cancelled",
             17: "notification_app_admin_order_approved",
-            18:"notification_app_admin_order_canceled",
+            18: "notification_app_admin_order_canceled",
             23: "notification_app_recurrent_order_pending",
             26: "notification_app_bank_transfer_reject",
         }
@@ -122,3 +121,26 @@ class FirebaseLibrary:
             print(order_id)
             print(order_status)
         return "Successfull!!"
+
+    def send_firebase_notification(self, data={}, payload={}):
+        try:
+            headers = {
+                'Content-Type': 'application/json',
+                'Authorization': 'key=' + self.serverToken,
+            }
+            body = {
+                'notification': {'title': data.get("title"),
+                                 'body': data.get("message")
+                                 },
+                'to': data.get("device_token"),
+                'priority': 'high',
+                "data": {
+                }
+            }
+            body["data"].update(payload)
+            response = requests.post(
+                self.FIREBASE_URL, headers=headers, data=json.dumps(body))
+            print("sent successfully!!")
+            return response
+        except:
+            print("Failed!!")

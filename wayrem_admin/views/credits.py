@@ -1,3 +1,4 @@
+import threading
 from django.db.models import Sum
 from django.views.generic.edit import CreateView
 from requests import request
@@ -13,6 +14,7 @@ from django.http import HttpResponse
 import json
 from wayrem_admin.forecasts.firebase_notify import FirebaseLibrary
 from wayrem_admin.models import CreditSettings
+from wayrem_admin.models.customers import CustomerNotification
 from wayrem_admin.services import send_email
 from wayrem_admin.forms import CustomerSearchFilter, CustomerEmailUpdateForm, CreditsForm, CreditsSearchFilter
 from django.urls import reverse_lazy
@@ -32,6 +34,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
 from django.contrib.auth.decorators import permission_required
 from django.utils.decorators import method_decorator
+from datetime import datetime, timedelta
 
 
 class CreditCreate(LoginPermissionCheckMixin, CreateView):
@@ -196,5 +199,65 @@ class CustomerCreditTransactionLogs(LoginPermissionCheckMixin, ListView):
 
 def credit_reminder():
     credit_management = CreditManagement.objects.all()
-    for customer in credit_management:
-        credit_logs = CreditTransactionLogs.objects.filter()
+    for credit in credit_management:
+        credit_logs = CreditTransactionLogs.objects.filter(
+            customer=credit.customer)
+        print(credit.customer)
+        if credit_logs:
+            for log in credit_logs:
+                credit_paid = CreditTransactionLogs.objects.filter(
+                    credit_id=log.id, payment_status=True).first()
+                if not credit_paid:
+                    today = datetime.today()
+                    days_reminder1 = round(
+                        abs(credit.credit_rule.time_period/2))
+                    days_reminder2 = abs(
+                        credit.credit_rule.time_period - 3)
+                    reminder1 = log.credit_date + \
+                        timedelta(days=days_reminder1)
+                    reminder2 = log.credit_date + \
+                        timedelta(days=days_reminder2)
+                    if today.date() == reminder1.date() or today.date() == reminder2.date():
+                        devices = CustomerDevice.objects.filter(
+                            customer=credit.customer, is_active=True)
+                        setting_msg = Settings.objects.get(
+                            key="credit_reminder")
+                        email_template = EmailTemplateModel.objects.get(
+                            key="credit_reminder")
+                        body_format = {
+                            'customer': f"{log.customer.first_name} {log.customer.last_name}",
+                            'amount': log.credit_amount,
+                            'date': log.due_date
+                        }
+                        email_body = email_template.message_format.format(
+                            **body_format)
+                        t = threading.Thread(target=send_email, args=(
+                            log.customer.email, email_template.subject, email_body))
+                        t.start()
+                        notify_title = setting_msg.display_name
+                        values = {
+                            'amount': log.credit_amount,
+                            'date': log.due_date
+                        }
+                        message = setting_msg.value.format(**values)
+                        print(devices)
+                        if not devices:
+                            return "No device found!!"
+                        else:
+                            for device in devices:
+                                device_token = device.device_id
+                                notf = {
+                                    "title": notify_title,
+                                    "message": message,
+                                    "device_token": device_token,
+                                }
+                                payload = {
+                                    "action_type": "credit_settlement",
+                                    "amount": log.credit_amount,
+                                    "id": log.id
+                                }
+                                FirebaseLibrary().send_firebase_notification(notf, payload)
+                            notification_store = CustomerNotification(
+                                customer=log.customer.id, title=notify_title, message=message)
+                            notification_store.save()
+    print("Credit Reminder Notification Done")

@@ -195,6 +195,7 @@ class CreditTransactionLogs(models.Model):
     customer = models.ForeignKey("Customer", models.CASCADE)
     order = models.ForeignKey("Orders", models.CASCADE)
     credit_amount = models.FloatField(null=True)
+    credit_id = models.IntegerField(null=True)
     paid_amount = models.FloatField(null=True)
     available = models.FloatField(null=True)
     credit_date = models.DateTimeField(auto_now_add=True)
