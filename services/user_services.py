@@ -7,7 +7,7 @@ import logging
 from models import user_models, firebase_models
 from schemas import user_schemas
 from utility_services import common_services
-from fastapi import FastAPI, Depends, status,BackgroundTasks
+from fastapi import FastAPI, Depends, status, BackgroundTasks
 from fastapi_jwt_auth import AuthJWT
 from sqlalchemy.orm import Session
 from datetime import timedelta
@@ -23,7 +23,7 @@ app = FastAPI()
 logger = logging.getLogger(__name__)
 
 
-def customer_user(request, authorize: AuthJWT, db: Session,background_tasks: BackgroundTasks):
+def customer_user(request, authorize: AuthJWT, db: Session, background_tasks: BackgroundTasks):
     user = db.query(user_models.User).filter(
         user_models.User.email == request.email).first()
     contact = db.query(user_models.User).filter(
@@ -51,7 +51,7 @@ def customer_user(request, authorize: AuthJWT, db: Session,background_tasks: Bac
     if not user_already_verified:
         random_no = random.randint(1000, 9999)
         to = request.email
-        email_query = f"SELECT * FROM {constants.Database_name}.email_template where email_template.key = 'otp' "
+        email_query = f"SELECT * FROM {constants.Database_name}.email_template where email_template.key = 'customer_registration_otp' "
         emails = db.execute(email_query)
         for email in emails:
             subject = email.subject
@@ -101,14 +101,16 @@ def customer_user(request, authorize: AuthJWT, db: Session,background_tasks: Bac
         db.merge(user_default_address)
         db.commit()
 
-        emails_data = db.execute(f"SELECT * FROM {constants.Database_name}.email_template where email_template.key = 'customer_registration_notify' ")
+        emails_data = db.execute(
+            f"SELECT * FROM {constants.Database_name}.email_template where email_template.key = 'customer_registration_notify' ")
         subject = None
         body = None
         for em_Data in emails_data:
             subject = em_Data.subject
             body = em_Data.message_format
 
-        emails_query = db.execute(f"SELECT email FROM {constants.Database_name}.users_master where role_id in (SELECT role_id FROM {constants.Database_name}.role_permissions where function_id = (SELECT id FROM {constants.Database_name}.function_master where codename = 'customer.approve')) ")
+        emails_query = db.execute(
+            f"SELECT email FROM {constants.Database_name}.users_master where role_id in (SELECT role_id FROM {constants.Database_name}.role_permissions where function_id = (SELECT id FROM {constants.Database_name}.function_master where codename = 'customer.approve')) ")
 
         raw_email_data = emails_query.mappings().all()
         email_list = []
@@ -121,7 +123,8 @@ def customer_user(request, authorize: AuthJWT, db: Session,background_tasks: Bac
         }
         body = body.format(**values)
         for to in email_list:
-            background_tasks.add_task(common_services.send_otp, to, subject, body, request, db)
+            background_tasks.add_task(
+                common_services.send_otp, to, subject, body, request, db)
 
         # email_query = f"SELECT * FROM {constants.Database_name}.email_template where email_template.key = 'customer_registration_notify' "
         # emails = db.execute(email_query)
@@ -142,8 +145,6 @@ def customer_user(request, authorize: AuthJWT, db: Session,background_tasks: Bac
         # for to in send_emails_to:
         #     background_tasks.add_task(common_services.send_otp, to, subject, body, request, db)
 
-        
-            
         sub = {"email": data.email, "id": data.id}
         access_token = authorize.create_access_token(
             subject=str(sub), expires_time=timedelta(days=10))
@@ -178,7 +179,7 @@ def customer_user(request, authorize: AuthJWT, db: Session,background_tasks: Bac
 
 
 def upload_profile_picture(customer_id, profile_picture, db: Session):
-    
+
     path = os.path.abspath('.')
 
     user_profile_path = os.path.join(path, 'common_folder')
@@ -203,8 +204,8 @@ def upload_profile_picture(customer_id, profile_picture, db: Session):
     return common_msg
 
 
-def customer_registration_docs(customer_id, registration_docs, tax_docs, marrof_docs, db,background_tasks: BackgroundTasks):
-    
+def customer_registration_docs(customer_id, registration_docs, tax_docs, marrof_docs, db, background_tasks: BackgroundTasks):
+
     path = os.path.abspath('.')
     # print("-----------------------------------------------------------os path")
     # print(path)
@@ -215,7 +216,7 @@ def customer_registration_docs(customer_id, registration_docs, tax_docs, marrof_
 
     if user_data.verification_status == "active":
         resp = user_schemas.ResponseCommonMessage(
-        status=status.HTTP_200_OK, message='User is already active!')
+            status=status.HTTP_200_OK, message='User is already active!')
         return resp
 
     if not user_data:
@@ -283,12 +284,13 @@ def customer_registration_docs(customer_id, registration_docs, tax_docs, marrof_
         user_data.verification_status = "updated"
         db.merge(user_data)
         db.commit()
-        customer_data = db.query(user_models.User).filter(user_models.User.id == customer_id).first()
+        customer_data = db.query(user_models.User).filter(
+            user_models.User.id == customer_id).first()
         f_name = customer_data.first_name
         l_name = customer_data.last_name
         full_name = f_name + l_name
 
-        doc_list= [] 
+        doc_list = []
         if registration_docs:
             doc_list.append("registration")
         if tax_docs:
@@ -297,15 +299,16 @@ def customer_registration_docs(customer_id, registration_docs, tax_docs, marrof_
             doc_list.append("maroof")
         docs_value = ",".join(doc_list)
 
-
-        emails_data = db.execute(f"SELECT * FROM {constants.Database_name}.email_template where email_template.key = 'customer_docs_upload' ")
+        emails_data = db.execute(
+            f"SELECT * FROM {constants.Database_name}.email_template where email_template.key = 'customer_docs_upload' ")
         subject = None
         body = None
         for em_Data in emails_data:
             subject = em_Data.subject
             body = em_Data.message_format
 
-        emails_query = db.execute(f"SELECT email FROM {constants.Database_name}.users_master where role_id in (SELECT role_id FROM {constants.Database_name}.role_permissions where function_id = (SELECT id FROM {constants.Database_name}.function_master where codename = 'customer.approve')) ")
+        emails_query = db.execute(
+            f"SELECT email FROM {constants.Database_name}.users_master where role_id in (SELECT role_id FROM {constants.Database_name}.role_permissions where function_id = (SELECT id FROM {constants.Database_name}.function_master where codename = 'customer.approve')) ")
         raw_email_data = emails_query.mappings().all()
         email_list = []
         for i in range(len(raw_email_data)):
@@ -313,7 +316,7 @@ def customer_registration_docs(customer_id, registration_docs, tax_docs, marrof_
             email_list.append(admin_e)
         values = {
             'fullname': full_name,
-            'docs' : docs_value,
+            'docs': docs_value,
             'link': f"{constants.global_link}/customer/customer-details/{customer_data.id}/"
         }
 
@@ -324,7 +327,8 @@ def customer_registration_docs(customer_id, registration_docs, tax_docs, marrof_
         subject = subject.format(**sub_values)
 
         for to in email_list:
-            background_tasks.add_task(common_services.send_otp, to, subject, body, None, db)
+            background_tasks.add_task(
+                common_services.send_otp, to, subject, body, None, db)
     return resp
 
 
@@ -401,9 +405,11 @@ def customer_login(request, authorize: AuthJWT, db: Session):
             status=status.HTTP_200_OK, message='Invalid Credentials')
         return common_msg
     customer_id = user.id
-    fire = db.query(firebase_models.CustomerDevice).filter(firebase_models.CustomerDevice.customer_id == customer_id, firebase_models.CustomerDevice.device_id == request.device_id).first()
+    fire = db.query(firebase_models.CustomerDevice).filter(firebase_models.CustomerDevice.customer_id ==
+                                                           customer_id, firebase_models.CustomerDevice.device_id == request.device_id).first()
     if not fire:
-        fire = firebase_models.CustomerDevice(customer_id=customer_id, device_id=request.device_id, device_type=request.device_type)
+        fire = firebase_models.CustomerDevice(
+            customer_id=customer_id, device_id=request.device_id, device_type=request.device_type)
         db.merge(fire)
         db.commit()
     else:
@@ -441,7 +447,7 @@ def customer_login(request, authorize: AuthJWT, db: Session):
 
 
 def update_profile(request, db: Session):
-    
+
     customer_add = db.query(user_models.CustomerAddresses).filter(
         user_models.CustomerAddresses.customer_id == request.id, user_models.CustomerAddresses.is_default == True).first()
 
@@ -555,21 +561,20 @@ def get_profile_details(customer_id, db: Session):
     except:
         marrof_docs_path = None
 
-
-    if  user.reject_reason :
+    if user.reject_reason:
         reason = user.reject_reason
     else:
         reason = None
 
-
-    res_data = user_schemas.ProfileResponse(customer_id=user.id, first_name=user.first_name, last_name=user.last_name, business_type=user.business_type_id, business_name=user.business_name, email=user.email, password=user.password, contact=user.contact, registration_number=user.registration_number, tax_number=user.tax_number, profile_pic=file_path, registration_docs=register_docs_path, tax_docs=tax_docs_path, marrof_docs=marrof_docs_path, delivery_house_no_building_name=user.delivery_house_no_building_name, delivery_road_name_Area=user.delivery_road_name_Area, delivery_landmark=user.delivery_landmark, delivery_country=user.delivery_country,delivery_region=user.delivery_region, delivery_town_city=user.delivery_town_city, billing_house_no_building_name=user.billing_house_no_building_name, billing_road_name_Area=user.billing_road_name_Area, billing_landmark=user.billing_landmark, billing_country=user.billing_country, billing_region=user.billing_region, billing_town_city=user.billing_town_city,verification_status=user.verification_status, deliveryAddress_latitude=user.deliveryAddress_latitude, deliveryAddress_longitude=user.deliveryAddress_longitude, billlingAddress_Latitude=user.billlingAddress_Latitude, billingAddress_longitude=user.billingAddress_longitude,reject_reason = reason)
+    res_data = user_schemas.ProfileResponse(customer_id=user.id, first_name=user.first_name, last_name=user.last_name, business_type=user.business_type_id, business_name=user.business_name, email=user.email, password=user.password, contact=user.contact, registration_number=user.registration_number, tax_number=user.tax_number, profile_pic=file_path, registration_docs=register_docs_path, tax_docs=tax_docs_path, marrof_docs=marrof_docs_path, delivery_house_no_building_name=user.delivery_house_no_building_name, delivery_road_name_Area=user.delivery_road_name_Area, delivery_landmark=user.delivery_landmark, delivery_country=user.delivery_country,
+                                            delivery_region=user.delivery_region, delivery_town_city=user.delivery_town_city, billing_house_no_building_name=user.billing_house_no_building_name, billing_road_name_Area=user.billing_road_name_Area, billing_landmark=user.billing_landmark, billing_country=user.billing_country, billing_region=user.billing_region, billing_town_city=user.billing_town_city, verification_status=user.verification_status, deliveryAddress_latitude=user.deliveryAddress_latitude, deliveryAddress_longitude=user.deliveryAddress_longitude, billlingAddress_Latitude=user.billlingAddress_Latitude, billingAddress_longitude=user.billingAddress_longitude, reject_reason=reason)
     response = user_schemas.ProfileResponseSchema(
         status=status.HTTP_200_OK, message='Profile data', data=res_data)
     return response
 
 
 def reset_password(request, db: Session):
-    
+
     user = db.query(user_models.User).filter(
         user_models.User.email == request.email).first()
 
@@ -609,8 +614,16 @@ def generate_passcode(request, db: Session):
         return common_msg
     random_no = random.randint(1000, 9999)
     to = request.email
-    subject = constants.SUBJECT
-    body = f'your otp is {random_no}'
+    email_query = f"SELECT * FROM {constants.Database_name}.email_template where email_template.key = 'customer_registration_otp'"
+    emails = db.execute(email_query)
+    for email in emails:
+        subject = email.subject
+        body = email.message_format
+    values = {
+        'customer': f"{email_user.first_name} {email_user.last_name}",
+        'otp': random_no
+    }
+    body = body.format(**values)
     common_services.send_otp(to, subject, body, request, db)
     exit_user = db.query(user_models.Customerotp).filter(
         user_models.User.email == request.email).all()
@@ -692,7 +705,8 @@ def refresh_token(authorize: AuthJWT = Depends()):
 
 
 def account_deactivate(customer_id, db: Session):
-    data = db.query(user_models.User).filter(user_models.User.id == customer_id).first()
+    data = db.query(user_models.User).filter(
+        user_models.User.id == customer_id).first()
     try:
         if data:
             data.verification_status = "deleted"
@@ -700,11 +714,14 @@ def account_deactivate(customer_id, db: Session):
             data.contact += "_d"
             data.status = False
             db.commit()
-            common_msg = user_schemas.ResponseCommonMessage(status=status.HTTP_200_OK, message="Account Deleted Successfully!")
+            common_msg = user_schemas.ResponseCommonMessage(
+                status=status.HTTP_200_OK, message="Account Deleted Successfully!")
             return common_msg
         else:
-            common_msg = user_schemas.ResponseCommonMessage(status=status.HTTP_404_NOT_FOUND, message="Customer id does not exist!")
+            common_msg = user_schemas.ResponseCommonMessage(
+                status=status.HTTP_404_NOT_FOUND, message="Customer id does not exist!")
             return common_msg
     except:
-        common_msg = user_schemas.ResponseCommonMessage(status=status.HTTP_404_NOT_FOUND, message="Action not performed!")
+        common_msg = user_schemas.ResponseCommonMessage(
+            status=status.HTTP_404_NOT_FOUND, message="Action not performed!")
         return common_msg
