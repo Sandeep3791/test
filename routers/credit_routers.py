@@ -1,6 +1,6 @@
 
 from fastapi_jwt_auth import AuthJWT
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, BackgroundTasks
 import database
 from sqlalchemy.orm import Session
 from services import credit_services
@@ -46,8 +46,8 @@ def pay_overdue_credits(request: credit_schemas.CreditDuesRequest, authorize: Au
 
 
 @router.post('/credit/request')
-def user_credit_request(request: credit_schemas.UserCreditRequest, authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
-    response = credit_services.user_credit_request(request, db)
+def user_credit_request(request: credit_schemas.UserCreditRequest, authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db), background: BackgroundTasks = None):
+    response = credit_services.user_credit_request(request, db, background)
     return response
 
 
