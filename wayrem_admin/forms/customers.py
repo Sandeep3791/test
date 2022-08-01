@@ -36,7 +36,8 @@ class CreditsSearchFilter(forms.Form):
 def get_credits():
     obj = CreditSettings.objects.all()
     choice = [(None, "Select Credit Rule")]
-    ch = [(r.id, r.credit_amount) for r in obj]
+    ch = [(r.id, f"SAR {r.credit_amount} upto {r.time_period} days")
+          for r in obj]
     choice.extend(ch)
     print(choice)
     return choice

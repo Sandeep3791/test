@@ -201,8 +201,8 @@ class CreditTransactionLogs(models.Model):
     credit_date = models.DateTimeField(auto_now_add=True)
     due_date = models.DateTimeField()
     paid_date = models.DateTimeField()
-    payment_status = models.CharField(
-        max_length=255, blank=True, default="Due")
+    is_refund = models.BooleanField(default=False)
+    payment_status = models.BooleanField(default=False)
 
     class Meta:
         app_label = "wayrem_admin"

@@ -1,6 +1,7 @@
 import threading
 from django.db.models import Sum
 from django.views.generic.edit import CreateView
+from matplotlib.style import available
 from requests import request
 from wayrem_admin.forms.customers import CreditsAssignForm
 from wayrem_admin.models import PaymentTransaction, CreditManagement
@@ -15,6 +16,7 @@ import json
 from wayrem_admin.forecasts.firebase_notify import FirebaseLibrary
 from wayrem_admin.models import CreditSettings
 from wayrem_admin.models.customers import CustomerNotification
+from wayrem_admin.models.orders import Orders
 from wayrem_admin.services import send_email
 from wayrem_admin.forms import CustomerSearchFilter, CustomerEmailUpdateForm, CreditsForm, CreditsSearchFilter
 from django.urls import reverse_lazy
@@ -261,3 +263,18 @@ def credit_reminder():
                                 customer=log.customer.id, title=notify_title, message=message)
                             notification_store.save()
     print("Credit Reminder Notification Done")
+
+
+def credit_refund(order_id):
+    order = Orders.objects.get(id=order_id)
+    credit_log = CreditTransactionLogs.objects.filter(
+        order=order, is_refund=False).first()
+    credit_management = CreditManagement.objects.get(
+        customer_id=credit_log.customer.id)
+    credit_management.available += credit_log.credit_amount
+    credit_management.used -= credit_log.credit_amount
+    credit_management.save()
+    refund_log = CreditTransactionLogs(customer=credit_management.customer, order=order,
+                                       is_refund=True, available=credit_management.available, credit_id=credit_log.id, payment_status=True)
+    refund_log.save()
+    return True
