@@ -1,0 +1,168 @@
+{% if message %}
+{{message}}
+{% else %}
+<div class="row">
+    <!-- Form -->
+    <div class="col-lg-6">
+        <div class="form-group mb-4">
+            <label for="name">SKU <span class="text-danger"><em> {{form.SKU.errors | striptags}}
+            </em></span></label>
+            <div class="input-group input_border">   
+                {{form.SKU}}
+                <div class="input-group" id="sku_error_message" style="color: #d12525;"></div>
+            </div>
+            
+        </div>
+    </div>
+    <!-- End of Form -->
+
+    <!-- Form -->
+    <div class="col-lg-6">
+        <div class="form-group mb-4">
+            <label for="image">Product Name <span class="text-danger"> <em> {{form.name.errors | striptags}}
+            </em> </span></label>
+            <div class="input-group">
+                
+                {{form.name}}
+                <div class="input-group" id="name_error_message" style="color: #d12525;"></div>
+            </div>
+            
+        </div>
+    </div>
+    <!-- End of Form -->
+</div>
+<div class="row">
+    
+    <!-- Form -->
+    <div class="col-lg-6">
+        <div class="form-group mb-4">
+            <label for="name">Price<span class="text-danger"><em> {{form.price.error | striptags}} 
+                </em>
+            </span></label>
+            <div class="input-group">   
+                {{form.price}}<span class="input-group-text" id="basic-addon1">SAR</span>
+                <div class="input-group" id="price_error_message" style="color: #d12525;"></div>
+            </div>
+        
+            <span class="text-error"></span>
+        </div>
+    </div>
+    <!-- End of Form -->
+    <!-- Form -->
+    <div class="col-lg-6">
+        <div class="form-group mb-4">
+            <label for="name">Quantity<span class="text-danger"><em> {{form.price.error | striptags}} 
+                </em>
+            </span></label>
+            <div class="input-group">   
+                {{form.quantity}}<span class="input-group-text" id="basic-addon1">{{quantity_unit}}</span>
+                <div class="input-group" id="price_error_message" style="color: #d12525;"></div>
+            </div>
+        
+            <span class="text-error"></span>
+        </div>
+    </div>
+    <!-- End of Form -->
+</div>
+
+
+
+<div class="row">
+    <!-- Form -->
+    <div class="col-lg-6">
+        <div class="form-group mb-4">
+            <label for="description">Date of Manufacture  <span class="text-danger">
+                <em> {{form.date_of_mfg.errors | striptags}}
+                </em>
+            </span></label>
+            <div class="input-group">
+                
+                {{form.date_of_mfg}}
+                <div class="input-group" id="dom_error_message" style="color: #d12525;"></div>
+            </div>
+            
+        </div>
+    </div>
+    <!-- End of Form -->
+
+
+    <!-- Form -->
+    <div class="col-lg-6">
+        <div class="form-group mb-4">
+            <label for="provider">Date of Expiry   <span class="text-danger"> <em> {{form.date_of_exp.errors | striptags}}
+            </em>
+        </span></label>
+            <div class="input-group date_input_box">
+            
+                {{form.date_of_exp}}
+                <div class="input-group" id="doe_error_message" style="color: #d12525;"></div>
+            </div>
+            
+        </div>
+    </div>
+    <!-- End of Form -->
+
+    <!-- Form -->
+    <div class="col-lg-6">
+        <div class="form-group mb-4">
+            <label for="provider">Manufacturer Name  <span class="text-danger"> <em> {{form.mfr_name.errors | striptags}}
+            </em>
+        </span></label>
+            <div class="input-group date_input_box">
+            
+                {{form.mfr_name}}
+                <div class="input-group" id="mfr_error_message" style="color: #d12525;"></div>
+            </div>
+        
+        </div>
+    </div>
+    <!-- End of Form -->
+    <!-- Form -->
+    <div class="col-lg-6">
+        <div class="form-group mb-4">
+            <label for="provider">Supplier Name  <span class="text-danger"> <em> {{form.mfr_name.errors | striptags}}
+            </em>
+        </span></label>
+            <div class="input-group date_input_box">
+                <input type="text" name="supplier" value="{% for supp in supplier.all %}{{supp}}{% endfor %}" class="form-control" maxlength="100" disabled="" id="id_supplier">
+                <div class="input-group" id="mfr_error_message" style="color: #d12525;"></div>
+            </div>
+        
+        </div>
+    </div>
+    <!-- End of Form -->
+</div>
+
+</div>
+
+
+<!-- Form -->
+<div class="col-lg-12">
+    <div class="row">
+        <div class="col-3">
+            <div class="form-group">
+                <label >Starting Inventory</label>
+                <div class="">{{form.inventory_starting}}</div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="form-group">
+                <label >Received Inventory</label>
+                <div class="">{{form.inventory_received}}</div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="form-group">
+                <label >Shipped Inventory</label>
+                <div class="">{{form.inventory_shipped}}</div>
+            </div>
+        </div>
+        <div class="col-3">
+            <div class="form-group">
+                <label >Cancelled Inventory</label>
+                <div class="">{{form.inventory_cancelled}}</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}

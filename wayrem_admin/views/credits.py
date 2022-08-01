@@ -131,8 +131,9 @@ class CreditAssign(LoginPermissionCheckMixin, View):
         form = CreditsAssignForm(request.POST)
         if form.is_valid():
             credit = form.cleaned_data("credit")
+            credit_setting = CreditSettings.objects.get(id=credit)
             assign_credit = CreditManagement(
-                customer=id, credit_rule=credit, used=0, available=15000)
+                customer=id, credit_rule=credit, used=0, available=credit_setting.credit_amount)
             assign_credit.save()
         return redirect('wayrem_admin:customerslist')
 
@@ -275,6 +276,6 @@ def credit_refund(order_id):
     credit_management.used -= credit_log.credit_amount
     credit_management.save()
     refund_log = CreditTransactionLogs(customer=credit_management.customer, order=order,
-                                       is_refund=True, available=credit_management.available, credit_id=credit_log.id, payment_status=True)
+                                       is_refund=True, available=credit_management.available, credit_id=credit_log.id, payment_status=True, paid_amount=credit_log.credit_amount)
     refund_log.save()
     return True

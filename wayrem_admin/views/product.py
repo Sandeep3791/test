@@ -898,3 +898,33 @@ def bulk_quantity_excel(request):
             }
             return render(request, "product/import_product.html", context)
     return render(request, 'product/import_product.html')
+
+
+class BarcodeProduct(View):
+    template_name = 'product/barcode_product.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        try:
+            code = request.POST.get("barcode")
+            product = Products.objects.filter(
+                gs1=code, is_deleted=False).first()
+            return render(request, "product/product_view_pop.html", {"product": product})
+        except Exception as e:
+            print(e)
+            messages.error(request, "No match found!!")
+            return redirect('wayrem_admin:product_barcode')
+
+
+def scan_result(request):
+    try:
+        code = request.GET.get("barcode")
+        product = Products.objects.filter(
+            gs1=code, is_deleted=False).first()
+        form = ProductFormView(instance=product)
+        return render(request, "product/product_view_pop.html", {"form": form, "quantity_unit": product.quantity_unit, "supplier": product.supplier})
+    except Exception as e:
+        print(e)
+        return render(request, "product/product_view_pop.html", {"message": "No Record Found!!"})
