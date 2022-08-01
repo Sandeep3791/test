@@ -35,6 +35,7 @@ class CreditTransactionsLog(Base):
     credit_date = Column(DateTime(timezone=True), nullable=True)
     due_date = Column(DateTime(timezone=True), nullable=True)
     payment_status = Column(Boolean, default=False)
+    is_refund = Column(Boolean, default=False)
     customer_id = Column(ForeignKey('customers_master.id'),
                          nullable=False, index=True)
     order_id = Column(BigInteger, ForeignKey(

@@ -49,7 +49,7 @@ def get_credits_txn(customer_id, dues, db: Session):
                     else:
                         is_due = True
                     credit_data = credit_schemas.ResponseCustomerCreditsTxn(id=data.id, credit_amount=data.credit_amount, available=data.available, credit_date=str(
-                        data.credit_date), due_date=str(data.due_date), payment_status=data.payment_status, order_ref_no=user_oder_data.ref_number, valid_date=is_due)
+                        data.credit_date), due_date=str(data.due_date), payment_status=data.payment_status, order_ref_no=user_oder_data.ref_number, valid_date=is_due, is_refund = data.is_refund)
                     txn_list.append(credit_data)
             response = credit_schemas.ResponseCustomerCreditsTxnFinal(
                 status=status.HTTP_200_OK, message="User Credit Dues!", data=txn_list)
@@ -76,7 +76,8 @@ def get_credits_txn(customer_id, dues, db: Session):
                     is_due = True
 
                 credit_data = credit_schemas.ResponseCustomerCreditsTxn(id=data.id, credit_amount=data.credit_amount, available=data.available, credit_date=str(
-                    data.credit_date), due_date=str(data.due_date), payment_status=data.payment_status, order_ref_no=user_oder_data.ref_number, valid_date=is_due, paid_date=str(data.paid_date), paid_amount=data.paid_amount, paid_credit_id=data.credit_id)
+                    data.credit_date), due_date=str(data.due_date), payment_status=data.payment_status, order_ref_no=user_oder_data.ref_number, valid_date=is_due, paid_date=str(data.paid_date), 
+                    paid_amount=data.paid_amount, paid_credit_id=data.credit_id, is_refund = data.is_refund)
 
                 txn_list.append(credit_data)
             response = credit_schemas.ResponseCustomerCreditsTxnFinal(
@@ -106,7 +107,7 @@ def get_overdue_credits(customer_id, db: Session):
                     order_models.Orders.id == i.order_id).first()
                 if present_date > credit_due_date:
                     due_credit_data = credit_schemas.ResponseCustomerCreditsTxn(id=i.id, credit_amount=i.credit_amount, available=i.available, credit_date=str(
-                        i.credit_date), due_date=str(i.due_date), payment_status=i.payment_status, order_ref_no=user_oder_data.ref_number)
+                        i.credit_date), due_date=str(i.due_date), payment_status=i.payment_status, order_ref_no=user_oder_data.ref_number, is_refund = i.is_refund)
         response = credit_schemas.ResponseCustomerCreditDue(
             status=status.HTTP_200_OK, message="User Overdue Credit Info!", data=due_credit_data)
         return response

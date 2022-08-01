@@ -24,6 +24,7 @@ class ResponseCustomerCreditsTxn(BaseModel):
     credit_date: Optional[str] = None
     due_date: Optional[str] = None
     payment_status: bool
+    is_refund : bool
     order_ref_no: str
     valid_date: bool = Optional
     paid_date: Optional[str] = None
