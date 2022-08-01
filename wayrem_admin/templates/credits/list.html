@@ -77,7 +77,7 @@
                 <tr>
                     {% comment %} <th scope="col">S. No.</th> {% endcomment %}
                     <th scope="col">Credit Amount</th>
-                    <th scope="col">Time Period</th>
+                    <th scope="col">Time Period (in days)</th>
                     {% if perms.credits.settings_view or perms.credits.settings_edit %}
                     <th scope="col">Actions</th>
                     {% endif %}
@@ -87,7 +87,7 @@
                 {% if list %}
                 {% for item in list %}
                 <tr>
-                    <td>{{item.credit_amount}}</td>
+                    <td>SAR {{item.credit_amount}}</td>
                     <td>{{item.time_period}}</td>
                     {% if perms.credits.settings_view or perms.credits.settings_edit %}
                    <td>

@@ -44,7 +44,7 @@ class CreditCreate(LoginPermissionCheckMixin, CreateView):
     model = CreditSettings
     form_class = CreditsForm
     template_name = 'credits/add.html'
-    success_url = reverse_lazy('wayrem_admin:customerslist')
+    success_url = reverse_lazy('wayrem_admin:credits_list')
 
     @method_decorator(login_required(login_url='wayrem_admin:root'))
     def dispatch(self, *args, **kwargs):
