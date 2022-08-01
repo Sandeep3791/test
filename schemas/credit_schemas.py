@@ -87,3 +87,4 @@ class CheckUserCredit(BaseModel):
     status: str
     message: str
     data: CreditCheckNewUser
+

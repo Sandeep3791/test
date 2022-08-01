@@ -210,36 +210,45 @@ def user_credit_request(request, db: Session, background_tasks: BackgroundTasks)
         user_models.User.id == request.customer_id).first()
 
     if user_data:
-        requested_data = credit_models.UserCreditRequest(
-            customer_id=request.customer_id, requested_amount=request.requested_amount)
-        db.merge(requested_data)
-        db.commit()
-        saved_data = credit_schemas.UserCreditResponse(
-            customer_id=request.customer_id, requested_amount=request.requested_amount)
-        email_query = f"SELECT * FROM {constants.Database_name}.email_template where email_template.key = 'credit_request_customer' "
-        emails = db.execute(email_query)
-        for email in emails:
-            subject = email.subject.format(customer=user_data.first_name)
-            body = email.message_format
-        emails_query = db.execute(
-            f"SELECT email FROM {constants.Database_name}.users_master where role_id in (SELECT role_id FROM {constants.Database_name}.role_permissions where function_id = (SELECT id FROM {constants.Database_name}.function_master where codename = 'credits.assign_customer')) ")
+        credit_request_check = db.query(credit_models.UserCreditRequest).filter(
+            credit_models.UserCreditRequest.customer_id == request.customer_id).first()
 
-        raw_email_data = emails_query.mappings().all()
-        email_list = []
-        for i in range(len(raw_email_data)):
-            admin_e = raw_email_data[i].email
-            email_list.append(admin_e)
-        values = {
-            'customer': f"{user_data.first_name} {user_data.last_name}",
-            'amount': request.requested_amount
-        }
-        body = body.format(**values)
-        for to in email_list:
-            background_tasks.add_task(
-                common_services.send_otp, to, subject, body, request, db)
-        result = credit_schemas.FinalUserCreditResponse(
-            status=status.HTTP_200_OK, message="Your credit request has been forwarded to admin", data=saved_data)
-        return result
+        if not credit_request_check:
+            requested_data = credit_models.UserCreditRequest(
+                customer_id=request.customer_id, requested_amount=request.requested_amount)
+            db.merge(requested_data)
+            db.commit()
+            saved_data = credit_schemas.UserCreditResponse(
+                customer_id=request.customer_id, requested_amount=request.requested_amount)
+            email_query = f"SELECT * FROM {constants.Database_name}.email_template where email_template.key = 'credit_request_customer' "
+            emails = db.execute(email_query)
+            for email in emails:
+                subject = email.subject.format(customer=user_data.first_name)
+                body = email.message_format
+            emails_query = db.execute(
+                f"SELECT email FROM {constants.Database_name}.users_master where role_id in (SELECT role_id FROM {constants.Database_name}.role_permissions where function_id = (SELECT id FROM {constants.Database_name}.function_master where codename = 'credits.assign_customer')) ")
+
+            raw_email_data = emails_query.mappings().all()
+            email_list = []
+            for i in range(len(raw_email_data)):
+                admin_e = raw_email_data[i].email
+                email_list.append(admin_e)
+            values = {
+                'customer': f"{user_data.first_name} {user_data.last_name}",
+                'amount': request.requested_amount
+            }
+            body = body.format(**values)
+            for to in email_list:
+                background_tasks.add_task(
+                    common_services.send_otp, to, subject, body, request, db)
+            result = credit_schemas.FinalUserCreditResponse(
+                status=status.HTTP_200_OK, message="Your credit request has been forwarded to admin", data=saved_data)
+            return result
+        else:
+            response = user_schemas.ResponseCommonMessage(
+                status=status.HTTP_208_ALREADY_REPORTED, message = f"The credit  amount of {credit_request_check.requested_amount} SAR was already requested!"
+            )
+            return response
 
     else:
         response = user_schemas.ResponseCommonMessage(
