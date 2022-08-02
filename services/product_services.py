@@ -820,7 +820,7 @@ def search_filter_products(offset, customer_id, start_price, end_price, discount
     #     query += f" and id in (select product_id from {constants.Database_name}.product_rating where rating >= 0 Order by rating DESC ) "
     if category:
         query += f" and pm.id IN (SELECT products_id from {constants.Database_name}.products_master_category WHERE categories_id={category} or categories_id  IN (SELECT id from {constants.Database_name}.categories_master WHERE parent IN (SELECT name from {constants.Database_name}.categories_master WHERE id IN ({category}))))"
-    query += f" order by True "
+    query += f" Group by pm.id order by True "
     if newest:
         query += f" ,pm.updated_at DESC "
     if rating or rating_value:
