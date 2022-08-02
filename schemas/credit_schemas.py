@@ -72,6 +72,7 @@ class UserCreditRequest(BaseModel):
 class UserCreditResponse(BaseModel):
     customer_id: int
     requested_amount: float
+    
 
 
 class FinalUserCreditResponse(BaseModel):

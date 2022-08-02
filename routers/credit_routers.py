@@ -46,8 +46,8 @@ def pay_overdue_credits(request: credit_schemas.CreditDuesRequest, authorize: Au
 
 
 @router.post('/credit/request')
-def user_credit_request(request: credit_schemas.UserCreditRequest, authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db), background: BackgroundTasks = None):
-    response = credit_services.user_credit_request(request, db, background)
+def user_credit_request(request: credit_schemas.UserCreditRequest, confirm: bool, authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db), background: BackgroundTasks = None):
+    response = credit_services.user_credit_request(request, db, background, confirm)
     return response
 
 

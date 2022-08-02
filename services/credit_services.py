@@ -206,14 +206,13 @@ def pay_overdue_credits(request, db: Session):
         return response
 
 
-def user_credit_request(request, db: Session, background_tasks: BackgroundTasks):
+def user_credit_request(request, db: Session, background_tasks: BackgroundTasks,confirm):
     user_data = db.query(user_models.User).filter(
         user_models.User.id == request.customer_id).first()
 
     if user_data:
         credit_request_check = db.query(credit_models.UserCreditRequest).filter(
             credit_models.UserCreditRequest.customer_id == request.customer_id).first()
-
         if not credit_request_check:
             requested_data = credit_models.UserCreditRequest(
                 customer_id=request.customer_id, requested_amount=request.requested_amount)
@@ -246,11 +245,19 @@ def user_credit_request(request, db: Session, background_tasks: BackgroundTasks)
                 status=status.HTTP_200_OK, message="Your credit request has been forwarded to admin", data=saved_data)
             return result
         else:
-            response = user_schemas.ResponseCommonMessage(
-                status=status.HTTP_208_ALREADY_REPORTED, message = f"The credit  amount of {credit_request_check.requested_amount} SAR was already requested!"
-            )
-            return response
-
+            if confirm == False:
+                response = user_schemas.ResponseCommonMessage(
+                    status=status.HTTP_208_ALREADY_REPORTED, message = f"The credit  amount of {credit_request_check.requested_amount} SAR was already requested!"
+                )
+                return response
+            if confirm == True:
+                credit_request_check.requested_amount = request.requested_amount
+                db.merge(credit_request_check)
+                db.commit()
+                response = user_schemas.ResponseCommonMessage(
+                    status=status.HTTP_200_OK, message = f"The newly requested credit amount of {request.requested_amount} SAR !"
+                )
+                return response
     else:
         response = user_schemas.ResponseCommonMessage(
             status=status.HTTP_404_NOT_FOUND, message="Customer id not found!!")
