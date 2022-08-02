@@ -6,7 +6,7 @@ urlpatterns = [
     path('inputBar/', views.inputBar, name='inputBar'),
     path('update_prodimg/', views.update_product_images,
          name='update_product_images'),
-    path('product/', views.product, name='product'),
+    path('product/', views.ProductCreate.as_view(), name='product'),
     path('product-barcode/', views.BarcodeProduct.as_view(), name='product_barcode'),
     path('details/', views.details_gs1, name='get_detail'),
     path('product-scan/', views.scan_result, name='scaned_product'),

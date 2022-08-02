@@ -61,6 +61,34 @@ def product(request):
     return render(request, 'inputBar.html')
 
 
+class ProductCreate(LoginPermissionCheckMixin, View):
+    permission_required = 'product_management.create_product_list'
+    template_name = "inputBar.html"
+
+    def get(self, request):
+        delSession(request)
+        return render(request, self.template_name)
+
+    def post(self, request):
+        delSession(request)
+        user_code = request.POST.get('code')
+        user_code = user_code.replace('\\x1d', '\x1d')
+        try:
+            result = biip.parse(user_code)
+            request.session['SKU'] = result.gs1_message.element_strings[0].value
+            request.session['price'] = str(
+                result.gs1_message.element_strings[5].decimal)
+            request.session['date_of_exp'] = str(
+                result.gs1_message.element_strings[1].date)
+            request.session['weight'] = str(
+                result.gs1_message.element_strings[4].decimal)
+            request.session['unit'] = "KILO-GRAM"
+            request.session['gs1'] = user_code
+        except:
+            pass
+        return redirect('wayrem_admin:productviewone')
+
+
 def details_gs1(request):
     delSession(request)
     user_code = request.GET.get('barcode')

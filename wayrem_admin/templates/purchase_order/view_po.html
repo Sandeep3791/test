@@ -185,7 +185,7 @@
             {% elif po.0.status == "declined" %}
             <div class="bg-white table_shadow rounded p-3 w-100 mt-3">
                 <div class="declined_po">
-                    <span> #1002 was declined by <span class="text-dark font-weight-bold"><br> Supplier name</span></span>
+                    <span> #1002 was declined by <span class="text-dark font-weight-bold"><br> {{po.0.supplier_name}}</span></span>
                 </div>
                 <div>
                     <h6 class="my-2">Reason</h6>
