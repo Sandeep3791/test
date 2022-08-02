@@ -927,4 +927,4 @@ def scan_result(request):
         return render(request, "product/product_view_pop.html", {"form": form, "quantity_unit": product.quantity_unit, "supplier": product.supplier})
     except Exception as e:
         print(e)
-        return render(request, "product/product_view_pop.html", {"message": "No Record Found!!"})
+        return render(request, "product/product_view_pop.html", {"message": "Barcode is not available!!"})

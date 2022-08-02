@@ -21,45 +21,43 @@
             </nav>
         </div> 
     </div>
-    <div class="row justify-content-center form-bg-image mt-5">
+    <p>
+        {% if messages %}
+     {% for message in messages %}
+     <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
+     <strong> {{ message }}</strong> 
+     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+     </div>
+     {% endfor %}        
+     {% endif %}
+
+
+     </p>
+    <div class="row justify-content-center form-bg-image mt-3">
         <div class="col-12 d-flex align-items-center justify-content-center">
             <div class="bg-white  rounded p-4 p-lg-4 w-50 shadow-sm">
-                <div class="text-center text-md-center mb-4 mt-md-0">
+                <div class="text-center text-md-center mb-2 mt-md-0">
                     <h1 class="mb-0 h3">
                         {% comment %} <img src="{% static '/assets/img/logo/Wayrem_logo..svg'%}" style="width:80%" alt=""> {% endcomment %}
                     </h1>
                     <br />
-                    <p>
-                       {% if messages %}
-                    {% for message in messages %}
-                    <div {% if message.tags %} class="alert alert-{{message.tags}} alert-dismissible fade show" {% endif %} role="alert">
-                    <strong> {{ message }}</strong> 
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                    {% endfor %}        
-                    {% endif %}
-    
-    
-                    </p>
+                    
                 </div>
-                <form action="{% url 'wayrem_admin:product_barcode' %}" method="post">
+                <form action="{% url 'wayrem_admin:product_barcode' %}" id="barcode_form" method="post">
                     {% csrf_token %}
                     <!-- Form -->
                     <div class="form-group mb-4">
-                        <label for="code">Barcode Number</label>
+                        <label for="code">Scan Barcode </label>
                         <div class="input-group">
                             <span class="input-group-text" id="basic-addon1"><span
                                     class="fas fa-barcode"></span></span>
-                            <input type="text" onchange="lowestFunc()" placeholder="Barcode Number" class="form-control" id="code" autofocus required
+                            <input type="text" onkeyup="lowestFunc()" placeholder="Barcode Number" class="form-control" id="code" autofocus required
                                 name="barcode" aria-describedby="emailHelp">
                         </div>
                     </div>
                     <!-- End of Form -->
                    
                 </form>
-                    <div class="d-grid col-xl-1 col-md-1 col-12">
-                        <button onclick="lowestFunc()" id="sbmt" class="btn btn-dark">Submit</button>
-                    </div>
             </div>
         </div>
     </div>
@@ -78,7 +76,7 @@
                 <div id="details"></div>
             </div>
             <div class="modal-footer">
-                <a type="button" href="{% url 'wayrem_admin:product_barcode' %}" class="btn btn-danger" >Close</a>
+                <button id="close_btn" class="btn btn-danger" >Close</button>
               </div>
         </div>
     </div> 
@@ -99,6 +97,13 @@
 </script> {% endcomment %}
 
 <script>
+    $('#close_btn').on('click', function () {
+        $("#barData").modal('hide');
+        $("#barcode_form").trigger('reset');
+        $("#code").focus();
+    })
+
+
     function lowestFunc(){
       
         const url="{% url 'wayrem_admin:scaned_product' %}";
