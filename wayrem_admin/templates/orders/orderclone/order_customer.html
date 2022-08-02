@@ -1,0 +1,55 @@
+<div class="card card-body bg-white border-light shadow-sm my-4">
+                    <h2 class="h5 mb-3">Customer details</h2>
+                    <div>
+                       {{order.customer.first_name|default_if_none:""}} {{order.customer.last_name|default_if_none:""}}
+                        <!-- <h6>{{order_details.count}} {% if order_details.count == 1 %} Order {% else %} Orders{% endif %}</h6> -->
+                    </div>
+                    <hr>
+                    <div class="my-3">
+                        <div class="row">
+                         <h2 class="h5 mb-2 col-10">Contact Information</h2>
+                          <div class="col-2 text-center d-none">
+                              <h6>Edit</h6>
+                            <i class="fas fa-file-alt"></i>
+                          </div>
+                        </div>
+                        <div>
+                           <span class="h6 " >{{order.customer.email|default_if_none:""}}</span>
+                            <h6>{{order.customer.contact|default_if_none:""}}</h6>
+                        </div>
+    
+                        <hr>
+    
+                    </div>
+                    <div class="my-3">
+                        <div class="row">
+                         <h2 class="h5 mb-2 col-10">Shipping Address</h2>
+                          <div class="col-2 text-center d-none">
+                              <h6>Edit</h6>
+                            <i class="fas fa-file-alt"></i>
+                          </div>
+                        </div>
+                        <div>
+                           <h6>{{order.order_ship_name}}</h6>
+                            <h6>{{order.order_ship_address}}</h6>
+                        </div>
+
+                        <hr>
+    
+                    </div>
+
+                    <div class="my-3">
+                        <div class="row">
+                         <h2 class="h5 mb-2 col-10">Billing Address</h2>
+                         <div class="col-2 text-center d-none">
+                              <h6>Edit</h6>
+                            <i class="fas fa-file-alt"></i>
+                          </div>
+                        </div>
+                        <div>
+                           <h6>{{order.order_billing_name}}</h6>
+                            <h6>{{order.order_billing_address}}</h6>
+                        </div>
+
+</div>
+</div>

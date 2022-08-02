@@ -11,4 +11,13 @@ urlpatterns = [
 
     path('invoice-orders/<int:id>', views.OrderReferenceExport.as_view(), name='invoiceorders'),
     path('wallet/<int:id>', views.WalletList.as_view(), name='walletlistcreate'),
+
+    
+    path('cancel-clone-order/<int:id>',views.OrderCancelCloneOrder.as_view(), name='cancelcloneorder'),
+    path('insert-order-detail/<int:id>/<int:pid>',views.InsertOrderdetail.as_view(), name='insertorderdetail'),
+    path('clone-order/<pk>', views.CloneOrderView.as_view(), name='cloneorder'),
+    path('ajax_calls/search', views.AutoCompleteModelView.as_view(), name='autocompletemodel'),
+    path('removeorder/', views.OrderRemoveDetail.as_view(), name='removeorderdetail'),
+
+
 ]

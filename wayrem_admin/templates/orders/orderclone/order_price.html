@@ -1,0 +1,25 @@
+<div class="card card-body bg-white border-light shadow-sm my-4">
+  <h2 class="heading h5">Price details</h2>
+
+  <div>
+      <div class="amount">
+          <div>
+              <span>Cart total</span>
+              <span>{{currency}} {{order.sub_total}}</span>
+          </div>
+          <div>
+              <span>VAT</span>
+              <span>{{currency}} {{order.tax}}</span>
+          </div>
+          <div>
+              <span>Delivery Fees</span>
+              <span>{{currency}} {{order.shipping}}</span>
+          </div>
+          <div class="hide d-none">
+              <span>Coupon Discount</span>
+              <span>{{currency}} - 0.00</span>
+          </div>
+      </div>
+      <div class="total_amount"><span>Total Amount</span><span>{{currency}} {{order.grand_total}}</span></div>
+  </div>
+</div>

@@ -1,0 +1,44 @@
+{% load static util_tags %}
+<div class="row">
+                
+    <h2 class="heading h5">Cart</h2>
+
+<div class="col-12 py-4">
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Product</th>
+                <th scope="col">Description</th>
+                <th scope="col" class="text-center">Quantity</th>
+                <th scope="col" class="text-center">Price</th>
+                <th scope="col" class="text-center">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for order_detail in order_details %}
+            <tr>
+                <td scope="row">
+                    {% if order_detail.product.primary_image %}
+                    <img class="rounded-1" src="{{order_detail.product.primary_image.url}}" >
+                    {% else %}
+                    <img class="rounded-1" src="" width="50%" height="100%" alt="no image" >
+                    {% endif %}
+            
+                </td>
+                <td class="product__desc" valign="middle">
+                    <span>{{order_detail.product_name}} </span><span>SKU: {{order_detail.sku}}</span>
+                </td>
+                <td class="product__qty" valign="middle">
+                    <input aria-label="Quantity" type="number" name="" id="" class="form-control" value="{{order_detail.quantity}}" min="1" readonly/>
+                </td>
+                <td class="product__price" valign="middle">{{currency}} {{order_detail.id|display_discount_price_qty }}</td>
+                <td class="product__action" valign="middle">
+                    <button type="button" class="btn btn-outline-danger remove_order_detail" data-orderid="{{order_detail.order_id}}" data-id="{{order_detail.id}}">Remove</button>
+                </td>
+            </tr>
+            {% endfor %}
+            
+        </tbody>
+    </table>
+</div>
+</div>
