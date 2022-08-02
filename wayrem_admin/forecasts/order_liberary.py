@@ -311,7 +311,9 @@ class OrderLiberary:
             quantity = self.total_product_qty_exist(
                 product, float(grocery_product.product_qty))
             if quantity:
-                self.create_product(order_id, grocery_product.product_qty, product)
+                order_details_dic=self.create_product(order_id, grocery_product.product_qty, product)
+                od = OrderDetails(**order_details_dic)
+                od.save()
         return 1
 
     def create_product(self, order_id, pro_quantity, product):
@@ -341,9 +343,8 @@ class OrderLiberary:
         product_id = product.id
         order_details_dic = {'sku': sku, 'product_name': product_name, 'price': price, 'item_margin': product_margin,
                              'discount': discount, 'quantity': quantity, 'order_id': order_id, 'product_id': product_id}
-
-        od = OrderDetails(**order_details_dic)
-        od.save()
+        return order_details_dic
+        
 
     def get_grocery_product(self, order_recurrence):
         grocery_id = order_recurrence.grocery_id

@@ -1,0 +1,189 @@
+{% extends "layouts/base.html" %} {% load static util_tags %} {% block title %} Order Update {% endblock %}
+
+<!-- Specific Page CSS goes HERE  -->
+{% block stylesheets %}{% endblock stylesheets %} {% block head %}
+<script src="{% static 'assets/js/datatable_ajax.js' %}"></script>
+<link rel="stylesheet" href="{% static 'assets/css/datatable.css' %}">
+<link rel="stylesheet" href="{% static 'assets/css/style.css' %}">
+
+<link rel="stylesheet" href="{% static 'assets/css/orderupdate.css' %}">
+
+<script src="{% static 'assets/js/datatable_1.js' %}"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+<script src="{% static 'assets/js/datatable.js' %}"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script> 
+    
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+<style></style>
+
+{% endblock head %} {% block content %}
+<div class="alert-container"></div>
+<div class="topbar_pages dashboard_content_inner">
+    <h4 class="text-title">Orders Update</h4>
+    <div class="breadcrumb-section">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb padding-left-0">
+                <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
+                <li class="breadcrumb-item " aria-current="page"><a href="{% url 'wayrem_admin:orderlist' %}"> <span class="sidebar-icon"><i class="fas fa-download"></i></span> Orders</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Order Update</li>
+            </ol>
+        </nav>
+    </div>
+</div>
+
+<!--============================================-->
+<div class="row dashboard_content_inner">
+    <div class="col-12 col-xl-8">
+        <div class="card card-body bg-white border-light shadow-sm my-4">
+            <div class="row border-bottom pb-3 mx-2">
+                <div class="col-xl-4 col-12 ps-0">
+                    <h2 class="heading h5">Product Details</h2>
+                </div>
+
+                <div class="col-xl-8 col-12 search_product">
+                    <div class="row">
+                        <div class="col-xl-4 col-12">
+                            <label for="inputPassword5" class="form-label">Search for a product</label>
+                        </div>
+                        
+                        
+                        <div class="col-xl-8 col-12 p-0">
+                            <div class="input-group mb-1">
+                                <input type="text" class="form-control ui-autocomplete-input" id="autocomplete" placeholder="Product Name or SKU"
+                                    aria-label="Product Name or SKU" aria-describedby="button-addon2" />
+                                    {% csrf_token %}
+                                    <form method="GET">
+                                        <input type='hidden' id='selectuser_id' name="pid" value="" />
+                                        <input id='submit' type='submit' class="btn btn-dark" id="button-addon2">
+                                    </form>            
+                                    
+                            </div>
+                            <div id="passwordHelpBlock" class="form-text">
+                                Search for an existing product by typing the product name
+                                or SKU.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!------------------------------------- Search Products ------------------------------------->
+            {% if product %}
+            <div class="row border-bottom py-4 mx-2">
+                <div class="col-12">
+                    <form method="post" action="{%url 'wayrem_admin:insertorderdetail' order.id pid %}">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-xl-6 col-12 ps-0">
+                                <div class="mb-3">
+                                    <label for="exampleInputproduct" class="form-label">Product</label>
+                                    <div class="product__name">
+                                        <img src="" alt="" />
+                                        <span>{{product.name}}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-2 col-12">
+                                <div class="mb-3">
+                                    <label for="exampleInputnumber1" class="form-label">Quantity</label>
+                                    <input type="number" class="form-control" id="exampleInputnumber1" name="quantity" value="1" min="1" />
+                                </div>
+                            </div>
+                            <div class="col-xl-4 col-12 m-auto text-xl-end p-xl-0">
+                                <button type="submit" class="btn btn-primary mt-3">
+                                    <i class="fa fa-shopping-cart"></i> Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            {% endif %}
+            {% include "orders/orderclone/order_cart.html" %}    
+        </div>
+             
+        <!-- Action Buttons -->
+        <div class="d-flex justify-content-end my-3">
+            <button type="submit" class="btn btn-danger ms-3">
+                Cancel
+            </button>  
+            <button type="submit" class="btn btn-success ms-3">
+                Save as draft
+            </button>  
+            <button type="submit" class="btn btn-primary ms-3">
+                <i class="fa fa-check" aria-hidden="true"></i>
+                Create Order
+            </button> 
+        </div>
+    </div>
+    
+    <div class="col-12 col-xl-4">
+        <!-- Delivery Details -->
+        {% include "orders/orderclone/order_price.html" %}
+        {% include "orders/orderclone/order_customer.html" %}
+        {% include "orders/orderclone/order_clone_reference.html" %}
+        
+ </div>
+</div>
+<!--============================================-->
+
+{% endblock content %}
+
+<!-- Specific Page JS goes HERE  -->
+{% block javascripts %}
+<script>
+$( function() {
+    
+    $(".remove_order_detail").click(function(){
+        
+        var token = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+        $.ajax({
+                    url: "/orders/removeorder/",
+                    type: 'post',
+                    dataType: "json",
+                    headers: {'X-CSRFToken': token},
+                    data: {order_id: $(this).data("orderid"),order_detail_id:$(this).data("id")},
+                    success: function( data ) {
+                        location.reload();
+                    }
+                });
+    });
+
+    $( "#autocomplete" ).autocomplete({
+        source: function( request, response ) {
+            var token = document.getElementsByName('csrfmiddlewaretoken')[0].value;
+                $.ajax({
+                    url: "/orders/ajax_calls/search",
+                    type: 'post',
+                    dataType: "json",
+                    headers: {
+                        'X-CSRFToken': token
+                    },
+                    data: {
+                        search: request.term
+                    },
+                    success: function( data ) {
+                        response( data );
+                    }
+                });
+            },
+            select: function (event, ui) {
+                $('#autocomplete').val(ui.item.label); // display the selected text
+                $('#selectuser_id').val(ui.item.value); // save selected id to input
+                return false;
+            },
+            focus: function(event, ui){
+                $( "#autocomplete" ).val( ui.item.label );
+                $( "#selectuser_id" ).val( ui.item.value);
+                return false;
+            },
+        });
+
+})
+
+</script>
+{% endblock javascripts %}

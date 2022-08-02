@@ -1,5 +1,7 @@
 import base64
 from io import BytesIO
+from itertools import product
+from unittest import result
 import qrcode
 from fatoora import Fatoora
 from django.shortcuts import render, redirect
@@ -15,7 +17,7 @@ from wayrem_admin.forms import SettingsForm
 from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from wayrem_admin.export import generate_excel
-from wayrem_admin.models import Orders, OrderDetails, StatusMaster, OrderDeliveryLogs, OrderTransactions
+from wayrem_admin.models import Orders, OrderDetails, StatusMaster, OrderDeliveryLogs, OrderTransactions,create_new_ref_number
 from wayrem_admin.models import Inventory
 from wayrem_admin.models import Settings
 from django.views.generic.edit import CreateView, UpdateView
@@ -43,7 +45,11 @@ from django.views.decorators.csrf import csrf_exempt
 
 from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
 import threading
-
+from wayrem_admin.models import Products
+from django.db.models import Q
+from wayrem_admin.forecasts.order_liberary import OrderLiberary
+from datetime import timedelta, date, datetime
+from wayrem_admin.views.credits import credit_refund
 
 @method_decorator(csrf_exempt, name='dispatch')
 class OrderReferenceExport(View):
@@ -214,7 +220,7 @@ class OrderStatusUpdated(LoginRequiredMixin, UpdateView):
         get_id = self.get_object().id
         exist_status_id = self.get_object().status.id
         status_id = int(self.request.POST.get('status'))
-
+        
         data_dic = {}
         data_dic['status'] = 0
         data_dic['loginext_success'] = None
@@ -222,6 +228,7 @@ class OrderStatusUpdated(LoginRequiredMixin, UpdateView):
         data_dic['delivery_status'] = None
         data_dic['message'] = ''
 
+        
         if exist_status_id != status_id:
             log_status = self.loginext_api(get_id, status_id)
             data_dic['status'] = 1
@@ -234,6 +241,13 @@ class OrderStatusUpdated(LoginRequiredMixin, UpdateView):
                     id=PAYMENT_STATUS_DECLINED)
 
             obj_stat_instance = StatusMaster.objects.get(id=status_id)
+
+
+            if status_id == ORDER_CANCELLED:
+                order_transaction=OrderTransactions.objects.filter(order=get_id).first()
+                if order_transaction.payment_mode.id == CREDIT_MODE:
+                    credit_refund(get_id) # get id == order id 
+
             if status_id == ORDER_CANCELLED:
                 OrderTransactions.objects.filter(order=get_id).update(
                     payment_status=payment_status)
@@ -392,6 +406,7 @@ class OrderUpdateView(LoginPermissionCheckMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         order_id = self.get_object().id
+        
         context['order_details'] = OrderDetails.objects.filter(order=order_id)
         context['tax_vat'] = Settings.objects.filter(key=self.KEY).first()
         context['order_timeline'] = OrderDeliveryLogs.objects.filter(
@@ -417,3 +432,196 @@ class OrderUpdateView(LoginPermissionCheckMixin, DetailView):
         else:
             context['message'] = ""
         return context
+
+class OrderCancelCloneOrder(View):
+    model = Orders
+    def get(self, request, id):
+        context = {}
+        from datetime import datetime
+        new_order=self.model.objects.filter(id=id).values().first() 
+        new_ref_number = create_new_ref_number()
+        new_order.update({'id': None,'ref_number':new_ref_number,'from_clone':id})
+        new_order_created = self.model.objects.create(**new_order)
+        new_order_id=new_order_created.id
+        orderdetail=OrderDetails.objects.filter(order_id=id).values()
+        for od in orderdetail:
+            od.update({'id':None,'order_id':new_order_id})
+            OrderDetails.objects.create(**od)
+        self.model.objects.filter(id=id).update(to_clone=new_order_id)
+        new_order_transaction=OrderTransactions.objects.filter(order_id =id).values().first()
+        new_order_transaction.update({'id': None,'order_id':new_order_id})
+        OrderTransactions.objects.create(**new_order_transaction)
+
+        neworderlog=OrderDeliveryLogs.objects.filter(order_id=id,order_status=1).values().first()
+        if neworderlog is not None:
+            neworderlog.update({'id':None,'order_id':new_order_id,'log_date':datetime.now()})
+            OrderDeliveryLogs.objects.create(**neworderlog)
+        return redirect('wayrem_admin:cloneorder', pk=new_order_id)
+
+class CloneOrderView(DetailView):
+    model = Orders
+    template_name = "orders/orderclone/order_clone.html"
+    context_object_name = 'order'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['product']=None
+        order_id = self.get_object().id
+        from_clone_id=Orders.objects.filter(id=order_id).values('from_clone').first()
+        
+        order_transaction=OrderTransactions.objects.filter(order_id=from_clone_id['from_clone']).first()
+        
+        context['order_invoice'] =order_transaction.invoices_id
+        context['order_ref'] =order_transaction.order.ref_number 
+        pid=self.request.GET.get('pid')
+        if pid != "":
+            products=Products.objects.filter(id=pid).first()
+            if products is not None:
+                context['product']=products
+
+        context['pid'] =pid     
+        context['order_details'] = OrderDetails.objects.filter(order=order_id)
+        context['currency'] = CURRENCY
+        return context
+
+class InsertOrderdetail(View):
+    model = Orders
+    def post(self, request,id,pid):
+        quantity=self.request.POST.get('quantity')
+        order_detail=OrderDetails.objects.filter(order_id=id,product_id=pid).values().first()
+        product=Products.objects.filter(id=pid).first()
+        if order_detail is None:
+            od_det_dic=OrderLiberary().create_product(id,quantity, product)
+        else:
+            cur_qty=order_detail['quantity']
+            total_qty=int(cur_qty)+int(quantity)
+            od_det_dic=OrderLiberary().create_product(id,total_qty, product)
+            od_det_dic.update({'id':order_detail['id']})
+        od = OrderDetails(**od_det_dic)
+        od.save()
+
+        order_dic=self.update_order(id)
+        return redirect('wayrem_admin:cloneorder', pk=id)
+
+    def update_order(self,order_id):
+        order=Orders.objects.filter(id=order_id).first()
+        tax_vat = OrderLiberary().get_tax_vat()
+        product_total = self.calculate_price(order_id)
+        sub_total = round(product_total['sub_total'], 2)
+        item_margin = round(product_total['item_margin'], 2)
+        total = round(product_total['total'], 2)        
+        order_lat=order.order_ship_latitude
+        order_long = order.order_ship_longitude
+        shipping = OrderLiberary().get_shipping_value(total,order_lat,order_long)
+        item_discount = round(product_total['item_discount'], 2)
+        discount = round(product_total['discount'], 2)
+        grand_total, tax = OrderLiberary().get_grand_total(total, tax_vat, shipping)
+        currentTimeDate = datetime.now() + timedelta(days=1)
+        order_date = currentTimeDate
+        order_dic = {'sub_total': sub_total, 'item_discount': item_discount, 'item_margin': item_margin, 'tax': tax, 'tax_vat': tax_vat, 'shipping': shipping, 'total': total, 'discount': discount, 'grand_total': grand_total,'order_date': order_date}
+        Orders.objects.filter(id=order_id).update(**order_dic)
+        return 1
+
+    def calculate_price(self,order_id):
+        order_detail_list=OrderDetails.objects.filter(order_id=order_id)
+        subtotal_unit_price = 0
+        product_total = {}
+        total_item_discount = 0
+        total_item_margin = 0
+        for gpl in order_detail_list:
+            quantity = float(gpl.quantity)
+            if quantity:
+                product_subtotal = float(gpl.product.price)
+                product_margin_amount = OrderLiberary().calculate_price_unit_type(
+                    gpl.product.wayrem_margin, gpl.product.price, gpl.product.margin_unit)
+                if gpl.product.discount is None:
+                    product_discount_price = 0
+                    total_price_margin = product_subtotal+product_margin_amount
+                else:
+                    product_discount_price = gpl.product.discount
+                    total_price_margin = product_subtotal+product_margin_amount
+                total_product_discount_price = OrderLiberary().calculate_price_unit_type(
+                    product_discount_price, total_price_margin, gpl.product.dis_abs_percent)
+
+                subtotal_unit_price += (product_subtotal+product_margin_amount -
+                                        total_product_discount_price) * quantity
+                total_item_discount += (total_product_discount_price * quantity)
+                total_item_margin += (product_margin_amount * quantity)
+
+        product_total = {'sub_total': subtotal_unit_price, 'item_margin': total_item_margin,
+                         'total': subtotal_unit_price, 'item_discount': total_item_discount, 'discount': 0}
+        return product_total
+
+class AutoCompleteModelView(View):
+    model=Orders
+
+    def post(self,request):
+        search=self.request.POST.get('search')
+        pro_list=Products.objects.filter(Q(name__contains=search) | Q(SKU__contains=search)).values('id','name','SKU')
+        results = []
+        for pro in pro_list:
+            new_dic={'value':pro['id'],'label':pro['SKU'] +" - "+pro['name']}
+            results.append(new_dic)
+        data = json.dumps(results)
+        mimetype = 'application/json'
+        return HttpResponse(data, mimetype)
+
+class OrderRemoveDetail(View):
+    model=OrderDetails
+    def get(self,request):
+        return HttpResponse("1")
+    def post(self,request):
+        order_id=self.request.POST.get('order_id')
+        order_detail_id=self.request.POST.get('order_detail_id')
+        OrderDetails.objects.filter(id=order_detail_id).delete()
+        self.update_order(order_id)
+        return HttpResponse("1")
+
+    def update_order(self,order_id):
+        order=Orders.objects.filter(id=order_id).first()
+        tax_vat = OrderLiberary().get_tax_vat()
+        product_total = self.calculate_price(order_id)
+        sub_total = round(product_total['sub_total'], 2)
+        item_margin = round(product_total['item_margin'], 2)
+        total = round(product_total['total'], 2)        
+        order_lat=order.order_ship_latitude
+        order_long = order.order_ship_longitude
+        shipping = OrderLiberary().get_shipping_value(total,order_lat,order_long)
+        item_discount = round(product_total['item_discount'], 2)
+        discount = round(product_total['discount'], 2)
+        grand_total, tax = OrderLiberary().get_grand_total(total, tax_vat, shipping)
+        currentTimeDate = datetime.now() + timedelta(days=1)
+        order_date = currentTimeDate
+        order_dic = {'sub_total': sub_total, 'item_discount': item_discount, 'item_margin': item_margin, 'tax': tax, 'tax_vat': tax_vat, 'shipping': shipping, 'total': total, 'discount': discount, 'grand_total': grand_total,'order_date': order_date}
+        Orders.objects.filter(id=order_id).update(**order_dic)
+        return 1
+
+    def calculate_price(self,order_id):
+        order_detail_list=OrderDetails.objects.filter(order_id=order_id)
+        subtotal_unit_price = 0
+        product_total = {}
+        total_item_discount = 0
+        total_item_margin = 0
+        for gpl in order_detail_list:
+            quantity = float(gpl.quantity)
+            if quantity:
+                product_subtotal = float(gpl.product.price)
+                product_margin_amount = OrderLiberary().calculate_price_unit_type(
+                    gpl.product.wayrem_margin, gpl.product.price, gpl.product.margin_unit)
+                if gpl.product.discount is None:
+                    product_discount_price = 0
+                    total_price_margin = product_subtotal+product_margin_amount
+                else:
+                    product_discount_price = gpl.product.discount
+                    total_price_margin = product_subtotal+product_margin_amount
+                total_product_discount_price = OrderLiberary().calculate_price_unit_type(
+                    product_discount_price, total_price_margin, gpl.product.dis_abs_percent)
+
+                subtotal_unit_price += (product_subtotal+product_margin_amount -
+                                        total_product_discount_price) * quantity
+                total_item_discount += (total_product_discount_price * quantity)
+                total_item_margin += (product_margin_amount * quantity)
+
+        product_total = {'sub_total': subtotal_unit_price, 'item_margin': total_item_margin,
+                         'total': subtotal_unit_price, 'item_discount': total_item_discount, 'discount': 0}
+        return product_total
