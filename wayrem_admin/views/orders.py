@@ -29,7 +29,6 @@ from wayrem_admin.utils.constants import *
 from wayrem_admin.filters.order_filters import OrderFilter
 from django.db.models import Sum, Case, CharField, Value, When
 from django.db.models import F
-import datetime
 import xlsxwriter
 import io
 # pdf export
@@ -255,9 +254,8 @@ class OrderStatusUpdated(LoginRequiredMixin, UpdateView):
                     t = threading.Thread(
                         target=self.order_notification_customer, args=(get_id, ORDER_CANCELLED,))
                     t.start()
-            deliv_obj_stat_instance = StatusMaster.objects.get(
-                id=delivery_status)
-            now = datetime.datetime.now()
+            deliv_obj_stat_instance = StatusMaster.objects.get(id=delivery_status)
+            now = datetime.now()
             if log_status:
                 data_dic['loginext_success'] = 1
                 if log_status == 2:
