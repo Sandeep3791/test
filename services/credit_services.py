@@ -247,7 +247,8 @@ def user_credit_request(request, db: Session, background_tasks: BackgroundTasks,
         else:
             if confirm == False:
                 response = user_schemas.ResponseCommonMessage(
-                    status=status.HTTP_208_ALREADY_REPORTED, message = f"The credit  amount of {credit_request_check.requested_amount} SAR was already requested!"
+                    status=status.HTTP_208_ALREADY_REPORTED, 
+                    message = f"You have already requested the credit for the amount of {round(credit_request_check.requested_amount)} SAR. Do you want to change to the newly requested credit amount to {request.requested_amount} SAR?"
                 )
                 return response
             if confirm == True:
@@ -255,7 +256,7 @@ def user_credit_request(request, db: Session, background_tasks: BackgroundTasks,
                 db.merge(credit_request_check)
                 db.commit()
                 response = user_schemas.ResponseCommonMessage(
-                    status=status.HTTP_200_OK, message = f"The newly requested credit amount of {request.requested_amount} SAR !"
+                    status=status.HTTP_200, message = f"The newly requested credit amount of {round(request.requested_amount)} SAR is saved successfully."
                 )
                 return response
     else:
