@@ -5,21 +5,21 @@
       <div class="amount">
           <div>
               <span>Cart total</span>
-              <span>{{currency}} {{order.sub_total}}</span>
+              <span>{{currency}} {{order.sub_total|floatformat:2}}</span>
           </div>
           <div>
               <span>VAT</span>
-              <span>{{currency}} {{order.tax}}</span>
+              <span>{{currency}} {{order.tax|floatformat:2}}</span>
           </div>
           <div>
               <span>Delivery Fees</span>
-              <span>{{currency}} {{order.shipping}}</span>
+              <span>{{currency}} {{order.shipping|floatformat:2}}</span>
           </div>
           <div class="hide d-none">
               <span>Coupon Discount</span>
               <span>{{currency}} - 0.00</span>
           </div>
       </div>
-      <div class="total_amount"><span>Total Amount</span><span>{{currency}} {{order.grand_total}}</span></div>
+      <div class="total_amount"><span>Total Amount</span><span>{{currency}} {{order.grand_total|floatformat:2}}</span></div>
   </div>
 </div>
