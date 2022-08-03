@@ -32,7 +32,7 @@
                 <td class="delivery_status_{{order.id}}"><span class="badge bg-primary" style="padding: 3px 8px;line-height: 11px;background-color:{{order.delivery_status.status_color}} !important">{{order.delivery_status.name}}</span></td>
                 <td>{{order.id|payment_type}}<br/>{{order.id|payment_status}}</td> 
                 <td>{{order.id|total_items}}</td>
-                <td>{{order.grand_total}}</td>
+                <td>{{order.grand_total|floatformat:2}}</td>
                 <td>
                     <div class="btn-group">
                         <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
