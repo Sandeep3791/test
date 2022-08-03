@@ -256,7 +256,7 @@ def user_credit_request(request, db: Session, background_tasks: BackgroundTasks,
                 db.merge(credit_request_check)
                 db.commit()
                 response = user_schemas.ResponseCommonMessage(
-                    status=status.HTTP_200, message = f"The newly requested credit amount of {round(request.requested_amount)} SAR is saved successfully."
+                    status=status.HTTP_200_OK, message = f"The newly requested credit amount of {round(request.requested_amount)} SAR is saved successfully."
                 )
                 return response
     else:
