@@ -85,7 +85,11 @@
                             <div class="col-12 col-xl-7 px-xl-0">
                                 <div class="d-none d-sm-block">
                                     <h6>SKU with images</h6>
-                                    <h5 class="mb-1"><span class="product_with_imgs">{{product_with_imgs}}</span> <h5> out of </h5><span class="total_product_images">{{total_product_images}}</span></h5>
+                                    <div class="sku_img mb-1 d-flex justify-content-between">
+                                        <h5 class="product_with_imgs">{{product_with_imgs}}</h5>
+                                         <h5> out of </h5>
+                                         <h5 class="total_product_images">{{total_product_images}}</h5>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -113,7 +117,7 @@
                 <!-- Form -->
                 <div class="row d-flex">
                     <div class="form-group col-md-3 col-xl-3">
-                        <label for="code" class="h5">Import Products</label>
+                        <label for="code" class="h5 bulk_heading">Import Products</label>
                         <form action="{% url 'wayrem_admin:import_excel' %}" method="POST" enctype="multipart/form-data" >
                             {% csrf_token %}
                             <div class="form-file">
@@ -130,7 +134,7 @@
                     </div>
                     <!-- End of Form -->
                     <div class="form-group col-md-3 col-xl-3">
-                        <label for="code" class="h5">Publish/Unpublish Products</label>
+                        <label for="code" class="h5 bulk_heading">Publish/Unpublish Products</label>
                         <form action="{% url 'wayrem_admin:bulk_publish' %}" method="POST" enctype="multipart/form-data" >
                             {% csrf_token %}
                             <div class="form-file">
@@ -146,7 +150,7 @@
                         </form>
                     </div>
                     <div class="form-group col-md-3 col-xl-3">
-                        <label for="code" class="h5">Update Price Products</label>
+                        <label for="code" class="h5 bulk_heading">Update Price Products</label>
                         <form action="{% url 'wayrem_admin:bulk_price' %}" method="POST" enctype="multipart/form-data" >
                             {% csrf_token %}
                             <div class="form-file">
@@ -162,7 +166,7 @@
                         </form>
                     </div>
                     <div class="form-group col-md-3 col-xl-3">
-                        <label for="code" class="h5">Add Products Quantity</label>
+                        <label for="code" class="h5 bulk_heading">Add Products Quantity</label>
                         <form action="{% url 'wayrem_admin:bulk_quantity' %}" method="POST" enctype="multipart/form-data" >
                             {% csrf_token %}
                             <div class="form-file">
