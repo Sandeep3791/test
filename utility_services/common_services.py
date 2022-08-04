@@ -32,6 +32,7 @@ app = FastAPI()
 logger = logging.getLogger(__name__)
 load_dotenv()
 
+
 def get_time():
     now_utc = datetime.now(timezone('UTC'))
     # time_now = now_utc.astimezone(timezone(constants.Default_time_zone))
@@ -39,8 +40,12 @@ def get_time():
 
 
 def utc_to_tz(now_utc):
-    time_now = now_utc.astimezone(timezone(constants.Default_time_zone))
-    return time_now
+    if now_utc:
+        time_now = now_utc.astimezone(timezone(constants.Default_time_zone))
+        return time_now
+    else:
+        return None
+
 
 def send_otp(to, subject, body, request, db: Session, file_path=None, invoice_delete=None):
     try:
@@ -89,10 +94,10 @@ def send_otp(to, subject, body, request, db: Session, file_path=None, invoice_de
         print(e)
 
 
-def format_string(view_list, image_list, price_list, sup_name_list,unit_list):
+def format_string(view_list, image_list, price_list, sup_name_list, unit_list):
     x = f""
     y = 0
-    for i, j, k, m, n, in zip(view_list, image_list, price_list, sup_name_list,unit_list):
+    for i, j, k, m, n, in zip(view_list, image_list, price_list, sup_name_list, unit_list):
         pro_name = i.product_name
         pro_qty = i.quantity
         pro_price = k
@@ -123,7 +128,7 @@ def format_string(view_list, image_list, price_list, sup_name_list,unit_list):
     return x
 
 
-def email_body(user_mail, order_id, order_view_list, image_list, order_type, ref_no, price_list, sup_name_list,unit_list, db: Session):
+def email_body(user_mail, order_id, order_view_list, image_list, order_type, ref_no, price_list, sup_name_list, unit_list, db: Session):
     order_placed_query = f"SELECT * FROM {constants.Database_name}.email_template where email_template.key = 'order_placed_customer_notification' "
     if order_placed_query:
         order_template = db.execute(order_placed_query)
@@ -159,7 +164,7 @@ def email_body(user_mail, order_id, order_view_list, image_list, order_type, ref
         pro_order_type = pro3
 
         ret = format_string(order_view_list, image_list,
-                            price_list, sup_name_list,unit_list)
+                            price_list, sup_name_list, unit_list)
 
         values = {
             'order_number': ref_no,
