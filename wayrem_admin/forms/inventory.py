@@ -38,14 +38,14 @@ class InventoryViewForm(forms.ModelForm):
         attrs={'class': 'form-select', 'readonly': 'true'}))
 
     get_inventory_type_dict = {0: 'Starting', 1: 'Received', 2: 'Shipped'}
+    get_inventory_type_dict = {1: 'Starting', 2: 'Received', 3: 'Shipped',4:'Cancelled',5:'Removed'}
     inventory_type_choices = list(get_inventory_type_dict.items())
-    inventory_type = forms.ChoiceField(
-        choices=inventory_type_choices, widget=forms.Select(attrs={'class': 'form-select'}))
+    inventory_type = forms.ChoiceField(choices=inventory_type_choices, widget=forms.Select(attrs={'class': 'form-select'}))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.fields['inventory_type'].widget.attrs['readonly'] = True
+        #self.fields['inventory_type'].widget.attrs['readonly'] = True
 
     class Meta:
         model = Inventory
