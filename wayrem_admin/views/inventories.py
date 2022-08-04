@@ -108,7 +108,7 @@ class InventoryCreate(CreateView):
                 return HttpResponse("valid")
         new_form = form.save()
         Inventory().update_product_quantity(form.product.id)
-        messages.success(self.request, 'created successfully.')
+        messages.success(self.request, 'Updated Successfully.')
         return HttpResponse("valid")
 
     def form_invalid(self, form):
