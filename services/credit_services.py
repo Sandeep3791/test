@@ -49,7 +49,7 @@ def get_credits_txn(customer_id, dues, db: Session):
                     else:
                         is_due = True
                     credit_data = credit_schemas.ResponseCustomerCreditsTxn(id=data.id, credit_amount=data.credit_amount, available=data.available, credit_date=str(
-                        data.credit_date), due_date=str(data.due_date), payment_status=data.payment_status, order_ref_no=user_oder_data.ref_number, valid_date=is_due, is_refund = data.is_refund)
+                        common_services.utc_to_tz(data.credit_date)), due_date=str(common_services.utc_to_tz(data.due_date)), payment_status=data.payment_status, order_ref_no=user_oder_data.ref_number, valid_date=is_due, is_refund=data.is_refund)
                     txn_list.append(credit_data)
             response = credit_schemas.ResponseCustomerCreditsTxnFinal(
                 status=status.HTTP_200_OK, message="User Credit Dues!", data=txn_list)
@@ -76,8 +76,8 @@ def get_credits_txn(customer_id, dues, db: Session):
                     is_due = True
 
                 credit_data = credit_schemas.ResponseCustomerCreditsTxn(id=data.id, credit_amount=data.credit_amount, available=data.available, credit_date=str(
-                    data.credit_date), due_date=str(data.due_date), payment_status=data.payment_status, order_ref_no=user_oder_data.ref_number, valid_date=is_due, paid_date=str(data.paid_date), 
-                    paid_amount=data.paid_amount, paid_credit_id=data.credit_id, is_refund = data.is_refund)
+                    common_services.utc_to_tz(data.credit_date)), due_date=str(common_services.utc_to_tz(data.due_date)), payment_status=data.payment_status, order_ref_no=user_oder_data.ref_number, valid_date=is_due, paid_date=str(common_services.utc_to_tz(data.paid_date)),
+                    paid_amount=data.paid_amount, paid_credit_id=data.credit_id, is_refund=data.is_refund)
 
                 txn_list.append(credit_data)
             response = credit_schemas.ResponseCustomerCreditsTxnFinal(
@@ -107,7 +107,7 @@ def get_overdue_credits(customer_id, db: Session):
                     order_models.Orders.id == i.order_id).first()
                 if present_date > credit_due_date:
                     due_credit_data = credit_schemas.ResponseCustomerCreditsTxn(id=i.id, credit_amount=i.credit_amount, available=i.available, credit_date=str(
-                        i.credit_date), due_date=str(i.due_date), payment_status=i.payment_status, order_ref_no=user_oder_data.ref_number, is_refund = i.is_refund)
+                        common_services.utc_to_tz(i.credit_date)), due_date=str(common_services.utc_to_tz(i.due_date)), payment_status=i.payment_status, order_ref_no=user_oder_data.ref_number, is_refund=i.is_refund)
         response = credit_schemas.ResponseCustomerCreditDue(
             status=status.HTTP_200_OK, message="User Overdue Credit Info!", data=due_credit_data)
         return response
@@ -195,7 +195,7 @@ def pay_overdue_credits(request, db: Session):
                     status=status.HTTP_400_BAD_REQUEST, message="Dues for this ids are already paid!!")
                 return response
         data = credit_schemas.CreditDuesResponse(total_amount=request.amount, date=str(
-            present_date), customer_id=request.customer_id)
+            common_services.utc_to_tz(present_date)), customer_id=request.customer_id)
         data2 = credit_schemas.FinalDuesPayResponse(
             status=status.HTTP_200_OK, message="credit paid successfully!", data=data)
         return data2
@@ -206,7 +206,7 @@ def pay_overdue_credits(request, db: Session):
         return response
 
 
-def user_credit_request(request, db: Session, background_tasks: BackgroundTasks,confirm):
+def user_credit_request(request, db: Session, background_tasks: BackgroundTasks, confirm):
     user_data = db.query(user_models.User).filter(
         user_models.User.id == request.customer_id).first()
 
@@ -247,8 +247,8 @@ def user_credit_request(request, db: Session, background_tasks: BackgroundTasks,
         else:
             if confirm == False:
                 response = user_schemas.ResponseCommonMessage(
-                    status=status.HTTP_208_ALREADY_REPORTED, 
-                    message = f"You have already requested the credit for the amount of {round(credit_request_check.requested_amount)} SAR. Do you want to change to the newly requested credit amount to {round(request.requested_amount)} SAR?"
+                    status=status.HTTP_208_ALREADY_REPORTED,
+                    message=f"You have already requested the credit for the amount of {round(credit_request_check.requested_amount)} SAR. Do you want to change to the newly requested credit amount to {round(request.requested_amount)} SAR?"
                 )
                 return response
             if confirm == True:
@@ -256,7 +256,7 @@ def user_credit_request(request, db: Session, background_tasks: BackgroundTasks,
                 db.merge(credit_request_check)
                 db.commit()
                 response = user_schemas.ResponseCommonMessage(
-                    status=status.HTTP_200_OK, message = f"The newly requested credit amount of {round(request.requested_amount)} SAR is saved successfully."
+                    status=status.HTTP_200_OK, message=f"The newly requested credit amount of {round(request.requested_amount)} SAR is saved successfully."
                 )
                 return response
     else:
