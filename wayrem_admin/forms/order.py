@@ -122,11 +122,14 @@ class OrderStatusDetailForm(ModelForm):
     def __init__(self, status_id,order_id, *args, **kwargs):
         super().__init__(*args, **kwargs)
         
+        order_status=Orders.objects.filter(id=order_id).first()
+        
         order_transaction=OrderTransactions.objects.filter(order_id=order_id).first()
         if (order_transaction.payment_mode_id == BANKTRANSFER_MODE) and (order_transaction.payment_status_id == PAYMENT_STATUS_PENDING_APPROVAL or order_transaction.payment_status_id == PAYMENT_STATUS_PENDING or order_transaction.payment_status_id == PAYMENT_STATUS_DECLINED or order_transaction.payment_status_id == PAYMENT_STATUS_REJECTED):
             self.fields['status'].widget=Select(attrs={'class': 'form-control form-control-select'})
         else:
             self.fields['status'].widget=forms.Select(attrs={'class': 'form-control form-control-select'})
+        
         if status_id == ORDER_PENDING_APPROVED:
             exclude_status = [OREDER_PENDING_RECURENCE]
         elif status_id == OREDER_PENDING_RECURENCE:
@@ -134,8 +137,12 @@ class OrderStatusDetailForm(ModelForm):
         else:
             exclude_status = [OREDER_PENDING_RECURENCE, ORDER_PENDING_APPROVED]
 
-        order_choices = [(get_users_options.pk, get_users_options.description)
-                         for get_users_options in StatusMaster.objects.filter(status_type=ORDER_STATUS, status=1).exclude(id__in=exclude_status)]
+        if order_status.status.id == ORDER_CANCELLED:
+            order_choices = [(get_users_options.pk, get_users_options.description)
+                             for get_users_options in StatusMaster.objects.filter(status_type=ORDER_STATUS, status=1,id=ORDER_CANCELLED).exclude(id__in=exclude_status)]
+        else:    
+            order_choices = [(get_users_options.pk, get_users_options.description)
+                             for get_users_options in StatusMaster.objects.filter(status_type=ORDER_STATUS, status=1).exclude(id__in=exclude_status)]
         self.fields['status'].choices = order_choices
 
     class Meta:

@@ -53,13 +53,10 @@ class Inventory(models.Model):
         orders = Orders.objects.filter(id=order_id).first()
         order_status = orders.status.id
         order_details = OrderDetails.objects.filter(order=order_id)
-
-        if (order_status == ORDER_STATUS_RECEIVED) or (order_status == ORDER_STATUS_CANCELLED):
-
+        if (order_status == ORDER_STATUS_RECEIVED) or (order_status == ORDER_STATUS_CANCELLED)  or (order_status == ORDER_CANCELLED) :
             for order_detail in order_details:
                 inventory_dict = {'inventory_type_id': 3, 'quantity': order_detail.quantity, 'product_id': order_detail.product.id,
                                   'warehouse_id': order_detail.product.warehouse.id, 'po_id': None, 'supplier_id': None, 'order_id': order_id, 'order_status': order_status}
-
                 if (order_status == ORDER_STATUS_RECEIVED):
                     inventory_dict['inventory_type_id'] = 3
                     inventory_dict['order_status'] = INVENTORY_ORDER_STATUS_ORDERED

@@ -108,7 +108,6 @@ class OrderReferenceExport(View):
 
 
 class OrderExportView(View):
-
     @method_decorator(login_required(login_url='wayrem_admin:root'))
     def get(self, request, **kwargs):
         qs = Orders.objects.annotate(OrderReference=F('ref_number'), OrderDate=F('order_date'), Customer=F('customer__first_name'), Mobile=F('order_phone'), Status=F(
@@ -174,7 +173,6 @@ class OrdersList(LoginPermissionCheckMixin, ListView):
         context['filter_form'] = OrderAdvanceFilterForm(self.request.GET)
         context['status_filter_form'] = OrderStatusFilter(self.request.GET)
         return context
-
 
 class OrderStatusUpdated(LoginRequiredMixin, UpdateView):
     login_url = 'wayrem_admin:root'
@@ -251,9 +249,9 @@ class OrderStatusUpdated(LoginRequiredMixin, UpdateView):
                 OrderTransactions.objects.filter(order=get_id).update(
                     payment_status=payment_status)
                 if obj_stat_instance.id == ORDER_CANCELLED:
-                    t = threading.Thread(
-                        target=self.order_notification_customer, args=(get_id, ORDER_CANCELLED,))
+                    t = threading.Thread(target=self.order_notification_customer, args=(get_id, ORDER_CANCELLED,))
                     t.start()
+
             deliv_obj_stat_instance = StatusMaster.objects.get(id=delivery_status)
             now = datetime.now()
             if log_status:
@@ -289,6 +287,10 @@ class OrderStatusUpdated(LoginRequiredMixin, UpdateView):
                 odl = OrderDeliveryLogs(order_id=get_id, order_status=deliv_obj_stat_instance, order_status_details="status change",
                                         log_date=now, user_id=1, customer_view=deliv_obj_stat_instance.customer_view)
                 odl.save()
+                if obj_stat_instance.id == ORDER_CANCELLED:
+                    t1=threading.Thread(target=self.inventory_update, args=(get_id,))
+                    t1.start()
+                
                 data_dic['message'] = "Status Updated"
                 data_dic['order_status'] = '<span class="badge bg-primary" style="padding: 3px 8px;line-height: 11px;background-color:' + \
                     obj_stat_instance.status_color+' !important">'+obj_stat_instance.name+'</span>'
@@ -306,6 +308,10 @@ class OrderStatusUpdated(LoginRequiredMixin, UpdateView):
         FirebaseLibrary().send_notify(order_id=order_id, order_status=status_id)
         return 1
 
+    def inventory_update(self,order_id):
+        
+        Inventory().order_inventory_process(order_id)
+        return 1
 
 class OrderPaymentStatusUpdated(LoginRequiredMixin, UpdateView):
     login_url = 'wayrem_admin:root'
