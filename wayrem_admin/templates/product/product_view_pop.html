@@ -51,7 +51,7 @@
     <!-- Form -->
     <div class="col-lg-6">
         <div class="form-group mb-4">
-            <label for="name">Quantity<span class="text-danger"><em> {{form.price.error | striptags}} 
+            <label for="name">Available Stock<span class="text-danger"><em> {{form.price.error | striptags}} 
                 </em>
             </span></label>
             <div class="input-group">   
@@ -133,11 +133,10 @@
     <!-- End of Form -->
 </div>
 
-</div>
 
 
 <!-- Form -->
-<div class="col-lg-12">
+<div class="col-lg-12 mb-4">
     <div class="row">
         <div class="col-3">
             <div class="form-group">
@@ -165,4 +164,133 @@
         </div>
     </div>
 </div>
+<div class="row">
+    <div class="col-6">
+        <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#updateQuantity" data-id="{{product.id}}" type="button"><span class="fas fa-boxes mr-2"></span>&nbsp; Add Stock</button>
+    </div>
+    <div class="col-6 text-right">
+        <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#removeQuantity" data-id="{{product.id}}" type="button"><span class="fas fa-dolly-flatbed mr-2"></span>&nbsp; Remove Stock</button>
+    </div>
+</div>
+<!-- Update Quantity Modal start-->
+<div class="modal fade" id="updateQuantity" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add Stock in Inventory</h5>
+                <button type="button" class="btn-close close_modal" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="add_inventory" action="{% url 'wayrem_admin:add_inventory' %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="modal-body">
+                <div class="col-md-12 mb-2">
+                    <div>
+                        <input name="product" type="hidden" class="form-control" value="{{product.id}}" id="product_ids" />
+                        <input name="inventory_type" type="hidden" class="form-control" value="1" id="inventorytype" />
+                        <label for="quantity">Quantity <span class="text-danger">*</span>  <span class="text-danger"></span></label>
+                        <input type="number" name="quantity" min="1" step="1" class="form-control" required="" value="1" id="id_quantity">
+                        <div class="input-group" id="quantity_error_message" style="color: #d12525;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger close_modal" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-dark add_inventory_save">Save</button>
+                
+            </div>
+        </form>
+        </div>
+    </div>
+</div>
+<!-- Update Quantity Modal end-->
+
+<!-- Remove Quantity Modal start-->
+<div class="modal fade" id="removeQuantity" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Remove Stock from Inventory</h5>
+                <button type="button" class="btn-close close_modal" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="remove_inventory" action="{% url 'wayrem_admin:add_inventory' %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="modal-body">
+                <div class="col-md-12 mb-2">
+                    <div>
+                        <input name="product" type="hidden" class="form-control" value="{{product.id}}" id="rem_product_ids" />
+                        <input name="inventory_type" type="hidden" class="form-control" value="5" id="rem_inventorytype" />
+                        <label for="quantity">Quantity <span class="text-danger">*</span>  <span class="text-danger"></span></label>
+                        <input type="number" name="quantity" min="1" step="1" class="form-control mb-2" required="" value="1" id="id_quantity">
+                        
+                        <label for="description">Reason for removal<span class="text-danger">*</span>  <span class="text-danger"></span></label>
+                        <input type="text" name="description"  class="form-control" id="description" required >
+                        <label class="input-group error_field_msg errormsg ">Field is required</label>
+                        <div class="input-group" id="quantity_error_message" style="color: #d12525;"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-dark close_modal" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-danger rem_inventory_save">Remove</button>
+                
+            </div>
+        </form>
+        </div>
+    </div>
+</div>
+<!-- Remove Quantity Modal end-->
+
+<script>
+    // Update Quantity
+    $('#updateQuantity').on('click','.add_inventory_save',function(e){
+        e.preventDefault();
+        url = $("#updateQuantity #add_inventory").attr("action")
+        type_form=$("#updateQuantity #add_inventory").attr("method")
+        data_ser=$("#updateQuantity #add_inventory").serialize()
+        $.ajax({
+            type: type_form,
+            url: url,
+            data: data_ser,
+            cache: false,
+            success: function (data) {
+                $("#product_ids").val("");
+                $('#updateQuantity').modal('hide');
+                location.reload()
+            }
+        })
+    })
+
+    // Remove Quantity
+    $('#removeQuantity').on('click','.rem_inventory_save',function(e){
+        e.preventDefault();
+        var des=$("#description").val().trim()
+        if (!des){
+         $('.errormsg').css('display','contents');
+         return false
+        }else{
+            $('.errormsg').css('display','none');
+        }
+        
+        url = $("#removeQuantity #remove_inventory").attr("action")
+        type_form=$("#removeQuantity #remove_inventory").attr("method")
+        data_ser=$("#removeQuantity #remove_inventory").serialize()
+        $.ajax({
+            type: type_form,
+            url: url,
+            data: data_ser,
+            cache: false,
+            success: function (data) {
+                $("#rem_product_ids").val("");
+                $("#description").val("")
+                $('#removeQuantity').modal('hide');
+                location.reload()
+            }
+        })
+    })
+
+    $('.close_modal').on('click', function (e) {
+        $("#barcode_form").trigger('reset');
+        $("#code").focus();
+      })
+</script>
 {% endif %}

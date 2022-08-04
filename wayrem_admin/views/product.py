@@ -952,7 +952,7 @@ def scan_result(request):
         product = Products.objects.filter(
             gs1=code, is_deleted=False).first()
         form = ProductFormView(instance=product)
-        return render(request, "product/product_view_pop.html", {"form": form, "quantity_unit": product.quantity_unit, "supplier": product.supplier})
+        return render(request, "product/product_view_pop.html", {"form": form, "quantity_unit": product.quantity_unit, "supplier": product.supplier, "product": product})
     except Exception as e:
         print(e)
         return render(request, "product/product_view_pop.html", {"message": "Barcode is not available!!"})
