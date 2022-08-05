@@ -186,7 +186,7 @@ def pay_overdue_credits(request, db: Session):
                         db.commit()
                         user_Credit_data = db.query(credit_models.CreditManagement).filter(
                             credit_models.CreditManagement.customer_id == request.customer_id).first()
-                        user_Credit_data.available = new_available_limit
+                        user_Credit_data.available += amount_to_paid
                         db.merge(user_Credit_data)
                         db.commit()
 
