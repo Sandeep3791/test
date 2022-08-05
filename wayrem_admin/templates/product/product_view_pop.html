@@ -184,7 +184,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Add Stock in Inventory</h5>
-                <button type="button" class="btn-close close_modal" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close" onclick="$('#updateQuantity').modal('hide');" aria-label="Close"></button>
             </div>
             <form id="add_inventory" action="{% url 'wayrem_admin:add_inventory' %}" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
@@ -200,7 +200,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger close_modal" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-danger" onclick="$('#updateQuantity').modal('hide');">Close</button>
                     <button type="submit" class="btn btn-dark add_inventory_save">Save</button>
                 
             </div>
@@ -216,7 +216,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLabel">Remove Stock from Inventory</h5>
-                <button type="button" class="btn-close close_modal" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close close_modal" onclick="$('#removeQuantity').modal('hide');" aria-label="Close"></button>
             </div>
             <form id="remove_inventory" action="{% url 'wayrem_admin:add_inventory' %}" method="POST" enctype="multipart/form-data">
             {% csrf_token %}
@@ -236,7 +236,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-dark close_modal" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-dark" onclick="$('#removeQuantity').modal('hide');">Close</button>
                     <button type="submit" class="btn btn-danger rem_inventory_save">Remove</button>
                 
             </div>
@@ -293,10 +293,5 @@
             }
         })
     })
-
-    $('.close_modal').on('click', function (e) {
-        $("#barcode_form").trigger('reset');
-        $("#code").focus();
-      })
 </script>
 {% endif %}

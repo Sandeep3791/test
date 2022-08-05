@@ -286,9 +286,9 @@ class ProductFormOne(forms.Form):
     publish = forms.BooleanField(
         widget=forms.CheckboxInput(attrs={'class': "form-check-input"}), required=False)
     date_of_mfg = forms.DateField(widget=forms.DateInput(
-        attrs={'class': 'form-control datepicker-input', 'placeholder': "dd/mm/yyyy", 'type': 'date'}), required=False)
+        attrs={'class': 'form-control datepicker-input', 'data-datepicker': True, 'placeholder': "dd/mm/yyyy"}), required=False)
     date_of_exp = forms.DateField(widget=forms.DateInput(
-        attrs={'class': 'form-control datepicker-input', 'placeholder': "dd/mm/yyyy", 'type': 'date'}), required=False)
+        attrs={'class': 'form-control datepicker-input', 'data-datepicker': True, 'placeholder': "dd/mm/yyyy"}), required=False)
     mfr_name = forms.CharField(
         widget=forms.TextInput(attrs={'class': "form-control"}), required=False)
     category = forms.MultipleChoiceField(choices=choices_category, widget=forms.SelectMultiple(
