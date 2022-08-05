@@ -186,10 +186,11 @@ def pay_overdue_credits(request, db: Session):
                         db.commit()
                         user_Credit_data = db.query(credit_models.CreditManagement).filter(
                             credit_models.CreditManagement.customer_id == request.customer_id).first()
-                        user_Credit_data.available += amount_to_paid
+                        available_amt = float(user_Credit_data.available)
+                        user_Credit_data.available = round(
+                            available_amt + float(amount_to_paid), 2)
                         db.merge(user_Credit_data)
                         db.commit()
-
             else:
                 response = user_schemas.ResponseCommonMessage(
                     status=status.HTTP_400_BAD_REQUEST, message="Dues for this ids are already paid!!")
