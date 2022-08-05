@@ -18,20 +18,13 @@
             $('#id_category').select2({
             placeholder: 'Select Category',
             })
-            $('#id_unit, #id_dis_abs_percent').select2({
+            $('#id_unit, #id_dis_abs_percent, #id_weight_unit').select2({
             placeholder: 'Select Unit',
             })
-            
             $('#id_supplier').select2({
             placeholder: 'Select Supplier',
             });
-            $('#id_weight_unit').select2({
-            placeholder: 'Select Category',
-            })
-            $('#id_quantity_unit').select2({
-            placeholder: 'Select Category',
-            })
-            
+            $('#id_quantity_unit').prop("disabled", true);
      });
     </script>
     <script type="text/javascript">
@@ -53,43 +46,6 @@
       });
      </script>
 
-    <!---=========page popup==========-->
-    <div class="modal" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">heading</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="row mb-5">
-                    <div class="col">
-                        <h6>lorem ipsum</h6>
-                    </div>
-
-                    <div class="col">
-                        <h6>lorem ipsum</h6>
-                    </div>
-                </div>
-
-                <div class="row">
-                    <div class="col">
-                        <h6>lorem ipsum</h6>
-                    </div>
-
-                    <div class="col">
-                        <h6>lorem ipsum</h6>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer">
-            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
-            <button type="button ps-4 pe-4" class="btn btn-primary" style="padding: 8px 28px;">Fill</button>
-            </div>
-        </div>
-        </div>
-    </div>
-    <!--==============================-->
     <div class="dashboard_content_inner">
         <div class="topbar_pages">
             <h4 class="text-title">Add Product | Step - 1</h2>
@@ -137,6 +93,18 @@
                             <!-- Form -->
                             <div class="col-lg-6">
                                 <div class="form-group mb-4">
+                                    <label for="name">Add Barcode <span class="text-danger">*</span> <span class="text-danger"><em> {{form.barcode.errors | striptags}}
+                                    </em></span></label>
+                                    <div class="input-group input_border">   
+                                        {{form.barcode}}
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                            <!-- End of Form -->
+                            <!-- Form -->
+                            <div class="col-lg-6">
+                                <div class="form-group mb-4">
                                     <label for="name">SKU <span class="text-danger">*</span> <span class="text-danger"><em> {{form.SKU.errors | striptags}}
                                     </em></span></label>
                                     <div class="input-group input_border">   
@@ -147,6 +115,10 @@
                                 </div>
                             </div>
                             <!-- End of Form -->
+
+                            
+                        </div>
+                        <div class="row">
 
                             <!-- Form -->
                             <div class="col-lg-6">
@@ -162,25 +134,7 @@
                                 </div>
                             </div>
                             <!-- End of Form -->
-                        </div>
-                        <div class="row">
-                            <!-- Form -->
-                            <div class="col-lg-6">
-                                <div class="form-group mb-4">
-                                
-                                    <label for="description">Product Category  <span class="text-danger">
-                                        <em> {{form.category.errors | striptags}}
-                                        </em>
-                                    </span></label>
-                                    <div class="input-group">
-                                        
-                                        {{form.category}}
-                                        
-                                    </div>
-                                    
-                                </div>
-                            </div>
-                            <!-- End of Form -->
+                            
 
                             <!-- Form -->
                             <div class="col-lg-6">
@@ -199,7 +153,26 @@
                                 </div>
                             </div>
                             <!-- End of Form -->
-                            
+                        </div>
+                        <div class="row">
+
+                            <!-- Form -->
+                            <div class="col-lg-6">
+                                <div class="form-group mb-4">
+                                
+                                    <label for="description">Product Category  <span class="text-danger">
+                                        <em> {{form.category.errors | striptags}}
+                                        </em>
+                                    </span></label>
+                                    <div class="input-group">
+                                        
+                                        {{form.category}}
+                                        
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                            <!-- End of Form -->
                             <!-- Form -->
                             <div class="col-lg-6">
                                 <div class="form-group mb-4">
@@ -215,7 +188,6 @@
                                 </div>
                             </div>
                             <!-- End of Form -->
-                            
                         </div>
                         <div class="row">
                             <!-- Form -->
@@ -804,8 +776,13 @@
         $("#id_product_code").focusout(function() {
             check_productCode();
         });
+        $("#id_weight_unit").change(function () {
+            var end = this.value;
+            $('#id_quantity_unit').val(end);
+            $('#id_quantity_unit').trigger('change');
+            });
         
-       
+    });
    
    
     function check_sku() {

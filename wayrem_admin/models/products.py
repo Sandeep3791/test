@@ -36,6 +36,8 @@ class Products(models.Model):
     id = models.IntegerField(primary_key=True, unique=True)
     name = models.CharField(max_length=255, null=True, blank=False)
     SKU = models.CharField(max_length=255, null=True, blank=False, unique=True)
+    barcode = models.CharField(
+        max_length=255, null=True, blank=True, unique=True)
     category = models.ManyToManyField('Categories')
     # product_code = models.CharField(max_length=255, null=True)
     meta_key = models.TextField(null=True, blank=True)

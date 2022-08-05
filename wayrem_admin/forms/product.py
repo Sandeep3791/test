@@ -124,7 +124,7 @@ class ProductFormView(forms.ModelForm):
     class Meta:
         model = Products
         fields = ("name", "SKU", "category", "meta_key", "feature_product", "publish", "date_of_mfg", "date_of_exp", "mfr_name", "supplier",
-                  "dis_abs_percent", "description", "quantity", "quantity_unit", "weight", "weight_unit", "price", "discount", "package_count", "wayrem_margin", "margin_unit", "primary_image", "warehouse", "inventory_starting", "inventory_received", "inventory_shipped", "inventory_cancelled", "inventory_onhand", "outofstock_threshold")
+                  "dis_abs_percent", "description", "quantity", "quantity_unit", "weight", "weight_unit", "price", "discount", "package_count", "wayrem_margin", "margin_unit", "primary_image", "warehouse", "inventory_starting", "inventory_received", "inventory_shipped", "inventory_cancelled", "inventory_removed", "inventory_onhand", "outofstock_threshold")
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
@@ -155,6 +155,7 @@ class ProductFormView(forms.ModelForm):
             'inventory_received': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'True'}),
             'inventory_shipped': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'True'}),
             'inventory_cancelled': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'True'}),
+            'inventory_removed': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'True'}),
             'outofstock_threshold': forms.NumberInput(attrs={'class': "form-control"}),
         }
 
@@ -163,12 +164,13 @@ class ProductFormImageView(forms.ModelForm):
 
     class Meta:
         model = Products
-        fields = ("name", "SKU", "category", "meta_key", "feature_product", "publish", "date_of_mfg", "date_of_exp", "mfr_name", "supplier",
-                  "dis_abs_percent", "description", "warehouse", "quantity", "inventory_starting", "inventory_received", "inventory_shipped", "inventory_cancelled", "outofstock_threshold", "quantity_unit", "weight", "weight_unit", "price", "discount", "package_count", "wayrem_margin", "margin_unit", "primary_image", "featured_image")
+        fields = ("name", "SKU", "barcode", "category", "meta_key", "feature_product", "publish", "date_of_mfg", "date_of_exp", "mfr_name", "supplier",
+                  "dis_abs_percent", "description", "warehouse", "quantity", "inventory_starting", "inventory_received", "inventory_shipped", "inventory_cancelled", "inventory_removed", "outofstock_threshold", "quantity_unit", "weight", "weight_unit", "price", "discount", "package_count", "wayrem_margin", "margin_unit", "primary_image", "featured_image")
 
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'SKU': forms.TextInput(attrs={'class': 'form-control', 'readonly': True}),
+            'barcode': forms.TextInput(attrs={'class': 'form-control'}),
             # 'product_code': forms.TextInput(attrs={'class': 'form-control'}),
             'meta_key': forms.Textarea(attrs={'class': "form-control", 'rows': '3'}),
             'feature_product': forms.CheckboxInput(attrs={'class': "form-check-input"}),
@@ -184,6 +186,7 @@ class ProductFormImageView(forms.ModelForm):
             'inventory_received': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'True'}),
             'inventory_shipped': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'True'}),
             'inventory_cancelled': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'True'}),
+            'inventory_removed': forms.TextInput(attrs={'class': 'form-control', 'readonly': 'True'}),
             'outofstock_threshold': forms.NumberInput(attrs={'class': "form-control"}),
             'quantity_unit': forms.Select(attrs={'class': 'form-select'}),
             'weight': forms.NumberInput(attrs={'class': 'form-control'}),
@@ -272,6 +275,8 @@ choices_warehouse = get_warehouse
 
 
 class ProductFormOne(forms.Form):
+    barcode = forms.CharField(widget=forms.TextInput(
+        attrs={'class': "form-control"}))
     SKU = forms.CharField(widget=forms.TextInput(
         attrs={'class': "form-control"}))
     name = forms.CharField(
@@ -342,6 +347,12 @@ class ProductFormOne(forms.Form):
         if Products.objects.filter(SKU=SKU).exists():
             raise forms.ValidationError("SKU already Exists!")
         return SKU
+
+    def clean_barcode(self):
+        barcode = self.cleaned_data.get("barcode")
+        if Products.objects.filter(barcode=barcode).exists():
+            raise forms.ValidationError("Barcode already Exists!")
+        return barcode
 
 
 # Advance Filters

@@ -21,6 +21,10 @@
             $('#id_supplier').select2({
             placeholder: 'Select Supplier',
             });
+            $('#id_unit, #id_dis_abs_percent, #id_weight_unit').select2({
+                placeholder: 'Select Unit',
+                })
+            $('#id_quantity_unit').prop("disabled", true);
      });
     </script>
     <script type="text/javascript">
@@ -65,43 +69,7 @@
             </nav>
         </div>
 </div>
- <!---=========page popup==========-->
- <div class="modal" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">heading</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-            <div class="row mb-5">
-                <div class="col">
-                    <h6>lorem ipsum</h6>
-                </div>
-
-                <div class="col">
-                    <h6>lorem ipsum</h6>
-                </div>
-            </div>
-
-            <div class="row">
-                <div class="col">
-                    <h6>lorem ipsum</h6>
-                </div>
-
-                <div class="col">
-                    <h6>lorem ipsum</h6>
-                </div>
-            </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cancel</button>
-          <button type="button ps-4 pe-4" class="btn btn-primary" style="padding: 8px 28px;">Fill</button>
-        </div>
-      </div>
-    </div>
-  </div>
-    <!--==============================-->
+ 
     <div class="row justify-content-center form-bg-image mt-5 px-3">
         <div class="col-12 d-flex align-items-center justify-content-center">
             
@@ -140,6 +108,19 @@
                         <!-- Form -->
                         <div class="col-lg-6">
                             <div class="form-group mb-4">
+                                <label for="name">Add Barcode <span class="text-danger">*</span> <span class="text-danger"><em> {{form.barcode.errors | striptags}}
+                                </em></span></label>
+                                <div class="input-group input_border">   
+                                    {{form.barcode}}
+                                    <div class="input-group" id="sku_error_message" style="color: #d12525;"></div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <!-- End of Form -->
+                        <!-- Form -->
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
                                 <label for="name">SKU <span class="text-danger">*</span> <span class="text-danger"><em> {{form.SKU.errors | striptags}}
                                 </em></span></label>
                                 <div class="input-group input_border">   
@@ -151,6 +132,8 @@
                         </div>
                         <!-- End of Form -->
 
+                    </div>
+                    <div class="row">
                         <!-- Form -->
                         <div class="col-lg-6">
                             <div class="form-group mb-4">
@@ -165,27 +148,6 @@
                             </div>
                         </div>
                         <!-- End of Form -->
-                    </div>
-                    <div class="row">
-                        
-                        
-                        <!-- Form -->
-                        <div class="col-lg-6">
-                            <div class="form-group mb-4">
-                            
-                                <label for="description">Product Category  <span class="text-danger">
-                                    <em> {{form.category.errors | striptags}}
-                                    </em>
-                                </span></label>
-                                <div class="input-group">
-                                    
-                                    {{form.category}}
-                                </div>
-                                
-                            </div>
-                        </div>
-                        <!-- End of Form -->
-
                         <!-- Form -->
                         <div class="col-lg-6">
                             <div class="form-group mb-4 col-gap">
@@ -202,8 +164,25 @@
                                 <span class="text-error"></span>
                             </div>
                         </div>
+                        <!-- End of Form -->    
+                    </div>
+                    <div class="row">
+                        <!-- Form -->
+                        <div class="col-lg-6">
+                            <div class="form-group mb-4">
+                            
+                                <label for="description">Product Category  <span class="text-danger">
+                                    <em> {{form.category.errors | striptags}}
+                                    </em>
+                                </span></label>
+                                <div class="input-group">
+                                    
+                                    {{form.category}}
+                                </div>
+                                
+                            </div>
+                        </div>
                         <!-- End of Form -->
-                        
                         <!-- Form -->
                         <div class="col-lg-6">
                             <div class="form-group mb-4">
@@ -219,10 +198,7 @@
                             </div>
                         </div>
                         <!-- End of Form -->
-                        
                     </div>
-
-                    
                     
                     <div class="row">
                         <!-- Form -->
@@ -353,10 +329,10 @@
                             </div>
 
                         <div class="form-group mb-4">
-                            <label for="name">Product Quantity <span class="text-danger">*</span><span class="text-danger"><em> {{form.quantity.errors | striptags}}
+                            <label for="name">Available stock <span class="text-danger">*</span><span class="text-danger"><em> {{form.quantity.errors | striptags}}
                             </em>
                             </span></label>
-                            <label for="id_weight_unit" style="margin-left: 53%;">Unit <span class="text-danger"> <em> {{form.quantity_unit.errors | striptags}}
+                            <label for="id_weight_unit" style="margin-left: 55%;">Unit <span class="text-danger"> <em> {{form.quantity_unit.errors | striptags}}
                             </em></span></label>
                             <div class="input-group">   
                                 <div class="w-75 px-2">
@@ -390,33 +366,39 @@
 
                     <!-- Form -->
                     <div class="col-lg-12">
-                    <div class="row">
-                        <div class="col-3">
-                            <div class="form-group">
-                                <label >Starting Inventory  <span class="text-danger"><em> {{form.inventory_starting.errors | striptags}}
-                                </em></span></label>
-                                <div class="">{{form.inventory_starting}}</div>
+                        <div class="row">
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label >Starting Inventory  <span class="text-danger"><em> {{form.inventory_starting.errors | striptags}}
+                                    </em></span></label>
+                                    <div class="">{{form.inventory_starting}}</div>
+                                </div>
+                            </div>
+                            <div class="col-3">
+                                <div class="form-group">
+                                    <label >Shipped Inventory</label>
+                                    <div class="">{{form.inventory_shipped}}</div>
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <div class="form-group">
+                                    <label >Received Inventory</label>
+                                    <div class="">{{form.inventory_received}}</div>
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <div class="form-group">
+                                    <label >Removed Inventory</label>
+                                    <div class="">{{form.inventory_removed}}</div>
+                                </div>
+                            </div>
+                            <div class="col-2">
+                                <div class="form-group">
+                                    <label >Cancelled Inventory</label>
+                                    <div class="">{{form.inventory_cancelled}}</div>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-3">
-                            <div class="form-group">
-                                <label >Received Inventory</label>
-                                <div class="">{{form.inventory_received}}</div>
-                            </div>
-                        </div>
-                        <div class="col-3">
-                            <div class="form-group">
-                                <label >Shipped Inventory</label>
-                                <div class="">{{form.inventory_shipped}}</div>
-                            </div>
-                        </div>
-                        <div class="col-3">
-                            <div class="form-group">
-                                <label >Cancelled Inventory</label>
-                                <div class="">{{form.inventory_cancelled}}</div>
-                            </div>
-                        </div>
-                    </div>
                     </div>
                     
                     <div class="col-lg-12">
@@ -1044,6 +1026,12 @@
    
    
    });
+
+   $("#id_weight_unit").change(function () {
+    var end = this.value;
+    $('#id_quantity_unit').val(end);
+    $('#id_quantity_unit').trigger('change');
+    });
    
 </script>
 {% endblock javascripts %}

@@ -162,7 +162,7 @@ def load_category_margin(request):
 @permission_required('product_management.create_product_list', raise_exception=True)
 def product_view_one(request):
     initial = {
-        'SKU': request.session.get("SKU", None),
+        'barcode': request.session.get("gs1", None),
         'name': request.session.get("name", None),
         'category': request.session.get("category", None),
         'meta_key': request.session.get("meta_key", None),
@@ -178,7 +178,7 @@ def product_view_one(request):
         'quantity': request.session.get("quantity", None),
         'weight': request.session.get("weight", None),
         'weight_unit': request.session.get("weight_unit", None),
-        'quantity_unit': request.session.get("quantity_unit", None),
+        # 'quantity_unit': request.session.get("quantity_unit", None),
         'price': request.session.get("price", None),
         'discount': request.session.get("discount", None),
         'package_count': request.session.get("package_count", None),
@@ -200,6 +200,7 @@ def product_view_one(request):
         if form.is_valid() and formset.is_valid():
             # product = form.save()
             request.session["SKU"] = form.cleaned_data.get("SKU")
+            request.session["barcode"] = form.cleaned_data.get("barcode")
             request.session["name"] = form.cleaned_data.get("name")
             request.session["category"] = form.cleaned_data.get("category")
             request.session["meta_key"] = form.cleaned_data.get("meta_key")
@@ -272,6 +273,7 @@ def product_images(request):
             obj = Products()
             obj.id = request.session.get('product_pk')
             obj.SKU = request.session.get("SKU", None)
+            obj.barcode = request.session.get("barcode", None)
             obj.name = request.session.get("name", None)
             obj.meta_key = request.session.get("meta_key", None)
             obj.feature_product = request.session.get("feature_product", None)
@@ -289,7 +291,7 @@ def product_images(request):
             obj.description = request.session.get("description", None)
             obj.quantity = request.session.get("quantity", None)
             obj.quantity_unit = inst_Unit(
-                request.session.get("quantity_unit", None))
+                request.session.get("weight_unit", None))
             obj.weight = request.session.get("weight", None)
             obj.weight_unit = inst_Unit(
                 request.session.get("weight_unit", None))
@@ -373,7 +375,9 @@ def update_product(request, id=None, *args, **kwargs):
         # request.POST or None, request.FILES or None)
         if form.is_valid() and form1.is_valid() and form3.is_valid():
             ingrd.delete()
-            form.save()
+            prod = form.save(commit=False)
+            prod.quantity_unit = prod.weight_unit
+            prod.save()
             for form in form1.forms:
                 obj = ProductIngredients()
                 obj.product = id
@@ -950,7 +954,7 @@ def scan_result(request):
     try:
         code = request.GET.get("barcode")
         product = Products.objects.filter(
-            gs1=code, is_deleted=False).first()
+            barcode=code, is_deleted=False).first()
         form = ProductFormView(instance=product)
         return render(request, "product/product_view_pop.html", {"form": form, "quantity_unit": product.quantity_unit, "supplier": product.supplier, "product": product})
     except Exception as e:
