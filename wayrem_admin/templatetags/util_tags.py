@@ -126,3 +126,11 @@ def transaction_type(transaction_type_id):
         return "Dr"
     else:
         return "Cr"
+
+@register.filter(name="get_order_reference")
+def get_order_reference(order_id):
+    order_details=Orders.objects.filter(id=order_id).first()
+    if order_details is not None:
+        return order_details.ref_number 
+    else:
+        return ""
