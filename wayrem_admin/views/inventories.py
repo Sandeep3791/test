@@ -77,6 +77,12 @@ class InventoriesList(LoginPermissionCheckMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(InventoriesList, self).get_context_data(**kwargs)
         context['filter_form'] = InventoryAdvanceFilterForm(self.request.GET)
+        
+        if self.request.META['QUERY_STRING']:
+            qs=self.request.META['QUERY_STRING']
+            context['qs']="?"+qs
+        else:
+            context['qs']=""
         return context
 
 
@@ -152,4 +158,10 @@ class InventoryView(LoginPermissionCheckMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         inventory_pk = self.kwargs['inventory_pk']
         context['inventory_pk'] = inventory_pk
+        context['inventory'] = Inventory.objects.filter(id=inventory_pk).first()
+        if self.request.META['QUERY_STRING']:
+            qs=self.request.META['QUERY_STRING']
+            context['qs']="?"+qs
+        else:
+            context['qs']=""
         return context

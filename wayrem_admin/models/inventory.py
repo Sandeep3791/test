@@ -97,6 +97,7 @@ class Inventory(models.Model):
             inventory_received = 0
             inventory_shipped = 0
             inventory_cancelled = 0
+            removed_inventory = 0
             product_type = Inventory.objects.annotate(inventory_quantity=Sum('quantity')).values(
                 'inventory_type', 'inventory_quantity').filter(product=product_id).order_by('inventory_type_id')
             product_type.query.group_by = [('inventory_type')]
@@ -104,7 +105,11 @@ class Inventory(models.Model):
                 quantity = quantity_cal['inventory_quantity']
                 if quantity_cal['inventory_type'] == 3 or quantity_cal['inventory_type'] == 5:
                     total_quantity -= quantity
-                    inventory_shipped = quantity
+                    if quantity_cal['inventory_type'] == 3:
+                        inventory_shipped = quantity
+                    else:
+                        removed_inventory = quantity
+                    
                 else:
                     total_quantity += quantity
                     if quantity_cal['inventory_type'] == 1:
@@ -114,7 +119,7 @@ class Inventory(models.Model):
                     else:
                         inventory_cancelled = quantity
             Products.objects.filter(id=product_id).update(quantity=total_quantity, inventory_starting=inventory_starting, inventory_received=inventory_received,
-                                                          inventory_shipped=inventory_shipped, inventory_cancelled=inventory_cancelled, inventory_onhand=total_quantity)
+                                                          inventory_shipped=inventory_shipped, inventory_cancelled=inventory_cancelled, inventory_onhand=total_quantity,inventory_removed=removed_inventory)
         except:
             print("An exception occurred")
 
@@ -123,6 +128,7 @@ class Inventory(models.Model):
         starting_inventory = 0
         received_inventory = 0
         shipped_inventory = 0
+        removed_inventory = 0
         for inventory in Inventory.objects.filter(product=product):
             if inventory.inventory_type == 'Starting':
                 starting_inventory += inventory.quantity

@@ -1,7 +1,7 @@
-
 {% extends "layouts/base.html" %}
+{% load static util_tags %}
 {% load widget_tweaks %}
-{% block title %} Add Inventory {% endblock %} 
+{% block title %} View Inventory {% endblock %} 
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
@@ -28,14 +28,36 @@
                 <form action="{% url 'wayrem_admin:update_inventory' inventory_pk %}" method="POST" enctype="multipart/form-data" validate>
                   {% csrf_token %}
                     <div class="row">
-                      <div class="col-md-6 mb-2">
+                        <div class="col-md-6 mb-2">
                             <div>
-                                <label for="product">Product <span class="text-danger"><em>{{form.product.errors | striptags}}</em></span></label>
-                                <input type="text" name="product" value="{{form.instance.product.SKU}}" class="form-control" readonly>
-                                <div class="input-group" id="name_error_message" style="color: #d12525;"></div>
+                                <label for="sku">Sku <span class="text-danger"><em>{{form.product.errors | striptags}}</em></span></label>
+                                <input type="text" name="product" value="{{form.instance.product.SKU}}" class="form-control sku" readonly>
+                                
                             </div>
                         </div>
-    
+                        
+                        <div class="col-md-6 mb-2">
+                            <div>
+                                <label for="key">Product  <span class="text-danger"><em>{{form.quantity.errors | striptags}}</em></span></label>
+                                <input type="text" name="product" value="{{form.instance.product.name}}" class="form-control" readonly>
+                                <div class="input-group" id="from_email_error_message" style="color: #d12525;"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 mb-2">
+                            <div>
+                                <label for="brand">Brand</label>
+                                <input type="text" name="product" value="{{form.instance.product.mfr_name}}" class="form-control" readonly>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 mb-2">
+                            <div>
+                                <label for="brand">Available stock</label>
+                                <input type="text" name="product" value="{{form.instance.product.quantity}}" class="form-control" readonly>
+                            </div>
+                        </div>
+
                         <div class="col-md-6 mb-2">
                             <div>
                                 <label for="key">Quantity  <span class="text-danger"><em>{{form.quantity.errors | striptags}}</em></span></label>
@@ -44,16 +66,30 @@
                             </div>
                         </div>
     
-                        <div class="col-md-12 mb-2">
+                        <div class="col-md-6 mb-2">
                             <div>
                                 <label for="inventory_type">Inventory Type  <span class="text-danger"><em>{{form.inventory_type.errors | striptags}}</em></span></label>
                                 {{form.inventory_type|attr:'disabled: true'}}
                                 <div class="input-group" id="from_email_error_message" style="color: #d12525;"></div>
                             </div>
                         </div>
-    
+                        {% if inventory.inventory_type.id == 5 %}
+                        <div class="col-md-6 mb-2">
+                            <div>
+                                <label for="description">Description</label>
+                                <input type="text" name="product" value="{{inventory.description}}" class="form-control" readonly>
+                                <div class="input-group" id="from_email_error_message" style="color: #d12525;"></div>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% if inventory.order_id %}
+                        <div class="col-md-6 mb-2">
+                                <label for="description">Order Refernce no.</label>
+                                <input type="text" name="product" value="{{inventory.order_id|get_order_reference}}" class="form-control" readonly>
+                        </div>
+                        {% endif %}
                         <div class="mt-3">
-                        <a href="{% url 'wayrem_admin:inventories' %}" class="btn  btn-dark btn-block col-xl-3 col-md-5 col-12">Back</a>
+                        <a href="{% url 'wayrem_admin:inventories' %}{{qs}}" class="btn  btn-dark btn-block col-xl-3 col-md-5 col-12">Back</a>
                     </div>
                     </div>
                 </form>
