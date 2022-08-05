@@ -75,6 +75,7 @@ class Products(models.Model):
     inventory_shipped = models.SmallIntegerField(default=0)
     inventory_cancelled = models.SmallIntegerField(default=0)
     inventory_onhand = models.SmallIntegerField(default=0)
+    inventory_removed = models.SmallIntegerField(default=0)
     outofstock_threshold = models.SmallIntegerField(
         default=0, null=True, blank=True,)
     is_deleted = models.BooleanField(default=False)
