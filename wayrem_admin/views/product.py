@@ -63,6 +63,7 @@ def product_excel(request):
     excel_cols = {
         'sku': df_pc['SKU'],
         'name': df_pc['name'],
+        'category': df_pc['categories'],
         'manufacturer  name': df_pc['mfr_name'],
         'size': df_pc['weight'],
         'size unit': weight_unit,
@@ -246,7 +247,7 @@ def product_view_one(request):
         'quantity': request.session.get("quantity", None),
         'weight': request.session.get("weight", None),
         'weight_unit': request.session.get("weight_unit", None),
-        # 'quantity_unit': request.session.get("quantity_unit", None),
+        'quantity_unit': request.session.get("weight_unit", None),
         'price': request.session.get("price", None),
         'discount': request.session.get("discount", None),
         'package_count': request.session.get("package_count", None),
@@ -288,7 +289,7 @@ def product_view_one(request):
             request.session["warehouse"] = form.cleaned_data.get("warehouse")
             request.session["quantity"] = form.cleaned_data.get("quantity")
             request.session["quantity_unit"] = form.cleaned_data.get(
-                "quantity_unit")
+                "weight_unit")
             request.session["weight"] = form.cleaned_data.get("weight")
             request.session["weight_unit"] = form.cleaned_data.get(
                 "weight_unit")
