@@ -276,7 +276,7 @@ choices_warehouse = get_warehouse
 
 class ProductFormOne(forms.Form):
     barcode = forms.CharField(widget=forms.TextInput(
-        attrs={'class': "form-control"}))
+        attrs={'class': "form-control"}), required=False)
     SKU = forms.CharField(widget=forms.TextInput(
         attrs={'class': "form-control"}))
     name = forms.CharField(
@@ -322,7 +322,7 @@ class ProductFormOne(forms.Form):
     quantity = forms.IntegerField(
         widget=forms.NumberInput(attrs={'class': "form-control"}), min_value=0)
     quantity_unit = forms.ChoiceField(choices=choices_unit, widget=forms.Select(
-        attrs={'class': 'form-select'}))
+        attrs={'class': 'form-select'}), required=False)
     outofstock_threshold = forms.IntegerField(
         widget=forms.NumberInput(attrs={'class': "form-control", 'min': 0}), required=False, min_value=0)
 
