@@ -31,10 +31,78 @@ from django.forms import formset_factory
 from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.contrib.auth.decorators import permission_required
+from io import BytesIO
 
 
 def product_excel(request):
-    return generate_excel("products_master", "products")
+    con = connect(user=DATABASES['default']['USER'], password=DATABASES['default']['PASSWORD'],
+                  host=DATABASES['default']['HOST'], database=DATABASES['default']['NAME'])
+    df = pd.DataFrame()
+    df_pm = pd.read_sql(
+        f'select * from products_master where is_deleted=False', con)
+    df_um = pd.read_sql(f'select * from unit_master', con)
+    df_cm = pd.read_sql(f'select * from categories_master', con)
+    df_pmc = pd.read_sql(f'select * from products_master_category', con)
+    df_pcm = pd.merge(df_pmc, df_cm, left_on='categories_id', right_on='id')
+    df_pcm = df_pcm[['products_id', 'name']]
+    df_pcm = df_pcm.groupby('products_id', sort=False).name.apply(
+        ', '.join).reset_index(name='categories')
+    df_pc = pd.merge(df_pm, df_pcm, left_on='id', right_on='products_id')
+    df_weight_unit = pd.merge(
+        df_pc, df_um, left_on='weight_unit_id', right_on='id')
+    df_quantity_unit = pd.merge(
+        df_pc, df_um, left_on='quantity_unit_id', right_on='id')
+    df_pc['feature_product'] = df_pc['feature_product'].astype(bool)
+    df_pc['publish'] = df_pc['publish'].astype(bool)
+    df_pc['package_count'] = df_pc['package_count'].replace(
+        {'True': True, 'False': False})
+    # df_pc['date_of_exp'] = pd.to_datetime(df_pc['date_of_exp'])
+    # df_pc['date_of_mfg'] = pd.to_datetime(df_pc['date_of_mfg'])
+    weight_unit = df_weight_unit['unit_name']
+    quantity_unit = df_quantity_unit['unit_name']
+    excel_cols = {
+        'sku': df_pc['SKU'],
+        'name': df_pc['name'],
+        'manufacturer  name': df_pc['mfr_name'],
+        'size': df_pc['weight'],
+        'size unit': weight_unit,
+        'available stock': df_pc['quantity'],
+        'stock unit': quantity_unit,
+        'starting inventory': df_pc['inventory_starting'],
+        'shipped inventory': df_pc['inventory_shipped'],
+        'received inventory': df_pc['inventory_received'],
+        'removed inventory': df_pc['inventory_removed'],
+        'cancelled inventory': df_pc['inventory_cancelled'],
+        'date of manufacture': df_pc['date_of_mfg'],
+        'date of expiry': df_pc['date_of_exp'],
+        'price (in SAR)': df_pc['price'],
+        'discount': df_pc['discount'],
+        'discount unit': df_pc['dis_abs_percent'],
+        'margin': df_pc['wayrem_margin'],
+        'margin unit': df_pc['margin_unit'],
+        'meta key': df_pc['meta_key'],
+        'description': df_pc['description'],
+        'outOfStock threshold': df_pc['outofstock_threshold'],
+        'featured product': df_pc['feature_product'],
+        'publish': df_pc['publish'],
+        'package': df_pc['package_count'],
+        'barcode': df_pc['barcode'],
+    }
+    df = df.assign(**excel_cols)
+    print(df)
+    with BytesIO() as b:
+        # Use the StringIO object as the filehandle.
+        writer = pd.ExcelWriter(b, engine='xlsxwriter')
+        df.to_excel(writer, sheet_name='Sheet1', index=False)
+        writer.save()
+        # Set up the Http response.
+        filename = 'products.xlsx'
+        response = HttpResponse(
+            b.getvalue(),
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        response['Content-Disposition'] = 'attachment; filename=%s' % filename
+        return response
 
 
 @permission_required('product_management.create_product_list', raise_exception=True)
@@ -375,7 +443,7 @@ def update_product(request, id=None, *args, **kwargs):
         # request.POST or None, request.FILES or None)
         if form.is_valid() and form1.is_valid() and form3.is_valid():
             ingrd.delete()
-            prod = form.save(commit=False)
+            prod = form.save()
             prod.quantity_unit = prod.weight_unit
             prod.save()
             for form in form1.forms:
