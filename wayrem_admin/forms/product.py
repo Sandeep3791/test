@@ -292,7 +292,7 @@ class ProductFormOne(forms.Form):
     mfr_name = forms.CharField(
         widget=forms.TextInput(attrs={'class': "form-control"}), required=False)
     category = forms.MultipleChoiceField(choices=choices_category, widget=forms.SelectMultiple(
-        attrs={'class': 'form-control'}), required=False)
+        attrs={'class': 'form-control'}), required=True)
     supplier = forms.MultipleChoiceField(
         choices=choices_role, widget=forms.SelectMultiple(attrs={'class': 'form-control'}), required=False)
     weight = forms.CharField(
