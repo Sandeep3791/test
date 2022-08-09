@@ -43,21 +43,18 @@
                     <br />
                     
                 </div>
-                <form action="{% url 'wayrem_admin:product_barcode' %}" id="barcode_form" method="post">
-                    {% csrf_token %}
                     <!-- Form -->
                     <div class="form-group mb-4">
                         <label for="code">Scan Barcode </label>
                         <div class="input-group">
                             <span class="input-group-text" id="basic-addon1"><span
                                     class="fas fa-barcode"></span></span>
-                            <input type="text" onkeyup="lowestFunc()" placeholder="Barcode Number" class="form-control" id="code" autofocus required
+                            <input type="text" onchange="lowestFunc()" placeholder="Barcode Number" class="form-control" id="code" autofocus required
                                 name="barcode" aria-describedby="emailHelp">
                         </div>
                     </div>
                     <!-- End of Form -->
                    
-                </form>
             </div>
         </div>
     </div>
@@ -101,11 +98,13 @@
 <script>
     $('#close_btn').on('click', function () {
         $("#barData").modal('hide');
-        $("#barcode_form").trigger('reset');
+        //$("#barcode_form").trigger('reset');
+        $("#code").val('');
         $("#code").focus();
     })
     $('.close_modal').on('click', function (e) {
-        $("#barcode_form").trigger('reset');
+        //$("#barcode_form").trigger('reset');
+        $("#code").val('');
         $("#code").focus();
       })
 

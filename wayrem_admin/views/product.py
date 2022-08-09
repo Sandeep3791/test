@@ -1007,16 +1007,16 @@ class BarcodeProduct(View):
     def get(self, request):
         return render(request, self.template_name)
 
-    def post(self, request):
-        try:
-            code = request.POST.get("barcode")
-            product = Products.objects.filter(
-                gs1=code, is_deleted=False).first()
-            return render(request, "product/product_view_pop.html", {"product": product})
-        except Exception as e:
-            print(e)
-            messages.error(request, "No match found!!")
-            return redirect('wayrem_admin:product_barcode')
+    # def post(self, request):
+    #     try:
+    #         code = request.POST.get("barcode")
+    #         product = Products.objects.filter(
+    #             gs1=code, is_deleted=False).first()
+    #         return render(request, "product/product_view_pop.html", {"product": product})
+    #     except Exception as e:
+    #         print(e)
+    #         messages.error(request, "No match found!!")
+    #         return redirect('wayrem_admin:product_barcode')
 
 
 def scan_result(request):
