@@ -68,7 +68,7 @@ class ProfileUpdateForm(forms.ModelForm):
     class Meta:
         model = Users
         fields = ("first_name", "last_name", "email", "contact",
-                  "gender", "role", "dob", "address", "city", "zip_code")
+                  "gender", "dob", "address", "city", "zip_code")
 
         widgets = {
             'first_name': forms.TextInput(attrs={'class': 'form-control'}),
