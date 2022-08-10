@@ -110,7 +110,7 @@ def customer_user(request, authorize: AuthJWT, db: Session, background_tasks: Ba
             body = em_Data.message_format
 
         emails_query = db.execute(
-            f"SELECT email FROM {constants.Database_name}.users_master where role_id in (SELECT role_id FROM {constants.Database_name}.role_permissions where function_id = (SELECT id FROM {constants.Database_name}.function_master where codename = 'customer.approve')) ")
+            f"SELECT email FROM {constants.Database_name}.users_master where is_superuser=True or role_id in (SELECT role_id FROM {constants.Database_name}.role_permissions where function_id = (SELECT id FROM {constants.Database_name}.function_master where codename = 'customer.approve')) ")
 
         raw_email_data = emails_query.mappings().all()
         email_list = []
@@ -308,7 +308,7 @@ def customer_registration_docs(customer_id, registration_docs, tax_docs, marrof_
             body = em_Data.message_format
 
         emails_query = db.execute(
-            f"SELECT email FROM {constants.Database_name}.users_master where role_id in (SELECT role_id FROM {constants.Database_name}.role_permissions where function_id = (SELECT id FROM {constants.Database_name}.function_master where codename = 'customer.approve')) ")
+            f"SELECT email FROM {constants.Database_name}.users_master where is_superuser=True or role_id in (SELECT role_id FROM {constants.Database_name}.role_permissions where function_id = (SELECT id FROM {constants.Database_name}.function_master where codename = 'customer.approve')) ")
         raw_email_data = emails_query.mappings().all()
         email_list = []
         for i in range(len(raw_email_data)):
