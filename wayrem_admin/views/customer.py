@@ -1,3 +1,4 @@
+import re
 from django.views.generic.edit import CreateView
 from requests import request
 from wayrem_admin.forms.customers import CreditsAssignForm
@@ -12,6 +13,7 @@ from django.http import HttpResponse
 import json
 from wayrem_admin.forecasts.firebase_notify import FirebaseLibrary
 from wayrem_admin.models import CreditSettings
+from wayrem_admin.models.orders import Orders
 from wayrem_admin.services import send_email
 from wayrem_admin.forms import CustomerSearchFilter, CustomerEmailUpdateForm, CreditsForm, CreditsSearchFilter
 from django.urls import reverse_lazy
@@ -32,6 +34,9 @@ from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
 from django.contrib.auth.decorators import permission_required
 from django.utils.decorators import method_decorator
 import threading
+import binascii
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+from cryptography.hazmat.backends import default_backend
 
 
 def customers_excel(request):
@@ -212,15 +217,46 @@ class PaymentForm(View):
 
 @method_decorator(csrf_exempt, name='dispatch')
 class HyperpayPayment(View):
+    SUCCESS_CODES_REGEX = re.compile(r'^(000\.000\.|000\.100\.1|000\.[36])')
+    key_from_configuration = "CC280328FF984554CF1605BC0B5545840A45486DE4101D5C60017D287D493E16"
+
     @csrf_exempt
     def post(self, request, **kwargs):
+        payment_transaction = PaymentTransaction()
+        data = {}
+        iv_from_http_header = request.headers.get("X-Initialization-Vector")
+        auth_tag_from_http_header = request.headers.get("X-Authentication-Tag")
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
-        print(body)
-        data = PaymentTransaction(response_body=str(
-            request.headers) + "----" + str(request.body))
-        print(data)
-        data.save()
+        http_body = body.get("encryptedBody")
+        key = binascii.unhexlify(self.key_from_configuration)
+        iv = binascii.unhexlify(iv_from_http_header)
+        auth_tag = binascii.unhexlify(auth_tag_from_http_header)
+        cipher_text = binascii.unhexlify(http_body)
+        # Prepare decryption
+        decryptor = Cipher(algorithms.AES(key), modes.GCM(
+            iv, auth_tag), backend=default_backend()).decryptor()
+
+        # Decrypt
+        result_bytes = decryptor.update(cipher_text) + decryptor.finalize()
+        result_decode = result_bytes.decode('utf-8')
+        result = json.loads(result_decode)
+        data['response_body'] = str(result)
+        code = result.get("payload").get("result").get("code")
+        data['transaction_id'] = result.get("payload").get("id")
+        data['checkout_id'] = result.get("payload").get("ndc")
+        data['payment_type'] = result.get("paymentType")
+        data['payment_brand'] = result.get("paymentBrand")
+        data['amount'] = result.get("amount")
+        data['status'] = result.get("payload").get("result").get("description")
+        try:
+            order = Orders.objects.get(checkout_id=data['checkout_id'])
+            # data['order_id'] = order.id
+        except:
+            pass
+        if re.search(self.SUCCESS_CODES_REGEX, code):
+            pass
+        payment_transaction.save(**data)
         return HttpResponse({"message": "Success"})
 
 
