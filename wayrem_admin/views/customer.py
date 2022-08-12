@@ -217,7 +217,8 @@ class HyperpayPayment(View):
         body_unicode = request.body.decode('utf-8')
         body = json.loads(body_unicode)
         print(body)
-        data = PaymentTransaction(response_body=request)
+        data = PaymentTransaction(response_body=str(
+            request.headers) + "----" + str(request.body))
         print(data)
         data.save()
         return HttpResponse({"message": "Success"})
