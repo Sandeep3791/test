@@ -222,7 +222,6 @@ class HyperpayPayment(View):
 
     @csrf_exempt
     def post(self, request, **kwargs):
-        payment_transaction = PaymentTransaction()
         data = {}
         iv_from_http_header = request.headers.get("X-Initialization-Vector")
         auth_tag_from_http_header = request.headers.get("X-Authentication-Tag")
@@ -256,7 +255,8 @@ class HyperpayPayment(View):
             pass
         if re.search(self.SUCCESS_CODES_REGEX, code):
             pass
-        payment_transaction.save(**data)
+        payment_transaction = PaymentTransaction(**data)
+        payment_transaction.save()
         return HttpResponse({"message": "Success"})
 
 
