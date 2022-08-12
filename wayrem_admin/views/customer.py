@@ -244,9 +244,9 @@ class HyperpayPayment(View):
         code = result.get("payload").get("result").get("code")
         data['transaction_id'] = result.get("payload").get("id")
         data['checkout_id'] = result.get("payload").get("ndc")
-        data['payment_type'] = result.get("paymentType")
-        data['payment_brand'] = result.get("paymentBrand")
-        data['amount'] = result.get("amount")
+        data['payment_type'] = result.get("payload").get("paymentType")
+        data['payment_brand'] = result.get("payload").get("paymentBrand")
+        data['amount'] = result.get("payload").get("amount")
         data['status'] = result.get("payload").get("result").get("description")
         try:
             order = Orders.objects.get(checkout_id=data['checkout_id'])
