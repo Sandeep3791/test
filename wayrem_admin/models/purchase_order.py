@@ -18,6 +18,7 @@ class PurchaseOrder(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
     po_id = models.UUIDField(default=uuid.uuid4)
     po_name = models.CharField(max_length=250, null=True)
+    unit_price = models.CharField(max_length=250, null=True)
     product_name = models.ForeignKey(
         'Products', on_delete=models.SET_NULL, null=True)
     supplier_product = models.ForeignKey(

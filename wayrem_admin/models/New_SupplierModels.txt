@@ -3,7 +3,8 @@ from django.db import models
 from datetime import datetime
 import uuid
 from django.core.files.storage import FileSystemStorage
-from wayrem_admin.models import Products, SupplierProducts, Supplier
+from wayrem_admin.models.products import Products
+from wayrem_admin.models.suppliers import SupplierProducts, Supplier
 
 
 status = (("Active", "Active"), ("Inactive", "Inactive"))
@@ -57,10 +58,10 @@ upload_storage = FileSystemStorage(
 
 
     
-#------------------supplier_Viny models-----------------------------------------------------------------------------
+#------------------supplier_Almarai models-----------------------------------------------------------------------------
 
 
-class Invoice_Viny(models.Model):
+class Invoice_Almarai(models.Model):
     invoice_id = models.AutoField(primary_key=True, unique=True)
     invoice_no = models.CharField(max_length=250, null=True)
     po_name = models.CharField(max_length=250, null=True)
@@ -74,13 +75,13 @@ class Invoice_Viny(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name_plural = "Viny. Invoice"
-        db_table = 'Viny_Invoice'
+        verbose_name_plural = "Almarai. Invoice"
+        db_table = 'Almarai_Invoice'
     def __str__(self):
         return str(self.invoice_no)
     
 
-class PurchaseOrder_Viny(models.Model):
+class PurchaseOrder_Almarai(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
     po_id = models.UUIDField(default=uuid.uuid4)
     po_name = models.CharField(max_length=250, null=True)
@@ -99,8 +100,8 @@ class PurchaseOrder_Viny(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name_plural = "Viny. PurchaseOrder"
-        db_table = 'Viny_purchase_order'
+        verbose_name_plural = "Almarai. PurchaseOrder"
+        db_table = 'Almarai_purchase_order'
     def __str__(self):
         return str(self.po_id)
 
@@ -109,10 +110,10 @@ class PurchaseOrder_Viny(models.Model):
 
 
         
-#------------------supplier_pankaj models-----------------------------------------------------------------------------
+#------------------supplier_TheNationalAgricu models-----------------------------------------------------------------------------
 
 
-class Invoice_pankaj(models.Model):
+class Invoice_TheNationalAgricu(models.Model):
     invoice_id = models.AutoField(primary_key=True, unique=True)
     invoice_no = models.CharField(max_length=250, null=True)
     po_name = models.CharField(max_length=250, null=True)
@@ -126,13 +127,13 @@ class Invoice_pankaj(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name_plural = "pankaj. Invoice"
-        db_table = 'pankaj_Invoice'
+        verbose_name_plural = "TheNationalAgricu. Invoice"
+        db_table = 'TheNationalAgricu_Invoice'
     def __str__(self):
         return str(self.invoice_no)
     
 
-class PurchaseOrder_pankaj(models.Model):
+class PurchaseOrder_TheNationalAgricu(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
     po_id = models.UUIDField(default=uuid.uuid4)
     po_name = models.CharField(max_length=250, null=True)
@@ -151,8 +152,8 @@ class PurchaseOrder_pankaj(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name_plural = "pankaj. PurchaseOrder"
-        db_table = 'pankaj_purchase_order'
+        verbose_name_plural = "TheNationalAgricu. PurchaseOrder"
+        db_table = 'TheNationalAgricu_purchase_order'
     def __str__(self):
         return str(self.po_id)
 
@@ -161,10 +162,10 @@ class PurchaseOrder_pankaj(models.Model):
 
 
         
-#------------------supplier_raj models-----------------------------------------------------------------------------
+#------------------supplier_lavenue models-----------------------------------------------------------------------------
 
 
-class Invoice_raj(models.Model):
+class Invoice_lavenue(models.Model):
     invoice_id = models.AutoField(primary_key=True, unique=True)
     invoice_no = models.CharField(max_length=250, null=True)
     po_name = models.CharField(max_length=250, null=True)
@@ -178,13 +179,13 @@ class Invoice_raj(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name_plural = "raj. Invoice"
-        db_table = 'raj_Invoice'
+        verbose_name_plural = "lavenue. Invoice"
+        db_table = 'lavenue_Invoice'
     def __str__(self):
         return str(self.invoice_no)
     
 
-class PurchaseOrder_raj(models.Model):
+class PurchaseOrder_lavenue(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
     po_id = models.UUIDField(default=uuid.uuid4)
     po_name = models.CharField(max_length=250, null=True)
@@ -203,8 +204,8 @@ class PurchaseOrder_raj(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name_plural = "raj. PurchaseOrder"
-        db_table = 'raj_purchase_order'
+        verbose_name_plural = "lavenue. PurchaseOrder"
+        db_table = 'lavenue_purchase_order'
     def __str__(self):
         return str(self.po_id)
 
@@ -213,10 +214,10 @@ class PurchaseOrder_raj(models.Model):
 
 
         
-#------------------supplier_shubham models-----------------------------------------------------------------------------
+#------------------supplier_ankur models-----------------------------------------------------------------------------
 
 
-class Invoice_shubham(models.Model):
+class Invoice_ankur(models.Model):
     invoice_id = models.AutoField(primary_key=True, unique=True)
     invoice_no = models.CharField(max_length=250, null=True)
     po_name = models.CharField(max_length=250, null=True)
@@ -230,13 +231,13 @@ class Invoice_shubham(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name_plural = "shubham. Invoice"
-        db_table = 'shubham_Invoice'
+        verbose_name_plural = "ankur. Invoice"
+        db_table = 'ankur_Invoice'
     def __str__(self):
         return str(self.invoice_no)
     
 
-class PurchaseOrder_shubham(models.Model):
+class PurchaseOrder_ankur(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
     po_id = models.UUIDField(default=uuid.uuid4)
     po_name = models.CharField(max_length=250, null=True)
@@ -255,8 +256,8 @@ class PurchaseOrder_shubham(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name_plural = "shubham. PurchaseOrder"
-        db_table = 'shubham_purchase_order'
+        verbose_name_plural = "ankur. PurchaseOrder"
+        db_table = 'ankur_purchase_order'
     def __str__(self):
         return str(self.po_id)
 
@@ -265,10 +266,10 @@ class PurchaseOrder_shubham(models.Model):
 
 
         
-#------------------supplier_praveen models-----------------------------------------------------------------------------
+#------------------supplier_yash models-----------------------------------------------------------------------------
 
 
-class Invoice_praveen(models.Model):
+class Invoice_yash(models.Model):
     invoice_id = models.AutoField(primary_key=True, unique=True)
     invoice_no = models.CharField(max_length=250, null=True)
     po_name = models.CharField(max_length=250, null=True)
@@ -282,13 +283,13 @@ class Invoice_praveen(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name_plural = "praveen. Invoice"
-        db_table = 'praveen_Invoice'
+        verbose_name_plural = "yash. Invoice"
+        db_table = 'yash_Invoice'
     def __str__(self):
         return str(self.invoice_no)
     
 
-class PurchaseOrder_praveen(models.Model):
+class PurchaseOrder_yash(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
     po_id = models.UUIDField(default=uuid.uuid4)
     po_name = models.CharField(max_length=250, null=True)
@@ -307,8 +308,8 @@ class PurchaseOrder_praveen(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
-        verbose_name_plural = "praveen. PurchaseOrder"
-        db_table = 'praveen_purchase_order'
+        verbose_name_plural = "yash. PurchaseOrder"
+        db_table = 'yash_purchase_order'
     def __str__(self):
         return str(self.po_id)
 
