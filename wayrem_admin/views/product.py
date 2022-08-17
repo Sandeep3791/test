@@ -801,12 +801,14 @@ def import_single_image(request):
 def bulk_publish_excel(request):
     if request.method == "POST":
         file = request.FILES["myFileInput"]
-        required_cols = ['sku', 'publish']
+        required_cols = ['sku', 'publish', 'product name', 'brand']
         df = pd.read_excel(file)
         excel_cols = list(df.columns)
         missing_cols = list(set(required_cols) - set(excel_cols))
         unwanted_cols = list(set(excel_cols) - set(required_cols))
-        if len(excel_cols) == 2 and required_cols == excel_cols:
+        if len(excel_cols) == 4 and required_cols == excel_cols:
+            del df['product name']
+            del df['brand']
             con = connect(user=DATABASES['default']['USER'], password=DATABASES['default']['PASSWORD'],
                           host=DATABASES['default']['HOST'], database=DATABASES['default']['NAME'])
             df_products = pd.read_sql(
@@ -878,13 +880,15 @@ def divide_chunks(l, n):
 def bulk_price_excel(request):
     if request.method == "POST":
         file = request.FILES["myFileInput"]
-        required_cols = ['sku', 'price']
+        required_cols = ['sku', 'price', 'product name', 'brand']
         df = pd.read_excel(file)
         excel_cols = list(df.columns)
         missing_cols = list(set(required_cols) - set(excel_cols))
         unwanted_cols = list(set(excel_cols) - set(required_cols))
-        if len(excel_cols) == 2 and required_cols == excel_cols:
+        if len(excel_cols) == 4 and required_cols == excel_cols:
             try:
+                del df['product name']
+                del df['brand']
                 con = connect(user=DATABASES['default']['USER'], password=DATABASES['default']['PASSWORD'],
                               host=DATABASES['default']['HOST'], database=DATABASES['default']['NAME'])
                 df_products = pd.read_sql(
@@ -950,13 +954,15 @@ def update_quantity_bulk(sku_list, quantity_list):
 def bulk_quantity_excel(request):
     if request.method == "POST":
         file = request.FILES["myFileInput"]
-        required_cols = ['sku', 'quantity']
+        required_cols = ['sku', 'quantity', 'product name', 'brand']
         df = pd.read_excel(file)
         excel_cols = list(df.columns)
         missing_cols = list(set(required_cols) - set(excel_cols))
         unwanted_cols = list(set(excel_cols) - set(required_cols))
-        if len(excel_cols) == 2 and required_cols == excel_cols:
+        if len(excel_cols) == 4 and required_cols == excel_cols:
             try:
+                del df['product name']
+                del df['brand']
                 con = connect(user=DATABASES['default']['USER'], password=DATABASES['default']['PASSWORD'],
                               host=DATABASES['default']['HOST'], database=DATABASES['default']['NAME'])
                 df_products = pd.read_sql(
