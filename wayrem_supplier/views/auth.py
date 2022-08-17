@@ -31,7 +31,11 @@ def login(request):
         else:
             messages.error(request, "incorrect credential.Please try again")
             return redirect('wayrem_supplier:login')
-    return render(request, 'accounts/login.html')
+    else:
+        if request.session.get('supplier'):
+            return redirect('wayrem_supplier:root')
+        else:
+            return render(request, 'accounts/login.html')
 
 
 def logout(request):
@@ -59,7 +63,7 @@ def supplier_profile(request):
                           for po_price in po_delivered_price])
         return render(request, 'dashboard.html', {'user': user, 'active_po': active_po, 'complete_po': complete_po, 'total_sales': total_sales})
     else:
-        return redirect('wayrem_supplier:login')
+        return redirect('wayrem_supplier:root')
 
 
 def update_supplier_profile(request):
@@ -193,7 +197,7 @@ def reset_password(request):
 class RootUrlView(RedirectView):
 
     def get_redirect_url(self, *args, **kwargs):
-        if not self.request.user.is_authenticated:
+        if not self.request.session.get('supplier_id'):
             return reverse('wayrem_supplier:login')
         return reverse('wayrem_supplier:supplier_profile')
 
@@ -206,6 +210,13 @@ def notifications_seen(request, id=None):
     po_id = po.po_id
     notify.delete()
     return redirect('wayrem_supplier:podetails', po_id)
+
+
+def notifications_clear(request):
+    notify = Notification.objects.filter(
+        supplier_id=request.session['supplier_id'])
+    notify.delete()
+    return redirect('wayrem_supplier:root')
 
 
 @api_view(['POST'])

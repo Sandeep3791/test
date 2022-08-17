@@ -11,4 +11,6 @@ urlpatterns = [
     path('reset-password/', views.reset_password, name='reset-pass'),
     path('notification-seen/<str:id>/',
          views.notifications_seen, name='notification-seen'),
+    path('clear-notification/', views.notifications_clear,
+         name='notification-clear'),
 ]

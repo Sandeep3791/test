@@ -84,7 +84,7 @@
                     <tr>
                         <th class="text-secondary text-sm font-weight-bolder opacity-7">SKU</th>
                         <th class="text-secondary text-sm font-weight-bolder opacity-7">Product Name</th>
-                        <th class="text-secondary text-sm font-weight-bolder opacity-7">Description</th>
+                        <th class="text-secondary text-sm font-weight-bolder opacity-7">Brand</th>
                         <th class="text-secondary text-sm font-weight-bolder opacity-7 text-center">Action</th>
                     </tr>
                 </thead>
@@ -92,8 +92,8 @@
                     {% for item in productslist %}
                         <tr> 
                             <td class="text-sm font-weight-bold p-4">{{ item.SKU }}</td>
-                            <td class="text-sm font-weight-bold p-4">{{ item.name | truncatechars:20 }}</td>
-                            <td class="text-sm font-weight-bold p-4">{{ item.description| truncatechars:40 }}</td>
+                            <td class="text-sm font-weight-bold p-4">{{ item.name }}</td>
+                            <td class="text-sm font-weight-bold p-4">{{ item.mfr_name }}</td>
                             <td class="text-sm font-weight-bold p-4 text-center">
                                 <a  href="{% url 'wayrem_supplier:add_product' item.id  %} {{ item.pop.id }}" class="btn  btn-success btn-block "> Add Pricing</a>
                             </td> 

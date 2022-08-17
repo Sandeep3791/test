@@ -29,7 +29,7 @@ class PurchaseOrderList(View):
         supplier_id = request.session.get("supplier_id")
         print(type(supplier_id))
         cholist = PurchaseOrder.objects.filter(supplier_name=supplier_id).values(
-            'po_id', 'po_name', 'status',).distinct().order_by('po_name').reverse()
+            'po_id', 'po_name', 'status',).distinct().order_by('-created_at')
         # cholist = list(data.values('po_id', 'po_name',
         #                'created_at', 'status').distinct())
         paginator = Paginator(cholist, 25)

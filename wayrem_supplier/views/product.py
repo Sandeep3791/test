@@ -1,5 +1,8 @@
+from django.db.models import F
+from re import S
 from django.shortcuts import render, redirect
 from django.views import View
+from pydantic import NotNoneError
 from wayrem_supplier.models import Categories, SupplierProducts, Products, BestProductsSupplier, EmailTemplateModel
 from wayrem_supplier.forms import SupplierProductForm
 from django.core.paginator import Paginator
@@ -22,7 +25,7 @@ class SupplierProductList(View):
             return redirect('wayrem_supplier:login')
         supplier_id = request.session.get("supplier_id")
         prodtslist = SupplierProducts.objects.filter(
-            supplier_id=supplier_id).all()
+            supplier_id=supplier_id, product__is_deleted=False).all()
         paginator = Paginator(prodtslist, 25)
         page = request.GET.get('page')
         try:
@@ -43,88 +46,112 @@ class WayremproductList(View):
         if request.session.get('supplier') is None:
             return redirect('wayrem_supplier:login')
         supplierid = request.session['supplier_id']
-        with connection.cursor() as cursor:
-            cursor.execute(
-                f'SELECT SKU FROM {constant.database}.product_suppliers where supplier_id_id="{supplierid}";')
-            a = cursor.fetchall()
-            v = list(a)
-            ab = [i[0] for i in v]
-            y = tuple(ab)
-            print(ab)
+        sl = SupplierProducts.objects.values_list('product_id')
+        supproducts = Products.objects.filter(
+            supplier=supplierid, is_deleted=False).exclude(id__in=sl)
+        paginator = Paginator(supproducts, 25)
+        page = request.GET.get('page')
         try:
-            if len(y) == 1:
-                d = y[0]
-                with connection.cursor() as cursor:
-                    cursor.execute(
-                        f'SELECT * FROM {constant.database}.products_master where is_deleted=False and SKU != {d}')
-                    prodlist = cursor.fetchall()
-            else:
-                with connection.cursor() as cursor:
-                    cursor.execute(
-                        f'SELECT * FROM {constant.database}.products_master where is_deleted=False and SKU NOT IN {y}')
-                    prodlist = cursor.fetchall()
+            productslist = paginator.page(page)
+        except PageNotAnInteger:
+            productslist = paginator.page(1)
+        except EmptyPage:
+            productslist = paginator.page(paginator.num_pages)
+        return render(request, self.template_name, {"productslist": productslist})
 
-                    product_name = request.GET.get('product_name')
-                    product_sku = request.GET.get('product_sku')
-                    # product_category = request.GET.get('product_category')
-                    if product_name:
-                        with connection.cursor() as cursor:
-                            cursor.execute(
-                                f'SELECT * FROM {constant.database}.products_master where is_deleted=False and name = "{product_name}"')
-                            prodlist = cursor.fetchall()
-                    if product_sku:
-                        with connection.cursor() as cursor:
-                            cursor.execute(
-                                f'SELECT * FROM {constant.database}.products_master where is_deleted=False and SKU = "{product_sku}"')
-                            prodlist = cursor.fetchall()
-                    # if product_category:
-                    #     with connection.cursor() as cursor:
-                    #         cursor.execute(f'SELECT * FROM {constant.database}.products_master where category = "{product_category}"')
-                    #         prodlist= cursor.fetchall()
-            # cat = Categories.objects.values_list('name', flat=True)
-            paginator = Paginator(prodlist, 25)
-            page = request.GET.get('page')
-            try:
-                productslist = paginator.page(page)
-            except PageNotAnInteger:
-                productslist = paginator.page(1)
-            except EmptyPage:
-                productslist = paginator.page(paginator.num_pages)
-            return render(request, self.template_name, {"productslist": productslist})
 
-        except:
-            with connection.cursor() as cursor:
-                cursor.execute(
-                    f'SELECT * FROM {constant.database}.products_master where is_deleted=False')
-                prodlist = cursor.fetchall()
+# class WayremproductList(View):
+#     template_name = "wayrem_product_list.html"
 
-                product_name = request.GET.get('product_name')
-                product_sku = request.GET.get('product_sku')
-                # product_category = request.GET.get('product_category')
-                if product_name:
-                    with connection.cursor() as cursor:
-                        cursor.execute(
-                            f'SELECT * FROM {constant.database}.products_master where is_deleted=False and name = "{product_name}"')
-                        prodlist = cursor.fetchall()
-                if product_sku:
-                    with connection.cursor() as cursor:
-                        cursor.execute(
-                            f'SELECT * FROM {constant.database}.products_master where is_deleted=False and SKU = "{product_sku}"')
-                        prodlist = cursor.fetchall()
-                # if product_category:
-                #     with connection.cursor() as cursor:
-                #         cursor.execute(f'SELECT * FROM {constant.database}.products_master where category__name = "{product_category}"')
-                #         prodlist= cursor.fetchall()
-            # cat = Categories.objects.values_list('name', flat=True)
-            paginator = Paginator(prodlist, 25)
-            page = request.GET.get('page')
-            try:
-                productslist = paginator.page(page)
-            except PageNotAnInteger:
-                productslist = paginator.page(1)
-            except EmptyPage:
-                productslist = paginator.page(paginator.num_pages)
-            return render(request, self.template_name, {"productslist": productslist})
+#     def get(self, request, format=None):
+#         if request.session.get('supplier') is None:
+#             return redirect('wayrem_supplier:login')
+#         supplierid = request.session['supplier_id']
+#         sl = Products.objects.filter(supplier=supplierid).all()
+#         v = list(sl)
+#         print(v)
+#         with connection.cursor() as cursor:
+#             cursor.execute(
+#                 f'SELECT SKU FROM {constant.database}.product_suppliers where supplier_id_id="{supplierid}";')
+#             a = cursor.fetchall()
+#             v = list(a)
+#             ab = [i[0] for i in v]
+#             y = tuple(ab)
+#             print(ab)
+#         try:
+#             if len(y) == 1:
+#                 d = y[0]
+#                 with connection.cursor() as cursor:
+#                     cursor.execute(
+#                         f'SELECT * FROM {constant.database}.products_master where is_deleted=False and SKU != {d}')
+#                     prodlist = cursor.fetchall()
+#             else:
+#                 with connection.cursor() as cursor:
+#                     cursor.execute(
+#                         f'SELECT * FROM {constant.database}.products_master where is_deleted=False and SKU NOT IN {y}')
+#                     prodlist = cursor.fetchall()
+
+#                     product_name = request.GET.get('product_name')
+#                     product_sku = request.GET.get('product_sku')
+#                     # product_category = request.GET.get('product_category')
+#                     if product_name:
+#                         with connection.cursor() as cursor:
+#                             cursor.execute(
+#                                 f'SELECT * FROM {constant.database}.products_master where is_deleted=False and name = "{product_name}"')
+#                             prodlist = cursor.fetchall()
+#                     if product_sku:
+#                         with connection.cursor() as cursor:
+#                             cursor.execute(
+#                                 f'SELECT * FROM {constant.database}.products_master where is_deleted=False and SKU = "{product_sku}"')
+#                             prodlist = cursor.fetchall()
+#                     # if product_category:
+#                     #     with connection.cursor() as cursor:
+#                     #         cursor.execute(f'SELECT * FROM {constant.database}.products_master where category = "{product_category}"')
+#                     #         prodlist= cursor.fetchall()
+#             # cat = Categories.objects.values_list('name', flat=True)
+#             paginator = Paginator(prodlist, 25)
+#             page = request.GET.get('page')
+#             try:
+#                 productslist = paginator.page(page)
+#             except PageNotAnInteger:
+#                 productslist = paginator.page(1)
+#             except EmptyPage:
+#                 productslist = paginator.page(paginator.num_pages)
+#             return render(request, self.template_name, {"productslist": productslist})
+
+#         except:
+#             with connection.cursor() as cursor:
+#                 cursor.execute(
+#                     f'SELECT * FROM {constant.database}.products_master where is_deleted=False')
+#                 prodlist = cursor.fetchall()
+
+#                 product_name = request.GET.get('product_name')
+#                 product_sku = request.GET.get('product_sku')
+#                 # product_category = request.GET.get('product_category')
+#                 if product_name:
+#                     with connection.cursor() as cursor:
+#                         cursor.execute(
+#                             f'SELECT * FROM {constant.database}.products_master where is_deleted=False and name = "{product_name}"')
+#                         prodlist = cursor.fetchall()
+#                 if product_sku:
+#                     with connection.cursor() as cursor:
+#                         cursor.execute(
+#                             f'SELECT * FROM {constant.database}.products_master where is_deleted=False and SKU = "{product_sku}"')
+#                         prodlist = cursor.fetchall()
+#                 # if product_category:
+#                 #     with connection.cursor() as cursor:
+#                 #         cursor.execute(f'SELECT * FROM {constant.database}.products_master where category__name = "{product_category}"')
+#                 #         prodlist= cursor.fetchall()
+#             # cat = Categories.objects.values_list('name', flat=True)
+#             paginator = Paginator(prodlist, 25)
+#             page = request.GET.get('page')
+#             try:
+#                 productslist = paginator.page(page)
+#             except PageNotAnInteger:
+#                 productslist = paginator.page(1)
+#             except EmptyPage:
+#                 productslist = paginator.page(paginator.num_pages)
+#             return render(request, self.template_name, {"productslist": productslist})
 
 
 def add_product(request, id=None, *args, **kwargs):
@@ -151,6 +178,7 @@ def add_product_save(request):
             productid = data.id
             data.is_active = False
             data.save()
+            # data.remove()
             x = form.save(commit=False)
             x.product_id = productid
             x.save()

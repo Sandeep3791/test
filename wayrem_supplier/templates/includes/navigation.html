@@ -41,7 +41,7 @@
               <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                 <i class="fa fa-bell cursor-pointer" style="color: #344767"></i>
                 {% if request.notifications %}
-                  <span class="icon-badge rounded-circle unread-notifications" style="display: block;"></span>
+                  <span class="icon-badge rounded-circle unread-notifications blink_me" style="display: block;"></span>
                 {% endif %}
               </a>
               <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4 notification_lists" aria-labelledby="dropdownMenuButton">
@@ -67,6 +67,11 @@
                   </a>                 
                   {% endfor %}
                 </li>
+                <div class="d-flex flex-column justify-content-center align-items-center">
+                  <h6 class="text-sm font-weight-normal mb-1">
+                    <span class="font-weight-bold notificationtxt"><a class="btn btn-primary w-100" href="{% url 'wayrem_supplier:notification-clear' %}" role="button">Clear all</a></span>
+                  </h6>
+                </div>
                 {% else %}
                 <div class= "">
                   <p class="text-center my-2">No Notifications</p>

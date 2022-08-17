@@ -595,3 +595,13 @@ License - nucleoapp.com/license/
 
 
 /* all icon font classes list here */
+
+.blink_me {
+  animation: blinker 1s linear infinite;
+}
+
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}

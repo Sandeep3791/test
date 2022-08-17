@@ -72,7 +72,7 @@
                     {% for item in productslist %}        
                         <tr> 
                             <td class="text-sm font-weight-bold p-4">{{ item.SKU }}</td>
-                            <td class="text-sm font-weight-bold p-4">{{ item.product_name | truncatechars:20 }}</td>
+                            <td class="text-sm font-weight-bold p-4">{{ item.product_name }}</td>
                             <td class="text-sm font-weight-bold p-4">{{ item.quantity }}{{item.unit }}</td>
                             <td class="text-sm font-weight-bold p-4">{{ item.price | truncatechars:30 }}</td>
                             <td class="text-sm font-weight-bold p-4">{{ item.deliverable_days }}</td> 
