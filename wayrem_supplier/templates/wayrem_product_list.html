@@ -91,11 +91,11 @@
                 <tbody>
                     {% for item in productslist %}
                         <tr> 
-                            <td class="text-sm font-weight-bold p-4">{{ item.2 }}</td>
-                            <td class="text-sm font-weight-bold p-4">{{ item.1 | truncatechars:20 }}</td>
-                            <td class="text-sm font-weight-bold p-4">{{ item.10| truncatechars:40 }}</td>
+                            <td class="text-sm font-weight-bold p-4">{{ item.SKU }}</td>
+                            <td class="text-sm font-weight-bold p-4">{{ item.name | truncatechars:20 }}</td>
+                            <td class="text-sm font-weight-bold p-4">{{ item.description| truncatechars:40 }}</td>
                             <td class="text-sm font-weight-bold p-4 text-center">
-                                <a  href="{% url 'wayrem_supplier:add_product' item.0 %}" class="btn  btn-success btn-block "> Add Pricing</a>
+                                <a  href="{% url 'wayrem_supplier:add_product' item.id  %} {{ item.pop.id }}" class="btn  btn-success btn-block "> Add Pricing</a>
                             </td> 
                         </tr>
                     {% endfor %}

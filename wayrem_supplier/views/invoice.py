@@ -14,11 +14,9 @@ import os
 from django.apps import apps
 
 
-
-
-
 class PoInvoiceList(View):
-    template_name = "polistforinvoice.html"    
+    template_name = "polistforinvoice.html"
+
     def get(self, request, format=None):
         if request.session.get('supplier') is None:
             return redirect('wayrem_supplier:login')
@@ -26,23 +24,27 @@ class PoInvoiceList(View):
         supplier_id = request.session.get("supplier_id")
         # supplierid = request.session['supplier_id']
         with connection.cursor() as cursor:
-            cursor.execute(f'SELECT po_name FROM {constant.database}.{supplier_name}_Invoice where supplier_name="{supplier_name}";')
-            a=cursor.fetchall()
+            cursor.execute(
+                f'SELECT po_name FROM {constant.database}.{supplier_name}_Invoice where supplier_name="{supplier_name}";')
+            a = cursor.fetchall()
             v = list(a)
             ab = [i[0] for i in v]
             y = tuple(ab)
             print(ab)
         with connection.cursor() as cursor:
-            if len(ab)==0:
+            if len(ab) == 0:
                 prodlist = tuple()
-                cursor.execute(f'SELECT * FROM {constant.database}.po_master where supplier_name_id = "{supplier_id}" group by po_name')
-                prodlist= cursor.fetchall()
-            elif len(ab)==1:
-                cursor.execute(f'SELECT * FROM {constant.database}.po_master where po_name != "{ab[0]}" AND supplier_name_id = "{supplier_id}" group by po_name')
-                prodlist= cursor.fetchall()
+                cursor.execute(
+                    f'SELECT * FROM {constant.database}.po_master where supplier_name_id = "{supplier_id}" group by po_name')
+                prodlist = cursor.fetchall()
+            elif len(ab) == 1:
+                cursor.execute(
+                    f'SELECT * FROM {constant.database}.po_master where po_name != "{ab[0]}" AND supplier_name_id = "{supplier_id}" group by po_name')
+                prodlist = cursor.fetchall()
             else:
-                cursor.execute(f'SELECT * FROM {constant.database}.po_master where po_name NOT IN {y} AND supplier_name_id = "{supplier_id}" group by po_name')
-                prodlist= cursor.fetchall()                
+                cursor.execute(
+                    f'SELECT * FROM {constant.database}.po_master where po_name NOT IN {y} AND supplier_name_id = "{supplier_id}" group by po_name')
+                prodlist = cursor.fetchall()
         paginator = Paginator(prodlist, 25)
         page = request.GET.get('page')
         try:
@@ -53,22 +55,23 @@ class PoInvoiceList(View):
         except EmptyPage:
             # If page is out of range (e.g. 9999), deliver last page of results.
             poinvoicelist = paginator.page(paginator.num_pages)
-        return render(request, self.template_name, {"poinvoicelist":poinvoicelist}) 
+        return render(request, self.template_name, {"poinvoicelist": poinvoicelist})
 
 
 class InvoiceList(View):
     template_name = "invoicelist.html"
-    
+
     def get(self, request, format=None):
         if request.session.get('supplier') is None:
             return redirect('wayrem_supplier:login')
         supplier_name = request.session.get('supplier')
         supplier_id = request.session.get('supplier_id')
         with connection.cursor() as cursor:
-            cursor.execute(f'SELECT invoice_no, po_name, status, created_at FROM {supplier_name}_Invoice') 
-            rec = cursor.fetchall()     
-        data = PurchaseOrder.objects.filter(supplier_name = supplier_id).all()  
-        poinvlist = list(data.values('po_id','po_name').distinct())
+            cursor.execute(
+                f'SELECT invoice_no, po_name, status, created_at FROM {supplier_name}_Invoice')
+            rec = cursor.fetchall()
+        data = PurchaseOrder.objects.filter(supplier_name=supplier_id).all()
+        poinvlist = list(data.values('po_id', 'po_name').distinct())
         paginator = Paginator(rec, 25)
         page = request.GET.get('page')
         try:
@@ -78,22 +81,23 @@ class InvoiceList(View):
             recd = paginator.page(1)
         except EmptyPage:
             # If page is out of range (e.g. 9999), deliver last page of results.
-            recd = paginator.page(paginator.num_pages)   
-        # mydata = zip(poinvlist, recd)         
-        return render(request, self.template_name, {'recd':recd})
+            recd = paginator.page(paginator.num_pages)
+        # mydata = zip(poinvlist, recd)
+        return render(request, self.template_name, {'recd': recd})
+
 
 def upload_invoice(request):
     if request.method == 'POST':
         po_name = request.POST.get('po_name')
-        fileone = request.FILES["myFileInput"]  
-        # read textfile into string 
+        fileone = request.FILES["myFileInput"]
+        # read textfile into string
         mytextstring = fileone.read()
         # change text into a binary array
         binarray = base64.b64encode(mytextstring)
-        # filetwo=convertToBinaryData(fileone)         
+        # filetwo=convertToBinaryData(fileone)
         supplier_id = request.session.get("supplier_id")
         supplier_name = request.session.get('supplier')
-        
+
         import datetime
         today = str(datetime.date.today())
         curr_year = int(today[:4])
@@ -109,34 +113,37 @@ def upload_invoice(request):
         if v:
             messages.error(request, "This invoice already created!")
             print('This Data is already in your data base.')
-            return redirect('wayrem_supplier:invoicelist')  
-        binarray = str(binarray,'utf-8')
-         
+            return redirect('wayrem_supplier:invoicelist')
+        binarray = str(binarray, 'utf-8')
 
-        invo = Invoice(po_name=po_name, invoice_no=invoice_name, supplier_name=supplier_name, file = fileone, status='released' )
+        invo = Invoice(po_name=po_name, invoice_no=invoice_name,
+                       supplier_name=supplier_name, file=fileone, status='released')
         invo.save()
         invoice_id = invo.invoice_id
-        supplier_invoice_model =  'Invoice_' + str(supplier_name)  
-        supplier_invoice = apps.get_model(app_label='wayrem_supplier', model_name=supplier_invoice_model)
-        invoice_upload = supplier_invoice(po_name=po_name, invoice_no=invoice_name, supplier_name=supplier_name, file = fileone, status='released' )
+        supplier_invoice_model = 'Invoice_' + str(supplier_name)
+        supplier_invoice = apps.get_model(
+            app_label='wayrem_supplier', model_name=supplier_invoice_model)
+        invoice_upload = supplier_invoice(
+            po_name=po_name, invoice_no=invoice_name, supplier_name=supplier_name, file=fileone, status='released')
         invoice_upload.save()
         # with connection.cursor() as cursor:
-        #     cursor.execute(f"INSERT INTO {supplier_name}_Invoice(`invoice_id`,`invoice_no`,`po_name`,`file`,`supplier_name`,`status`) VALUES('{invoice_id}','{invoice_name}','{po_name}','{binarray}','{supplier_name}','{'released'}');")   
-        return redirect('wayrem_supplier:invoicelist')    
+        #     cursor.execute(f"INSERT INTO {supplier_name}_Invoice(`invoice_id`,`invoice_no`,`po_name`,`file`,`supplier_name`,`status`) VALUES('{invoice_id}','{invoice_name}','{po_name}','{binarray}','{supplier_name}','{'released'}');")
+        return redirect('wayrem_supplier:invoicelist')
 
 
 def status_invoice(request):
     # po = PurchaseOrder.objects.filter(po_id=id).all()
-    id=request.GET.get('id')
+    id = request.GET.get('id')
     supplier_name = request.session.get('supplier')
     if request.method == "POST":
-        status = request.POST.get('status') 
+        status = request.POST.get('status')
         with connection.cursor() as cursor:
-            cursor.execute(f"UPDATE `{supplier_name}_Invoice` SET `status` = '{status}' WHERE `invoice_no` = '{id}';") 
-            records = cursor.fetchall()           
+            cursor.execute(
+                f"UPDATE `{supplier_name}_Invoice` SET `status` = '{status}' WHERE `invoice_no` = '{id}';")
+            records = cursor.fetchall()
         # records.update(status=status)
         return redirect('wayrem_supplier:invoicelist')
-    return redirect('wayrem_supplier:invoicelist') 
+    return redirect('wayrem_supplier:invoicelist')
 
 
 class DeleteInvoice(View):
@@ -144,8 +151,10 @@ class DeleteInvoice(View):
         productid = request.POST.get('invo_id')
         supplier_name = request.session.get('supplier')
         with connection.cursor() as cursor:
-            cursor.execute(f"DELETE FROM `{supplier_name}_Invoice` WHERE `invoice_no` = '{productid}';")         
+            cursor.execute(
+                f"DELETE FROM `{supplier_name}_Invoice` WHERE `invoice_no` = '{productid}';")
         return redirect('wayrem_supplier:invoicelist')
+
 
 def invoice_excel(request):
     supplier_name = request.session.get('supplier')
@@ -160,7 +169,8 @@ class DownloadInvoice(View):
             # invoice="INV/26112021/0001"
             contents = Invoice.objects.get(po_name=invoice)
             filename = contents.file.url.split('/')[-1]
-            response = HttpResponse(contents.file, content_type='application/pdf')
+            response = HttpResponse(
+                contents.file, content_type='application/pdf')
             response['Content-Disposition'] = 'attachment; filename=%s' % filename
             return response
         except:

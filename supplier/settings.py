@@ -26,6 +26,8 @@ SECRET_KEY = 'django-insecure-xrfi)bn7o4#z5(rk=)_c1b8big_4=!6khm!(j*q^!ct$ce1yki
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+COMING_SOON = True
+
 
 ALLOWED_HOSTS = ["*"]
 
@@ -40,6 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'wayrem_supplier',
+    'maintenance_mode',
+
 ]
 
 MIDDLEWARE = [
@@ -51,6 +55,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'wayrem_supplier.middlewares.notification_middleware.NotificationMiddleWare',
+    'maintenance_mode.middleware.MaintenanceModeMiddleware',
 ]
 
 ROOT_URLCONF = 'supplier.urls'
@@ -66,6 +71,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'maintenance_mode.context_processors.maintenance_mode',
             ],
         },
     },
@@ -77,17 +83,33 @@ WSGI_APPLICATION = 'supplier.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'wayrem_stg_v1',
+        'NAME': 'wayrem_stg_v2',
         'USER': 'wayremdb_adminuser',
         'PASSWORD': 'r2wXJfUs78NczMFWRXcV',
-        'HOST': '15.185.103.226',
+        'HOST': 'db',
         'PORT': '3306',
         'OPTIONS': {
             "init_command": "SET foreign_key_checks = 0;",
-            # "init_command": "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));"
+            "init_command": "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));"
         },
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'wayrem_stg_v2',
+#         'USER': 'root',
+#         'PASSWORD': 'root1234',
+#         'HOST': 'localhost',
+#         'PORT': '3306',
+#         'OPTIONS': {
+#             "init_command": "SET foreign_key_checks = 0;",
+#             # "init_command": "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));"
+#         },
+#     }
+# }
+
 
 # Host = 15.184.218.191
 # Port = 3306
