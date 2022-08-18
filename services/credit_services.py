@@ -227,7 +227,7 @@ def user_credit_request(request, db: Session, background_tasks: BackgroundTasks,
                 subject = email.subject.format(customer=user_data.first_name)
                 body = email.message_format
             emails_query = db.execute(
-                f"SELECT email FROM {constants.Database_name}.users_master where is_superuser=True or role_id in (SELECT role_id FROM {constants.Database_name}.role_permissions where function_id = (SELECT id FROM {constants.Database_name}.function_master where codename = 'credits.assign_customer')) ")
+                f"SELECT email FROM {constants.Database_name}.users_master where is_superuser=True or role_id in (SELECT role_id FROM {constants.Database_name}.role_permissions where function_id = (SELECT id FROM {constants.Database_name}.function_master where codename = 'credits.request_notification')) ")
 
             raw_email_data = emails_query.mappings().all()
             email_list = []
