@@ -153,10 +153,10 @@ def create_po_step2(request):
             # random_no = random.randint(1000, 99999)
             po_id = uuid.uuid4()
             # po_name = "PO"+str(random_no)
-            today = str(datetime.date.today())
-            curr_year = int(today[:4])
-            curr_month = int(today[5:7])
-            curr_date = int(today[8:10])
+            today = datetime.date.today()
+            curr_year = today.year
+            curr_month = today.strftime('%m')
+            curr_date = today.day
             po = PurchaseOrder.objects.all()
             aa = po.count()+1
             q = ["{0:04}".format(aa)]
@@ -179,7 +179,7 @@ def create_po_step2(request):
                     supplier_name.username)
                 supplier = apps.get_model(
                     app_label='wayrem_admin', model_name=supplier_purchase_model)
-                supplier_po = supplier(po_id=po_id, po_name=po_name, product_name=product_instance,
+                supplier_po = supplier(po_id=po_id, po_name=po_name, unit_price=supplier_product_instance.price, product_name=product_instance,
                                        product_qty=product_qty, supplier_name=supplier_name)
                 supplier_po.save()
                 # with connection.cursor() as cursor:
@@ -236,7 +236,7 @@ class POList(LoginPermissionCheckMixin, ListView):
 
     def get_queryset(self):
         qs = PurchaseOrder.objects.filter().values(
-            'po_name', 'supplier_name__company_name', 'po_id', 'status').distinct()
+            'po_name', 'supplier_name__company_name', 'po_id', 'status').distinct().order_by('-created_at')
         filtered_list = POFilter(self.request.GET, queryset=qs)
         return filtered_list.qs
 
@@ -360,24 +360,30 @@ def po_pdf(request):
     wayrem_vat = Settings.objects.filter(key="wayrem_vat").first()
     wayrem_vat = wayrem_vat.value
     po = PurchaseOrder.objects.filter(po_id=id, available=True).all()
-    vat = Settings.objects.filter(key="setting_vat").first()
-    vat = vat.value
+    vat_no = Settings.objects.filter(key="wayrem_vat_registration").first()
+    cr_no = Settings.objects.filter(key="wayrem_cr_no").first()
     net_value = []
     vat_amt = []
     net_amt = []
     for item in po:
         total_amt = float(item.supplier_product.price)*float(item.product_qty)
-        vat_float = (total_amt/100) * float(vat)
+        vat_float = (total_amt/100) * float(wayrem_vat)
         net = total_amt+vat_float
         net_value.append(total_amt)
         vat_amt.append(vat_float)
         net_amt.append(net)
-    delivery_date = (po[0].created_at + datetime.timedelta(days=5))
+    try:
+        po_log = PO_log.objects.filter(
+            po=po[0].po_name, status="confirm delivered").first()
+        delivery_date = po_log.created_at
+    except:
+        delivery_date = po[0].updated_at
     context = {
-        'wayrem_vat': wayrem_vat,
         'delivery_on': delivery_date,
         'data': po,
-        'vat': vat,
+        'vat_no': vat_no.value,
+        'cr_no': cr_no.value,
+        'vat': wayrem_vat,
         'total_items': len(po),
         'total_net': "{:.2f}".format(sum(net_value)),
         'total_vat': "{:.2f}".format(sum(vat_amt)),

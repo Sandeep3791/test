@@ -41,8 +41,8 @@
                             <tr>
                                 <td style="margin: 0; text-align: left;color:#4F4F4F;padding:10px;font-family: 'Roboto', sans-serif;width: 70%;" align="left">
                                     <span align="left" style=" display: flex; flex-direction: row; font-size: 1rem; font-weight: 600; text-align: left;">WAYREM</span>
-                                    <span style=" display: flex; flex-direction: row; text-align: left; font-size:.8rem;">Tax Sales Invoice</span>
-                                    <span style=" text-align: left;font-size:.8rem;">VAT NO: {{wayrem_vat}}</span>
+                                    <span style=" display: flex; flex-direction: row; text-align: left; font-size:.8rem;">Cr No: {{cr_no}} </span>
+                                    <span style=" text-align: left;font-size:.8rem;">VAT NO: {{vat_no}}</span>
                                 </td>
                                 <td style="font-size: 1rem; color:#4F4F4F;padding: 10px;font-family: 'Roboto', sans-serif;font-weight: 400;text-align: right;width: 30%;" align="right">
                                     <img src="{% static '/assets/img/logo/wayrem_logo.png' %}" alt="" align="right" style="text-align: right;"></td>
@@ -85,7 +85,7 @@
                                         <tbody>
                                             <tr>
                                                 <td style="width: 30%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" valign="top" align="left">Supplier VAT</td>
-                                                <td style="width: 70%;font-size: .8rem; color:#4F4F4F;" valign="top" align="left">12345</td>
+                                                <td style="width: 70%;font-size: .8rem; color:#4F4F4F;" valign="top" align="left">{{data.0.supplier_name.registration_no}}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -145,13 +145,12 @@
             <tr>
                 <td style="width: 10%; padding: 1rem .2rem;" valign="top" align="left">S.no</td>
                 <td style="width: 10%; padding: 1rem .2rem;" valign="top" align="left">SKU</td>
-                <td style="width: 10%; padding: 1rem .2rem;" valign="top" align="left">Description</td>
+                <td style="width: 10%; padding: 1rem .2rem;" valign="top" align="left">Product Name</td>
                 <!-- <td style="width: 10%; padding: 1rem .2rem;" valign="top" align="left">Quotation No.</td> -->
-                <td style="width: 10%; padding: 1rem .2rem;" valign="top" align="left">Unit Price</td>
+                <td style="width: 10%; padding: 1rem .2rem;" valign="top" align="left">Unit Price(in SAR)</td>
                 <td style="width: 10%; padding: 1rem .2rem;" valign="top" align="left">Qty</td>
-                <td style="width: 10%; padding: 1rem .2rem;" valign="top" align="left">Net Value <br> <span style="font-size: .6rem;">(Excl. VAT)</span></td>
-                <td style="width: 10%; padding: 1rem .2rem;" valign="top" align="left">VAT %</td>
-                <td style="width: 10%; padding: 1rem .2rem;" valign="top" align="right">VAT<br> <span style="font-size: .6rem;">amt.</span></td>
+                <td style="width: 10%; padding: 1rem .2rem;" valign="top" align="left">Gross <br> <span style="font-size: .6rem;">(Excl. VAT)</span></td>
+                <td style="width: 10%; padding: 1rem .2rem;" valign="top" align="right">VAT({{vat}}%)<br> <span style="font-size: .6rem;">amt.</span></td>
                 <td style="width: 10%; padding: 1rem .2rem;" valign="top" align="right">Net Amt.<br> <span style="font-size: .6rem;">(Incl. VAT)</span></td>
             </tr>
         </tbody>
@@ -163,12 +162,11 @@
             <tr>
                 <td style="width: 5%; padding: .2rem .2rem; text-align:left;" valign="top" align="left">{{forloop.counter}}</td>
                 <td style="width: 15%; padding: .2rem .2rem; text-align:left;" valign="top" align="left">{{item.product_name.SKU}}</td>
-                <td style="width: 10%; padding: .2rem .2rem; text-align:left;" valign="top" align="left">{{item.product_name.description}}</td>
+                <td style="width: 10%; padding: .2rem .2rem; text-align:left;" valign="top" align="left">{{item.product_name.name}}</td>
                 <!-- <td style="width: 10%; padding: 1rem .2rem;" valign="top" align="left">09</td> -->
                 <td style="width: 10%; padding: .2rem .2rem; text-align:left;" valign="top" align="left">{{item.supplier_product.price}}</td>
                 <td style="width: 10%; padding: .2rem .2rem; text-align:left;" valign="top" align="left">{{item.product_qty}}</td>
                 <td style="width: 10%; padding: .2rem .2rem; text-align:left;" valign="top" align="left">{% net_value item.supplier_product.price item.product_qty %}</td>
-                <td style="width: 10%; padding: .2rem .2rem; text-align:left;" valign="top" align="left">{{vat}}</td>
                 <td style="width: 10%; padding: .2rem .2rem; text-align:left;" valign="top" align="left">{% vat_amt item.supplier_product.price item.product_qty %}</td>
                 <td style="width: 10%; padding: .2rem .2rem; text-align:left;" valign="top" align="left">{% net_vat_amt item.supplier_product.price item.product_qty %}</td>
             </tr>
