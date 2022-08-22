@@ -97,7 +97,7 @@ def statuspo(request, id=None):
         emails = None
         with connection.cursor() as cursor:
             cursor.execute(
-                f"SELECT email FROM {constant.database}.users_master where role_id in (SELECT role_id FROM {constant.database}.role_permissions where function_id = (SELECT id FROM {constant.database}.function_master where codename = 'purchase_orders.notifications'));")
+                f"SELECT email FROM {constant.database}.users_master where is_superuser=True or role_id in (SELECT role_id FROM {constant.database}.role_permissions where function_id = (SELECT id FROM {constant.database}.function_master where codename = 'purchase_orders.notifications'));")
             y = constant.dictfetchall(cursor)
             emails = [i['email'] for i in y]
         if emails:
@@ -139,7 +139,7 @@ def deny_comment(request, id=None):
     emails = None
     with connection.cursor() as cursor:
         cursor.execute(
-            f"SELECT email FROM {constant.database}.users_master where role_id in (SELECT role_id FROM {constant.database}.role_permissions where function_id = (SELECT id FROM {constant.database}.function_master where codename = 'purchase_orders.notifications'));")
+            f"SELECT email FROM {constant.database}.users_master where is_superuser=True or role_id in (SELECT role_id FROM {constant.database}.role_permissions where function_id = (SELECT id FROM {constant.database}.function_master where codename = 'purchase_orders.notifications'));")
         y = constant.dictfetchall(cursor)
         emails = [i['email'] for i in y]
     if emails:
@@ -187,7 +187,7 @@ def delivered_status(request):
     emails = None
     with connection.cursor() as cursor:
         cursor.execute(
-            f"SELECT email FROM {constant.database}.users_master where role_id in (SELECT role_id FROM {constant.database}.role_permissions where function_id = (SELECT id FROM {constant.database}.function_master where codename = 'purchase_orders.notifications'));")
+            f"SELECT email FROM {constant.database}.users_master where is_superuser=True or role_id in (SELECT role_id FROM {constant.database}.role_permissions where function_id = (SELECT id FROM {constant.database}.function_master where codename = 'purchase_orders.notifications'));")
         y = constant.dictfetchall(cursor)
         emails = [i['email'] for i in y]
     if emails:

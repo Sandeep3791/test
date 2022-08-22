@@ -195,7 +195,7 @@ def add_product_save(request):
             emails = None
             with connection.cursor() as cursor:
                 cursor.execute(
-                    f"SELECT email FROM {constant.database}.users_master where role_id in (SELECT role_id FROM {constant.database}.role_permissions where function_id = (SELECT id FROM {constant.database}.function_master where codename = 'supplier_management.view_supplier_products'));")
+                    f"SELECT email FROM {constant.database}.users_master where is_superuser=True or role_id in (SELECT role_id FROM {constant.database}.role_permissions where function_id = (SELECT id FROM {constant.database}.function_master where codename = 'supplier_management.view_supplier_products'));")
                 y = constant.dictfetchall(cursor)
                 emails = [i['email'] for i in y]
             if emails:
