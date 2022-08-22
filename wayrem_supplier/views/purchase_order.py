@@ -227,29 +227,77 @@ def invoice_status(request):
         return HttpResponse(False)
 
 
+# def po_pdf(request):
+#     id = request.GET.get('po_id')
+#     wayrem_vat = Settings.objects.filter(key="wayrem_vat").first()
+#     wayrem_vat = wayrem_vat.value
+#     po = PurchaseOrder.objects.filter(po_id=id, available=True).all()
+#     vat = Settings.objects.filter(key="setting_vat").first()
+#     vat = vat.value
+#     net_value = []
+#     vat_amt = []
+#     net_amt = []
+#     for item in po:
+#         total_amt = float(item.supplier_product.price)*float(item.product_qty)
+#         vat_float = (total_amt/100) * float(vat)
+#         net = total_amt+vat_float
+#         net_value.append(total_amt)
+#         vat_amt.append(vat_float)
+#         net_amt.append(net)
+#     delivery_date = (po[0].created_at + datetime.timedelta(days=5))
+#     context = {
+#         'wayrem_vat': wayrem_vat,
+#         'delivery_on': delivery_date,
+#         'data': po,
+#         'vat': vat,
+#         'total_items': len(po),
+#         'total_net': "{:.2f}".format(sum(net_value)),
+#         'total_vat': "{:.2f}".format(sum(vat_amt)),
+#         'total_net_amt': "{:.2f}".format(sum(net_amt))
+#     }
+#     filename = str(datetime.datetime.now())+".pdf"
+#     html_template = render_to_string('po_customer_supplier.html', context)
+#     pdf_file = HTML(string=html_template,
+#                     base_url=request.build_absolute_uri()).write_pdf()
+#     response = HttpResponse(pdf_file, content_type='application/pdf')
+#     response['Content-Transfer-Encoding'] = 'binary'
+#     response['Content-Disposition'] = 'inline; attachment;filename='+filename
+#     return response
+
+
 def po_pdf(request):
     id = request.GET.get('po_id')
+    # response = HttpResponse(content_type='application/pdf')
+    # response['Content-Disposition'] = 'inline; attachment; filename=po' + \
+    #     str(datetime.datetime.now())+'.pdf'
+    # response['Content-Transfer-Encoding'] = 'binary'
     wayrem_vat = Settings.objects.filter(key="wayrem_vat").first()
     wayrem_vat = wayrem_vat.value
     po = PurchaseOrder.objects.filter(po_id=id, available=True).all()
-    vat = Settings.objects.filter(key="setting_vat").first()
-    vat = vat.value
+    vat_no = Settings.objects.filter(key="wayrem_vat_registration").first()
+    cr_no = Settings.objects.filter(key="wayrem_cr_no").first()
     net_value = []
     vat_amt = []
     net_amt = []
     for item in po:
         total_amt = float(item.supplier_product.price)*float(item.product_qty)
-        vat_float = (total_amt/100) * float(vat)
+        vat_float = (total_amt/100) * float(wayrem_vat)
         net = total_amt+vat_float
         net_value.append(total_amt)
         vat_amt.append(vat_float)
         net_amt.append(net)
-    delivery_date = (po[0].created_at + datetime.timedelta(days=5))
+    try:
+        po_log = PO_log.objects.filter(
+            po=po[0].po_name, status="confirm delivered").first()
+        delivery_date = po_log.created_at
+    except:
+        delivery_date = po[0].updated_at
     context = {
-        'wayrem_vat': wayrem_vat,
         'delivery_on': delivery_date,
         'data': po,
-        'vat': vat,
+        'vat_no': vat_no.value,
+        'cr_no': cr_no.value,
+        'vat': wayrem_vat,
         'total_items': len(po),
         'total_net': "{:.2f}".format(sum(net_value)),
         'total_vat': "{:.2f}".format(sum(vat_amt)),
