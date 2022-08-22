@@ -69,7 +69,7 @@
                                         <tbody>
                                             <tr>
                                                 <td style="width: 30%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" valign="top" align="left">Supplier No</td>
-                                                <td style="width: 70%;font-size: .8rem; color:#4F4F4F;" valign="top" align="left">{{data.0.supplier_name.id}}</td>
+                                                <td style="width: 70%;font-size: .8rem; color:#4F4F4F;" valign="top" align="left">{{data.0.supplier_name.contact}}</td>
                                             </tr>
                                         </tbody>
                                     </table>
@@ -143,15 +143,15 @@
     <table style="background-color:#FFF; font-size: .8rem;font-family: 'roboto', sans-serif !important; margin: auto;padding:1rem; width: 100%;" cellspacing="0" cellpadding="0" valign="top">
         <tbody>
             <tr>
-                <td style="width: 10%; padding: 1rem .2rem;" valign="top" align="left">S.no</td>
-                <td style="width: 10%; padding: 1rem .2rem;" valign="top" align="left">SKU</td>
-                <td style="width: 10%; padding: 1rem .2rem;" valign="top" align="left">Product Name</td>
-                <!-- <td style="width: 10%; padding: 1rem .2rem;" valign="top" align="left">Quotation No.</td> -->
-                <td style="width: 10%; padding: 1rem .2rem;" valign="top" align="left">Unit Price(in SAR)</td>
-                <td style="width: 10%; padding: 1rem .2rem;" valign="top" align="left">Qty</td>
-                <td style="width: 10%; padding: 1rem .2rem;" valign="top" align="left">Gross <br> <span style="font-size: .6rem;">(Excl. VAT)</span></td>
-                <td style="width: 10%; padding: 1rem .2rem;" valign="top" align="right">VAT({{vat}}%)<br> <span style="font-size: .6rem;">amt.</span></td>
-                <td style="width: 10%; padding: 1rem .2rem;" valign="top" align="right">Net Amt.<br> <span style="font-size: .6rem;">(Incl. VAT)</span></td>
+                <td style="width: 10%; padding: 1rem .2rem; vertical-align: text-top;" valign="top" align="left">S.no</td>
+                <td style="width: 10%; padding: 1rem .2rem; vertical-align: text-top;" valign="top" align="left">SKU</td>
+                <td style="width: 10%; padding: 1rem .2rem; vertical-align: text-top;" valign="top" align="left">Product Name</td>
+                <!-- <td style="width: 10%; padding: 1rem .2rem; vertical-align: text-top;" valign="top" align="left">Quotation No.</td> -->
+                <td style="width: 10%; padding: 1rem .2rem; vertical-align: text-top;" valign="top" align="left">Unit Price<br> <span style="font-size: .6rem;">(in SAR)</span></td>
+                <td style="width: 10%; padding: 1rem .2rem; vertical-align: text-top;" valign="top" align="left">Qty</td>
+                <td style="width: 10%; padding: 1rem .2rem; vertical-align: text-top;" valign="top" align="left">Gross <br> <span style="font-size: .6rem;">(Excl. VAT)</span></td>
+                <td style="width: 10%; padding: 1rem .2rem; vertical-align: text-top;" valign="top" align="right">VAT({{vat}}%)<br> <span style="font-size: .6rem;">amt.</span></td>
+                <td style="width: 10%; padding: 1rem .2rem; vertical-align: text-top;" valign="top" align="right">Net Amt.<br> <span style="font-size: .6rem;">(Incl. VAT)</span></td>
             </tr>
         </tbody>
     </table>
@@ -161,7 +161,7 @@
             {% for item in data %}
             <tr>
                 <td style="width: 5%; padding: .2rem .2rem; text-align:left;" valign="top" align="left">{{forloop.counter}}</td>
-                <td style="width: 15%; padding: .2rem .2rem; text-align:left;" valign="top" align="left">{{item.product_name.SKU}}</td>
+                <td style="width: 15%; padding: .2rem .2rem; text-align:center;" valign="top" align="center">{{item.product_name.SKU}}</td>
                 <td style="width: 10%; padding: .2rem .2rem; text-align:left;" valign="top" align="left">{{item.product_name.name}}</td>
                 <!-- <td style="width: 10%; padding: 1rem .2rem;" valign="top" align="left">09</td> -->
                 <td style="width: 10%; padding: .2rem .2rem; text-align:left;" valign="top" align="left">{{item.supplier_product.price}}</td>
@@ -184,10 +184,33 @@
                 <!-- <td style="width: 10%; padding: 1rem .2rem;" valign="top" align="left"></td> -->
                 <td style="width: 10%; padding: 1rem .2rem;" valign="top" align="left">&nbsp;&nbsp;&nbsp;&nbsp;</td>
                 <td style="width: 10%; padding: 1rem .2rem;" valign="top" align="left"></td>
-                <td style="width: 10%; padding: 1rem .2rem; text-align:left;" valign="top" align="left">{{total_net}}</td>
-                <td style="width: 10%; padding: 1rem .2rem; text-align:right;" valign="top" align="left"></td>
-                <td style="width: 10%; padding: 1rem .2rem; text-align:left;" valign="top" align="left">{{total_vat}}</td>
-                <td style="width: 10%; padding: 1rem .2rem; text-align:left;" valign="top" align="left">{{total_net_amt}}</td>
+                <td style="width: 30%; padding: 1rem .2rem;">
+                    <table style="width: 100%;">
+                        <tbody>
+                            <tr>
+                                <td style="width: 65%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" align="left">Gross</td>
+                                <td style="width: 42%;font-size: .8rem; color:#4F4F4F;" align="right" valign="top">{{total_net}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table style="width: 100%;">
+                        <tbody>
+                            <tr>
+                                <td style="width: 65%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" align="left">Vat</td>
+                                <td style="width: 42%;font-size: .8rem; color:#4F4F4F;" align="right" valign="top">{{total_vat}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table style="width: 100%;">
+                        <tbody>
+                            <tr>
+                                <td style="width: 65%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" align="left">Net Amt.</td>
+                                <td style="width: 42%;font-size: .8rem; color:#4F4F4F;" align="right" valign="top">{{total_net_amt}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+              
             </tr>
         </tbody>
     </table>
