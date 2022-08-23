@@ -2,7 +2,6 @@ from django.db.models import F
 from re import S
 from django.shortcuts import render, redirect
 from django.views import View
-from pydantic import NotNoneError
 from wayrem_supplier.models import Categories, SupplierProducts, Products, BestProductsSupplier, EmailTemplateModel
 from wayrem_supplier.forms import SupplierProductForm
 from django.core.paginator import Paginator
