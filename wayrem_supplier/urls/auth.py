@@ -8,7 +8,7 @@ urlpatterns = [
     path('update-supplier-profile/', views.update_supplier_profile,
          name='update_supplier_profile'),
     path('forgot-password/', views.forgot_password, name='forgot-pass'),
-    path('reset-password/', views.reset_password, name='reset-pass'),
+    path('reset-password/', views.Reset_Password.as_view(), name='reset-pass'),
     path('notification-seen/<str:id>/',
          views.notifications_seen, name='notification-seen'),
     path('clear-notification/', views.notifications_clear,

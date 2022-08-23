@@ -1,8 +1,10 @@
+from django.views import View
+import imp
 from django.contrib.messages.api import success
 from wayrem_supplier.models import PurchaseOrder, Supplier, OtpDetails, Notification, PO_log, Invoice
 from django.contrib import messages
 from django.shortcuts import render, redirect
-from wayrem_supplier.forms import ProfileUpdateForm
+from wayrem_supplier.forms import ProfileUpdateForm, ResetPasswordForm
 import random
 import smtplib
 import uuid
@@ -142,7 +144,9 @@ def forgot_password(request):
             print(data1)
             user = OtpDetails(email=email, otp=no, created_at=datetime.now())
             user.save()
-            return render(request, 'reset-password.html', {'email': email})
+            request.session['fpemail'] = email
+            return redirect('wayrem_supplier:reset-pass')
+            # return render(request, 'reset-password.html', {'email': email})
 
 
 def reset_password(request):
@@ -192,6 +196,31 @@ def reset_password(request):
         else:
             messages.error(request, "Invalid OTP!")
             return render(request, 'reset-password.html')
+
+
+class Reset_Password(View):
+    form = ResetPasswordForm
+
+    def get(self, request):
+        email = request.session.get('fpemail', None)
+        form = self.form(initial={'email': email})
+        return render(request, 'reset-password.html', {'email': email, 'form': form})
+
+    def post(self, request, *args, **kwargs):
+        email = request.session.get('fpemail')
+        updated_request = request.POST.copy()
+        updated_request.update({'email': email})
+        form = self.form(updated_request)
+        if form.is_valid():
+            new_user = Supplier.objects.get(email=email)
+            new_user.password = form.cleaned_data.get('new_password')
+            new_user.save()
+            otp_delete = OtpDetails.objects.filter(email=email)
+            otp_delete.delete()
+            messages.success(request, "Password Changed Successfully!")
+            return redirect('wayrem_supplier:login')
+        else:
+            return render(request, 'reset-password.html', {'form': form})
 
 
 class RootUrlView(RedirectView):
