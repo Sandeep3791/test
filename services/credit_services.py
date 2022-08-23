@@ -9,7 +9,8 @@ import re
 from services import payment_services
 from sqlalchemy import null, or_
 from utility_services import common_services
-
+import os
+import random
 
 def get_credits(customer_id, db: Session):
     user_data = db.query(credit_models.CreditManagement).filter(
@@ -118,6 +119,14 @@ def get_overdue_credits(customer_id, db: Session):
 
 
 def pay_overdue_credits(request, db: Session):
+    reference_number = random.randint(1000, 999999)
+    same_credit_ref_no = db.query(credit_models.CreditPaymentReference).filter(
+        credit_models.CreditPaymentReference.reference_no == reference_number).first()
+    if same_credit_ref_no:
+        reference_number = random.randint(999999, 99999999)
+    reference = credit_models.CreditPaymentReference(customer_id=request.customer_id,reference_no=reference_number)
+    db.merge(reference)
+    db.commit()
     SUCCESS_CODES_REGEX = re.compile(r'^(000\.000\.|000\.100\.1|000\.[36])')
     SUCCESS_MANUAL_REVIEW_CODES_REGEX = re.compile(
         r'^(000\.400\.0[^3]|000\.400\.[0-1]{2}0)')
@@ -165,6 +174,7 @@ def pay_overdue_credits(request, db: Session):
             db.commit()
 
     if request.credit_dues_ids:
+        reference_number_obj = db.query(credit_models.CreditPaymentReference).filter(credit_models.CreditPaymentReference.reference_no == reference_number,credit_models.CreditPaymentReference.customer_id == request.customer_id).first()
         for i in request.credit_dues_ids:
             exist_credit_info = db.query(credit_models.CreditTransactionsLog).filter(
                 credit_models.CreditTransactionsLog.credit_id == i, credit_models.CreditTransactionsLog.payment_status == True).first()
@@ -181,7 +191,8 @@ def pay_overdue_credits(request, db: Session):
                     if request.amount >= amount_to_paid:
                         new_available_limit = available_limit + amount_to_paid
                         paid_data = credit_models.CreditTransactionsLog(credit_date=exist_credit_date, due_date=exist_due_date, credit_id=i, paid_date=present_date,
-                                                                        paid_amount=amount_to_paid, payment_status=True, order_id=credit_info.order_id, customer_id=request.customer_id, available=new_available_limit)
+                                                                        paid_amount=amount_to_paid, payment_status=True, order_id=credit_info.order_id, customer_id=request.customer_id, 
+                                                                        available=new_available_limit,reference_id=reference_number_obj.id)
                         db.merge(paid_data)
                         db.commit()
                         user_Credit_data = db.query(credit_models.CreditManagement).filter(
@@ -206,6 +217,69 @@ def pay_overdue_credits(request, db: Session):
             status=status.HTTP_424_FAILED_DEPENDENCY, message="Please provide credit id's!!")
         return response
 
+
+
+def upload_credit_bank_payment_image(customer_id, reference_no, image, db: Session):
+    reference_number_obj = db.query(credit_models.CreditPaymentReference).filter(credit_models.CreditPaymentReference.reference_no == reference_no,credit_models.CreditPaymentReference.customer_id == customer_id).first()
+    if not reference_number_obj:
+        common_msg = user_schemas.ResponseCommonMessage(
+            status=status.HTTP_404_NOT_FOUND, message="Credit Reference not found")
+        return common_msg
+
+    path = os.path.abspath('.')
+
+    image_path = os.path.join(path, 'common_folder')
+    inner_image_path = os.path.join(image_path, 'customer_banks')
+    filepath = image.filename
+    extension = filepath.split(".")[-1]
+    db_path = f"bank_payment_creditRef-{reference_no}."+extension
+    stored_path = os.path.join(
+        inner_image_path, db_path)
+
+    if os.path.exists(stored_path):
+        os.remove(stored_path)
+
+    with open(os.path.join(stored_path), "wb+") as file_object:
+        file_object.write(image.file.read())
+        file_object.close()
+
+    reference_number_obj.bank_payment_file = db_path
+    db.merge(reference_number_obj)
+    db.commit()
+    prfl_path = user_schemas.UploadProfiledata(path=db_path)
+    common_msg = user_schemas.UploadProfile(
+        status=status.HTTP_200_OK, message="success", data=prfl_path)
+    return common_msg
+    # try:
+    #     customer_data = db.execute(
+    #         f"select * from {constants.Database_name}.customer_device where customer_id = {customer_id} and is_active=True ;")
+
+    #     setting_message = db.execute(
+    #         f"select * from {constants.Database_name}.settings where settings.key = 'credit_bank_receipt_upload_notification' ;")
+
+    #     for msg in setting_message:
+    #         message = msg.value
+    #         title_message = msg.display_name
+    #     values = {
+    #         "order_ref_no": reference_no
+    #     }
+
+    #     message = message.format(**values)
+
+    #     if customer_data:
+    #         for data in customer_data:
+    #             notf = firebase_schemas.PushNotificationFirebase(
+    #                 title=title_message, message=message, device_token=data.device_id, order_id=order_id)
+    #             firebase_services.push_notification_in_firebase(notf)
+
+    #         if notf:
+    #             fire = firebase_models.CustomerNotification(
+    #                 customer_id=customer_id, order_id=order_id, title=notf.title, message=notf.message, created_at=common_services.get_time())
+    #             db.merge(fire)
+    #             db.commit()
+    # except Exception as e:
+    #     print(e)
+    # return common_msg
 
 def user_credit_request(request, db: Session, background_tasks: BackgroundTasks, confirm):
     user_data = db.query(user_models.User).filter(
@@ -288,4 +362,59 @@ def check_user_credit(customer_id, db: Session):
     else:
         response = user_schemas.ResponseCommonMessage(
             status=status.HTTP_404_NOT_FOUND, message="Customer id not found!!")
+        return response
+
+
+
+def pay_overdue_credits_ByBank(request, db: Session):
+    reference_number = random.randint(1000, 999999)
+    same_credit_ref_no = db.query(credit_models.CreditPaymentReference).filter(
+        credit_models.CreditPaymentReference.reference_no == reference_number).first()
+    if same_credit_ref_no:
+        reference_number = random.randint(999999, 99999999)
+    reference = credit_models.CreditPaymentReference(customer_id=request.customer_id,reference_no=reference_number)
+    db.merge(reference)
+    db.commit()
+    if request.credit_dues_ids:
+        reference_number_obj = db.query(credit_models.CreditPaymentReference).filter(credit_models.CreditPaymentReference.reference_no == reference_number,credit_models.CreditPaymentReference.customer_id == request.customer_id).first()
+        for i in request.credit_dues_ids:
+            exist_credit_info = db.query(credit_models.CreditTransactionsLog).filter(
+                credit_models.CreditTransactionsLog.credit_id == i, credit_models.CreditTransactionsLog.payment_status == True).first()
+            if not exist_credit_info:
+                credit_info = db.query(credit_models.CreditTransactionsLog).filter(
+                    credit_models.CreditTransactionsLog.id == i, credit_models.CreditTransactionsLog.payment_status == False).first()
+                present_date = common_services.get_time()
+                amount_to_paid = credit_info.credit_amount
+                available_limit = credit_info.available
+                exist_credit_date = credit_info.credit_date
+                exist_due_date = credit_info.due_date
+
+                if credit_info:
+                    if request.amount >= amount_to_paid:
+                        new_available_limit = available_limit + amount_to_paid
+                        paid_data = credit_models.CreditTransactionsLog(credit_date=exist_credit_date, due_date=exist_due_date, credit_id=i, paid_date=present_date,
+                                                                        paid_amount=amount_to_paid, payment_status=True, order_id=credit_info.order_id, customer_id=request.customer_id, 
+                                                                        available=new_available_limit, reference_id=reference_number_obj.id)
+                        db.merge(paid_data)
+                        db.commit()
+                        user_Credit_data = db.query(credit_models.CreditManagement).filter(
+                            credit_models.CreditManagement.customer_id == request.customer_id).first()
+                        available_amt = float(user_Credit_data.available)
+                        user_Credit_data.available = round(
+                            available_amt + float(amount_to_paid), 2)
+                        db.merge(user_Credit_data)
+                        db.commit()
+            else:
+                response = user_schemas.ResponseCommonMessage(
+                    status=status.HTTP_400_BAD_REQUEST, message="Dues for this ids are already paid!!")
+                return response
+        data = credit_schemas.CreditDuesResponse(total_amount=request.amount, date=str(
+            common_services.utc_to_tz(present_date)), customer_id=request.customer_id,reference_no=reference_number)
+        data2 = credit_schemas.FinalDuesPayResponse(
+            status=status.HTTP_200_OK, message="credit paid successfully!", data=data)
+        return data2
+
+    else:
+        response = user_schemas.ResponseCommonMessage(
+            status=status.HTTP_424_FAILED_DEPENDENCY, message="Please provide credit id's!!")
         return response

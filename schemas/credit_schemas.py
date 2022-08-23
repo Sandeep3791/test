@@ -51,11 +51,11 @@ class CreditDuesRequest(BaseModel):
     customer_id: int
     amount: float
 
-
 class CreditDuesResponse(BaseModel):
     total_amount: float
     date: str
     customer_id: int
+    reference_no:Optional[int]
 
 
 class FinalDuesPayResponse(BaseModel):
@@ -90,3 +90,7 @@ class CheckUserCredit(BaseModel):
     message: str
     data: CreditCheckNewUser
 
+class CreditDuesbyBankRequest(BaseModel):
+    credit_dues_ids: List[int]
+    customer_id: int
+    amount: float

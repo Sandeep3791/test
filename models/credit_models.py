@@ -1,4 +1,5 @@
-from sqlalchemy import Column, Integer, String, BigInteger, DateTime, ForeignKey, Float
+from enum import unique
+from sqlalchemy import Column, Integer, String, BigInteger, DateTime, ForeignKey, Float, true
 from sqlalchemy.dialects.mysql import LONGTEXT
 from sqlalchemy.sql.sqltypes import Boolean
 from database import Base
@@ -30,6 +31,7 @@ class CreditTransactionsLog(Base):
     __tablename__ = 'credit_transactions_logs'
 
     id = Column(Integer, primary_key=True)
+    reference_id = Column(ForeignKey('credit_payment_reference.id'),nullable=True)
     credit_amount = Column(Float(asdecimal=True), nullable=False)
     available = Column(Float(asdecimal=True), nullable=False)
     credit_date = Column(DateTime(timezone=True), nullable=True)
@@ -52,4 +54,16 @@ class UserCreditRequest(Base):
     customer_id = Column(ForeignKey('customers_master.id'))
     requested_amount = Column(Float, nullable=True)
     updated_at = Column(DateTime(timezone=True), default=get_time())
+    created_at = Column(DateTime(timezone=True), default=get_time())
+
+
+
+class CreditPaymentReference(Base):
+    __tablename__ = "credit_payment_reference"
+
+    id = Column(Integer(), autoincrement=True, primary_key=True, index=True)
+    customer_id = Column(ForeignKey('customers_master.id'))
+    reference_no = Column(String(255),unique=True,nullable=True)
+    bank_payment_file = Column(String(255), nullable=True)
+    is_verified = Column(Boolean, default=False)
     created_at = Column(DateTime(timezone=True), default=get_time())

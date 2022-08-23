@@ -1,6 +1,6 @@
 
 from fastapi_jwt_auth import AuthJWT
-from fastapi import APIRouter, Depends, BackgroundTasks
+from fastapi import APIRouter, Depends, BackgroundTasks,File,UploadFile
 import database
 from sqlalchemy.orm import Session
 from services import credit_services
@@ -55,3 +55,15 @@ def user_credit_request(request: credit_schemas.UserCreditRequest, confirm: bool
 def check_user_credit(customer_id: int, authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
     response = credit_services.check_user_credit(customer_id, db)
     return response
+
+
+@router.post('/upload/credit/bank/payment/image')
+def upload_credit_bank_payment_image(customer_id: str, reference_no: int, image: UploadFile = File(...), authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
+    user = credit_services.upload_credit_bank_payment_image(customer_id, reference_no, image, db)
+    return user
+
+@router.post('/credit/dues/bank/pay')
+def pay_overdue_credits(request: credit_schemas.CreditDuesbyBankRequest, authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
+    response = credit_services.pay_overdue_credits_ByBank(request, db)
+    return response
+    
