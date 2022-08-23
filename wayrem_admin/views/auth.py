@@ -11,6 +11,7 @@ from django.contrib import messages
 from django.utils.decorators import method_decorator
 from wayrem_admin.decorators import anonymous
 from django.contrib.auth import update_session_auth_hash
+from wayrem_admin.forms.account import ResetPasswordForm
 from wayrem_admin.models import User, Otp, EmailTemplateModel
 from django.views import View
 from django.contrib.auth import authenticate, login, logout
@@ -90,38 +91,32 @@ class Forgot_Password(View):
             print(data1)
             user = Otp(email=email, otp=no)
             user.save()
-            return render(request, 'reset-password.html', {'email': email})
+            return redirect('wayrem_admin:reset-password')
+            # return render(request, 'reset-password.html', {'email': email})
 
 
 class Reset_Password(View):
+    form = ResetPasswordForm
 
     def get(self, request):
         email = request.session.get('fpemail', None)
-        return render(request, 'reset-password.html', {'email': email})
+        form = self.form(initial={'email': email})
+        return render(request, 'reset-password.html', {'email': email, 'form': form})
 
     def post(self, request, *args, **kwargs):
         email = request.session.get('fpemail')
-        print(email)
-        otp = request.POST.get('otp')
-        newpassword = request.POST.get('newpassword')
-        confirmpassword = request.POST.get('confirm_password')
-        if newpassword != confirmpassword:
-            messages.error(request, "Password Doesn't Match!")
-            return redirect('wayrem_admin:reset-password')
-        print(newpassword)
-        user = Otp.objects.filter(email=email, otp=otp).first()
-
-        if user:
-            print("Working")
+        updated_request = request.POST.copy()
+        updated_request.update({'email': email})
+        form = self.form(updated_request)
+        if form.is_valid():
             new_user = Users.objects.get(email=email)
-            new_user.password = make_password(newpassword)
+            new_user.password = make_password(
+                form.cleaned_data.get('new_password'))
             new_user.save()
             messages.success(request, "Password Changed Successfully!")
             return redirect('wayrem_admin:login')
         else:
-            print("Not Working")
-            messages.error(request, "OTP Invalid!")
-            return redirect('wayrem_admin:reset-password')
+            return render(request, 'reset-password.html', {'form': form})
 
 
 class Change_PasswordView(PasswordContextMixin, FormView):
