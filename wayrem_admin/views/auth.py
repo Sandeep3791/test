@@ -113,6 +113,8 @@ class Reset_Password(View):
             new_user.password = make_password(
                 form.cleaned_data.get('new_password'))
             new_user.save()
+            otp_delete = Otp.objects.filter(email=email)
+            otp_delete.delete()
             messages.success(request, "Password Changed Successfully!")
             return redirect('wayrem_admin:login')
         else:
