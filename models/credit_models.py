@@ -65,6 +65,6 @@ class CreditPaymentReference(Base):
     customer_id = Column(ForeignKey('customers_master.id'))
     reference_no = Column(String(255),unique=True,nullable=True)
     bank_payment_file = Column(String(255), nullable=True)
-    payment_type = Column(Integer)
+    payment_type_id = Column(Integer)
     is_verified = Column(Boolean, default=False)
     created_at = Column(DateTime(timezone=True), default=get_time())

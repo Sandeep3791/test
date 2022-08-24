@@ -130,7 +130,7 @@ def pay_overdue_credits(request, db: Session):
         credit_models.CreditPaymentReference.reference_no == reference_number).first()
     if same_credit_ref_no:
         reference_number = random.randint(999999, 99999999)
-    reference = credit_models.CreditPaymentReference(customer_id=request.customer_id,reference_no=reference_number)
+    reference = credit_models.CreditPaymentReference(customer_id=request.customer_id,reference_no=reference_number,payment_type_id=14)
     db.merge(reference)
     db.commit()
     SUCCESS_CODES_REGEX = re.compile(r'^(000\.000\.|000\.100\.1|000\.[36])')
@@ -378,7 +378,7 @@ def pay_overdue_credits_ByBank(request, db: Session):
         credit_models.CreditPaymentReference.reference_no == reference_number).first()
     if same_credit_ref_no:
         reference_number = random.randint(999999, 99999999)
-    reference = credit_models.CreditPaymentReference(customer_id=request.customer_id,reference_no=reference_number,payment_type=12)
+    reference = credit_models.CreditPaymentReference(customer_id=request.customer_id,reference_no=reference_number,payment_type_id=12)
     db.merge(reference)
     db.commit()
     if request.credit_dues_ids:
