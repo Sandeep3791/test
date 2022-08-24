@@ -41,11 +41,11 @@
                             <tr>
                                 <td style="margin: 0; text-align: left;color:#4F4F4F;padding:10px;font-family: 'Roboto', sans-serif;width: 70%;" align="left">
                                     <span align="left" style=" display: flex; flex-direction: row; font-size: 1rem; font-weight: 600; text-align: left;">WAYREM</span>
-                                    <span style=" display: flex; flex-direction: row; text-align: left; font-size:.8rem;">Cr No: {{cr_no}} </span>
+                                    <span style=" display: flex; flex-direction: row; text-align: left; font-size:.8rem;">CR No: {{cr_no}} </span>
                                     <span style=" text-align: left;font-size:.8rem;">VAT NO: {{vat_no}}</span>
                                 </td>
                                 <td style="font-size: 1rem; color:#4F4F4F;padding: 10px;font-family: 'Roboto', sans-serif;font-weight: 400;text-align: right;width: 30%;" align="right">
-                                    <img src="{% static '/assets/img/logo.png' %}" alt="" align="right" style="text-align: right;"></td>
+                                    <img src="{% static '/assets/img/logo/wayrem_logo.png' %}" alt="" align="right" style="text-align: right;"></td>
                             </tr>
                             {% comment %}
                             <tr>
@@ -68,7 +68,7 @@
                                     <table style="width: 100%;">
                                         <tbody>
                                             <tr>
-                                                <td style="width: 30%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" valign="top" align="left">Supplier No</td>
+                                                <td style="width: 30%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" valign="top" align="left">Supplier No.</td>
                                                 <td style="width: 70%;font-size: .8rem; color:#4F4F4F;" valign="top" align="left">{{data.0.supplier_name.contact}}</td>
                                             </tr>
                                         </tbody>
@@ -84,7 +84,7 @@
                                     <table style="width: 100%;">
                                         <tbody>
                                             <tr>
-                                                <td style="width: 30%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" valign="top" align="left">Supplier VAT</td>
+                                                <td style="width: 30%;font-size: .8rem; font-weight: 600;  color: #000;" valign="top" align="left">Supplier VAT</td>
                                                 <td style="width: 70%;font-size: .8rem; color:#4F4F4F;" valign="top" align="left">{{data.0.supplier_name.registration_no}}</td>
                                             </tr>
                                         </tbody>
@@ -92,18 +92,18 @@
                                     <table style="width: 100%;">
                                         <tbody>
                                             <tr>
-                                                <td style="width: 30%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" valign="top" align="left">PO no.</td>
+                                                <td style="width: 30%;font-size: .8rem; font-weight: 600;  color: #000;" valign="top" align="left">PO No.</td>
                                                 <td style="width: 70%;font-size: .8rem; color:#4F4F4F;" valign="top" align="left">{{data.0.po_name}}</td>
                                             </tr>
                                         </tbody>
                                     </table>
                                 </td>
 
-                                <td style="color:#4F4F4F;padding: 20px 0;font-family: 'Roboto', sans-serif;width: 50%;    line-height: 1.8;" valign="top">
+                                <td style="color:#4F4F4F;padding: 20px 0;font-family: 'Roboto', sans-serif;width: 50%;    line-height: 1.8; vertical-align:top;"  valign="top">
                                     <table style="width: 100%;">
                                         <tbody>
                                             <tr>
-                                                <td style="width: 30%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" valign="top" align="left">Order No</td>
+                                                <td style="width: 30%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" valign="top" align="left">Order No.</td>
                                                 <td style="width: 70%;font-size: .8rem; color:#4F4F4F;" valign="top" align="left">#{{data.0.po_name|slice:"-4:"}}</td>
                                             </tr>
                                         </tbody>
@@ -143,15 +143,15 @@
     <table style="background-color:#FFF; font-size: .8rem;font-family: 'roboto', sans-serif !important; margin: auto;padding:1rem; width: 100%;" cellspacing="0" cellpadding="0" valign="top">
         <tbody>
             <tr>
-                <td style="width: 10%; padding: 1rem .2rem; vertical-align: text-top;" valign="top" align="left">S.no</td>
-                <td style="width: 10%; padding: 1rem .2rem; vertical-align: text-top;" valign="top" align="left">SKU</td>
-                <td style="width: 10%; padding: 1rem .2rem; vertical-align: text-top;" valign="top" align="left">Product Name</td>
+                <td style="width: 10%; padding: 1rem .2rem; vertical-align: text-top; font-weight: 600;" valign="top" align="left">Sr. No.</td>
+                <td style="width: 10%; padding: 1rem .2rem; vertical-align: text-top; font-weight: 600;" valign="top" align="left">SKU</td>
+                <td style="width: 10%; padding: 1rem .2rem; vertical-align: text-top; font-weight: 600;" valign="top" align="left">Product Name</td>
                 <!-- <td style="width: 10%; padding: 1rem .2rem; vertical-align: text-top;" valign="top" align="left">Quotation No.</td> -->
-                <td style="width: 10%; padding: 1rem .2rem; vertical-align: text-top;" valign="top" align="left">Unit Price<br> <span style="font-size: .6rem;">(in SAR)</span></td>
-                <td style="width: 10%; padding: 1rem .2rem; vertical-align: text-top;" valign="top" align="left">Qty</td>
-                <td style="width: 10%; padding: 1rem .2rem; vertical-align: text-top;" valign="top" align="left">Gross <br> <span style="font-size: .6rem;">(Excl. VAT)</span></td>
-                <td style="width: 10%; padding: 1rem .2rem; vertical-align: text-top;" valign="top" align="right">VAT({{vat}}%)<br> <span style="font-size: .6rem;">amt.</span></td>
-                <td style="width: 10%; padding: 1rem .2rem; vertical-align: text-top;" valign="top" align="right">Net Amt.<br> <span style="font-size: .6rem;">(Incl. VAT)</span></td>
+                <td style="width: 10%; padding: 1rem .2rem; vertical-align: text-top; font-weight: 600;" valign="top" align="left">Unit Price<br> <span style="font-size: .6rem; ">(in SAR)</span></td>
+                <td style="width: 10%; padding: 1rem .2rem; vertical-align: text-top; font-weight: 600;" valign="top" align="left">Qty</td>
+                <td style="width: 10%; padding: 1rem .2rem; vertical-align: text-top; font-weight: 600;" valign="top" align="left">Gross <br> <span style="font-size: .6rem;">(Excl. VAT)</span></td>
+                <td style="width: 10%; padding: 1rem .2rem; vertical-align: text-top; font-weight: 600;" valign="top" align="right">VAT({{vat}}%)<br> <span style="font-size: .6rem;">(in SAR)</span></td>
+                <td style="width: 10%; padding: 1rem .2rem; vertical-align: text-top; font-weight: 600;" valign="top" align="right">Net Amt.<br> <span style="font-size: .6rem;">(Incl. VAT)</span></td>
             </tr>
         </tbody>
     </table>
@@ -189,15 +189,15 @@
                         <tbody>
                             <tr>
                                 <td style="width: 65%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" align="left">Gross</td>
-                                <td style="width: 42%;font-size: .8rem; color:#4F4F4F;" align="right" valign="top">{{total_net}}</td>
+                                <td style="width: 42%;font-size: .8rem; color:#4F4F4F;" align="right" valign="top">SAR {{total_net}}</td>
                             </tr>
                         </tbody>
                     </table>
                     <table style="width: 100%;">
                         <tbody>
                             <tr>
-                                <td style="width: 65%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" align="left">Vat</td>
-                                <td style="width: 42%;font-size: .8rem; color:#4F4F4F;" align="right" valign="top">{{total_vat}}</td>
+                                <td style="width: 65%;font-size: .8rem; font-weight: 600; color: #000;" align="left">VAT</td>
+                                <td style="width: 42%;font-size: .8rem; color:#4F4F4F;" align="right" valign="top">SAR {{total_vat}}</td>
                             </tr>
                         </tbody>
                     </table>
@@ -205,7 +205,7 @@
                         <tbody>
                             <tr>
                                 <td style="width: 65%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" align="left">Net Amt.</td>
-                                <td style="width: 42%;font-size: .8rem; color:#4F4F4F;" align="right" valign="top">{{total_net_amt}}</td>
+                                <td style="width: 42%;font-size: .8rem; color:#4F4F4F;" align="right" valign="top">SAR {{total_net_amt}}</td>
                             </tr>
                         </tbody>
                     </table>
