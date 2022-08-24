@@ -34,14 +34,18 @@ def get_credits(customer_id, db: Session):
 
 def get_credits_txn(customer_id, dues, db: Session):
     if dues == True:
-        user_data = db.query(credit_models.CreditTransactionsLog).filter(credit_models.CreditTransactionsLog.customer_id == customer_id,
-                                                                         credit_models.CreditTransactionsLog.payment_status == False).order_by(desc(credit_models.CreditTransactionsLog.id)).all()
+        user_data = db.query(credit_models.CreditTransactionsLog).filter(credit_models.CreditTransactionsLog.customer_id == customer_id,credit_models.CreditTransactionsLog.payment_status == False,credit_models.CreditTransactionsLog.credit_id==None).order_by(desc(credit_models.CreditTransactionsLog.id)).all()
         txn_list = []
         if user_data:
             for data in user_data:
                 paid_credit_data = db.query(credit_models.CreditTransactionsLog).filter(
                     credit_models.CreditTransactionsLog.credit_id == data.id, credit_models.CreditTransactionsLog.payment_status == True).first()
                 if not paid_credit_data:
+                    bank_paid_credit = db.query(credit_models.CreditTransactionsLog).filter(credit_models.CreditTransactionsLog.credit_id == data.id, credit_models.CreditTransactionsLog.payment_status == False).first()
+                    if bank_paid_credit:
+                        pending = True
+                    else:
+                        pending = False
                     user_oder_data = db.query(order_models.Orders).filter(
                         order_models.Orders.id == data.order_id).first()
                     present_date = datetime.now()
@@ -50,7 +54,7 @@ def get_credits_txn(customer_id, dues, db: Session):
                     else:
                         is_due = True
                     credit_data = credit_schemas.ResponseCustomerCreditsTxn(id=data.id, credit_amount=data.credit_amount, available=data.available, credit_date=str(
-                        common_services.utc_to_tz(data.credit_date)), due_date=str(common_services.utc_to_tz(data.due_date)), payment_status=data.payment_status, order_ref_no=user_oder_data.ref_number, valid_date=is_due, is_refund=data.is_refund)
+                        common_services.utc_to_tz(data.credit_date)), due_date=str(common_services.utc_to_tz(data.due_date)), payment_status=data.payment_status, order_ref_no=user_oder_data.ref_number, valid_date=is_due, is_refund=data.is_refund,bank_pending=pending)
                     txn_list.append(credit_data)
             response = credit_schemas.ResponseCustomerCreditsTxnFinal(
                 status=status.HTTP_200_OK, message="User Credit Dues!", data=txn_list)
@@ -65,6 +69,10 @@ def get_credits_txn(customer_id, dues, db: Session):
         txn_list = []
         if user_data:
             for data in user_data:
+                print(data.id)
+                bank_paid_credit = db.query(credit_models.CreditTransactionsLog).filter(credit_models.CreditTransactionsLog.id == data.id, credit_models.CreditTransactionsLog.payment_status == False,credit_models.CreditTransactionsLog.credit_id != None).first()
+                if bank_paid_credit:
+                    continue
                 user_oder_data = db.query(order_models.Orders).filter(
                     order_models.Orders.id == data.order_id).first()
                 present_date = datetime.now()
