@@ -226,6 +226,8 @@ class CreditPaymentReference(models.Model):
     customer = models.ForeignKey('Customer', models.DO_NOTHING, null=True)
     reference_no = models.CharField(max_length=255, null=True, blank=True)
     bank_payment_file = models.CharField(max_length=255, null=True, blank=True)
+    payment_type = models.ForeignKey(
+        'StatusMaster', models.DO_NOTHING, null=True)
     is_verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
