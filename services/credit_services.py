@@ -103,12 +103,18 @@ def get_overdue_credits(customer_id, db: Session):
             paid_credit_data = db.query(credit_models.CreditTransactionsLog).filter(
                 credit_models.CreditTransactionsLog.credit_id == i.id, credit_models.CreditTransactionsLog.payment_status == True).first()
             if not paid_credit_data:
+                bank_paid_credit = db.query(credit_models.CreditTransactionsLog).filter(
+                credit_models.CreditTransactionsLog.credit_id == i.id, credit_models.CreditTransactionsLog.payment_status == False).first()
+                if bank_paid_credit:
+                    pending = True
+                else:
+                    pending = False
                 credit_due_date = i.due_date
                 user_oder_data = db.query(order_models.Orders).filter(
                     order_models.Orders.id == i.order_id).first()
                 if present_date > credit_due_date:
                     due_credit_data = credit_schemas.ResponseCustomerCreditsTxn(id=i.id, credit_amount=i.credit_amount, available=i.available, credit_date=str(
-                        common_services.utc_to_tz(i.credit_date)), due_date=str(common_services.utc_to_tz(i.due_date)), payment_status=i.payment_status, order_ref_no=user_oder_data.ref_number, is_refund=i.is_refund)
+                        common_services.utc_to_tz(i.credit_date)), due_date=str(common_services.utc_to_tz(i.due_date)), payment_status=i.payment_status, order_ref_no=user_oder_data.ref_number, is_refund=i.is_refund,bank_pending=pending)
         response = credit_schemas.ResponseCustomerCreditDue(
             status=status.HTTP_200_OK, message="User Overdue Credit Info!", data=due_credit_data)
         return response
@@ -188,7 +194,7 @@ def pay_overdue_credits(request, db: Session):
                 exist_due_date = credit_info.due_date
 
                 if credit_info:
-                    if request.amount >= amount_to_paid:
+                    if float(request.amount) >= float(amount_to_paid):
                         new_available_limit = available_limit + amount_to_paid
                         paid_data = credit_models.CreditTransactionsLog(credit_date=exist_credit_date, due_date=exist_due_date, credit_id=i, paid_date=present_date,
                                                                         paid_amount=amount_to_paid, payment_status=True, order_id=credit_info.order_id, customer_id=request.customer_id, 
@@ -372,7 +378,7 @@ def pay_overdue_credits_ByBank(request, db: Session):
         credit_models.CreditPaymentReference.reference_no == reference_number).first()
     if same_credit_ref_no:
         reference_number = random.randint(999999, 99999999)
-    reference = credit_models.CreditPaymentReference(customer_id=request.customer_id,reference_no=reference_number)
+    reference = credit_models.CreditPaymentReference(customer_id=request.customer_id,reference_no=reference_number,payment_type=12)
     db.merge(reference)
     db.commit()
     if request.credit_dues_ids:
@@ -390,10 +396,10 @@ def pay_overdue_credits_ByBank(request, db: Session):
                 exist_due_date = credit_info.due_date
 
                 if credit_info:
-                    if request.amount >= amount_to_paid:
+                    if float(request.amount) >= float(amount_to_paid):
                         new_available_limit = available_limit + amount_to_paid
                         paid_data = credit_models.CreditTransactionsLog(credit_date=exist_credit_date, due_date=exist_due_date, credit_id=i, paid_date=present_date,
-                                                                        paid_amount=amount_to_paid, payment_status=True, order_id=credit_info.order_id, customer_id=request.customer_id, 
+                                                                        paid_amount=amount_to_paid, payment_status=False, order_id=credit_info.order_id, customer_id=request.customer_id, 
                                                                         available=new_available_limit, reference_id=reference_number_obj.id)
                         db.merge(paid_data)
                         db.commit()
