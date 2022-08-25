@@ -76,28 +76,13 @@ WSGI_APPLICATION = 'wayrem.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.mysql',
-#         'NAME': 'wayrem_stg_v2',
-#         'USER': 'wayremdb_adminuser',
-#         'PASSWORD': 'r2wXJfUs78NczMFWRXcV',
-#         'HOST': 'db',
-#         'PORT': '3306',
-#         'OPTIONS': {
-#             "init_command": "SET foreign_key_checks = 0;",
-#             "init_command": "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));"
-#         },
-#     }
-# }
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'wayrem_v8_test',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',
+        'NAME': 'wayrem_stg_v2',
+        'USER': 'wayremdb_adminuser',
+        'PASSWORD': 'r2wXJfUs78NczMFWRXcV',
+        'HOST': 'db',
         'PORT': '3306',
         'OPTIONS': {
             "init_command": "SET foreign_key_checks = 0;",
@@ -105,6 +90,21 @@ DATABASES = {
         },
     }
 }
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'wayrem_v8_test',
+#         'USER': 'root',
+#         'PASSWORD': '',
+#         'HOST': 'localhost',
+#         'PORT': '3306',
+#         'OPTIONS': {
+#             "init_command": "SET foreign_key_checks = 0;",
+#             "init_command": "SET GLOBAL sql_mode=(SELECT REPLACE(@@sql_mode,'ONLY_FULL_GROUP_BY',''));"
+#         },
+#     }
+# }
 
 # DATABASES = {
 #     'default': {

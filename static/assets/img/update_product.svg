@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
+  <g id="update_product" transform="translate(-1028 -1316)">
+    <rect id="Rectangle_36" data-name="Rectangle 36" width="40" height="40" rx="10" transform="translate(1028 1316)" fill="#192d4d"/>
+    <g id="vuesax_linear_refresh-2" data-name="vuesax/linear/refresh-2" transform="translate(673 1009)">
+      <g id="refresh-2" transform="translate(364 316)">
+        <path id="Vector" d="M1.11,14.44V19" transform="translate(1.726 0.554)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+        <path id="Vector-2" data-name="Vector" d="M18.241,9.12a9.124,9.124,0,0,1-9.12,9.12c-5.034,0-8.108-5.071-8.108-5.071H5.135M0,9.12A9.1,9.1,0,0,1,9.12,0a11.219,11.219,0,0,1,9.12,5.071m0,0V.511m0,4.56H14.191" transform="translate(1.824 1.824)" fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"/>
+        <g id="Vector-3" data-name="Vector" transform="translate(21.889 21.889) rotate(180)" fill="none" opacity="0">
+          <path d="M0,0H21.889V21.889H0Z" stroke="none"/>
+          <path d="M 0.9999961853027344 0.9999961853027344 L 0.9999961853027344 20.88867568969727 L 20.88867568969727 20.88867568969727 L 20.88867568969727 0.9999961853027344 L 0.9999961853027344 0.9999961853027344 M -3.814697265625e-06 -3.814697265625e-06 L 21.88867568969727 -3.814697265625e-06 L 21.88867568969727 21.88867568969727 L -3.814697265625e-06 21.88867568969727 L -3.814697265625e-06 -3.814697265625e-06 Z" stroke="none" fill="#fff"/>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
