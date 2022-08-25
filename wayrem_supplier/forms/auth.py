@@ -38,32 +38,45 @@ class ResetPasswordForm(forms.Form):
         widget=forms.TextInput(
             attrs={'class': 'form-control', 'autofocus': True}), required=True
     )
-    new_password = forms.CharField(
-        widget=forms.PasswordInput(
-            attrs={'autocomplete': 'new-password', 'class': 'form-control'}, render_value=True),
-    )
     confirm_password = forms.CharField(
         widget=forms.PasswordInput(
             attrs={'autocomplete': 'new-password', 'class': 'form-control'}, render_value=True),
     )
+    new_password = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={'autocomplete': 'new-password', 'class': 'form-control'}, render_value=True),
+    )
+
+    # def clean(self):
+    #     cleaned_data = super().clean()
+    #     password = cleaned_data.get("new_password")
+    #     cpassword = cleaned_data.get("confirm_password")
+    #     if password != cpassword:
+    #         msg = "The two password fields didn't match."
+    #         self.add_error('confirm_password', msg)
+    #     return cleaned_data
+
+    # def clean_confirm_password(self):
+    #     cleaned_data = super(ResetPasswordForm, self).clean()
+    #     password = cleaned_data.get("new_password")
+    #     password2 = cleaned_data.get("confirm_password")
+
+    #     if password != password2:
+    #         raise forms.ValidationError(
+    #             "The two password fields didn't match."
+    #         )
+    #     return cleaned_data
 
     def clean_new_password(self):
         email = self.cleaned_data.get('email')
         user = Supplier.objects.get(email=email)
         password = self.cleaned_data.get("new_password")
+        cpassword = self.cleaned_data.get("confirm_password")
+        if password != cpassword:
+            msg = "The two password fields didn't match."
+            self.add_error('confirm_password', msg)
         password_validation.validate_password(password, user)
         return password
-
-    def clean_confirm_password(self):
-        cleaned_data = super(ResetPasswordForm, self).clean()
-        password = cleaned_data.get("new_password")
-        password2 = cleaned_data.get("confirm_password")
-
-        if password != password2:
-            raise forms.ValidationError(
-                "The two password fields didn't match."
-            )
-        return cleaned_data
 
     def clean_email(self):
         email = self.cleaned_data.get("email")
