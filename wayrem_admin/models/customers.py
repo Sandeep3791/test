@@ -203,6 +203,8 @@ class CreditTransactionLogs(models.Model):
     paid_date = models.DateTimeField()
     is_refund = models.BooleanField(default=False)
     payment_status = models.BooleanField(default=False)
+    reference = models.ForeignKey(
+        'CreditPaymentReference', models.DO_NOTHING, null=True)
 
     class Meta:
         app_label = "wayrem_admin"
@@ -218,3 +220,17 @@ class UserCreditRequest(models.Model):
     class Meta:
         app_label = "wayrem_admin"
         db_table = 'customer_credit_request'
+
+
+class CreditPaymentReference(models.Model):
+    customer = models.ForeignKey('Customer', models.DO_NOTHING, null=True)
+    reference_no = models.CharField(max_length=255, null=True, blank=True)
+    bank_payment_file = models.CharField(max_length=255, null=True, blank=True)
+    payment_type = models.ForeignKey(
+        'StatusMaster', models.DO_NOTHING, null=True)
+    is_verified = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        app_label = "wayrem_admin"
+        db_table = 'credit_payment_reference'

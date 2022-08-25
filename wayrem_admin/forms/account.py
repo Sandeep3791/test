@@ -1,7 +1,9 @@
+from django.contrib.auth import forms
+from django.contrib.auth import password_validation
 from django import forms
 from wayrem_admin.models.users import Users
-
-
+from wayrem_admin.models import Otp
+import re
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.forms import UserCreationForm, PasswordChangeForm
 
@@ -103,3 +105,53 @@ class ChangePasswordForm(PasswordChangeForm):
 class UserSearchFilter(forms.Form):
     user = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control p-2'}), required=False)
+
+
+class ResetPasswordForm(forms.Form):
+    email = forms.CharField(
+        widget=forms.EmailInput(
+            attrs={'class': 'form-control'}), required=False
+    )
+    otp = forms.CharField(
+        widget=forms.TextInput(
+            attrs={'class': 'form-control', 'autofocus': True}), required=True
+    )
+    new_password = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={'autocomplete': 'new-password', 'class': 'form-control'}, render_value=True),
+    )
+    confirm_password = forms.CharField(
+        widget=forms.PasswordInput(
+            attrs={'autocomplete': 'new-password', 'class': 'form-control'}, render_value=True),
+    )
+
+    def clean_new_password(self):
+        email = self.cleaned_data.get('email')
+        user = Users.objects.get(email=email)
+        password = self.cleaned_data.get("new_password")
+        password_validation.validate_password(password, user)
+        return password
+
+    def clean_confirm_password(self):
+        cleaned_data = super(ResetPasswordForm, self).clean()
+        password = cleaned_data.get("new_password")
+        password2 = cleaned_data.get("confirm_password")
+
+        if password != password2:
+            raise forms.ValidationError(
+                "The two password fields didn't match."
+            )
+        return cleaned_data
+
+    def clean_email(self):
+        email = self.cleaned_data.get("email")
+        if not Users.objects.filter(email=email).exists():
+            raise forms.ValidationError("Email Doesn't Exist!")
+        return email
+
+    def clean_otp(self):
+        email = self.cleaned_data.get("email")
+        otp = self.cleaned_data.get("otp")
+        if not Otp.objects.filter(email=email, otp=otp).exists():
+            raise forms.ValidationError("Incorrect Otp!")
+        return email

@@ -62,6 +62,7 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'wayrem_admin.users.context_processors.show_menu',
+                'wayrem_admin.context_processors.admin_media',
             ],
             'libraries': {
                 'util_tags': 'wayrem_admin.templatetags.util_tags',
@@ -93,9 +94,9 @@ WSGI_APPLICATION = 'wayrem.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'wayrem_v8',
+        'NAME': 'wayrem_stg_v2',
         'USER': 'root',
-        'PASSWORD': '',
+        'PASSWORD': 'root1234',
         'HOST': 'localhost',
         'PORT': '3306',
         'OPTIONS': {

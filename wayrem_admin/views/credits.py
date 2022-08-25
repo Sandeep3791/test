@@ -195,8 +195,8 @@ class CustomerCreditTransactionLogs(LoginPermissionCheckMixin, ListView):
                         self).get_context_data(**kwargs)
         context['customer'] = get_object_or_404(
             Customer, id=self.kwargs['customer_id'])
-        context['total_credit'] = self.total_credit
-        context['total_debit'] = self.total_debit
+        context['total_credit'] = round(self.total_credit, 2)
+        context['total_debit'] = round(self.total_debit)
         return context
 
 

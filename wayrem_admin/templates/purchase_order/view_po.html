@@ -78,7 +78,8 @@
                                     <th scope="col" class="border-0 rounded-start">#</th>
                                     <th scope="col" class="border-0">Product</th>
                                     <th scope="col" class="border-0">Quantity</th>
-                                    <th scope="col" class="border-0">Price</th>
+                                    <th scope="col" class="border-0">Unit Price (by supplier)</th>
+                                    <th scope="col" class="border-0">Selling Price</th>
                                     {% comment %} <th scope="col" class="border-0">Delivery</th> {% endcomment %}
                                     <th scope="col" class="border-0 rounded-end">Availability</th>
                                 </tr>
@@ -90,7 +91,12 @@
                                     <th scope="row">{{forloop.counter}}</th>
                                     <td>{{i.product_name}}</td>
                                     <td>{{i.product_qty}}</td>
-                                    <td>SAR {{i.supplier_product.price}}</td>
+                                    <td>
+                                        <span> SAR {{i.unit_price}} </span>
+                                    </td>
+                                    <td>
+                                       <span class="{% if i.supplier_product.price > i.product_name.price %} text-danger {% endif %}"> SAR {{i.product_name.price}} </span>
+                                    </td>
                                     {% comment %} <td>within 2days</td> {% endcomment %}
                                     <td class="text-success font-weight-bold">Available</td>
                                 </tr>

@@ -801,12 +801,14 @@ def import_single_image(request):
 def bulk_publish_excel(request):
     if request.method == "POST":
         file = request.FILES["myFileInput"]
-        required_cols = ['sku', 'publish']
+        required_cols = ['sku', 'publish', 'product name', 'brand']
         df = pd.read_excel(file)
         excel_cols = list(df.columns)
         missing_cols = list(set(required_cols) - set(excel_cols))
         unwanted_cols = list(set(excel_cols) - set(required_cols))
-        if len(excel_cols) == 2 and required_cols == excel_cols:
+        if len(excel_cols) == 4 and required_cols == excel_cols:
+            del df['product name']
+            del df['brand']
             con = connect(user=DATABASES['default']['USER'], password=DATABASES['default']['PASSWORD'],
                           host=DATABASES['default']['HOST'], database=DATABASES['default']['NAME'])
             df_products = pd.read_sql(
@@ -878,13 +880,15 @@ def divide_chunks(l, n):
 def bulk_price_excel(request):
     if request.method == "POST":
         file = request.FILES["myFileInput"]
-        required_cols = ['sku', 'price']
+        required_cols = ['sku', 'price', 'product name', 'brand']
         df = pd.read_excel(file)
         excel_cols = list(df.columns)
         missing_cols = list(set(required_cols) - set(excel_cols))
         unwanted_cols = list(set(excel_cols) - set(required_cols))
-        if len(excel_cols) == 2 and required_cols == excel_cols:
+        if len(excel_cols) == 4 and required_cols == excel_cols:
             try:
+                del df['product name']
+                del df['brand']
                 con = connect(user=DATABASES['default']['USER'], password=DATABASES['default']['PASSWORD'],
                               host=DATABASES['default']['HOST'], database=DATABASES['default']['NAME'])
                 df_products = pd.read_sql(
@@ -950,13 +954,15 @@ def update_quantity_bulk(sku_list, quantity_list):
 def bulk_quantity_excel(request):
     if request.method == "POST":
         file = request.FILES["myFileInput"]
-        required_cols = ['sku', 'quantity']
+        required_cols = ['sku', 'quantity', 'product name', 'brand']
         df = pd.read_excel(file)
         excel_cols = list(df.columns)
         missing_cols = list(set(required_cols) - set(excel_cols))
         unwanted_cols = list(set(excel_cols) - set(required_cols))
-        if len(excel_cols) == 2 and required_cols == excel_cols:
+        if len(excel_cols) == 4 and required_cols == excel_cols:
             try:
+                del df['product name']
+                del df['brand']
                 con = connect(user=DATABASES['default']['USER'], password=DATABASES['default']['PASSWORD'],
                               host=DATABASES['default']['HOST'], database=DATABASES['default']['NAME'])
                 df_products = pd.read_sql(
@@ -1029,3 +1035,52 @@ def scan_result(request):
     except Exception as e:
         print(e)
         return render(request, "product/product_view_pop.html", {"message": "Barcode is not available!!"})
+
+
+def import_primary_image(request):
+    # path = '/home/suryaaa/Music/image_testing/client-images'
+    path = os.path.join(os.path.abspath(
+        '.'), "media", "common_folder", "import_images")
+    # path = '/opt/app/wayrem-admin-backend/media/wayrem-product-images'
+
+    items = [f for f in os.listdir(
+        path) if not os.path.isdir(os.path.join(path, f))]
+
+    print(items)
+
+    for file in items:
+        file_name = file.split(".")[0].lower()
+        product = Products.objects.filter(name__icontains=file_name).first()
+        # product = Products.objects.filter(SKU=i).first()
+        common_folder = os.path.join(
+            os.path.abspath('.'), "media", "common_folder")
+        if product:
+            src_dir = os.path.join(path, file)
+            # dst_dir = f"/home/suryaaa/Music/database/products/{i}/"
+            # dst_dir = f"{common_folder}/products/{product.SKU}/"
+            dst_dir = os.path.join(common_folder, "products", product.SKU)
+            isExist = os.path.exists(dst_dir)
+            if not isExist:
+                os.makedirs(dst_dir)
+            if os.path.isfile(src_dir):
+                destination = os.path.join(dst_dir, file.replace(' ', '_'))
+                shutil.copy(src_dir, destination)
+                product.primary_image = f"products/{product.SKU}/{file.replace(' ', '_')}"
+                print("default image copied")
+                product.save()
+                print('copied', file_name)
+            os.remove(src_dir)
+        else:
+            source = os.path.join(path, file)
+            # dst_dir = f"/home/suryaaa/Music/image_testing/failed"
+            dst_dir = os.path.join(common_folder, "failed")
+            isExist = os.path.exists(dst_dir)
+            if not isExist:
+                os.makedirs(dst_dir)
+            destination = os.path.join(dst_dir, file)
+            shutil.copy(source, destination)
+            print('copied', file)
+            os.remove(source)
+            print("failed!!")
+    print("done")
+    return HttpResponse("Successfully imported!!")
