@@ -18,6 +18,7 @@ urlpatterns = [
     path('clone-order/<pk>', views.CloneOrderView.as_view(), name='cloneorder'),
     path('ajax_calls/search', views.AutoCompleteModelView.as_view(), name='autocompletemodel'),
     path('removeorder/', views.OrderRemoveDetail.as_view(), name='removeorderdetail'),
-
+    path('updateorder/', views.OrderUpdateDetail.as_view(), name='updateorderdetail'),
+    path('clonecreateorder/<int:id>',views.Clonecreateorder.as_view(),name='clonecreateorder')
 
 ]

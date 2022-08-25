@@ -103,7 +103,8 @@
                 </div>
                 <div class="col-4">
                     <h6 class="mb-0">{{order_detail.product_name}}</h6>
-                    <h6 class="text-muted">SKU: {{order_detail.sku}}</h6>
+                    <h6 class="text-muted" style="margin-bottom: 0px;">SKU: {{order_detail.sku}}</h6>
+                    <h6 class="text-muted">Brand: {{order_detail.product.mfr_name}}</h6>
                 </div>
                 <div class="col-3 d-flex justify-content-end">
                     <h6>{{currency}}  {{order_detail.id|display_discount_price|floatformat:2}} x {{order_detail.quantity}} {{order_detail.product.weight_unit.unit_name  }}</h6>

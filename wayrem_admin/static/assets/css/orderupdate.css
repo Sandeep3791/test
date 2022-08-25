@@ -19,7 +19,9 @@
     font-weight: 600;white-space: nowrap;
 
 }
-
+.brand{
+    width: 15%;
+}
 .product__name{
     background-color: #F9F9F9;
     padding: 0.5rem;
@@ -39,8 +41,11 @@
 .product__qty{
     width: 150px;
 }
-.product__action button{
-    width: 100%;
+.product__action {
+    text-align: center;
+}
+.product__action button img{
+    width: 26px;
 }
 .product__price,.product__desc{
     color: #888888;
@@ -102,4 +107,3 @@ color:#0948B3 ;
 font-size: 1.2rem;
    
 }
-

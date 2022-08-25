@@ -1,7 +1,13 @@
  {% load util_tags %} {% block content %}
 <div class="card card-body bg-white border-light shadow-sm mb-4">
     <!-- <h2 class="h5 mb-4"> <span><img src="/static/assets/img/paid.svg" alt=""></span>{{order_transaction.payment_status.name}}</h2> -->
-    <h2 class="h5 mb-4"> <span><img src="/static/assets/img/paid.svg" alt=""></span>Payment Status - <span class="h6">{{order_transaction.payment_status.name}}</span></h2>
+    <h2 class="h5 mb-4"> <span><img src="/static/assets/img/paid.svg" alt=""></span>Payment Status - 
+        {% if order.status.id != 28 %}
+        <span class="h6">{{order_transaction.payment_status.name}}</span>
+        {% else %}
+        <span class="h6">{{order.status.name}}</span>
+        {% endif %}
+    </h2>
 
     <div class="row col-12">
         <div class="col-4 h6">Subtotal</div>

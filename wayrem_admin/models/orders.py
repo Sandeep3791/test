@@ -57,6 +57,8 @@ class Orders(models.Model):
     is_shown = models.BooleanField(default=True)
     from_clone = models.BigIntegerField(blank=True, null=True)
     to_clone = models.BigIntegerField(blank=True, null=True)
+    partial_payment = models.FloatField(default=0)
+    partial_payment_settled_date = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
         return self.ref_number
@@ -290,7 +292,7 @@ class Wallet(models.Model):
     transaction_type_id = models.SmallIntegerField()
     order = models.ForeignKey('Orders', models.DO_NOTHING)
     customer = models.ForeignKey('wayrem_admin.Customer', models.DO_NOTHING)
-    created = models.DateTimeField()
+    created = models.DateTimeField(blank=True, null=True)
 
     class Meta:
         app_label = "wayrem_admin"
