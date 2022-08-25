@@ -105,7 +105,7 @@ def get_overdue_credits(customer_id, db: Session):
 
     if user_data:
         unpaid_credit_data = db.query(credit_models.CreditTransactionsLog).filter(
-            credit_models.CreditTransactionsLog.customer_id == customer_id, credit_models.CreditTransactionsLog.payment_status == False).order_by(desc(credit_models.CreditTransactionsLog.id)).all()
+            credit_models.CreditTransactionsLog.customer_id == customer_id, credit_models.CreditTransactionsLog.payment_status == False,credit_models.CreditTransactionsLog.credit_id==None).order_by(desc(credit_models.CreditTransactionsLog.id)).all()
         due_credit_data = None
         for i in unpaid_credit_data:
             paid_credit_data = db.query(credit_models.CreditTransactionsLog).filter(
@@ -191,7 +191,7 @@ def pay_overdue_credits(request, db: Session):
         reference_number_obj = db.query(credit_models.CreditPaymentReference).filter(credit_models.CreditPaymentReference.reference_no == reference_number,credit_models.CreditPaymentReference.customer_id == request.customer_id).first()
         for i in request.credit_dues_ids:
             exist_credit_info = db.query(credit_models.CreditTransactionsLog).filter(
-                credit_models.CreditTransactionsLog.credit_id == i, credit_models.CreditTransactionsLog.payment_status == True).first()
+                credit_models.CreditTransactionsLog.credit_id == i).first()
             if not exist_credit_info:
                 credit_info = db.query(credit_models.CreditTransactionsLog).filter(
                     credit_models.CreditTransactionsLog.id == i, credit_models.CreditTransactionsLog.payment_status == False).first()
@@ -393,7 +393,7 @@ def pay_overdue_credits_ByBank(request, db: Session):
         reference_number_obj = db.query(credit_models.CreditPaymentReference).filter(credit_models.CreditPaymentReference.reference_no == reference_number,credit_models.CreditPaymentReference.customer_id == request.customer_id).first()
         for i in request.credit_dues_ids:
             exist_credit_info = db.query(credit_models.CreditTransactionsLog).filter(
-                credit_models.CreditTransactionsLog.credit_id == i, credit_models.CreditTransactionsLog.payment_status == True).first()
+                credit_models.CreditTransactionsLog.credit_id == i).first()
             if not exist_credit_info:
                 credit_info = db.query(credit_models.CreditTransactionsLog).filter(
                     credit_models.CreditTransactionsLog.id == i, credit_models.CreditTransactionsLog.payment_status == False).first()
