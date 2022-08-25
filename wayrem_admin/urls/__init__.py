@@ -27,5 +27,6 @@ urlpatterns = [
     path('loginext/', include('wayrem_admin.loginext.urls')),
     path('home/pages/', include('wayrem_admin.urls.static_pages')),
     path('banks/', include('wayrem_admin.urls.banks')),
+    path('available-stock/', include('wayrem_admin.urls.available_stock')),
     path('', views.RootUrlView.as_view(), name='root')
 ]
