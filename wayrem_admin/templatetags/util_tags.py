@@ -134,3 +134,7 @@ def get_order_reference(order_id):
         return order_details.ref_number 
     else:
         return ""
+
+@register.filter(name="unittype")
+def unittype(unit_id):
+    return 1

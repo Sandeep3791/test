@@ -1,0 +1,30 @@
+ {% load util_tags  %}
+ {% block content %}
+ <table class="table table-hover text-center" id="orders">
+        <thead >
+            <tr>
+                <th scope="col">SKU</th>
+                <th scope="col">Product Name</th>
+                <th scope="col">Brand</th>
+                <th scope="col">Unit</th>
+                <th scope="col">Price</th>
+                <th scope="col">Available Stock</th>
+            </tr>
+        </thead>
+        <tbody class="bg-white">
+            {% if products %}
+            {% for product in products %}
+            <tr>
+                <td>{{product.SKU}}</td>
+                <td>{{product.name}}</td>
+                <td>{{product.mfr_name|default_if_none:""}}</td>
+                <td>{{product.weight_unit | striptags}}</td>
+                <td>{{product.price|default_if_none:""}}</td>
+                <td>{{product.quantity|default_if_none:""}}</td>
+            </tr>
+            {% endfor %}
+            {% endif %}
+        </tbody>
+    </table>
+    
+{% endblock content %}
