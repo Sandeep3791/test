@@ -131,13 +131,16 @@ class CustomerNotification(models.Model):
 class PaymentTransaction(models.Model):
     id = models.AutoField(primary_key=True, unique=True)
     order_id = models.IntegerField(null=True, blank=True)
+    order_ref_no = models.CharField(max_length=255, blank=True, null=True)
     transaction_id = models.TextField(null=True, blank=True)
     checkout_id = models.TextField(null=True, blank=True)
     response_body = models.TextField(null=True, blank=True)
     payment_type = models.CharField(max_length=255, null=True, blank=True)
     payment_brand = models.CharField(max_length=255, null=True, blank=True)
-    amount = models.CharField(max_length=255, blank=True, default=0.00)
-    status = models.CharField(max_length=255, blank=True, default="PAID")
+    amount = models.CharField(
+        max_length=255, blank=True, default=0.00, null=True)
+    status = models.CharField(
+        max_length=255, blank=True, default="PAID", null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
