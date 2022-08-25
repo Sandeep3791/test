@@ -2,4 +2,4 @@ supplier_env
 __pycache__
 migrations
 media
-SupplierModels.py
+# SupplierModels.py
