@@ -40,7 +40,7 @@
                     <td> - </td>
                 {% else %}
                 <td class="status_{{order.id}}"><span class="badge bg-primary {% if order.status.id == 16  %} text-dark{% endif %}" style="padding: 3px 8px;line-height: 11px;background-color:{{order.status.status_color}} !important">{{order.status.name}}</span></td>
-                <td class="delivery_status_{{order.id}}"><span class="badge bg-primary" style="padding: 3px 8px;line-height: 11px;background-color:{{order.delivery_status.status_color}} !important">{{order.delivery_status.name}}</span></td>
+                <td class="delivery_status_{{order.id}}">{% if order.status.id != 28  %}<span class="badge bg-primary" style="padding: 3px 8px;line-height: 11px;background-color:{{order.delivery_status.status_color}} !important">{{order.delivery_status.name}}</span>{% endif %}</td>
                 <td>{{order.id|payment_type}}<br/> {% if order.status.id == 28  %}{% if order.partial_payment == 0 %} {{order.id|payment_status}} {% else %} Amount of SAR {{order.partial_payment}} is pending  {% endif %} {% else %} {{order.id|payment_status}}   {% endif %} </td> 
                 {% endif %}
                 <td>{{order.id|total_items}}</td>
