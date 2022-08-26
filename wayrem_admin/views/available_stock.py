@@ -8,6 +8,49 @@ from wayrem_admin.utils.constants import *
 from wayrem_admin.models import Products
 from django.urls import reverse_lazy
 from wayrem_admin.filters.available_stock_filters import AvailableStockFilter
+import xlsxwriter
+import io
+from django.db.models import F
+
+class AvailableExportView(View):
+    def get(self, request, **kwargs):
+        qs = Products.objects.annotate(Sku=F('SKU'), Name=F('name'), Brand=F('mfr_name'), Unit=F('weight_unit__unit_name'), Price=F(
+            'price'), Quantity=F('quantity')).values('Sku', 'Name', 'Brand', 'Unit', 'Price', 'Quantity').filter(quantity__gt = 0)
+        
+        filtered_list = AvailableStockFilter(self.request.GET, queryset=qs)
+        query_set = filtered_list.qs
+        response = self.genrate_excel(query_set)
+        return response
+
+    def genrate_excel(self, query_set):
+        # Create an in-memory output file for the new workbook.
+        output = io.BytesIO()
+        workbook = xlsxwriter.Workbook(output)
+        worksheet = workbook.add_worksheet()
+        for row_number, query in enumerate(query_set):
+            col_key = 0
+            for key, values in query.items():
+                if row_number == 0:
+                    bold = workbook.add_format(
+                        {'bold': True, 'font_color': 'white', 'bg_color': '#0d72ba'})
+                    worksheet.set_row(row_number, 30)
+                    worksheet.write(row_number, col_key, key, bold)
+                    worksheet.set_column(row_number, col_key, 20)
+                worksheet.write(row_number+1, col_key, values)
+                col_key = col_key+1
+
+        # Close the workbook before sending the data.
+        workbook.close()
+
+        # Rewind the buffer.
+        output.seek(0)
+        filename = 'order_report.xlsx'
+        response = HttpResponse(
+            output,
+            content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+        response['Content-Disposition'] = 'attachment; filename=%s' % filename
+        return response
 
 class AvailableStock(ListView):
     model = Products
