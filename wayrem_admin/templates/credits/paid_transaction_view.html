@@ -5,7 +5,14 @@
 {% block title %} Credit Transactions {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
-{% block stylesheets %}{% endblock stylesheets %}
+{% block stylesheets %}
+<style>
+    .pending_type {display: flex;justify-content: space-between;align-items: center;padding: 0.7rem 1rem;width: fit-content;background: #ffc10712;border-radius: 10px;color: #d8a301;font-size: .9rem;width: 100%;}
+    .paid_type {display: flex;justify-content: space-between;align-items: center;padding: 0.7rem 1rem;width: fit-content;background: #05a67717;border-radius: 10px;color: #05A677;font-size: .9rem;width: 100%;}
+    .declined_type {width: 100%!important;padding: 0.7rem 1rem;background: #e11d470e;border-radius: 10px;color: #e11d48!important;font-size: .9rem;display: flex;justify-content: space-between;align-items: center;}
+    .payment_status {background: #4caf50;color: white;padding: 0.2rem 0.5rem;width: fit-content;border-radius: 5px;font-size: 0.8rem;}
+</style>
+{% endblock stylesheets %}
 {% block head %}
 <script src="{% static 'assets/js/datatable_ajax.js' %}"></script>
 <link rel="stylesheet" href="{% static 'assets/css/datatable.css' %}">
@@ -55,8 +62,7 @@
                     <tr>
                         <th scope="col">Order No.</th>
                         <th scope="col">Available</th>
-                        <th scope="col">Credit Amount</th>
-                        <th scope="col">Debit Amount</th>
+                        <th scope="col">Paid Amount</th>
                         <th scope="col">Credit Date</th>
                         <th scope="col">Due Date</th>
                         <th scope="col">Paid Date</th>
@@ -68,11 +74,6 @@
                     <tr>
                         <td><a href="{% url 'wayrem_admin:orderupdate' item.order.id %}"> #{{item.order.ref_number}}</a></td>
                         <td>{{item.available|floatformat:2}}</td>
-                        <td>
-                            {% if item.credit_amount %}
-                            <span class="font-weight-bold text-danger">- {{item.credit_amount|floatformat:2}} </span>
-                            {% endif %}
-                        </td>
                         <td>
                             {% if item.paid_amount %}
                             <span class="font-weight-bold text-success">+ {{item.paid_amount|floatformat:2}}</span>
@@ -153,6 +154,44 @@
                     </div>
                     </div>
             </div>
+            {% if payment_ref.payment_type == 14 %}
+                <div class="col-12 mb-4">
+                    <div class="card card-body bg-white border-light shadow-sm mb-4 p-4">
+                        <div class="d-flex justify-content-between align-items-center"><span class={% if payment_ref.payment_status.id == 6 %}"declined_type"{% else %}"paid_type"{% endif %}>
+                            <span> Order has been {{payment_ref.payment_status.name}}!</span><span class="payment_status {% if payment_ref.payment_status.id == 6 %}bg-danger{% else %}bg-success {% endif %} ms-2">{{payment_ref.payment_status.name}}</span></span>
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="col-12 mb-4">
+                    <div class="card card-body bg-white border-light shadow-sm mb-4 orderpayment">
+                        <form class="oderform" method="post" action="{% url 'wayrem_admin:credit_bank_confirm' %}">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h2 class="h5 m-0">Payment</h2>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center flex-column">
+                                <div class="pending_type">
+                                    <span>{{payment_ref.payment_type.name}}</span>
+                                    <span class="payment_status bg-warning ms-2">{{payment_ref.payment_status.name}}</span>
+                                </div>
+                                
+                                {% if payment_ref.payment_type.id == 12 %}
+                                <p style="padding-top:10px;margin-bottom:-12px">
+                                    <a href="{{DOCUMENT_URL}}customer_banks/{{payment_ref.bank_payment_file}}" target="_blank" class="small">Download Bank transfer Document</a>
+                                </p>
+                                {% endif %}
+                                
+                                <div class="d-flex justify-content-between w-100 mt-4">
+                                    <button class="btn btn-success modelpaymentstatus" type="button" data-id="7">Confirm</button>
+                                    
+                                    <button class="btn btn-danger modelpaymentstatus" type="button" data-id="26" data-bs-toggle="modal" data-bs-target="#modal-default">Reject</button> 
+                                    
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            {% endif %}
             <div class="col-12 mb-4">
                 <div class="card border-light shadow-sm">
                     <div class="card-body">
@@ -163,18 +202,10 @@
                         </div>
                         <div class="d-flex align-items-center justify-content-between border-bottom border-light py-3">
                             <div>
-                                <h6 class="mb-0">Credit Amount</h6>
+                                <h6 class="mb-0">Total Amount</h6>
                             </div>
                             <div>
-                                <span class="font-weight-bold text-danger">{{total_credit}}</span>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-between pt-3">
-                            <div>
-                                <h6 class="mb-0">Debit Amount</h6>
-                            </div>
-                            <div>
-                                <span class="font-weight-bold text-success">{{total_debit}}</span>
+                                <span class="font-weight-bold text-success">SAR {{total_amount}}</span>
                             </div>
                         </div>
                     </div>
@@ -184,122 +215,62 @@
     </div>
 </div>
 
-<script>
-function supplierFunc(SKU){
-  
-    const url="{% url 'wayrem_admin:viewprodsupplier' %}";
-    $.ajax({
-        
-        url:url,
-        data: {
-                    'product': SKU       // add the country id to the GET parameters
-                },
-        success:function(data){
-        $("#test"+SKU).html(data);
-        
-        $("#supplier"+SKU).modal('show');
-        },
-    });
+<div class="modal fade" id="modal-default" tabindex="-1" role="dialog" aria-labelledby="modal-default" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="h6 modal-title">Payment Type</h2>
+            </div>
+            <div class="modal-body">
+                <p id="payment_status"></p>
+            </div>
+            <div class="modal-footer" id="modal-btn">
+                <button type="button" id="confirm-btn" data-id="1" class="btn btn-success orderpaymentupdate">Confirm</button>
+                <button type="button" class="btn btn-link text-gray ms-auto" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-    }
-    $(document).ready(function(){
-    
-        $('#supplier').modal('hide');
-    
-    });
-</script>
 
 <script>
-function lowestFunc(SKU){
-  
-    const url="{% url 'wayrem_admin:lowest_price' %}";
-    $.ajax({
-        
-        url:url,
-        data: {
-                    'product': SKU       // add the country id to the GET parameters
-                },
-        success:function(data){
-        $("#lowest_price"+SKU).html(data);
-        
-        $("#lowest"+SKU).modal('show');
-        },
-    });
-
-    }
-    $(document).ready(function(){
-    
-        $('#lowest').modal('hide');
-    
-    });
-</script>
-
-<script>
-function lowesttimeFunc(SKU){
-  
-    const url="{% url 'wayrem_admin:lowest_time' %}";
-    $.ajax({
-        
-        url:url,
-        data: {
-                    'product': SKU       // add the country id to the GET parameters
-                },
-        success:function(data){
-        $("#lowest_time"+SKU).html(data);
-        
-        $("#lowesttime"+SKU).modal('show');
-        },
-    });
-
-    }
-    $(document).ready(function(){
-    
-        $('#lowest').modal('hide');
-    
-    });
-</script>
-<script>
-    function myProfile() {
-        var x = document.getElementById("myProfile");
-        if (x.style.display === "none") {
-            x.style.display = "block";
-        } else {
-            x.style.display = "none";
-      
+    $(".modelpaymentstatus").on("click",function(e){
+        //e.preventDefault();
+        pst=$(this).data("id");
+        console.log(pst)
+        $('#modal-default').modal('show');
+        if (pst == 7){
+            $('#confirm-btn').attr('data-id','7')
+            $("#payment_status").html("Are you sure you want to confirm?");
+        }else{
+            $('#confirm-btn').attr('data-id','26')
+            $("#payment_status").html("Are you sure you want to reject?");
         }
-      }
-
-      function cancelBtn() {
-        console.log("button clicked")
-        location = location.href.split('?')[0];
         
-        
-        var x = document.getElementById("myProfile");
-        if (x.style.display === "block") {
-            x.style.display = "none";
-        } 
-        
-      }
-</script>
+    })
+    function orderformsubmit(){
+        url = $(".orderpayment .oderform").attr("action")
+            type_form=$(".orderpayment .oderform").attr("method")
+            data_ser=$(".orderpayment .oderform").serialize()
+            console.log(data_ser)
+        //$.ajax({
+        //        type: type_form,
+        //        url: url,
+        //        data: data_ser,
+        //        cache: false,
+        //        success: function (data) {
+        //                location.reload();
+        //        }
+        //    })
+    }
+    $("#confirm-btn").on("click",function(e){
+        //e.preventDefault();
+        pst=$(this).data("id");
+        console.log(pst)
+        //orderformsubmit();
+    });
 
 
-<script>
-    function myProfile() {
-        var x = document.getElementById("myProfile");
-        if (x.style.display === "none") {
-            x.style.display = "block";
-        } else {
-            x.style.display = "none";
-      
-        }
-      }
-
-      function cancelBtn() {
-        var x = document.getElementById("myProfile");
-        if (x.style.display === "block") {
-            x.style.display = "none";
-        } 
-      }
 </script>
 
 {% endblock content %}

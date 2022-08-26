@@ -4,7 +4,7 @@ from django.views.generic.edit import CreateView
 from matplotlib.style import available
 from requests import request
 from wayrem_admin.forms.customers import CreditsAssignForm
-from wayrem_admin.models import PaymentTransaction, CreditManagement
+from wayrem_admin.models import PaymentTransaction, CreditManagement, CreditPaymentReference
 from email import message
 import imp
 from urllib import response
@@ -279,3 +279,52 @@ def credit_refund(order_id):
                                        is_refund=True, available=credit_management.available, credit_id=credit_log.id, payment_status=True, paid_amount=credit_log.credit_amount)
     refund_log.save()
     return True
+
+
+class CustomerCreditTransactionReference(LoginPermissionCheckMixin, ListView):
+    permission_required = 'credits.transaction_logs'
+    model = CreditPaymentReference
+    template_name = "credits/transaction_reference.html"
+    context_object_name = 'list'
+    paginate_by = RECORDS_PER_PAGE
+    success_url = reverse_lazy('wayrem_admin:customerslist')
+
+    def get_queryset(self):
+        qs = CreditPaymentReference.objects.all().order_by("-id")
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super(CustomerCreditTransactionReference,
+                        self).get_context_data(**kwargs)
+        return context
+
+
+class PaidCreditTransactionView(LoginPermissionCheckMixin, ListView):
+    permission_required = 'credits.transaction_logs'
+    model = CreditTransactionLogs
+    template_name = "credits/paid_transaction_view.html"
+    context_object_name = 'list'
+    paginate_by = RECORDS_PER_PAGE
+    success_url = reverse_lazy('wayrem_admin:customerslist')
+    total_amount = 0
+
+    def get_queryset(self):
+        qs = CreditTransactionLogs.objects.filter(
+            reference__reference_no=self.kwargs['reference_no']).order_by("-id")
+        self.total_amount = qs.aggregate(
+            total=Sum('paid_amount'))['total'] or 0
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super(PaidCreditTransactionView,
+                        self).get_context_data(**kwargs)
+        print(self.kwargs)
+        try:
+            context['payment_ref'] = get_object_or_404(
+                CreditPaymentReference, reference_no=self.kwargs['reference_no'])
+            context['customer'] = get_object_or_404(
+                Customer, id=context['payment_ref'].customer.id)
+            context['total_amount'] = round(self.total_amount, 2)
+        except:
+            pass
+        return context

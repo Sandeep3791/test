@@ -14,5 +14,11 @@ urlpatterns = [
          views.creditAssign, name='assign_credit'),
     path('credit-transactions/<int:customer_id>',
          views.CustomerCreditTransactionLogs.as_view(), name='credit_transactions'),
+    path('credit-transactions-reference/', views.CustomerCreditTransactionReference.as_view(),
+         name='credit_transactions_reference'),
+    path('paid-credit-transactions/<int:reference_no>',
+         views.PaidCreditTransactionView.as_view(), name='paid_credit_transactions'),
+    path('credit-bank-transactions/',
+         views.PaidCreditTransactionView.as_view(), name='credit_bank_confirm'),
 
 ]

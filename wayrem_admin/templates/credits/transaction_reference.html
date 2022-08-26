@@ -48,56 +48,40 @@
     {% endif %}
     </div>
     <div class="row">
-    <div class="col-12 col-xl-8">
+    <div class="col-12 col-xl-12">
         <div class="card card-body border-light shadow-sm table-wrapper table-responsive pt-0">
             <table class="table table-hover text-center" id="filtertable">
                 <thead class="">
                     <tr>
-                        <th scope="col">Order No.</th>
-                        <th scope="col">Available</th>
-                        <th scope="col">Credit Amount</th>
-                        <th scope="col">Debit Amount</th>
-                        <th scope="col">Credit Date</th>
-                        <th scope="col">Due Date</th>
+                        <th scope="col">Reference No.</th>
+                        <th scope="col">Customer</th>
                         <th scope="col">Paid Date</th>
+                        <th scope="col">Payment Type</th>
+                        <th scope="col">Status</th>
+                        <th scope="col">Actions</th>
                     </tr>
                 </thead>
                 <tbody class="bg-white">
-                    {% if list %}
                     {% for item in list %}
                     <tr>
-                        <td><a href="{% url 'wayrem_admin:orderupdate' item.order.id %}"> #{{item.order.ref_number}}</a></td>
-                        <td>{{item.available|floatformat:2}}</td>
+                        <td><a href="{% url 'wayrem_admin:paid_credit_transactions' item.reference_no %}"> #{{item.reference_no}}</a></td>
+                        <td>{{item.customer.first_name}} {{item.customer.last_name}}</td>
                         <td>
-                            {% if item.credit_amount %}
-                            <span class="font-weight-bold text-danger">- {{item.credit_amount|floatformat:2}} </span>
+                            {% if item.created_at %}
+                            {{item.created_at|date:"d M Y"}}
                             {% endif %}
                         </td>
                         <td>
-                            {% if item.paid_amount %}
-                            <span class="font-weight-bold text-success">+ {{item.paid_amount|floatformat:2}}</span>
-                            {% endif %}
+                            {{item.payment_type.name}}
                         </td>
                         <td>
-                            {% if item.credit_date %}
-                            {{item.credit_date|date:"d M Y"}}
-                            {% endif %}
+                            <span class="badge bg-primary {% if item.payment_status.id == 27  %} text-dark{% endif %}" style="padding: 3px 8px;line-height: 11px;background-color:{{item.payment_status.status_color}} !important">{{item.payment_status.name}}</span>
                         </td>
                         <td>
-                            {% if item.due_date %}
-                            {{item.due_date|date:"d M Y"}}
-                            {% endif %}
-                        </td>
-                        <td>
-                            {% if item.paid_date %}
-                            {{item.paid_date|date:"d M Y"}}
-                            {% endif %}
+                            view
                         </td>
                     </tr>
                     {% endfor %}
-                    {% else %}
-                            <td colspan="6">No transactions found.</td>
-                    {% endif %}
                 </tbody>
             </table>
             
@@ -140,48 +124,7 @@
             </div>
         </div>
     </div>
-    <div class="col-12 col-xl-4">
-        <div class="row">
-            <div class="col-12 mb-4">
-                <div class="card border-light text-center p-0">
-                    <div class="text-center text-md-center mb-4 mt-md-0">
-                        {% if customer.profile_pic %}
-                        <div class="user-avatar large-avatar mx-auto mb-3 border-dark p-2"><img class="rounded-circle" alt="Image placeholder" src="{{DOCUMENT_URL}}{% image_tag customer.profile_pic %}"></div>
-                        {% endif %}
-                        <h1 class="mb-3 h3">{{customer.first_name}} {{customer.last_name}}</h1>
-                        <p class="text-gray">{{customer.email}}</p>
-                    </div>
-                    </div>
-            </div>
-            <div class="col-12 mb-4">
-                <div class="card border-light shadow-sm">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center justify-content-between border-bottom border-light pb-3">
-                            <div>
-                                <h4 class="text-center mb-0"><span class="fas fa-file-invoice-dollar"></span> Total Transactions</h4>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-between border-bottom border-light py-3">
-                            <div>
-                                <h6 class="mb-0">Credit Amount</h6>
-                            </div>
-                            <div>
-                                <span class="font-weight-bold text-danger">{{total_credit}}</span>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-between pt-3">
-                            <div>
-                                <h6 class="mb-0">Debit Amount</h6>
-                            </div>
-                            <div>
-                                <span class="font-weight-bold text-success">{{total_debit}}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    
 </div>
 
 <script>

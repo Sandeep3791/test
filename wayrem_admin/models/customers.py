@@ -230,9 +230,12 @@ class CreditPaymentReference(models.Model):
     reference_no = models.CharField(max_length=255, null=True, blank=True)
     bank_payment_file = models.CharField(max_length=255, null=True, blank=True)
     payment_type = models.ForeignKey(
-        'StatusMaster', models.DO_NOTHING, null=True)
+        'StatusMaster', models.DO_NOTHING, null=True, related_name='payment_type_id')
+    payment_status = models.ForeignKey(
+        'StatusMaster', models.DO_NOTHING, null=True, related_name='payment_status_id')
     is_verified = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     class Meta:
         app_label = "wayrem_admin"

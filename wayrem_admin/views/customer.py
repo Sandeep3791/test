@@ -21,12 +21,12 @@ from wayrem_admin.utils.constants import *
 from wayrem_admin.filters.customer_filters import *
 from django.views.generic import ListView, UpdateView
 import uuid
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.views import View
 from django.utils.decorators import method_decorator
-from wayrem_admin.models import Customer, EmailTemplateModel, CustomerDevice, Settings
+from wayrem_admin.models import Customer, EmailTemplateModel, CustomerDevice, Settings, CreditTransactionLogs, CreditPaymentReference
 from wayrem_admin.export import generate_pdf, generate_excel
 from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -37,6 +37,7 @@ import threading
 import binascii
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.backends import default_backend
+from django.db.models import Sum
 
 
 def customers_excel(request):
