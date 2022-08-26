@@ -11,6 +11,7 @@ from wayrem_admin.filters.available_stock_filters import AvailableStockFilter
 import xlsxwriter
 import io
 from django.db.models import F
+from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
 
 class AvailableExportView(View):
     def get(self, request, **kwargs):
@@ -52,7 +53,8 @@ class AvailableExportView(View):
         response['Content-Disposition'] = 'attachment; filename=%s' % filename
         return response
 
-class AvailableStock(ListView):
+class AvailableStock(LoginPermissionCheckMixin,ListView):
+    permission_required = 'availablestock.list_view'
     model = Products
     template_name = "available_stock/list.html"
     context_object_name = 'products'
