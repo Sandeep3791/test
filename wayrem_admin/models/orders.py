@@ -57,7 +57,7 @@ class Orders(models.Model):
     is_shown = models.BooleanField(default=True)
     from_clone = models.BigIntegerField(blank=True, null=True)
     to_clone = models.BigIntegerField(blank=True, null=True)
-    partial_payment = models.FloatField(default=0)
+    partial_payment = models.FloatField(default=0, null=True)
     partial_payment_settled_date = models.DateTimeField(blank=True, null=True)
 
     def __str__(self):
