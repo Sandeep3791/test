@@ -582,18 +582,6 @@ def initial_order(request, db: Session, background_tasks: BackgroundTasks):
 
 
 def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
-
-    try:
-        if request.ref_number:
-            db.query(order_models.Orders).filter(order_models.Orders.ref_number ==
-                                                 request.ref_number).delete(synchronize_session=False)
-            db.commit()
-
-    except Exception as e:
-        common_msg = user_schemas.ResponseCommonMessage(
-            status=status.HTTP_406_NOT_ACCEPTABLE, message="Order already created !!")
-        return common_msg
-
     paid = False
     cod = False
     pending = False
@@ -696,9 +684,7 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
         if not request.ref_number:
             ref_no = generate_ref_number(db)
 
-        else:
-            ref_no = request.ref_number
-        order = order_models.Orders(
+            order = order_models.Orders(
             ref_number=ref_no,
             customer_id=request.customer_id,
             status=16,
@@ -728,11 +714,15 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
             order_email=request.email,
             order_type=24,
             delivery_charge=request.delivery_fees,
-            order_date=common_services.get_time()
+            order_date=common_services.get_time())
+            db.merge(order)
+            db.commit()
 
-        )
-        db.merge(order)
-        db.commit()
+        else:
+            order = db.query(order_models.Orders).filter(
+            order_models.Orders.ref_number == request.ref_number).first()
+
+        
 
         order_data = db.query(order_models.Orders).filter(
             order_models.Orders.ref_number == order.ref_number).first()
