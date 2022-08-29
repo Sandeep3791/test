@@ -1,4 +1,5 @@
 import threading
+from django.db.models import Q
 from django.db.models import Sum
 from django.views.generic.edit import CreateView
 from matplotlib.style import available
@@ -16,7 +17,7 @@ import json
 from wayrem_admin.forecasts.firebase_notify import FirebaseLibrary
 from wayrem_admin.models import CreditSettings
 from wayrem_admin.models.customers import CustomerNotification
-from wayrem_admin.models.orders import Orders
+from wayrem_admin.models.orders import Orders, StatusMaster
 from wayrem_admin.services import send_email
 from wayrem_admin.forms import CustomerSearchFilter, CustomerEmailUpdateForm, CreditsForm, CreditsSearchFilter
 from django.urls import reverse_lazy
@@ -185,6 +186,8 @@ class CustomerCreditTransactionLogs(LoginPermissionCheckMixin, ListView):
     def get_queryset(self):
         qs = CreditTransactionLogs.objects.filter(
             customer=self.kwargs['customer_id']).order_by("-id")
+        qs = qs.filter(Q(Q(reference=None) |
+                       Q(reference__payment_status_id=7)))
         self.total_credit = qs.aggregate(
             total=Sum('credit_amount'))['total'] or 0
         self.total_debit = qs.aggregate(total=Sum('paid_amount'))['total'] or 0
@@ -196,7 +199,7 @@ class CustomerCreditTransactionLogs(LoginPermissionCheckMixin, ListView):
         context['customer'] = get_object_or_404(
             Customer, id=self.kwargs['customer_id'])
         context['total_credit'] = round(self.total_credit, 2)
-        context['total_debit'] = round(self.total_debit)
+        context['total_debit'] = round(self.total_debit, 2)
         return context
 
 
@@ -291,6 +294,10 @@ class CustomerCreditTransactionReference(LoginPermissionCheckMixin, ListView):
 
     def get_queryset(self):
         qs = CreditPaymentReference.objects.all().order_by("-id")
+        q = self.request.GET.get(
+            'reference_no') if self.request.GET.get('reference_no') != None else ''
+        if q != None:
+            qs = qs.filter(reference_no__icontains=q)
         return qs
 
     def get_context_data(self, **kwargs):
@@ -328,3 +335,22 @@ class PaidCreditTransactionView(LoginPermissionCheckMixin, ListView):
         except:
             pass
         return context
+
+    def post(self, request, *args, **kwargs):
+        payment_status = request.POST.get("payment_status")
+        payment_ref_id = request.POST.get("payment_ref_id")
+        status = get_object_or_404(StatusMaster, id=payment_status)
+        payment_ref = get_object_or_404(
+            CreditPaymentReference, id=payment_ref_id)
+        if status.id == 7:
+            transactions = CreditTransactionLogs.objects.filter(
+                reference=payment_ref)
+            for trx in transactions:
+                trx.payment_status = True
+                trx.available += trx.paid_amount
+                trx.available = round(trx.available, 2)
+                trx.save()
+            payment_ref.is_verified = True
+        payment_ref.payment_status = status
+        payment_ref.save()
+        return HttpResponse("Successfully Updated")

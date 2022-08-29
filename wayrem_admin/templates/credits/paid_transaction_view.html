@@ -34,12 +34,12 @@
 
 <div class="dashboard_content_inner">
     <div class="topbar_pages">
-        <h4 class="text-title">Credit Transactions</h2>
+        <h4 class="text-title">Credit Transaction - #{{payment_ref.reference_no}}</h2>
         <div class="breadcrumb-section">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb padding-left-0">
                     <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:customerslist' %}"><span class="sidebar-icon"><i class="fas fa-users"></i></span> <span class="sidebar-text">Customers </span></a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:paid_credits' %}"><span class="sidebar-icon"><i class="fa fa-credit-card"></i></span> <span class="sidebar-text">Paid Credits </span></a></li>
                     <li class="breadcrumb-item active" aria-current="page">Credit Transactions</li>
                 </ol>
             </nav>
@@ -154,43 +154,44 @@
                     </div>
                     </div>
             </div>
-            {% if payment_ref.payment_type == 14 %}
-                <div class="col-12 mb-4">
-                    <div class="card card-body bg-white border-light shadow-sm mb-4 p-4">
-                        <div class="d-flex justify-content-between align-items-center"><span class={% if payment_ref.payment_status.id == 6 %}"declined_type"{% else %}"paid_type"{% endif %}>
-                            <span> Order has been {{payment_ref.payment_status.name}}!</span><span class="payment_status {% if payment_ref.payment_status.id == 6 %}bg-danger{% else %}bg-success {% endif %} ms-2">{{payment_ref.payment_status.name}}</span></span>
+            {% if payment_ref.payment_type.id == 12 %}
+            <div class="col-12 mb-4">
+                <div class="card card-body bg-white border-light shadow-sm mb-4 orderpayment">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h2 class="h5 m-0">Payment</h2>
                         </div>
-                    </div>
+                        <div class="d-flex justify-content-between align-items-center flex-column">
+                            <div class="pending_type">
+                                <span>{{payment_ref.payment_type.name}}</span>
+                                <span class="payment_status {% if payment_ref.payment_status.id == 27 %} bg-warning {% elif payment_ref.payment_status.id == 26 %}bg-danger{% else %}bg-success {% endif %}  ms-2">{{payment_ref.payment_status.name}}</span>
+                            </div>
+                            
+                            {% if payment_ref.payment_type.id == 12 %}
+                            <p style="padding-top:10px;margin-bottom:-12px">
+                                <a href="{{DOCUMENT_URL}}customer_banks/{{payment_ref.bank_payment_file}}" target="_blank" class="small">Download Bank transfer Document</a>
+                            </p>
+                            {% endif %}
+                            {% if payment_ref.payment_status.id == 27 %}
+                            <div class="d-flex justify-content-between w-100 mt-4">
+                                <button class="btn btn-success" data-toggle="modal" data-target="#modal-default">Confirm</button>
+                                
+                                <button class="btn btn-danger" type="button" data-id="26" data-bs-toggle="modal" data-bs-target="#modal-default-reject">Reject</button> 
+                                
+                            </div>
+                            {% endif %}
+                        </div>
                 </div>
+            </div>
+                
             {% else %}
-                <div class="col-12 mb-4">
-                    <div class="card card-body bg-white border-light shadow-sm mb-4 orderpayment">
-                        <form class="oderform" method="post" action="{% url 'wayrem_admin:credit_bank_confirm' %}">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h2 class="h5 m-0">Payment</h2>
-                            </div>
-                            <div class="d-flex justify-content-between align-items-center flex-column">
-                                <div class="pending_type">
-                                    <span>{{payment_ref.payment_type.name}}</span>
-                                    <span class="payment_status bg-warning ms-2">{{payment_ref.payment_status.name}}</span>
-                                </div>
-                                
-                                {% if payment_ref.payment_type.id == 12 %}
-                                <p style="padding-top:10px;margin-bottom:-12px">
-                                    <a href="{{DOCUMENT_URL}}customer_banks/{{payment_ref.bank_payment_file}}" target="_blank" class="small">Download Bank transfer Document</a>
-                                </p>
-                                {% endif %}
-                                
-                                <div class="d-flex justify-content-between w-100 mt-4">
-                                    <button class="btn btn-success modelpaymentstatus" type="button" data-id="7">Confirm</button>
-                                    
-                                    <button class="btn btn-danger modelpaymentstatus" type="button" data-id="26" data-bs-toggle="modal" data-bs-target="#modal-default">Reject</button> 
-                                    
-                                </div>
-                            </div>
-                        </form>
+            <div class="col-12 mb-4">
+                <div class="card card-body bg-white border-light shadow-sm mb-4 p-4">
+                    <div class="d-flex justify-content-between align-items-center"><span class={% if payment_ref.payment_status.id == 6 %}"declined_type"{% else %}"paid_type"{% endif %}>
+                        <span> Order has been {{payment_ref.payment_status.name}}!</span><span class="payment_status {% if payment_ref.payment_status.id == 6 %}bg-danger{% else %}bg-success {% endif %} ms-2">{{payment_ref.payment_status.name}}</span></span>
                     </div>
                 </div>
+            </div>
+                
             {% endif %}
             <div class="col-12 mb-4">
                 <div class="card border-light shadow-sm">
@@ -215,59 +216,86 @@
     </div>
 </div>
 
-<div class="modal fade" id="modal-default" tabindex="-1" role="dialog" aria-labelledby="modal-default" aria-hidden="true">
+<!--Accept Modal-->
+<div class="modal fade" id="modal-default" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="h6 modal-title">Payment Type</h2>
+                <h2 class="h6 modal-title">Terms of Service</h2>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p id="payment_status"></p>
+                <p>Are you sure you want to confirm?</p>
+                <form action="" id="acceptform" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="payment_ref_id" value="{{payment_ref.id}}">
+                    <input type="hidden" name="payment_status" value="7">
+                </form>
             </div>
-            <div class="modal-footer" id="modal-btn">
-                <button type="button" id="confirm-btn" data-id="1" class="btn btn-success orderpaymentupdate">Confirm</button>
-                <button type="button" class="btn btn-link text-gray ms-auto" data-bs-dismiss="modal">Close</button>
+            <div class="modal-footer">
+                <button type="button" id="acceptbtn" class="btn btn-secondary">Accept</button>
+                <button type="button" class="btn btn-link text-gray ml-auto" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
 
+<!--Reject Modal-->
+<div class="modal fade" id="modal-default-reject" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="h6 modal-title">Terms of Service</h2>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to reject?</p>
+                <form action="" id="rejectform" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="payment_ref_id" value="{{payment_ref.id}}">
+                    <input type="hidden" name="payment_status" value="26">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="rejectbtn" class="btn btn-secondary">Reject</button>
+                <button type="button" class="btn btn-link text-gray ml-auto" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
-    $(".modelpaymentstatus").on("click",function(e){
-        //e.preventDefault();
-        pst=$(this).data("id");
-        console.log(pst)
-        $('#modal-default').modal('show');
-        if (pst == 7){
-            $('#confirm-btn').attr('data-id','7')
-            $("#payment_status").html("Are you sure you want to confirm?");
-        }else{
-            $('#confirm-btn').attr('data-id','26')
-            $("#payment_status").html("Are you sure you want to reject?");
-        }
-        
-    })
-    function orderformsubmit(){
-        url = $(".orderpayment .oderform").attr("action")
-            type_form=$(".orderpayment .oderform").attr("method")
-            data_ser=$(".orderpayment .oderform").serialize()
+    $("#acceptbtn").on("click",function(e){
+        e.preventDefault();
+        url = $("#acceptform").attr("action")
+            type_form=$("#acceptform").attr("method")
+            data_ser=$("#acceptform").serialize()
             console.log(data_ser)
-        //$.ajax({
-        //        type: type_form,
-        //        url: url,
-        //        data: data_ser,
-        //        cache: false,
-        //        success: function (data) {
-        //                location.reload();
-        //        }
-        //    })
-    }
-    $("#confirm-btn").on("click",function(e){
-        //e.preventDefault();
-        pst=$(this).data("id");
-        console.log(pst)
-        //orderformsubmit();
+            $.ajax({
+                    type: type_form,
+                    url: url,
+                    data: data_ser,
+                    cache: false,
+                    success: function (data) {
+                            location.reload();
+                    }
+                })
+    });
+    $("#rejectbtn").on("click",function(e){
+        e.preventDefault();
+        url = $("#rejectform").attr("action")
+            type_form=$("#rejectform").attr("method")
+            data_ser=$("#rejectform").serialize()
+            console.log(data_ser)
+            $.ajax({
+                    type: type_form,
+                    url: url,
+                    data: data_ser,
+                    cache: false,
+                    success: function (data) {
+                            location.reload();
+                    }
+                })
     });
 
 
