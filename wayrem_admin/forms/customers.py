@@ -1,5 +1,5 @@
 from django import forms
-from wayrem_admin.models import CreditSettings, Customer
+from wayrem_admin.models import CreditSettings, Customer, CreditManagement
 
 
 class CustomerSearchFilter(forms.Form):
@@ -54,5 +54,14 @@ class CreditsAssignForm(forms.Form):
             raise forms.ValidationError(
                 f"Please select a Credit amount!"
             )
-        else:
+        new_limit = CreditSettings.objects.get(id=credit)
+        try:
+            used_limit = CreditManagement.objects.get(
+                customer_id=self.data.get("id"))
+        except:
             return credit
+        if used_limit.used > new_limit.credit_amount:
+            raise forms.ValidationError(
+                f"Please select the credit greater than SAR {round(used_limit.used)}."
+            )
+        return credit

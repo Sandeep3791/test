@@ -141,6 +141,8 @@ class CreditAssign(LoginPermissionCheckMixin, View):
 
 @permission_required('credits.assign_customer', raise_exception=True)
 def creditAssign(request, id=None):
+    data = request.POST.copy()
+    data['id'] = id
     try:
         existing_credit_check = CreditManagement.objects.get(
             customer_id=id)
@@ -148,14 +150,13 @@ def creditAssign(request, id=None):
     except:
         existing_credit = None
     if request.method == "POST":
-        form = CreditsAssignForm(request.POST)
+        form = CreditsAssignForm(data)
         if form.is_valid():
             credit = form.cleaned_data.get("credit")
             available_credit = CreditSettings.objects.get(id=credit)
             if existing_credit:
                 existing_credit.credit_rule_id = available_credit
-                existing_credit.used = 0
-                existing_credit.available = available_credit.credit_amount
+                existing_credit.available = available_credit.credit_amount - existing_credit.used
                 existing_credit.save()
             else:
                 assign_credit = CreditManagement(
@@ -285,7 +286,7 @@ def credit_refund(order_id):
 
 
 class CustomerCreditTransactionReference(LoginPermissionCheckMixin, ListView):
-    permission_required = 'credits.transaction_logs'
+    permission_required = 'credits.paid_transaction_logs'
     model = CreditPaymentReference
     template_name = "credits/transaction_reference.html"
     context_object_name = 'list'
@@ -307,7 +308,7 @@ class CustomerCreditTransactionReference(LoginPermissionCheckMixin, ListView):
 
 
 class PaidCreditTransactionView(LoginPermissionCheckMixin, ListView):
-    permission_required = 'credits.transaction_logs'
+    permission_required = 'credits.credit_transaction_approve'
     model = CreditTransactionLogs
     template_name = "credits/paid_transaction_view.html"
     context_object_name = 'list'
