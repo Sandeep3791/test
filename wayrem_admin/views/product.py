@@ -629,6 +629,7 @@ def import_products(request):
         df['inventory_cancelled'] = 0
         df['inventory_onhand'] = df['quantity']
         df['inventory_received'] = 0
+        df['inventory_removed'] = 0
         df['outofstock_threshold'] = 0
         df['is_deleted'] = False
         try:
