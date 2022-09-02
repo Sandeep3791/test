@@ -64,7 +64,7 @@ def get_credits_txn(customer_id, dues, db: Session):
                             if check_reject_payment.payment_status_id == 26:
                                 payment_rejection = True
                                 pending = False
-                                rejected_orders = db.query(credit_models.CreditTransactionsLog.order_id).filter(credit_models.CreditTransactionsLog.reference_id == data.reference.id).all()
+                                rejected_orders = db.query(credit_models.CreditTransactionsLog.order_id).filter(credit_models.CreditTransactionsLog.reference_id == data.reference_id).all()
                                 orders_list = []
                                 for order_var in rejected_orders:
                                     user_oder_data = db.query(order_models.Orders).filter(
@@ -77,7 +77,7 @@ def get_credits_txn(customer_id, dues, db: Session):
                             elif check_reject_payment.payment_status_id == 6:
                                 payment_rejection = False
                                 pending = True
-                                rejected_orders = db.query(credit_models.CreditTransactionsLog.order_id).filter(credit_models.CreditTransactionsLog.reference_id == data.reference.id).all()
+                                rejected_orders = db.query(credit_models.CreditTransactionsLog.order_id).filter(credit_models.CreditTransactionsLog.reference_id == data.reference_id).all()
                                 orders_list = []
                                 for order_var in rejected_orders:
                                     user_oder_data = db.query(order_models.Orders).filter(
