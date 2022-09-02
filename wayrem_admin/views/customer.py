@@ -13,7 +13,7 @@ from django.http import HttpResponse
 import json
 from wayrem_admin.forecasts.firebase_notify import FirebaseLibrary
 from wayrem_admin.models import CreditSettings
-from wayrem_admin.models.orders import Orders
+from wayrem_admin.models.orders import OrderTransactions, Orders
 from wayrem_admin.services import send_email
 from wayrem_admin.forms import CustomerSearchFilter, CustomerEmailUpdateForm, CreditsForm, CreditsSearchFilter
 from django.urls import reverse_lazy
@@ -218,7 +218,25 @@ class PaymentForm(View):
 @method_decorator(csrf_exempt, name='dispatch')
 class HyperpayPayment(View):
     SUCCESS_CODES_REGEX = re.compile(r'^(000\.000\.|000\.100\.1|000\.[36])')
+    SUCCESS_MANUAL_REVIEW_CODES_REGEX = re.compile(
+        r'^(000\.400\.0[^3]|000\.400\.[0-1]{2}0)')
+    PENDING_CHANGEABLE_SOON_CODES_REGEX = re.compile(r'^(000\.200)')
+    PENDING_NOT_CHANGEABLE_SOON_CODES_REGEX = re.compile(
+        r'^(800\.400\.5|100\.400\.500)')
     key_from_configuration = "CC280328FF984554CF1605BC0B5545840A45486DE4101D5C60017D287D493E16"
+
+    def check_status(self, result_code):
+        if self.PENDING_CHANGEABLE_SOON_CODES_REGEX.search(result_code):
+            status = 6
+        elif self.PENDING_NOT_CHANGEABLE_SOON_CODES_REGEX.search(result_code):
+            status = 6
+        elif self.SUCCESS_CODES_REGEX.search(result_code):
+            status = 7
+        elif self.SUCCESS_MANUAL_REVIEW_CODES_REGEX.search(result_code):
+            status = 7
+        else:
+            status = 8
+        return status
 
     @csrf_exempt
     def post(self, request, **kwargs):
@@ -250,11 +268,14 @@ class HyperpayPayment(View):
         data['status'] = result.get("payload").get("result").get("description")
         try:
             order = Orders.objects.get(checkout_id=data['checkout_id'])
-            # data['order_id'] = order.id
-        except:
-            pass
-        if re.search(self.SUCCESS_CODES_REGEX, code):
-            pass
+            status_id = self.check_status(code)
+            order_tx = OrderTransactions.objects.get(order=order)
+            order_tx.payment_status_id = status_id
+            order_tx.save()
+            data['order_id'] = order.id
+            data['order_ref_no'] = order.ref_number
+        except Exception as e:
+            print(e)
         payment_transaction = PaymentTransaction(**data)
         payment_transaction.save()
         return HttpResponse({"message": "Success"})
