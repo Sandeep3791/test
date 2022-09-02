@@ -208,18 +208,21 @@ def credit_reminder():
     credit_management = CreditManagement.objects.all()
     for credit in credit_management:
         credit_logs = CreditTransactionLogs.objects.filter(
-            customer=credit.customer)
+            customer=credit.customer, credit_id=None)
         print(credit.customer)
         if credit_logs:
             for log in credit_logs:
                 credit_paid = CreditTransactionLogs.objects.filter(
                     credit_id=log.id, payment_status=True).first()
-                if not credit_paid:
+                if credit_paid:
+                    pass
+                else:
                     today = datetime.today()
                     days_reminder1 = round(
                         abs(credit.credit_rule.time_period/2))
                     days_reminder2 = abs(
                         credit.credit_rule.time_period - 3)
+                    print(log.credit_date)
                     reminder1 = log.credit_date + \
                         timedelta(days=days_reminder1)
                     reminder2 = log.credit_date + \
@@ -234,7 +237,7 @@ def credit_reminder():
                         body_format = {
                             'customer': f"{log.customer.first_name} {log.customer.last_name}",
                             'amount': log.credit_amount,
-                            'date': log.due_date
+                            'date': log.due_date.strftime("%A,%d %B, %Y")
                         }
                         email_body = email_template.message_format.format(
                             **body_format)
@@ -244,7 +247,7 @@ def credit_reminder():
                         notify_title = setting_msg.display_name
                         values = {
                             'amount': log.credit_amount,
-                            'date': log.due_date
+                            'date': log.due_date.strftime("%A,%d %B, %Y")
                         }
                         message = setting_msg.value.format(**values)
                         print(devices)
@@ -268,6 +271,9 @@ def credit_reminder():
                                 customer=log.customer.id, title=notify_title, message=message)
                             notification_store.save()
     print("Credit Reminder Notification Done")
+
+
+credit_reminder()
 
 
 def credit_refund(order_id):
