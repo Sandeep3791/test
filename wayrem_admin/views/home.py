@@ -13,6 +13,7 @@ from django.db.models import Count
 from dateutil import relativedelta
 from wayrem_admin.models.users import Users
 from django.contrib.auth.decorators import permission_required
+from django.db.models import Q
 
 
 class RootUrlView(RedirectView):
@@ -28,7 +29,7 @@ def dashboard(request):
     subadmins = Users.objects.exclude(is_superuser=True).count()
     suppliers = Supplier.objects.count()
     products = Products.objects.filter(is_deleted=False).count()
-    active_po = PurchaseOrder.objects.filter(status="accept").values(
+    active_po = PurchaseOrder.objects.filter(~Q(Q(status="declined") | Q(status="delivered"))).values(
         'po_name', 'supplier_name__company_name', 'po_id', 'status').distinct().count()
     completed_po_count = PurchaseOrder.objects.filter(status="delivered").values(
         'po_name', 'supplier_name__company_name', 'po_id', 'status').distinct().count()
@@ -36,13 +37,14 @@ def dashboard(request):
     sum_completed_po = sum([float(item.supplier_product.price)
                            for item in completed_po])
     this_month = datetime.datetime.now().month
-    this_day = datetime.datetime.now().day
-    customers_day = Customer.objects.filter(created_at__day=this_day).count()
+    this_year = datetime.datetime.now().year
+    this_day = datetime.datetime.now().date()
+    customers_day = Customer.objects.filter(created_at__date=this_day).count()
     customers_month = Customer.objects.filter(
-        created_at__month=this_month).count()
-    orders_day = Orders.objects.filter(order_date__day=this_day).count()
+        created_at__month=this_month, created_at__year=this_year).count()
+    orders_day = Orders.objects.filter(order_date__date=this_day).count()
     orders_month = Orders.objects.filter(
-        order_date__month=this_month).count()
+        order_date__month=this_month, order_date__year=this_year).count()
     present_month = datetime.datetime.now()
     try:
         next_month = datetime.date.today() + relativedelta.relativedelta(months=1)
@@ -56,7 +58,7 @@ def dashboard(request):
             # pick your own heuristic, or re-raise the exception:
             raise
     transactions = OrderTransactions.objects.filter(
-        payment_status__id=7, created_at__month=this_month)
+        payment_status__id=7, created_at__month=this_month, created_at__year=this_year)
     if transactions:
         total_transaction_amount = transactions.aggregate(
             Sum('order__grand_total'))
