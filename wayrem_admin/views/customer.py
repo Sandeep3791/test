@@ -13,7 +13,7 @@ from django.http import HttpResponse
 import json
 from wayrem_admin.forecasts.firebase_notify import FirebaseLibrary
 from wayrem_admin.models import CreditSettings
-from wayrem_admin.models.orders import OrderTransactions, Orders
+from wayrem_admin.models.orders import OrderTransactions, Orders, StatusMaster
 from wayrem_admin.services import send_email
 from wayrem_admin.forms import CustomerSearchFilter, CustomerEmailUpdateForm, CreditsForm, CreditsSearchFilter
 from django.urls import reverse_lazy
@@ -268,9 +268,9 @@ class HyperpayPayment(View):
         data['status'] = result.get("payload").get("result").get("description")
         try:
             order = Orders.objects.get(checkout_id=data['checkout_id'])
-            status_id = self.check_status(code)
+            status = StatusMaster.objects.get(id=self.check_status(code))
             order_tx = OrderTransactions.objects.get(order=order)
-            order_tx.payment_status_id = status_id
+            order_tx.payment_status = status
             order_tx.save()
             data['order_id'] = order.id
             data['order_ref_no'] = order.ref_number
