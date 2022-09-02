@@ -64,11 +64,16 @@ def get_credits_txn(customer_id, dues, db: Session):
                             if check_reject_payment.payment_status_id == 26:
                                 payment_rejection = True
                                 pending = False
+                                present_date = datetime.now()
+                                if present_date > data.due_date:
+                                    is_due = False
+                                else:
+                                    is_due = True
                                 rejected_orders = db.query(credit_models.CreditTransactionsLog.order_id).filter(credit_models.CreditTransactionsLog.reference_id == data.reference_id).all()
                                 orders_list = []
                                 for order_var in rejected_orders:
                                     user_oder_data = db.query(order_models.Orders).filter(
-                                                order_models.Orders.id == order_var).first()
+                                                order_models.Orders.id == order_var[0]).first()
                                     orders_list.append(user_oder_data.ref_number)
                                 credit_data = credit_schemas.ResponseCustomerCreditsTxn(id=data.id, credit_amount = data.credit_amount, available=data.available, credit_date=str(
                                 common_services.utc_to_tz(data.credit_date)), due_date=str(common_services.utc_to_tz(data.due_date)), payment_status=data.payment_status, order_ref_no=orders_list, valid_date=is_due, is_refund=data.is_refund, bank_pending=pending, bank_reject = payment_rejection, transaction_ref_id = check_reject_payment.id)
@@ -77,11 +82,16 @@ def get_credits_txn(customer_id, dues, db: Session):
                             elif check_reject_payment.payment_status_id == 6:
                                 payment_rejection = False
                                 pending = True
+                                present_date = datetime.now()
+                                if present_date > data.due_date:
+                                    is_due = False
+                                else:
+                                    is_due = True
                                 rejected_orders = db.query(credit_models.CreditTransactionsLog.order_id).filter(credit_models.CreditTransactionsLog.reference_id == data.reference_id).all()
                                 orders_list = []
                                 for order_var in rejected_orders:
                                     user_oder_data = db.query(order_models.Orders).filter(
-                                                order_models.Orders.id == order_var).first()
+                                                order_models.Orders.id == order_var[0]).first()
                                     orders_list.append(user_oder_data.ref_number)
                                 credit_data = credit_schemas.ResponseCustomerCreditsTxn(id=data.id, credit_amount = data.credit_amount, available=data.available, credit_date=str(
                                 common_services.utc_to_tz(data.credit_date)), due_date=str(common_services.utc_to_tz(data.due_date)), payment_status=data.payment_status, order_ref_no=orders_list, valid_date=is_due, is_refund=data.is_refund, bank_pending=pending, bank_reject = payment_rejection, transaction_ref_id = check_reject_payment.id, bank_details = constants.BANK_PAYMENT_IMAGES_PATH + check_reject_payment.bank_payment_file)
