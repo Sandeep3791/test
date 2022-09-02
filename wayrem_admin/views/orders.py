@@ -108,7 +108,6 @@ class OrderReferenceExport(View):
         response['Content-Disposition'] = 'attachment;filename='+filename
         return response
 
-
 class OrderExportView(View):
     @method_decorator(login_required(login_url='wayrem_admin:root'))
     def get(self, request, **kwargs):
@@ -285,6 +284,7 @@ class OrderStatusUpdated(LoginRequiredMixin, UpdateView):
                 data_dic['loginext_success'] = None
                 Orders.objects.filter(id=get_id).update(
                     status=obj_stat_instance, delivery_status=deliv_obj_stat_instance)
+                self.add_to_wallet(get_id)
                 odl = OrderDeliveryLogs(order_id=get_id, order_status=deliv_obj_stat_instance, order_status_details="status change",
                                         log_date=now, user_id=1, customer_view=deliv_obj_stat_instance.customer_view)
                 odl.save()
@@ -310,8 +310,27 @@ class OrderStatusUpdated(LoginRequiredMixin, UpdateView):
         return 1
 
     def inventory_update(self,order_id):
-        
         Inventory().order_inventory_process(order_id)
+        return 1
+
+    def add_to_wallet(self,order_id):
+        wallet_list=Wallet.objects.filter(order_id=748,transaction_type_id=2).first()
+        if wallet_list is not None:
+            return 1
+        
+        get_order_wallet=self.model.objects.filter(id=order_id).first()
+        if get_order_wallet.status.id != ORDER_CANCELLED:
+            return 1
+
+        order_transaction=OrderTransactions.objects.filter(order_id = order_id).first()
+        total_amount = get_order_wallet.grand_total
+        customer_id =  get_order_wallet.customer_id 
+        payment_type = order_transaction.payment_mode_id
+        if payment_type != 10:
+            currentDateTime = datetime.now()
+            wallet={'amount':total_amount,'payment_type_id':payment_type,'transaction_type_id':2,'order_id':order_id,'customer_id':customer_id,'created':currentDateTime}
+            wallet=Wallet(**wallet)
+            wallet.save()
         return 1
 
 class OrderPaymentStatusUpdated(LoginRequiredMixin, UpdateView):
