@@ -268,12 +268,15 @@ class HyperpayPayment(View):
         data['status'] = result.get("payload").get("result").get("description")
         try:
             order = Orders.objects.get(checkout_id=data['checkout_id'])
+            data['order_id'] = order.id
+            data['order_ref_no'] = order.ref_number
+        except Exception as e:
+            print(e)
+        try:
             status = StatusMaster.objects.get(id=self.check_status(code))
             order_tx = OrderTransactions.objects.get(order=order)
             order_tx.payment_status = status
             order_tx.save()
-            data['order_id'] = order.id
-            data['order_ref_no'] = order.ref_number
         except Exception as e:
             print(e)
         payment_transaction = PaymentTransaction(**data)
