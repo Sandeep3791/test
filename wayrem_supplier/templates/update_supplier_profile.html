@@ -174,7 +174,7 @@
           <div class="row">
               <div class="col-12 mb-4">
                   <div class="card table_shadow text-center p-0">
-                      <div class="profile-cover" data-background="{% static '/assets/img/curved-images/curved14.jpg' %}" style="background-image: url('{% static '/assets/img/curved-images/curved14.jpg' %}');"></div> 
+                      {% comment %} <div class="profile-cover" data-background="{% static '/assets/img/curved-images/curved14.jpg' %}" style="background-image: url('{% static '/assets/img/curved-images/curved14.jpg' %}');"></div>  {% endcomment %}
                        <div class="card-body pb-5">
                           <img src="{% if logo %}{{logo.url}}{% else %}{% static '/assets/img/bruce-mars.jpg' %}{% endif %}" class="user-avatar large-avatar profile_img rounded-circle mx-auto mt-n7 mb-4" alt="Neil Portrait">
                           <h4 class="">{{username}}
