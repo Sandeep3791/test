@@ -60,7 +60,7 @@
                                             {% comment %} <a class="dropdown-item " href="{% url 'wayrem_admin:invoiceorder' order.id %}"  target="__blank"><span class="fas fa-eye mr-2"></span>Invoice</a> {% endcomment %}
                                             <a class="dropdown-item" href="{% url 'wayrem_admin:orderupdate' order.id %}"><span class="fas fa-edit mr-2"></span>View order</a>
                                             {% if order.status.id != 18 and perms.order.change_status %}<a class="dropdown-item orderstatus" data-id="{{order.id}}" href="#"><span class="fas fa-edit mr-2"></span>Change Status</a>{% endif %}
-                                            <a class="dropdown-item d-none" data-id="{{order.id}}" href="{% url 'wayrem_admin:cancelcloneorder' order.id %}"><span class="fas fa-edit mr-2"></span>Cancel and clone order</a>
+                                            {% if order.status.id == 16 %}    <a class="dropdown-item d-none" data-id="{{order.id}}" href="{% url 'wayrem_admin:cancelcloneorder' order.id %}"><span class="fas fa-edit mr-2"></span>Cancel and clone order</a>{% endif %}
                                         {% endif %}
                                         </div>
                                 </div>

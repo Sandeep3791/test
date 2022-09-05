@@ -11,7 +11,7 @@ urlpatterns = [
 
     path('invoice-orders/<int:id>', views.OrderReferenceExport.as_view(), name='invoiceorders'),
     path('wallet/<int:id>', views.WalletList.as_view(), name='walletlistcreate'),
-
+    path('wallet-way/<int:id>', views.WalletCustomerPay.as_view(), name='walletpay'),
     
     path('cancel-clone-order/<int:id>',views.OrderCancelCloneOrder.as_view(), name='cancelcloneorder'),
     path('insert-order-detail/<int:id>/<int:pid>',views.InsertOrderdetail.as_view(), name='insertorderdetail'),

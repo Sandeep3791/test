@@ -58167,6 +58167,14 @@ fieldset:disabled .btn {
     .text-md-center {
         text-align: center !important;
     }
+
+    .bulk_heading {
+        font-size: .9rem !important;
+    }
+
+    .sku_img h5 {
+        font-size: .9rem !important;
+    }
 }
 
 @media (min-width: 992px) {
@@ -58181,6 +58189,7 @@ fieldset:disabled .btn {
     .text-lg-center {
         text-align: center !important;
     }
+
 }
 
 @media (min-width: 1200px) {
@@ -58195,6 +58204,8 @@ fieldset:disabled .btn {
     .text-xl-center {
         text-align: center !important;
     }
+
+
 }
 
 @media (min-width: 1400px) {
@@ -58209,6 +58220,8 @@ fieldset:disabled .btn {
     .text-xxl-center {
         text-align: center !important;
     }
+
+
 }
 
 .text-body {
@@ -66792,13 +66805,19 @@ nav#topbar_content {
 }
 
 .sku_img h5 {
-    font-size: 1rem !important;
+    font-size: .9rem !important;
     font-weight: 900;
 }
 
 /* Media Query */
 @media only screen and (min-width: 1024px) and (max-width: 1366px) {
     .bulk_heading {
-        font-size: 1rem !important;
+        font-size: 1rem;
+    }
+}
+
+@media only screen and (min-width: 1366px) and (max-width: 1600px) {
+    .bulk_heading {
+        font-size: 1rem;
     }
 }

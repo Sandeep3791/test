@@ -350,6 +350,8 @@ class ProductFormOne(forms.Form):
 
     def clean_barcode(self):
         barcode = self.cleaned_data.get("barcode")
+        if len(barcode) == 0 or barcode == None:
+            return barcode
         if Products.objects.filter(barcode=barcode).exists():
             raise forms.ValidationError("Barcode already Exists!")
         return barcode

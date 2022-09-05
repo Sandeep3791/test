@@ -371,7 +371,8 @@ def product_images(request):
             obj = Products()
             obj.id = request.session.get('product_pk')
             obj.SKU = request.session.get("SKU", None)
-            obj.barcode = request.session.get("barcode", None)
+            if len(request.session.get("barcode", None)) > 0:
+                obj.barcode = request.session.get("barcode", None)
             obj.name = request.session.get("name", None)
             obj.meta_key = request.session.get("meta_key", None)
             obj.feature_product = request.session.get("feature_product", None)
@@ -657,6 +658,7 @@ def import_products(request):
         df['inventory_cancelled'] = 0
         df['inventory_onhand'] = df['quantity']
         df['inventory_received'] = 0
+        df['inventory_removed'] = 0
         df['outofstock_threshold'] = 0
         df['is_deleted'] = False
         try:
@@ -833,6 +835,8 @@ def bulk_publish_excel(request):
         required_cols = ['sku', 'publish', 'product name', 'brand']
         df = pd.read_excel(file)
         excel_cols = list(df.columns)
+        required_cols.sort()
+        excel_cols.sort()
         missing_cols = list(set(required_cols) - set(excel_cols))
         unwanted_cols = list(set(excel_cols) - set(required_cols))
         if len(excel_cols) == 4 and required_cols == excel_cols:
@@ -847,8 +851,6 @@ def bulk_publish_excel(request):
             # NaN values removed from sku and product name
             df = df[df['SKU'].notna()]
             df = df[df['publish'].notna()]
-            duplicate_entries = len(df[df.duplicated('SKU')])
-            df['SKU'] = df['SKU'].astype(int)
             df['SKU'] = df['SKU'].astype(str)
             df['publish'] = df['publish'].astype(bool)
             df_products['SKU'] = df_products['SKU'].astype(str)
@@ -912,6 +914,8 @@ def bulk_price_excel(request):
         required_cols = ['sku', 'price', 'product name', 'brand']
         df = pd.read_excel(file)
         excel_cols = list(df.columns)
+        required_cols.sort()
+        excel_cols.sort()
         missing_cols = list(set(required_cols) - set(excel_cols))
         unwanted_cols = list(set(excel_cols) - set(required_cols))
         if len(excel_cols) == 4 and required_cols == excel_cols:
@@ -928,8 +932,6 @@ def bulk_price_excel(request):
                 # NaN values removed from sku and product name
                 df = df[df['SKU'].notna()]
                 df = df[df['price'].notna()]
-                duplicate_entries = len(df[df.duplicated('SKU')])
-                df['SKU'] = df['SKU'].astype(int)
                 df['price'] = df['price'].astype(float)
                 df_products['SKU'] = df_products['SKU'].astype(str)
                 df['SKU'] = df['SKU'].astype(str)
@@ -986,6 +988,8 @@ def bulk_quantity_excel(request):
         required_cols = ['sku', 'quantity', 'product name', 'brand']
         df = pd.read_excel(file)
         excel_cols = list(df.columns)
+        required_cols.sort()
+        excel_cols.sort()
         missing_cols = list(set(required_cols) - set(excel_cols))
         unwanted_cols = list(set(excel_cols) - set(required_cols))
         if len(excel_cols) == 4 and required_cols == excel_cols:
@@ -1002,8 +1006,6 @@ def bulk_quantity_excel(request):
                 # NaN values removed from sku and product name
                 df = df[df['SKU'].notna()]
                 df = df[df['quantity'].notna()]
-                duplicate_entries = len(df[df.duplicated('SKU')])
-                df['SKU'] = df['SKU'].astype(int)
                 df['quantity'] = df['quantity'].astype(int)
                 df = df[df.quantity != 0]
                 df_products['SKU'] = df_products['SKU'].astype(str)
