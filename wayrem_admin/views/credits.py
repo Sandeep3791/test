@@ -273,9 +273,6 @@ def credit_reminder():
     print("Credit Reminder Notification Done")
 
 
-credit_reminder()
-
-
 def credit_refund(order_id):
     order = Orders.objects.get(id=order_id)
     credit_log = CreditTransactionLogs.objects.filter(

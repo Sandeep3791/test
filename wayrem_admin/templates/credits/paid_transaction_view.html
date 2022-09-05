@@ -165,7 +165,7 @@
                                 <span>{{payment_ref.payment_type.name}}</span>
                                 <span class="payment_status {% if payment_ref.payment_status.id == 27 %} bg-warning {% elif payment_ref.payment_status.id == 26 %}bg-danger{% else %}bg-success {% endif %}  ms-2">{{payment_ref.payment_status.name}}</span>
                             </div>
-                            
+                            {% if parms.credits.credit_transaction_approve %}
                             {% if payment_ref.payment_type.id == 12 %}
                             <p style="padding-top:10px;margin-bottom:-12px">
                                 <a href="{{DOCUMENT_URL}}customer_banks/{{payment_ref.bank_payment_file}}" target="_blank" class="small">Download Bank transfer Document</a>
@@ -178,6 +178,7 @@
                                 <button class="btn btn-danger" type="button" data-id="26" data-bs-toggle="modal" data-bs-target="#modal-default-reject">Reject</button> 
                                 
                             </div>
+                            {% endif %}
                             {% endif %}
                         </div>
                 </div>

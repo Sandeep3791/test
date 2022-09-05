@@ -4,7 +4,7 @@ from wayrem_admin.models import CreditSettings, Customer, CreditManagement
 
 class CustomerSearchFilter(forms.Form):
     customer = forms.CharField(widget=forms.TextInput(
-        attrs={'class': 'form-control p-2'}), required=False)
+        attrs={'class': 'form-control p-2', 'placeholder': 'Search'}), required=False)
 
 
 class CustomerEmailUpdateForm(forms.ModelForm):
@@ -30,7 +30,7 @@ class CreditsForm(forms.ModelForm):
 
 class CreditsSearchFilter(forms.Form):
     credit = forms.IntegerField(widget=forms.NumberInput(
-        attrs={'class': 'form-control p-2'}), required=False)
+        attrs={'class': 'form-control p-2', 'placeholder': 'Search'}), required=False)
 
 
 def get_credits():

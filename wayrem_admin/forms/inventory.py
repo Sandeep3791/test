@@ -38,9 +38,11 @@ class InventoryViewForm(forms.ModelForm):
         attrs={'class': 'form-select', 'readonly': 'true'}))
 
     get_inventory_type_dict = {0: 'Starting', 1: 'Received', 2: 'Shipped'}
-    get_inventory_type_dict = {1: 'Starting', 2: 'Received', 3: 'Shipped',4:'Cancelled',5:'Removed'}
+    get_inventory_type_dict = {
+        1: 'Starting', 2: 'Received', 3: 'Shipped', 4: 'Cancelled', 5: 'Removed'}
     inventory_type_choices = list(get_inventory_type_dict.items())
-    inventory_type = forms.ChoiceField(choices=inventory_type_choices, widget=forms.Select(attrs={'class': 'form-select'}))
+    inventory_type = forms.ChoiceField(
+        choices=inventory_type_choices, widget=forms.Select(attrs={'class': 'form-select'}))
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -60,9 +62,9 @@ class InventoryAdvanceFilterForm(forms.Form):
     category = forms.ChoiceField(required=False, widget=forms.Select(
         attrs={'class': 'form-control form-control-select'}))
     name = forms.CharField(widget=forms.TextInput(
-        attrs={'class': 'form-control p-2'}), required=False)
+        attrs={'class': 'form-control p-2', 'placeholder': 'Product name'}), required=False)
     SKU = forms.CharField(widget=forms.TextInput(
-        attrs={'class': 'form-control p-2'}), required=False)
+        attrs={'class': 'form-control p-2', 'placeholder': 'SKU'}), required=False)
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
