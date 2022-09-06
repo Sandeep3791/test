@@ -404,6 +404,9 @@ class OrderCreditNoteView(View):
         context['currency'] = CURRENCY
         order_id = id
         orders_details = Orders.objects.filter(id=order_id).first()
+        if orders_details.status.id != ORDER_CANCELLED:
+            return render(request, '404.html')
+            #return HttpResponse("Order is not cancelled")
         filename = "order-"+str(orders_details.ref_number)+".pdf"
         context['order'] = orders_details
         context['tax_vat'] = Settings.objects.filter(key=self.KEY).first()
