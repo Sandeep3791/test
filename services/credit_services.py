@@ -95,6 +95,12 @@ def get_credits_txn(customer_id, dues, db: Session):
                                 rejected_orders = db.query(credit_models.CreditTransactionsLog).filter(credit_models.CreditTransactionsLog.reference_id == data.reference_id).all()
                                 orders_list = []
                                 total_credit_amount = 0
+                                
+                                if check_reject_payment.bank_payment_file and check_reject_payment.payment_status_id == 6:
+                                    bank_docs = constants.BANK_PAYMENT_IMAGES_PATH + check_reject_payment.bank_payment_file
+                                else:
+                                    bank_docs = None
+
                                 for order_var in rejected_orders:
                                     user_order_data = db.query(order_models.Orders).filter(
                                                 order_models.Orders.id == order_var.order_id).first()
@@ -103,7 +109,7 @@ def get_credits_txn(customer_id, dues, db: Session):
                                     common_services.utc_to_tz(order_var.due_date))))
                                 credit_data = credit_schemas.ResponseCustomerCreditsTxn(id=data.id, credit_amount = total_credit_amount, available=data.available, credit_date=str(
                                 common_services.utc_to_tz(data.credit_date)), payment_status=data.payment_status, order_ref_no=orders_list, valid_date=is_due, is_refund=data.is_refund, bank_pending=pending, bank_reject = payment_rejection, transaction_ref_id = check_reject_payment.id, transaction_creation_date = str(
-                                    common_services.utc_to_tz(check_reject_payment.created_at)), bank_details = constants.BANK_PAYMENT_IMAGES_PATH + check_reject_payment.bank_payment_file)
+                                    common_services.utc_to_tz(check_reject_payment.created_at)), bank_details = bank_docs)
                                 txn_list.append(credit_data)
  
             response = credit_schemas.ResponseCustomerCreditsTxnFinal(
@@ -119,7 +125,6 @@ def get_credits_txn(customer_id, dues, db: Session):
         txn_list = []
         if user_data:
             for data in user_data:
-                print(data.id)
                 bank_paid_credit = db.query(credit_models.CreditTransactionsLog).filter(credit_models.CreditTransactionsLog.id == data.id, credit_models.CreditTransactionsLog.payment_status == False,credit_models.CreditTransactionsLog.credit_id != None).first()
                 if bank_paid_credit:
                     continue
