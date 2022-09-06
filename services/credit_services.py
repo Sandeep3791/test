@@ -40,7 +40,11 @@ def get_credits_txn(customer_id, dues, db: Session):
             for data in user_data:
                 paid_credit_data = db.query(credit_models.CreditTransactionsLog).filter(
                         credit_models.CreditTransactionsLog.credit_id == data.id, credit_models.CreditTransactionsLog.payment_status == True).first()
-                if data.reference_id == None:
+                
+                check_credit_id = db.query(credit_models.CreditTransactionsLog).filter(
+                        credit_models.CreditTransactionsLog.credit_id == data.id).first()
+
+                if data.reference_id == None and check_credit_id == None:
                     if not paid_credit_data:
                         pending = False
                         user_order_data = db.query(order_models.Orders).filter(
@@ -54,7 +58,7 @@ def get_credits_txn(customer_id, dues, db: Session):
                             common_services.utc_to_tz(data.credit_date)), payment_status=data.payment_status, order_ref_no=[credit_schemas.OrdersRefNumber(order_ref_no = user_order_data.ref_number, order_amount = user_order_data.grand_total, order_due_time = str(
                             common_services.utc_to_tz(data.due_date)))], valid_date=is_due, is_refund=data.is_refund,bank_pending=pending)
                         txn_list.append(credit_data)
-                else:
+                elif data.reference_id != None:
                     if not paid_credit_data:
                         check_reject_payment = db.query(credit_models.CreditPaymentReference).filter(credit_models.CreditPaymentReference.id == data.reference_id).first()
                         if check_reject_payment:
@@ -176,7 +180,7 @@ def get_credits_txn(customer_id, dues, db: Session):
                     common_services.utc_to_tz(data_var.credit_date)), payment_status=data_var.payment_status, order_ref_no=orders_list, valid_date=is_due, is_refund=data_var.is_refund, transaction_ref_id = payment_ref_details.id, transaction_ref_no = payment_ref_details.reference_no, transaction_creation_date = str(
                         common_services.utc_to_tz(payment_ref_details.created_at)))
                     txn_list.append(credit_data)
-                    
+
             txn_list = sorted(txn_list, key=lambda d: d.id,  reverse=True) 
             response = credit_schemas.ResponseCustomerCreditsTxnFinal(
                 status=status.HTTP_200_OK, message="User Credit Transactions!", data=txn_list)
