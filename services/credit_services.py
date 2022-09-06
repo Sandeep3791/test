@@ -42,11 +42,7 @@ def get_credits_txn(customer_id, dues, db: Session):
                         credit_models.CreditTransactionsLog.credit_id == data.id, credit_models.CreditTransactionsLog.payment_status == True).first()
                 if data.reference_id == None:
                     if not paid_credit_data:
-                        bank_paid_credit = db.query(credit_models.CreditTransactionsLog).filter(credit_models.CreditTransactionsLog.credit_id == data.id, credit_models.CreditTransactionsLog.payment_status == False).first()
-                        if bank_paid_credit:
-                            pending = True
-                        else:
-                            pending = False
+                        pending = False
                         user_order_data = db.query(order_models.Orders).filter(
                             order_models.Orders.id == data.order_id).first()
                         present_date = datetime.now()
@@ -122,28 +118,66 @@ def get_credits_txn(customer_id, dues, db: Session):
     else:
         user_data = db.query(credit_models.CreditTransactionsLog).filter(
             credit_models.CreditTransactionsLog.customer_id == customer_id).order_by(desc(credit_models.CreditTransactionsLog.id)).all()
+
+        transacted_data = db.query(credit_models.CreditTransactionsLog).filter(credit_models.CreditTransactionsLog.customer_id == customer_id, credit_models.CreditTransactionsLog.payment_status == True, credit_models.CreditTransactionsLog.reference_id != None).all()
+        
         txn_list = []
         if user_data:
             for data in user_data:
-                bank_paid_credit = db.query(credit_models.CreditTransactionsLog).filter(credit_models.CreditTransactionsLog.id == data.id, credit_models.CreditTransactionsLog.payment_status == False,credit_models.CreditTransactionsLog.credit_id != None).first()
+                bank_paid_credit = db.query(credit_models.CreditTransactionsLog).filter(credit_models.CreditTransactionsLog.id == data.id, credit_models.CreditTransactionsLog.payment_status == False,credit_models.CreditTransactionsLog.reference_id == None).first()
                 if bank_paid_credit:
-                    continue
-                user_order_data = db.query(order_models.Orders).filter(
-                    order_models.Orders.id == data.order_id).first()
-                present_date = datetime.now()
-                if data.due_date:
-                    if present_date > data.due_date:
-                        is_due = False
+                    user_order_data = db.query(order_models.Orders).filter(
+                        order_models.Orders.id == data.order_id).first()
+                    present_date = datetime.now()
+                    if data.due_date:
+                        if present_date > data.due_date:
+                            is_due = False
+                        else:
+                            is_due = True
                     else:
                         is_due = True
-                else:
-                    is_due = True
 
-                credit_data = credit_schemas.ResponseCustomerCreditsTxn(id=data.id, credit_amount=data.credit_amount, available=data.available, credit_date=str(
-                    common_services.utc_to_tz(data.credit_date)), due_date=str(common_services.utc_to_tz(data.due_date)), payment_status=data.payment_status, order_ref_no=user_order_data.ref_number, valid_date=is_due, paid_date=str(common_services.utc_to_tz(data.paid_date)),
-                    paid_amount=data.paid_amount, paid_credit_id=data.credit_id, is_refund=data.is_refund)
+                    credit_data = credit_schemas.ResponseCustomerCreditsTxn(id=data.id, credit_amount=data.credit_amount, available=data.available, credit_date=str(
+                        common_services.utc_to_tz(data.credit_date)), payment_status=data.payment_status, order_ref_no=[credit_schemas.OrdersRefNumber(order_ref_no = user_order_data.ref_number, order_amount = user_order_data.grand_total, order_due_time = str(common_services.utc_to_tz(data.due_date)))], valid_date=is_due, paid_date=str(common_services.utc_to_tz(data.paid_date)),
+                        paid_amount=data.paid_amount, paid_credit_id=data.credit_id, is_refund=data.is_refund)
 
-                txn_list.append(credit_data)
+                    txn_list.append(credit_data)
+
+        if transacted_data:
+            distinct_ref_id = []
+            for trans_var in transacted_data:
+                if trans_var.reference_id not in distinct_ref_id:
+                    distinct_ref_id.append(trans_var.reference_id)
+
+            for ref_id_var in distinct_ref_id:
+                paid_data = db.query(credit_models.CreditTransactionsLog).filter(credit_models.CreditTransactionsLog.customer_id, credit_models.CreditTransactionsLog.reference_id == ref_id_var).all()
+
+                payment_ref_details = db.query(credit_models.CreditPaymentReference).filter(credit_models.CreditPaymentReference.id == ref_id_var).first()
+
+                if paid_data:
+                    orders_list = []
+                    total_credit_amount = 0
+                    for data_var in paid_data:
+                        present_date = datetime.now()
+                        if data_var.due_date:
+                            if present_date > data_var.due_date:
+                                is_due = False
+                            else:
+                                is_due = True
+                        else:
+                            is_due = True
+                        order_data = db.query(order_models.Orders).filter(
+                                    order_models.Orders.id == data_var.order_id).first()
+                        total_credit_amount += order_data.grand_total
+                        orders_list.append(credit_schemas.OrdersRefNumber(order_ref_no = order_data.ref_number, order_amount = order_data.grand_total, order_due_time = str(
+                        common_services.utc_to_tz(data_var.due_date))))
+
+                    credit_data = credit_schemas.ResponseCustomerCreditsTxn(id=data_var.id, credit_amount = total_credit_amount, available=data_var.available, credit_date=str(
+                    common_services.utc_to_tz(data_var.credit_date)), payment_status=data_var.payment_status, order_ref_no=orders_list, valid_date=is_due, is_refund=data_var.is_refund, transaction_ref_id = payment_ref_details.id, transaction_ref_no = payment_ref_details.reference_no, transaction_creation_date = str(
+                        common_services.utc_to_tz(payment_ref_details.created_at)))
+                    txn_list.append(credit_data)
+                    
+            txn_list = sorted(txn_list, key=lambda d: d.id,  reverse=True) 
             response = credit_schemas.ResponseCustomerCreditsTxnFinal(
                 status=status.HTTP_200_OK, message="User Credit Transactions!", data=txn_list)
             return response
