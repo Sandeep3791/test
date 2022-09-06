@@ -52,6 +52,21 @@ class CreditCreate(LoginPermissionCheckMixin, CreateView):
         return super(CreditCreate, self).dispatch(*args, **kwargs)
 
 
+class DeleteCredit(LoginPermissionCheckMixin, View):
+    permission_required = 'credits.settings_delete'
+
+    def post(self, request):
+        creditId = request.POST.get('creditId')
+        credit = CreditSettings.objects.get(id=creditId)
+        check_credit = CreditManagement.objects.filter(credit_rule=credit)
+        if check_credit:
+            messages.error(request, "Credit Rule already assigned!")
+        else:
+            credit.delete()
+            messages.success(request, "Credit Rule deleted!")
+        return redirect('wayrem_admin:credits_list')
+
+
 class CreditsList(LoginPermissionCheckMixin, ListView):
     permission_required = 'credits.settings'
     model = CreditSettings
