@@ -59,7 +59,8 @@ class Orders(models.Model):
     to_clone = models.BigIntegerField(blank=True, null=True)
     partial_payment = models.FloatField(default=0, null=True)
     partial_payment_settled_date = models.DateTimeField(blank=True, null=True)
-
+    credit_note = models.IntegerField(default=0, null=True)
+    
     def __str__(self):
         return self.ref_number
 
@@ -297,3 +298,9 @@ class Wallet(models.Model):
     class Meta:
         app_label = "wayrem_admin"
         db_table = 'wallet'
+
+class CreditNote(models.Model):
+    credit_note = models.IntegerField(blank=True, null=True)
+    class Meta:
+        app_label = "wayrem_admin"
+        db_table = 'credit_note'

@@ -17,7 +17,7 @@ from wayrem_admin.forms import SettingsForm
 from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from wayrem_admin.export import generate_excel
-from wayrem_admin.models import Orders, OrderDetails, StatusMaster, OrderDeliveryLogs, OrderTransactions,create_new_ref_number
+from wayrem_admin.models import Orders, OrderDetails, StatusMaster, OrderDeliveryLogs, OrderTransactions,create_new_ref_number,CreditNote
 from wayrem_admin.models import Inventory
 from wayrem_admin.models import Settings
 from django.views.generic.edit import CreateView, UpdateView
@@ -282,9 +282,16 @@ class OrderStatusUpdated(LoginRequiredMixin, UpdateView):
 
             if log_status is None:
                 data_dic['loginext_success'] = None
-                Orders.objects.filter(id=get_id).update(
-                    status=obj_stat_instance, delivery_status=deliv_obj_stat_instance)
+                credit_note=self.credit_note(obj_stat_instance,get_id)
+                if credit_note:
+                    Orders.objects.filter(id=get_id).update(
+                        status=obj_stat_instance, delivery_status=deliv_obj_stat_instance,credit_note=credit_note)
+                else:
+                    Orders.objects.filter(id=get_id).update(
+                        status=obj_stat_instance, delivery_status=deliv_obj_stat_instance)
+                        
                 self.add_to_wallet(get_id)
+
                 odl = OrderDeliveryLogs(order_id=get_id, order_status=deliv_obj_stat_instance, order_status_details="status change",
                                         log_date=now, user_id=1, customer_view=deliv_obj_stat_instance.customer_view)
                 odl.save()
@@ -303,6 +310,18 @@ class OrderStatusUpdated(LoginRequiredMixin, UpdateView):
 
         data_dic_json = json.dumps(data_dic)
         return HttpResponse(data_dic_json)
+
+    def credit_note(self,status,order_id):
+        order_det=Orders.objects.filter(id=order_id).first()
+        if(order_det.credit_note == 0 or order_det.credit_note is None ):
+            if status.id == 18:
+                cn=CreditNote.objects.filter().order_by("-id").first()
+                credit_note_return=cn.credit_note+1
+                cr_add=CreditNote(credit_note=credit_note_return)
+                cr_add.save()
+                return credit_note_return
+            else:
+                return 0
 
     def order_notification_customer(self, order_id, status_id):
         from wayrem_admin.forecasts.firebase_notify import FirebaseLibrary
@@ -366,6 +385,55 @@ class OrderPaymentStatusUpdated(LoginRequiredMixin, UpdateView):
                 FirebaseLibrary().send_notify(order_id=order_id, order_status=PAYMENT_STATUS_CONFIRM)
         return 1
 
+class OrderCreditNoteView(View):
+    login_url = 'wayrem_admin:root'
+    model = Orders
+    template_name = "orders/order_credit_note.html"
+    KEY = 'setting_vat'
+    WAYREM_VAT = 'wayrem_vat_registration'
+    WAYREM_CR = 'wayrem_cr_no'
+
+    def image_to_base64(self, image):
+        buff = BytesIO()
+        image.save(buff, format="png")
+        img_str = base64.b64encode(buff.getvalue())
+        return img_str.decode("utf-8")
+
+    def get(self, request, id):
+        context = {}
+        context['currency'] = CURRENCY
+        order_id = id
+        orders_details = Orders.objects.filter(id=order_id).first()
+        filename = "order-"+str(orders_details.ref_number)+".pdf"
+        context['order'] = orders_details
+        context['tax_vat'] = Settings.objects.filter(key=self.KEY).first()
+        context['wayrem_vat'] = Settings.objects.filter(
+            key=self.WAYREM_VAT).first()
+        context['wayrem_cr'] = Settings.objects.filter(
+            key=self.WAYREM_CR).first()
+        context['wayrem_seller_name'] = Settings.objects.filter(
+            key="wayrem_seller_name").first()
+        context['order_details'] = OrderDetails.objects.filter(order=order_id)
+        context['order_transaction'] = OrderTransactions.objects.filter(
+            order=order_id).first()
+        fatoora_obj = Fatoora(
+            seller_name=context['wayrem_seller_name'].value,
+            tax_number=context['wayrem_vat'].value,
+            # invoice_date="2021-07-12T14:25:09+00:00",
+            invoice_date=orders_details.order_date,
+            total_amount=orders_details.grand_total,
+            tax_amount=orders_details.tax,
+        )
+        qr_code = qrcode.make(fatoora_obj.base64)
+        image = self.image_to_base64(qr_code)
+        context['image'] = image
+        html_template = render_to_string(self.template_name, context)
+        pdf_file = HTML(string=html_template,
+                        base_url=request.build_absolute_uri()).write_pdf()
+        response = HttpResponse(pdf_file, content_type='application/pdf')
+        response['Content-Transfer-Encoding'] = 'binary'
+        response['Content-Disposition'] = 'inline;attachment;filename='+filename
+        return response
 
 class OrderInvoiceView(LoginRequiredMixin, View):
     login_url = 'wayrem_admin:root'

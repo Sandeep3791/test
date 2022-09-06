@@ -1,0 +1,202 @@
+{% load util_tags  %}
+<!DOCTYPE html>
+<html class="no-js">
+{% load static %}
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Invoice Wayrem</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="newinvoice_files/font-awesome.css">
+    <link rel="preconnect" href="https://fonts.gstatic.com/">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <!-- <link href="newinvoice_files/css2.css" rel="stylesheet"> -->
+    
+</head>
+{% block content %}
+<body style="font-family: 'Roboto', sans-serif; direction: ltr; text-align: left;">
+    <!-- Header -->
+    <table style="background-color:#F8F8F8;font-family: 'roboto', sans-serif !important; margin: auto;" width="100%" cellspacing="0" cellpadding="0">
+        <tbody>
+            <tr>
+                <td>
+                    <table style="margin-top:20px 0; margin: auto;padding: 10px 5px;width:100%" >
+                        <tbody>
+                            <tr>
+                                <td style="margin: 0; text-align: left;color:#4F4F4F;padding:20px;font-family: 'Roboto', sans-serif;width: 70%;" align="left">
+                                    <span align="left" style=" display: flex; flex-direction: row; font-size: 1rem; font-weight: 600; text-align: left;">WAYREM</span>
+                                    <span style=" text-align: left;font-size:.8rem;">VAT No.: {{wayrem_vat.value}}</span>
+                                    <br>
+                                    <span style=" text-align: left;font-size:.8rem;">CR. No.: {{wayrem_cr.value}}</span>
+                                </td>
+                                <td style="font-size: 1rem; color:#4F4F4F;padding: 20px;font-family: 'Roboto', sans-serif;font-weight: 400;text-align: right;width: 30%;" align="right">
+                                    <img src="{% static '/assets/img/logo/wayrem_logo.png' %}" alt="" align="right" style="text-align: right;"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <table style="margin-top:20px 0; margin: auto;padding: 10px 20px;" width="100%">
+                        <tbody>
+                            <tr>
+                                <td style="font-size: 2rem;font-weight: 500;">Tax Credit Note</td>
+                            </tr>
+                            <tr>
+
+                                <td style="color:#4F4F4F;padding: 20px 0;font-family: 'Roboto', sans-serif;width: 50%;line-height:1;" valign="top">
+
+                                    <table style="width: 100%;">
+                                        <tbody>
+                                            <tr>
+                                                <td style="width: 30%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" valign="top" align="left">Credit Note No.</td>
+                                                <td style="width: 70%;font-size: .8rem; color:#4F4F4F;" valign="top" align="left">{{order.credit_note}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table style="width: 100%;">
+                                        <tbody>
+                                            <tr>
+                                                <td style="width: 30%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" valign="top" align="left">Customer</td>
+                                                <td style="width: 70%;font-size: .8rem; color:#4F4F4F;" valign="top" align="left">{{order.customer.first_name|default_if_none:""}} {{order.customer.last_name|default_if_none:""}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table style="width: 100%;">
+                                        <tbody>
+                                            <tr>
+                                                <td style="width: 30%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" valign="top" align="left">Customer VAT</td>
+                                                <td style="width: 70%;font-size: .8rem; color:#4F4F4F;" valign="top" align="left">{{order.customer.tax_number|default_if_none:"-"}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                </td>
+
+                                <td style="color:#4F4F4F;padding: 20px 0;font-family: 'Roboto', sans-serif;width: 50%;    line-height: 1;" valign="top">
+
+
+                                    <table style="width: 100%;">
+                                        <tbody>
+                                            <tr>
+                                                <td style="width: 30%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" valign="top" align="left">Date</td>
+                                                <td style="width: 70%;font-size: .8rem; color:#4F4F4F;" valign="top" align="left">{{order.order_date|date:"M d, Y"}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table style="width: 100%;">
+                                        <tbody>
+                                            <tr>
+                                                <td style="width: 30%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" valign="top" align="left">Order Ref.</td>
+                                                <td style="width: 70%;font-size: .8rem; color:#4F4F4F;" valign="top" align="left">{{order.ref_number}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table style="width: 100%;">
+                                        <tbody>
+                                            <tr>
+                                                <td style="width: 30%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" valign="top" align="left">Payment Type</td>
+                                                <td style="width: 70%;font-size: .8rem; color:#4F4F4F;" valign="top" align="left">{{order_transaction.payment_mode.name}}</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </td>
+
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+
+
+    <!-- Table -->
+    <table style="background-color:#FFF; font-size: .8rem;font-family: 'roboto', sans-serif !important; margin: auto;padding: 1rem;" width="100%" cellspacing="0" cellpadding="0" valign="top" border="1">
+        <tbody>
+            <tr>
+                <td style="width: 14.25%; padding: 1rem .5rem; text-align: left;" valign="top" align="left">Sr. No&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </td>
+                <td style="width: 14.25%; padding: 1rem .5rem; text-align: center;" valign="top" align="left">Description</td>
+                <td style="width: 14.25%; padding: 1rem .5rem; text-align: center;" valign="top" align="center">Quantity</td>
+                <td style="width: 14.25%; padding: 1rem .5rem; text-align: center;" valign="top" align="center">Price&nbsp; </td>
+                <td style="width: 14.25%; padding: 1rem .5rem; text-align: center;" valign="top" align="center">Discount&nbsp; </td>
+                <td style="width: 14.25%; padding: 1rem .5rem; text-align: right;" valign="top" align="right">Total</td>
+                <!-- <td style="width: 5%;" valign="top">Vat Amt.</td>
+                <td style="width: 5%;" valign="top">Net Amt.</td> -->
+            </tr>
+        </tbody>
+    </table>
+    <!-- <hr style="border:1px solid #e5e5e5" width="100%"> -->
+    <table style="background-color:#FFF; color: #828282; font-size: .8rem; font-family: 'roboto', sans-serif !important; margin: auto;padding:0 1rem; border-bottom: 1px solid #e5e5e5; border-top: 1px solid #e5e5e5;" width="100%" cellspacing="0" cellpadding="0">
+        <tbody>
+        {% for order_detail in order_details %}
+            <tr>
+                <td style="width: 14.25%; padding: 1rem .9rem; text-align: left;" valign="top" align="left">{{ forloop.counter }}</td>
+                <td style="width: 14.25%; padding: 1rem .4rem; text-align: center" valign="top" align="left">{{order_detail.product_name}}<br/>Manufacturer: {% if order_detail.product.mfr_name %} {{ order_detail.product.mfr_name }} {% else %} - {% endif %}</td>
+                <td style="width: 14.25%; padding: 1rem .4rem; text-align: center;" valign="top" align="center">{{order_detail.quantity}} {{order_detail.product.quantity_unit.unit_name}}</td>
+                {% comment %} <td style="width: 14.25%; padding: 1rem .4rem; text-align: center;" valign="top" align="center">{{currency}} {{ order_detail.id|display_discount_price|floatformat:2 }}</td> {% endcomment %}
+                <td style="width: 14.25%; padding: 1rem .4rem; text-align: center;" valign="top" align="center">{{currency}} {{ order_detail.price|floatformat:2 }}</td>
+                <td style="width: 14.25%; padding: 1rem .4rem; text-align: center;" valign="top" align="center"> {% if order_detail.discount %} {{currency}} {{ order_detail.discount|floatformat:2 }} {% else %} - {% endif %}</td>
+                <td style="width: 14.25%; padding: 1rem .4rem; text-align: right;" valign="top" align="right">{{currency}} {{ order_detail.id|display_discount_price_qty|floatformat:2 }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+
+    </table>
+    <table style="margin-top:20px 0; margin: auto;padding: 10px 20px;" width="100%">
+        <tbody>
+
+            <tr>
+
+                <td style="width:50%"><img src="data:image/png;base64,{{image}}" style="max-width: 100%; height: 120px;" alt="barcode"></td>
+
+                <td style="color:#4F4F4F;padding: 20px 0;font-family: 'Roboto', sans-serif;width: 30%; line-height: 1.6;" valign="top">
+
+                    <table style="width: 100%;">
+                        <tbody>
+                            <tr>
+                                <td style="width: 65%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" align="left">Subtotal</td>
+                                <td style="width: 42%;font-size: .8rem; color:#4F4F4F; text-align: right;" align="right" valign="top">{{currency}} {{order.sub_total|floatformat:2}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <table style="width: 100%;">
+                        <tbody>
+                            <tr>
+                                <td style="width: 65%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" align="left">Delivery Fees</td>
+                                <td style="width: 42%;font-size: .8rem; color:#4F4F4F; text-align: right;" align="right" valign="top">{{currency}} {{order.shipping|floatformat:2}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                    <table style="width: 100%;">
+                        <tbody>
+                            <tr>
+                                <td style="width: 65%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" align="left">VAT ({{order.tax_vat}}%)</td>
+                                <td style="width: 42%;font-size: .8rem; color:#4F4F4F; text-align: right;" align="right" valign="top">{{currency}} {{order.tax|floatformat:2}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <table style="width: 100%;">
+                        <tbody>
+                            <tr>
+                                <td style="width: 65%;font-size: .8rem; font-weight: 600; text-transform: capitalize; color: #000;" align="left">Grand Total</td>
+                                <td style="width: 42%;font-size: .8rem; color:#4F4F4F; text-align: right;" align="right" valign="top">{{currency}} {{order.grand_total|floatformat:2}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </td>
+
+
+            </tr>
+        </tbody>
+    </table>
+    
+</body>
+{% endblock content %}
+</html>
