@@ -259,6 +259,7 @@ $(".remove_menu_quantity").on("click",function(e){
 
 $('#updateQuantity').on('click','.add_inventory_save',function(e){
         e.preventDefault();
+        $("#updateQuantity .add_inventory_save").prop('disabled', true);
         url = $("#updateQuantity #add_inventory").attr("action")
         type_form=$("#updateQuantity #add_inventory").attr("method")
         data_ser=$("#updateQuantity #add_inventory").serialize()
@@ -277,6 +278,7 @@ $('#updateQuantity').on('click','.add_inventory_save',function(e){
 
     $('#removeQuantity').on('click','.rem_inventory_save',function(e){
         e.preventDefault();
+        $("#removeQuantity .rem_inventory_save").prop('disabled', true);
         var des=$("#description").val().trim()
         if (!des){
          $('.errormsg').css('display','contents');
