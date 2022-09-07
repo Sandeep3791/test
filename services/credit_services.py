@@ -36,6 +36,7 @@ def get_credits_txn(customer_id, dues, db: Session):
     if dues == True:
         user_data = db.query(credit_models.CreditTransactionsLog).filter(credit_models.CreditTransactionsLog.customer_id == customer_id,credit_models.CreditTransactionsLog.payment_status == False).order_by(desc(credit_models.CreditTransactionsLog.id)).all()
         txn_list = []
+        check_blacklist_ref_id = []
         if user_data:
             for data in user_data:
                 paid_credit_data = db.query(credit_models.CreditTransactionsLog).filter(
@@ -68,7 +69,8 @@ def get_credits_txn(customer_id, dues, db: Session):
                     if not paid_credit_data:
                         check_reject_payment = db.query(credit_models.CreditPaymentReference).filter(credit_models.CreditPaymentReference.id == data.reference_id).first()
                         if check_reject_payment:
-                            if check_reject_payment.payment_status_id == 26:
+                            if check_reject_payment.payment_status_id == 26 and data.reference_id not in check_blacklist_ref_id:
+                                check_blacklist_ref_id.append(data.reference_id)
                                 payment_rejection = True
                                 pending = False
                                 present_date = datetime.now()
@@ -90,7 +92,8 @@ def get_credits_txn(customer_id, dues, db: Session):
                                     common_services.utc_to_tz(check_reject_payment.created_at)))
                                 txn_list.append(credit_data)
                             
-                            elif check_reject_payment.payment_status_id == 27:
+                            elif check_reject_payment.payment_status_id == 27 and data.reference_id not in check_blacklist_ref_id:
+                                check_blacklist_ref_id.append(data.reference_id)
                                 payment_rejection = False
                                 pending = True
                                 present_date = datetime.now()
@@ -116,8 +119,9 @@ def get_credits_txn(customer_id, dues, db: Session):
                                 credit_data = credit_schemas.ResponseCustomerCreditsTxn(id=data.id, credit_amount = total_credit_amount, available=data.available, credit_date=str(
                                 common_services.utc_to_tz(data.credit_date)), payment_status=data.payment_status, order_ref_no=orders_list, valid_date=is_due, is_refund=data.is_refund, bank_pending=pending, bank_reject = payment_rejection, transaction_ref_id = check_reject_payment.id, transaction_ref_no = check_reject_payment.reference_no,transaction_creation_date = str(
                                     common_services.utc_to_tz(check_reject_payment.created_at)), bank_details = bank_docs)
+
                                 txn_list.append(credit_data)
-            txn_list = list({v.transaction_ref_id: v if v.transaction_ref_id != None else v for v in txn_list }.values())
+
             response = credit_schemas.ResponseCustomerCreditsTxnFinal(
                 status=status.HTTP_200_OK, message="User Credit Dues!", data=txn_list)
             return response
@@ -135,6 +139,9 @@ def get_credits_txn(customer_id, dues, db: Session):
         if user_data:
             for data in user_data:
                 bank_paid_credit = db.query(credit_models.CreditTransactionsLog).filter(credit_models.CreditTransactionsLog.id == data.id, credit_models.CreditTransactionsLog.payment_status == False,credit_models.CreditTransactionsLog.reference_id == None).first()
+
+                cancelled_paid_credit = db.query(credit_models.CreditTransactionsLog).filter(credit_models.CreditTransactionsLog.id == data.id, credit_models.CreditTransactionsLog.payment_status == False,credit_models.CreditTransactionsLog.reference_id != None).first()
+
                 if bank_paid_credit:
                     user_order_data = db.query(order_models.Orders).filter(
                         order_models.Orders.id == data.order_id).first()
@@ -150,6 +157,27 @@ def get_credits_txn(customer_id, dues, db: Session):
                     credit_data = credit_schemas.ResponseCustomerCreditsTxn(id=data.id, credit_amount=data.credit_amount, available=data.available, credit_date=str(
                         common_services.utc_to_tz(data.credit_date)), payment_status=data.payment_status, order_ref_no=[credit_schemas.OrdersRefNumber(order_ref_no = user_order_data.ref_number, order_amount = user_order_data.grand_total, order_due_time = str(common_services.utc_to_tz(data.due_date)))], valid_date=is_due, paid_date=str(common_services.utc_to_tz(data.paid_date)),
                         paid_amount=data.paid_amount, paid_credit_id=data.credit_id, is_refund=data.is_refund)
+
+                    txn_list.append(credit_data)
+
+                if cancelled_paid_credit:
+                    payment_status = db.query(credit_models.CreditPaymentReference).filter(credit_models.CreditPaymentReference.id == cancelled_paid_credit.reference_id).first()
+                    if payment_status and payment_status.payment_status_id == 8:
+                        user_order_data = db.query(order_models.Orders).filter(
+                        order_models.Orders.id == data.order_id).first()
+                    present_date = datetime.now()
+                    if data.due_date:
+                        if present_date > data.due_date:
+                            is_due = False
+                        else:
+                            is_due = True
+                    else:
+                        is_due = True
+
+                    credit_data = credit_schemas.ResponseCustomerCreditsTxn(id=data.id, credit_amount=data.credit_amount, available=data.available, credit_date=str(
+                        common_services.utc_to_tz(data.credit_date)), payment_status=data.payment_status, order_ref_no=[credit_schemas.OrdersRefNumber(order_ref_no = user_order_data.ref_number, order_amount = user_order_data.grand_total, order_due_time = str(common_services.utc_to_tz(data.due_date)))], valid_date=is_due, paid_date=str(common_services.utc_to_tz(data.paid_date)),
+                        paid_amount=data.paid_amount, paid_credit_id=data.credit_id, is_refund=data.is_refund, transaction_ref_id = payment_status.id, transaction_ref_no = payment_status.reference_no, transaction_creation_date = str(
+                        common_services.utc_to_tz(payment_status.created_at)))
 
                     txn_list.append(credit_data)
 
@@ -191,6 +219,12 @@ def get_credits_txn(customer_id, dues, db: Session):
             response = credit_schemas.ResponseCustomerCreditsTxnFinal(
                 status=status.HTTP_200_OK, message="User Credit Transactions!", data=txn_list)
             return response
+
+        elif txn_list:
+            response = credit_schemas.ResponseCustomerCreditsTxnFinal(
+                status=status.HTTP_200_OK, message="User Credit Transactions!", data=txn_list)
+            return response
+
         else:
             common_msg = user_schemas.ResponseCommonMessage(
                 status=status.HTTP_200_OK, message="No user credits transactions found!")
