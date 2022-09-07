@@ -84,7 +84,7 @@ def get_credits_txn(customer_id, dues, db: Session):
                                     common_services.utc_to_tz(check_reject_payment.created_at)))
                                 txn_list.append(credit_data)
                             
-                            elif check_reject_payment.payment_status_id == 6:
+                            elif check_reject_payment.payment_status_id == 27:
                                 payment_rejection = False
                                 pending = True
                                 present_date = datetime.now()
@@ -350,7 +350,7 @@ def upload_credit_bank_payment_image(customer_id, reference_no, image, db: Sessi
         file_object.close()
 
     reference_number_obj.bank_payment_file = db_path
-    reference_number_obj.payment_status_id = 6
+    reference_number_obj.payment_status_id = 27
     db.merge(reference_number_obj)
     db.commit()
     prfl_path = user_schemas.UploadProfiledata(path=db_path)
