@@ -160,7 +160,7 @@ def get_credits_txn(customer_id, dues, db: Session):
                     else:
                         is_due = True
 
-                    credit_data = credit_schemas.ResponseCustomerCreditsTxn(id=data.id, credit_amount=data.credit_amount, available=data.available, credit_date=str(
+                    credit_data = credit_schemas.ResponseCustomerCreditsTxn(id=data.id, credit_amount=user_order_data.grand_total, available=data.available, credit_date=str(
                         common_services.utc_to_tz(data.credit_date)), payment_status=data.payment_status, order_ref_no=[credit_schemas.OrdersRefNumber(order_ref_no = user_order_data.ref_number, order_amount = user_order_data.grand_total, order_due_time = str(common_services.utc_to_tz(data.due_date)))], valid_date=is_due, paid_date=str(common_services.utc_to_tz(data.paid_date)),
                         paid_amount=data.paid_amount, paid_credit_id=data.credit_id, is_refund=data.is_refund)
 
@@ -180,7 +180,7 @@ def get_credits_txn(customer_id, dues, db: Session):
                         else:
                             is_due = True
 
-                        credit_data = credit_schemas.ResponseCustomerCreditsTxn(id=data.id, credit_amount=data.credit_amount, available=data.available, credit_date=str(
+                        credit_data = credit_schemas.ResponseCustomerCreditsTxn(id=data.id, credit_amount=user_order_data.grand_total, available=data.available, credit_date=str(
                             common_services.utc_to_tz(data.credit_date)), payment_status=data.payment_status, order_ref_no=[credit_schemas.OrdersRefNumber(order_ref_no = user_order_data.ref_number, order_amount = user_order_data.grand_total, order_due_time = str(common_services.utc_to_tz(data.due_date)))], valid_date=is_due, paid_date=str(common_services.utc_to_tz(data.paid_date)),
                             paid_amount=data.paid_amount, paid_credit_id=data.credit_id, is_refund=data.is_refund, transaction_ref_id = payment_status.id, transaction_ref_no = payment_status.reference_no, transaction_creation_date = str(
                             common_services.utc_to_tz(payment_status.created_at)))
