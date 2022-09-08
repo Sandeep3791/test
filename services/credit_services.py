@@ -203,6 +203,7 @@ def get_credits_txn(customer_id, dues, db: Session):
                     total_credit_amount = 0
                     for data_var in paid_data:
                         present_date = datetime.now()
+
                         if data_var.due_date:
                             if present_date > data_var.due_date:
                                 is_due = False
@@ -218,7 +219,7 @@ def get_credits_txn(customer_id, dues, db: Session):
 
                     credit_data = credit_schemas.ResponseCustomerCreditsTxn(id=data_var.id, credit_amount = total_credit_amount, available=data_var.available, credit_date=str(
                     common_services.utc_to_tz(data_var.credit_date)), payment_status=data_var.payment_status, order_ref_no=orders_list, valid_date=is_due, is_refund=data_var.is_refund, transaction_ref_id = payment_ref_details.id, transaction_ref_no = payment_ref_details.reference_no, transaction_creation_date = str(
-                        common_services.utc_to_tz(payment_ref_details.created_at)))
+                        common_services.utc_to_tz(payment_ref_details.created_at)), paid_date = str(common_services.utc_to_tz(data_var.paid_date)), paid_amount = data_var.paid_amount)
                     txn_list.append(credit_data)
 
             txn_list = sorted(txn_list, key=lambda d: d.id,  reverse=True) 
