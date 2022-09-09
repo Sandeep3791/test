@@ -84,6 +84,7 @@
                                             <th scope="col">#</th>
                                             <th scope="col">SKU</th>
                                             <th scope="col">Product</th>
+                                            <th scope="col">Brand</th>
                                             <th scope="col">Qty</th>
                                             <th scope="col">Price</th>
                                             {% if polist.0.status ==  'waiting for approval' %}
@@ -99,7 +100,8 @@
                                                 <tr>
                                                     <th scope="row">{{forloop.counter}}</th> 
                                                     <td>{{i.product_name.SKU}}</td>
-                                                    <td>{{i.product_name|truncatechars:9 }}</td>
+                                                    <td>{{i.product_name.name }}</td>
+                                                    <td>{{i.product_name.mfr_name }}</td>
                                                     <td>{{i.product_qty}}</td>
                                                     <td>SAR {{i.supplier_product.price}}</td>
                                                     {% if i.status == 'waiting for approval' %}
