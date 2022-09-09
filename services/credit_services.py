@@ -534,7 +534,7 @@ def pay_overdue_credits_ByBank(request, db: Session):
             exist_credit_info = db.query(credit_models.CreditTransactionsLog).filter(
                 credit_models.CreditTransactionsLog.credit_id == i).first()
             if exist_credit_info:
-                check_reference_status = db.query(credit_models.CreditPaymentReference).filter(credit_models.CreditPaymentReference.id == exist_credit_info).first()
+                check_reference_status = db.query(credit_models.CreditPaymentReference).filter(credit_models.CreditPaymentReference.id == exist_credit_info.reference_id).first()
                 if check_reference_status and check_reference_status.payment_status_id == 8:
 
                     credit_info = db.query(credit_models.CreditTransactionsLog).filter(
