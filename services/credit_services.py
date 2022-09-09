@@ -519,7 +519,6 @@ def check_user_credit(customer_id, db: Session):
         return response
 
 
-
 def pay_overdue_credits_ByBank(request, db: Session):
     reference_number = random.randint(1000, 999999)
     same_credit_ref_no = db.query(credit_models.CreditPaymentReference).filter(
@@ -534,33 +533,36 @@ def pay_overdue_credits_ByBank(request, db: Session):
         for i in request.credit_dues_ids:
             exist_credit_info = db.query(credit_models.CreditTransactionsLog).filter(
                 credit_models.CreditTransactionsLog.credit_id == i).first()
-            if not exist_credit_info:
-                credit_info = db.query(credit_models.CreditTransactionsLog).filter(
-                    credit_models.CreditTransactionsLog.id == i, credit_models.CreditTransactionsLog.payment_status == False).first()
-                present_date = common_services.get_time()
-                amount_to_paid = credit_info.credit_amount
-                available_limit = credit_info.available
-                exist_credit_date = credit_info.credit_date
-                exist_due_date = credit_info.due_date
+            if exist_credit_info:
+                check_reference_status = db.query(credit_models.CreditPaymentReference).filter(credit_models.CreditPaymentReference.id == exist_credit_info).first()
+                if check_reference_status and check_reference_status.payment_status_id == 8:
 
-                if credit_info:
-                    if float(request.amount) >= float(amount_to_paid):
-                        new_available_limit = available_limit + amount_to_paid
-                        paid_data = credit_models.CreditTransactionsLog(credit_date=exist_credit_date, due_date=exist_due_date, credit_id=i, paid_date=present_date,
-                                                                        paid_amount=amount_to_paid, payment_status=False, order_id=credit_info.order_id, customer_id=request.customer_id, 
-                                                                        available=new_available_limit, reference_id=reference_number_obj.id)
-                        db.merge(paid_data)
-                        db.commit()
-                        user_Credit_data = db.query(credit_models.CreditManagement).filter(
-                            credit_models.CreditManagement.customer_id == request.customer_id).first()
-                        available_amt = float(user_Credit_data.available)
-                        user_Credit_data.available = round(
-                            available_amt + float(amount_to_paid), 2)
-                        db.merge(user_Credit_data)
-                        db.commit()
+                    credit_info = db.query(credit_models.CreditTransactionsLog).filter(
+                        credit_models.CreditTransactionsLog.id == i, credit_models.CreditTransactionsLog.payment_status == False).first()
+                    present_date = common_services.get_time()
+                    amount_to_paid = credit_info.credit_amount
+                    available_limit = credit_info.available
+                    exist_credit_date = credit_info.credit_date
+                    exist_due_date = credit_info.due_date
+
+                    if credit_info:
+                        if float(request.amount) >= float(amount_to_paid):
+                            new_available_limit = available_limit + amount_to_paid
+                            paid_data = credit_models.CreditTransactionsLog(credit_date=exist_credit_date, due_date=exist_due_date, credit_id=i, paid_date=present_date,
+                                                                            paid_amount=amount_to_paid, payment_status=False, order_id=credit_info.order_id, customer_id=request.customer_id, 
+                                                                            available=new_available_limit, reference_id=reference_number_obj.id)
+                            db.merge(paid_data)
+                            db.commit()
+                            user_Credit_data = db.query(credit_models.CreditManagement).filter(
+                                credit_models.CreditManagement.customer_id == request.customer_id).first()
+                            available_amt = float(user_Credit_data.available)
+                            user_Credit_data.available = round(
+                                available_amt + float(amount_to_paid), 2)
+                            db.merge(user_Credit_data)
+                            db.commit()
             else:
                 response = user_schemas.ResponseCommonMessage(
-                    status=status.HTTP_400_BAD_REQUEST, message="Dues for this ids are already paid!!")
+                    status=status.HTTP_400_BAD_REQUEST, message="Dues for this ids are not available !!")
                 return response
         data = credit_schemas.CreditDuesResponse(total_amount=request.amount, date=str(
             common_services.utc_to_tz(present_date)), customer_id=request.customer_id,reference_no=reference_number)
