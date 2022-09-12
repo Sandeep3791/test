@@ -63,7 +63,6 @@
                         <th scope="col">Order No.</th>
                         <th scope="col">Available</th>
                         <th scope="col">Paid Amount</th>
-                        <th scope="col">Credit Date</th>
                         <th scope="col">Due Date</th>
                         <th scope="col">Paid Date</th>
                     </tr>
@@ -79,11 +78,7 @@
                             <span class="font-weight-bold text-success">+ {{item.paid_amount|floatformat:2}}</span>
                             {% endif %}
                         </td>
-                        <td>
-                            {% if item.credit_date %}
-                            {{item.credit_date|date:"d M Y"}}
-                            {% endif %}
-                        </td>
+                        
                         <td>
                             {% if item.due_date %}
                             {{item.due_date|date:"d M Y"}}
@@ -165,7 +160,7 @@
                                 <span>{{payment_ref.payment_type.name}}</span>
                                 <span class="payment_status {% if payment_ref.payment_status.id == 27 %} bg-warning {% elif payment_ref.payment_status.id == 26 %}bg-danger{% else %}bg-success {% endif %}  ms-2">{{payment_ref.payment_status.name}}</span>
                             </div>
-                            {% if parms.credits.credit_transaction_approve %}
+                            {% if perms.credits.credit_transaction_approve %}
                             {% if payment_ref.payment_type.id == 12 %}
                             <p style="padding-top:10px;margin-bottom:-12px">
                                 <a href="{{DOCUMENT_URL}}customer_banks/{{payment_ref.bank_payment_file}}" target="_blank" class="small">Download Bank transfer Document</a>
