@@ -35,7 +35,16 @@
         </nav>
     </div>
 </div>
+{% if messages %}
+<div class="alert alert-warning">
+    {% for message in messages %}
+    {{ message }} 
+    {% endfor %}
+  
+</div>
 
+</ul>
+{% endif %}
 <!--============================================-->
 <div class="row dashboard_content_inner">
     <div class="col-12 col-xl-8">

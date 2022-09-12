@@ -112,17 +112,25 @@ class OrderExportView(View):
     @method_decorator(login_required(login_url='wayrem_admin:root'))
     def get(self, request, **kwargs):
         qs = Orders.objects.annotate(OrderReference=F('ref_number'), OrderDate=F('order_date'), Customer=F('customer__first_name'), Mobile=F('order_phone'), Status=F(
-            'status__name'), Items=Value('', output_field=CharField()), Total=F('grand_total')).values('id', 'OrderReference', 'OrderDate', 'Customer', 'Mobile', 'Status', 'Items', 'Total')
+            'status__name'), Items=Value('', output_field=CharField()), Total=F('grand_total'), PaymentStatus=Value('', output_field=CharField())).values('id', 'OrderReference', 'OrderDate', 'Customer', 'Mobile', 'Status', 'Items', 'Total','PaymentStatus')
         filtered_list = OrderFilter(self.request.GET, queryset=qs)
         query_set = filtered_list.qs
         for qs_field in query_set:
             qs_field['Items'] = OrderDetails.objects.filter(
                 order=qs_field['id']).count()
             qs_field['OrderDate'] = qs_field['OrderDate'].strftime("%d %b %Y")
+            qs_field['PaymentStatus'] = self.getpaymentstatus(qs_field['id'])
             del qs_field['id']
         response = self.genrate_excel(query_set)
         return response
-
+    
+    def getpaymentstatus(self,order_id):
+        ot=OrderTransactions.objects.filter(order_id=order_id).first()
+        if ot is None:
+            return ""
+        else:
+            print(ot.payment_status)
+            return ot.payment_status.name
     def genrate_excel(self, query_set):
         # Create an in-memory output file for the new workbook.
         output = io.BytesIO()
@@ -585,6 +593,43 @@ class OrderCancelCloneOrder(View):
         OrderTransactions.objects.filter(order=order_id).update(payment_status=payment_status)
         return 1
 
+    def order_inventory_process(self, order_id):
+        # When we place order inventory process to shipping
+        from wayrem_admin.models.orders import Orders, OrderDetails
+        orders = Orders.objects.filter(id=order_id).first()
+        order_status = orders.status.id
+        
+        order_details = OrderDetails.objects.filter(order=order_id)
+        if (order_status == ORDER_STATUS_RECEIVED) or (order_status == ORDER_STATUS_CANCELLED)  or (order_status == ORDER_CANCELLED) :
+            for order_detail in order_details:
+                inventory_dict = {'inventory_type_id': 3, 'quantity': order_detail.quantity, 'product_id': order_detail.product.id,
+                                  'warehouse_id': order_detail.product.warehouse.id, 'po_id': None, 'supplier_id': None, 'order_id': order_id, 'order_status': order_status}
+                if (order_status == ORDER_STATUS_RECEIVED):
+                    inventory_dict['inventory_type_id'] = 3
+                    inventory_dict['order_status'] = INVENTORY_ORDER_STATUS_ORDERED
+                else:
+                    inventory_dict['inventory_type_id'] = 4
+                    inventory_dict['order_status'] = INVENTORY_ORDER_STATUS_CANCELLED
+                self.insert_inventory(inventory_dict)
+        return 1
+
+    def insert_inventory(self, inventory_dict):
+        try:
+            if ('product_id' in inventory_dict) and ('quantity' in inventory_dict) and ('inventory_type_id' in inventory_dict) and ('warehouse_id' in inventory_dict):
+                # inventory_dict={'inventory_type_id':1,'quantity':2,'product_id':1,'warehouse_id':1,'po_id':None,'supplier_id':None,'order_id':None,'order_status':None}
+                inventory_create = Inventory(**inventory_dict)
+                inventory_create.save()
+                product_id = inventory_dict['product_id']
+                self.update_product_quantity(product_id)
+                return True
+            else:
+                print("missing value")
+        except Exception as e:
+            print(e)
+            return False
+
+
+
 class CloneOrderView(DetailView):
     model = Orders
     template_name = "orders/orderclone/order_clone.html"
@@ -627,6 +672,7 @@ class InsertOrderdetail(View):
         od = OrderDetails(**od_det_dic)
         od.save()
         OrderLib().update_order(id)
+        OrderLib().order_partial_payment(id)
         return redirect('wayrem_admin:cloneorder', pk=id)
 
 class AutoCompleteModelView(View):
@@ -681,12 +727,32 @@ class Clonecreateorder(View):
         order_type_status=StatusMaster.objects.get(id=ORDER_TYPE_ONLINE_CUSTOMERS)
 
         order_dict={'order_type_id':order_type_status.id,'status_id':order_status_instance.id,'order_date':datetime.now()}
-        order_details.update(order_dict)
-        Orders.objects.filter(id=id).update(**order_details)
-        OrderDeliveryLogs.objects.filter(order_id =id,order_status_id=1).update(log_date=datetime.now())
         
-        if order_transaction['payment_mode_id'] != COD:
-            OrderLib().credit_to_wallet(order_details,order_transaction)
+        is_out_stock=self.check_product_quantity(id)
+        if is_out_stock:
+            return HttpResponseRedirect("/orders/clone-order/"+str(id))
+        else:
+            order_details.update(order_dict)
+            Orders.objects.filter(id=id).update(**order_details)
+            OrderDeliveryLogs.objects.filter(order_id =id,order_status_id=1).update(log_date=datetime.now())
+            if order_transaction['payment_mode_id'] != COD:
+                OrderLib().credit_to_wallet(order_details,order_transaction)
+            return HttpResponseRedirect("/orders/"+str(id))
 
-        return HttpResponseRedirect("/orders/"+str(id))
-        
+    def check_product_quantity(self,order_id):
+        orderdetail=OrderDetails.objects.filter(order_id=order_id)
+        out_of_stock=0
+        outpro=""
+        for od in orderdetail:
+            if int(od.quantity) <= int(od.product.quantity):
+                pass
+            else:
+                out_of_stock=1
+                outpro +=od.product_name +"or "
+        if out_of_stock:
+            outpro = (outpro[:-3])
+            message="Please check the available quanity for the product " + outpro
+            messages.success(self.request, message)
+        return out_of_stock
+
+            
