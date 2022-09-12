@@ -163,39 +163,26 @@ def get_credits_txn(customer_id, dues, db: Session):
                 txn_list.append(credit_data)
 
         if transacted_data:
-            distinct_ref_id = []
             for trans_var in transacted_data:
-                if trans_var.reference_id not in distinct_ref_id:
-                    distinct_ref_id.append(trans_var.reference_id)
 
-            for ref_id_var in distinct_ref_id:
-                paid_data = db.query(credit_models.CreditTransactionsLog).filter(credit_models.CreditTransactionsLog.customer_id, credit_models.CreditTransactionsLog.reference_id == ref_id_var).all()
+                # payment_ref_details = db.query(credit_models.CreditPaymentReference).filter(credit_models.CreditPaymentReference.id == trans_var.reference_id).first()
 
-                payment_ref_details = db.query(credit_models.CreditPaymentReference).filter(credit_models.CreditPaymentReference.id == ref_id_var).first()
+                present_date = datetime.now()
 
-                if paid_data:
-                    orders_list = []
-                    total_credit_amount = 0
-                    for data_var in paid_data:
-                        present_date = datetime.now()
+                if trans_var.due_date:
+                    if present_date > trans_var.due_date:
+                        is_due = False
+                    else:
+                        is_due = True
+                else:
+                    is_due = True
+                order_data = db.query(order_models.Orders).filter(
+                            order_models.Orders.id == trans_var.order_id).first()
 
-                        if data_var.due_date:
-                            if present_date > data_var.due_date:
-                                is_due = False
-                            else:
-                                is_due = True
-                        else:
-                            is_due = True
-                        order_data = db.query(order_models.Orders).filter(
-                                    order_models.Orders.id == data_var.order_id).first()
-                        total_credit_amount += order_data.grand_total
-                        orders_list.append(credit_schemas.OrdersRefNumber(order_ref_no = order_data.ref_number, order_amount = order_data.grand_total, order_due_time = str(
-                        common_services.utc_to_tz(data_var.due_date))))
-
-                    credit_data = credit_schemas.ResponseCustomerCreditsTxn(id=data_var.id, credit_amount = total_credit_amount, available=data_var.available, credit_date=str(
-                    common_services.utc_to_tz(data_var.credit_date)), payment_status=data_var.payment_status, order_ref_no=orders_list, valid_date=is_due, is_refund=data_var.is_refund, transaction_ref_id = payment_ref_details.id, transaction_ref_no = payment_ref_details.reference_no, transaction_creation_date = str(
-                        common_services.utc_to_tz(payment_ref_details.created_at)), paid_date = str(common_services.utc_to_tz(data_var.paid_date)), paid_amount = data_var.paid_amount)
-                    txn_list.append(credit_data)
+                credit_data = credit_schemas.ResponseCustomerCreditsTxn(id=trans_var.id, credit_amount = order_data.grand_total, available=trans_var.available, credit_date=str(
+                common_services.utc_to_tz(trans_var.credit_date)), payment_status=trans_var.payment_status, order_ref_no=[credit_schemas.OrdersRefNumber(order_ref_no = order_data.ref_number, order_amount = order_data.grand_total, order_due_time = str(
+                common_services.utc_to_tz(trans_var.due_date)))], valid_date=is_due, is_refund=trans_var.is_refund, paid_date = str(common_services.utc_to_tz(trans_var.paid_date)), paid_amount = trans_var.paid_amount)
+                txn_list.append(credit_data)
 
             txn_list = sorted(txn_list, key=lambda d: d.id,  reverse=True) 
             response = credit_schemas.ResponseCustomerCreditsTxnFinal(
@@ -348,7 +335,7 @@ def pay_overdue_credits(request, db: Session):
                     if float(request.amount) >= float(amount_to_paid):
                         new_available_limit = available_limit + amount_to_paid
                         paid_data = credit_models.CreditTransactionsLog(credit_date=exist_credit_date, due_date=exist_due_date, credit_id=i, paid_date=present_date,
-                                                                        paid_amount=amount_to_paid, payment_status=False, order_id=credit_info.order_id, customer_id=request.customer_id, 
+                                                                        paid_amount=amount_to_paid, payment_status=True, order_id=credit_info.order_id, customer_id=request.customer_id, 
                                                                         available=new_available_limit, reference_id=reference_number_obj.id)
                         db.merge(paid_data)
                         db.commit()
@@ -364,6 +351,7 @@ def pay_overdue_credits(request, db: Session):
                     status=status.HTTP_400_BAD_REQUEST, message="Dues for this ids are not available !!")
                 return response
         change_payment_status_id = db.query(credit_models.CreditPaymentReference).filter(credit_models.CreditPaymentReference.reference_no == reference_number).first()
+
         if change_payment_status_id:
             change_payment_status_id.payment_status_id = 7
             db.merge(change_payment_status_id)
