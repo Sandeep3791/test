@@ -194,7 +194,7 @@
                     <div class="card-body">
                         <div class="d-flex align-items-center justify-content-between border-bottom border-light pb-3">
                             <div>
-                                <h4 class="text-center mb-0"><span class="fas fa-file-invoice-dollar"></span> Total Transactions</h4>
+                                <h4 class="text-center mb-0"><span class="fas fa-file-invoice-dollar"></span> Total Transactions : {{list|length}}</h4>
                             </div>
                         </div>
                         <div class="d-flex align-items-center justify-content-between border-bottom border-light py-3">
@@ -242,7 +242,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h2 class="h6 modal-title">Terms of Service</h2>
-                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close close" data-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
                 <p>Are you sure you want to reject?</p>
@@ -254,7 +254,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" id="rejectbtn" class="btn btn-secondary">Reject</button>
-                <button type="button" class="btn btn-link text-gray ml-auto" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-link text-gray ml-auto close" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
@@ -293,6 +293,10 @@
                     }
                 })
     });
+    $(".close").on("click",function(e){
+        e.preventDefault();
+        $("#modal-default-reject").modal('toggle');
+    })
 
 
 </script>

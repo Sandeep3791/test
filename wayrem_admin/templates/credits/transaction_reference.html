@@ -76,6 +76,7 @@
                 <tr>
                     <th scope="col">Reference No.</th>
                     <th scope="col">Customer</th>
+                    <th scope="col">Total Amount</th>
                     <th scope="col">Paid Date</th>
                     <th scope="col">Payment Type</th>
                     <th scope="col">Status</th>
@@ -87,6 +88,7 @@
                 <tr>
                     <td><a href="{% url 'wayrem_admin:paid_credit_view' item.reference_no %}"> #{{item.reference_no}}</a></td>
                     <td>{{item.customer.first_name}} {{item.customer.last_name}}</td>
+                    <td>{{item.id|credit_total_paid_amount|floatformat:2}}</td>
                     <td>
                         {% if item.created_at %}
                         {{item.created_at|date:"d M Y"}}

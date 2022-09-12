@@ -1,6 +1,7 @@
 from typing import Set
 from django import template
-from wayrem_admin.models import Settings
+from django.db.models import Sum
+from wayrem_admin.models import Settings, CreditTransactionLogs
 register = template.Library()
 
 
@@ -41,3 +42,13 @@ def image_tag(value, *args, **kwargs):
     else:
         x = False
         return x
+
+
+@register.filter(name="credit_total_paid_amount")
+def total_paid_amount(id, *args, **kwargs):
+    if id:
+        return CreditTransactionLogs.objects.filter(
+            reference_id=id).aggregate(
+            total=Sum('paid_amount'))['total'] or 0
+    else:
+        return 0
