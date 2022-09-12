@@ -202,7 +202,7 @@
                                 <h6 class="mb-0">Total Amount</h6>
                             </div>
                             <div>
-                                <span class="font-weight-bold text-success">SAR {{total_amount}}</span>
+                                <span class="font-weight-bold text-success">SAR {{total_amount|floatformat:2 }}</span>
                             </div>
                         </div>
                     </div>
@@ -237,7 +237,7 @@
 </div>
 
 <!--Reject Modal-->
-<div class="modal fade" id="modal-default-reject" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
+<div class="modal fade" id="modal-default-reject" tabindex="-1" aria-labelledby="modal-default-reject" style="display: none;" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">

@@ -364,12 +364,18 @@ class PaidCreditTransactionView(LoginPermissionCheckMixin, ListView):
         if status.id == 7:
             transactions = CreditTransactionLogs.objects.filter(
                 reference=payment_ref)
+            total_paid_amount = 0
             for trx in transactions:
                 trx.payment_status = True
                 trx.available += trx.paid_amount
                 trx.available = round(trx.available, 2)
+                total_paid_amount += trx.paid_amount
                 trx.save()
             payment_ref.is_verified = True
+            update_limit = CreditManagement.objects.get(
+                customer=payment_ref.customer)
+            update_limit.available += total_paid_amount
+            update_limit.save()
         payment_ref.payment_status = status
         payment_ref.save()
         return HttpResponse("Successfully Updated")
