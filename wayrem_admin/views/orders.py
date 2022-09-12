@@ -737,6 +737,7 @@ class Clonecreateorder(View):
             OrderDeliveryLogs.objects.filter(order_id =id,order_status_id=1).update(log_date=datetime.now())
             if order_transaction['payment_mode_id'] != COD:
                 OrderLib().credit_to_wallet(order_details,order_transaction)
+            self.order_inventory_process(id)
             return HttpResponseRedirect("/orders/"+str(id))
 
     def check_product_quantity(self,order_id):
@@ -754,5 +755,35 @@ class Clonecreateorder(View):
             message="Please check the available quanity for the product " + outpro
             messages.success(self.request, message)
         return out_of_stock
+    
+    def order_inventory_process(self, order_id):
+        # When we place order inventory process to shipping
+        from wayrem_admin.models.orders import Orders, OrderDetails
+        orders = Orders.objects.filter(id=order_id).first()
+        order_status = orders.status.id
+        
+        order_details = OrderDetails.objects.filter(order=order_id)
+        for order_detail in order_details:
+            inventory_dict = {'inventory_type_id': 3, 'quantity': order_detail.quantity, 'product_id': order_detail.product.id,
+                                'warehouse_id': order_detail.product.warehouse.id, 'po_id': None, 'supplier_id': None, 'order_id': order_id, 'order_status': order_status}
+            inventory_dict['inventory_type_id'] = 3
+            inventory_dict['order_status'] = INVENTORY_ORDER_STATUS_ORDERED
+            self.insert_inventory(inventory_dict)
+        return 1
+
+    def insert_inventory(self, inventory_dict):
+        try:
+            if ('product_id' in inventory_dict) and ('quantity' in inventory_dict) and ('inventory_type_id' in inventory_dict) and ('warehouse_id' in inventory_dict):
+                # inventory_dict={'inventory_type_id':1,'quantity':2,'product_id':1,'warehouse_id':1,'po_id':None,'supplier_id':None,'order_id':None,'order_status':None}
+                inventory_create = Inventory(**inventory_dict)
+                inventory_create.save()
+                product_id = inventory_dict['product_id']
+                self.update_product_quantity(product_id)
+                return True
+            else:
+                print("missing value")
+        except Exception as e:
+            print(e)
+            return False
 
             
