@@ -366,9 +366,9 @@ class ProductAdvanceFilterForm(forms.ModelForm):
     supplier = forms.ChoiceField(required=False, widget=forms.Select(
         attrs={'class': 'form-control form-control-select'}))
     name = forms.CharField(widget=forms.TextInput(
-        attrs={'class': 'form-control p-2'}), required=False)
+        attrs={'class': 'form-control p-2', 'placeholder': 'Product name'}), required=False)
     SKU = forms.CharField(widget=forms.TextInput(
-        attrs={'class': 'form-control p-2'}), required=False)
+        attrs={'class': 'form-control p-2', 'placeholder': 'SKU'}), required=False)
     date_of_mfg = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control p-2'}), required=False)
     date_of_exp = forms.CharField(widget=forms.TextInput(

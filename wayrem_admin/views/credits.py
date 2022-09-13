@@ -1,10 +1,11 @@
 import threading
+from django.db.models import Q
 from django.db.models import Sum
 from django.views.generic.edit import CreateView
 from matplotlib.style import available
 from requests import request
 from wayrem_admin.forms.customers import CreditsAssignForm
-from wayrem_admin.models import PaymentTransaction, CreditManagement
+from wayrem_admin.models import PaymentTransaction, CreditManagement, CreditPaymentReference
 from email import message
 import imp
 from urllib import response
@@ -16,7 +17,7 @@ import json
 from wayrem_admin.forecasts.firebase_notify import FirebaseLibrary
 from wayrem_admin.models import CreditSettings
 from wayrem_admin.models.customers import CustomerNotification
-from wayrem_admin.models.orders import Orders
+from wayrem_admin.models.orders import Orders, StatusMaster
 from wayrem_admin.services import send_email
 from wayrem_admin.forms import CustomerSearchFilter, CustomerEmailUpdateForm, CreditsForm, CreditsSearchFilter
 from django.urls import reverse_lazy
@@ -49,6 +50,21 @@ class CreditCreate(LoginPermissionCheckMixin, CreateView):
     @method_decorator(login_required(login_url='wayrem_admin:root'))
     def dispatch(self, *args, **kwargs):
         return super(CreditCreate, self).dispatch(*args, **kwargs)
+
+
+class DeleteCredit(LoginPermissionCheckMixin, View):
+    permission_required = 'credits.settings_delete'
+
+    def post(self, request):
+        creditId = request.POST.get('creditId')
+        credit = CreditSettings.objects.get(id=creditId)
+        check_credit = CreditManagement.objects.filter(credit_rule=credit)
+        if check_credit:
+            messages.error(request, "Credit Rule already assigned!")
+        else:
+            credit.delete()
+            messages.success(request, "Credit Rule deleted!")
+        return redirect('wayrem_admin:credits_list')
 
 
 class CreditsList(LoginPermissionCheckMixin, ListView):
@@ -140,6 +156,8 @@ class CreditAssign(LoginPermissionCheckMixin, View):
 
 @permission_required('credits.assign_customer', raise_exception=True)
 def creditAssign(request, id=None):
+    data = request.POST.copy()
+    data['id'] = id
     try:
         existing_credit_check = CreditManagement.objects.get(
             customer_id=id)
@@ -147,14 +165,13 @@ def creditAssign(request, id=None):
     except:
         existing_credit = None
     if request.method == "POST":
-        form = CreditsAssignForm(request.POST)
+        form = CreditsAssignForm(data)
         if form.is_valid():
             credit = form.cleaned_data.get("credit")
             available_credit = CreditSettings.objects.get(id=credit)
             if existing_credit:
                 existing_credit.credit_rule_id = available_credit
-                existing_credit.used = 0
-                existing_credit.available = available_credit.credit_amount
+                existing_credit.available = available_credit.credit_amount - existing_credit.used
                 existing_credit.save()
             else:
                 assign_credit = CreditManagement(
@@ -185,6 +202,8 @@ class CustomerCreditTransactionLogs(LoginPermissionCheckMixin, ListView):
     def get_queryset(self):
         qs = CreditTransactionLogs.objects.filter(
             customer=self.kwargs['customer_id']).order_by("-id")
+        qs = qs.filter(Q(Q(reference=None) |
+                       Q(reference__payment_status_id=7)))
         self.total_credit = qs.aggregate(
             total=Sum('credit_amount'))['total'] or 0
         self.total_debit = qs.aggregate(total=Sum('paid_amount'))['total'] or 0
@@ -196,7 +215,7 @@ class CustomerCreditTransactionLogs(LoginPermissionCheckMixin, ListView):
         context['customer'] = get_object_or_404(
             Customer, id=self.kwargs['customer_id'])
         context['total_credit'] = round(self.total_credit, 2)
-        context['total_debit'] = round(self.total_debit)
+        context['total_debit'] = round(self.total_debit, 2)
         return context
 
 
@@ -204,18 +223,21 @@ def credit_reminder():
     credit_management = CreditManagement.objects.all()
     for credit in credit_management:
         credit_logs = CreditTransactionLogs.objects.filter(
-            customer=credit.customer)
+            customer=credit.customer, credit_id=None)
         print(credit.customer)
         if credit_logs:
             for log in credit_logs:
                 credit_paid = CreditTransactionLogs.objects.filter(
                     credit_id=log.id, payment_status=True).first()
-                if not credit_paid:
+                if credit_paid:
+                    pass
+                else:
                     today = datetime.today()
                     days_reminder1 = round(
                         abs(credit.credit_rule.time_period/2))
                     days_reminder2 = abs(
                         credit.credit_rule.time_period - 3)
+                    print(log.credit_date)
                     reminder1 = log.credit_date + \
                         timedelta(days=days_reminder1)
                     reminder2 = log.credit_date + \
@@ -230,7 +252,7 @@ def credit_reminder():
                         body_format = {
                             'customer': f"{log.customer.first_name} {log.customer.last_name}",
                             'amount': log.credit_amount,
-                            'date': log.due_date
+                            'date': log.due_date.strftime("%A,%d %B, %Y")
                         }
                         email_body = email_template.message_format.format(
                             **body_format)
@@ -240,7 +262,7 @@ def credit_reminder():
                         notify_title = setting_msg.display_name
                         values = {
                             'amount': log.credit_amount,
-                            'date': log.due_date
+                            'date': log.due_date.strftime("%A,%d %B, %Y")
                         }
                         message = setting_msg.value.format(**values)
                         print(devices)
@@ -279,3 +301,81 @@ def credit_refund(order_id):
                                        is_refund=True, available=credit_management.available, credit_id=credit_log.id, payment_status=True, paid_amount=credit_log.credit_amount)
     refund_log.save()
     return True
+
+
+class CustomerCreditTransactionReference(LoginPermissionCheckMixin, ListView):
+    permission_required = 'credits.paid_transaction_logs'
+    model = CreditPaymentReference
+    template_name = "credits/transaction_reference.html"
+    context_object_name = 'list'
+    paginate_by = RECORDS_PER_PAGE
+    success_url = reverse_lazy('wayrem_admin:customerslist')
+
+    def get_queryset(self):
+        qs = CreditPaymentReference.objects.all().order_by("-id")
+        q = self.request.GET.get(
+            'reference_no') if self.request.GET.get('reference_no') != None else ''
+        if q != None:
+            qs = qs.filter(reference_no__icontains=q)
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super(CustomerCreditTransactionReference,
+                        self).get_context_data(**kwargs)
+        return context
+
+
+class PaidCreditTransactionView(LoginPermissionCheckMixin, ListView):
+    permission_required = 'credits.credit_transaction_approve'
+    model = CreditTransactionLogs
+    template_name = "credits/paid_transaction_view.html"
+    context_object_name = 'list'
+    paginate_by = RECORDS_PER_PAGE
+    success_url = reverse_lazy('wayrem_admin:customerslist')
+    total_amount = 0
+
+    def get_queryset(self):
+        qs = CreditTransactionLogs.objects.filter(
+            reference__reference_no=self.kwargs['reference_no']).order_by("-id")
+        self.total_amount = qs.aggregate(
+            total=Sum('paid_amount'))['total'] or 0
+        return qs
+
+    def get_context_data(self, **kwargs):
+        context = super(PaidCreditTransactionView,
+                        self).get_context_data(**kwargs)
+        print(self.kwargs)
+        try:
+            context['payment_ref'] = get_object_or_404(
+                CreditPaymentReference, reference_no=self.kwargs['reference_no'])
+            context['customer'] = get_object_or_404(
+                Customer, id=context['payment_ref'].customer.id)
+            context['total_amount'] = round(self.total_amount, 2)
+        except:
+            pass
+        return context
+
+    def post(self, request, *args, **kwargs):
+        payment_status = request.POST.get("payment_status")
+        payment_ref_id = request.POST.get("payment_ref_id")
+        status = get_object_or_404(StatusMaster, id=payment_status)
+        payment_ref = get_object_or_404(
+            CreditPaymentReference, id=payment_ref_id)
+        if status.id == 7:
+            transactions = CreditTransactionLogs.objects.filter(
+                reference=payment_ref)
+            total_paid_amount = 0
+            for trx in transactions:
+                trx.payment_status = True
+                trx.available += trx.paid_amount
+                trx.available = round(trx.available, 2)
+                total_paid_amount += trx.paid_amount
+                trx.save()
+            payment_ref.is_verified = True
+            update_limit = CreditManagement.objects.get(
+                customer=payment_ref.customer)
+            update_limit.available += total_paid_amount
+            update_limit.save()
+        payment_ref.payment_status = status
+        payment_ref.save()
+        return HttpResponse("Successfully Updated")

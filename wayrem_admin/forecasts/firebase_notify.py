@@ -4,6 +4,7 @@ from wayrem_admin.models import CustomerDevice, EmailTemplateModel, Settings, Us
 from wayrem_admin.models import CustomerNotification
 from wayrem.constant import WAYREM_ADMIN_BASE_URL
 from wayrem_admin.models import StatusMaster, Orders
+from wayrem_admin.models.users import Users
 from wayrem_admin.services import send_email
 
 
@@ -57,7 +58,7 @@ class FirebaseLibrary:
                 "link": f"{WAYREM_ADMIN_BASE_URL}orders/{order_id}"
             }
             body = body.format(**body_values)
-            users = User.objects.filter(order_notify=True)
+            users = Users.objects.filter(order_notify=True)
             for user in users:
                 email = user.email
                 send_email(to=email, subject=subject, body=body)

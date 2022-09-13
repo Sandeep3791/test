@@ -17,8 +17,8 @@ urlpatterns = [
          name='hyperpay_payment'),
     path('hyperpay/registration', views.HyperpayRegistration.as_view(),
          name='hyperpay_registration'),
-    path('hyperpay/risk', views.HyperpayRisk.as_view(),
-         name='hyperpay_risk')
+    path('hyperpay/risk', views.HyperpayRisk.as_view(), name='hyperpay_risk'),
+
 
 
 

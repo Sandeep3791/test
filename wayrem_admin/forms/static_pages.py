@@ -28,7 +28,7 @@ class StaticpagesViewForm(forms.ModelForm):
     status_choices = list(get_status_dict.items())
     #status_choices.insert(0,('','Select Status'))
     status = forms.ChoiceField(
-        choices=status_choices, widget=forms.Select(attrs={'class': 'form-control form-control-select','disabled':'disabled'}))
+        choices=status_choices, widget=forms.Select(attrs={'class': 'form-control form-control-select', 'disabled': 'disabled'}))
     description = forms.CharField(widget=CKEditorWidget())
 
     def __init__(self, *args, **kwargs):
@@ -51,4 +51,4 @@ class StaticpagesViewForm(forms.ModelForm):
 
 class StaticPageSearchFilter(forms.Form):
     static_page = forms.CharField(widget=forms.TextInput(
-        attrs={'class': 'form-control p-2'}), required=False)
+        attrs={'class': 'form-control p-2', 'placeholder': 'Search'}), required=False)

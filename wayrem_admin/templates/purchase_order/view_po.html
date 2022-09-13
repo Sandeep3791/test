@@ -71,7 +71,7 @@
                             <p>{{po.0.supplier_name}}</p>
                         </div>
                     </div> -->
-                    <div class="container p-0">
+                    <div class="container x-overflow p-0">
                         <table class="table">
                             <thead class="thead-light">
                                 <tr>
@@ -88,17 +88,17 @@
                                 {% for i in po %}
                                 {% if i.available %}
                                 <tr>
-                                    <th scope="row">{{forloop.counter}}</th>
-                                    <td>{{i.product_name}}</td>
-                                    <td>{{i.product_qty}}</td>
-                                    <td>
+                                    <th scope="row" valign="middle">{{forloop.counter}}</th>
+                                    <td style="white-space:break-spaces;" valign="middle">{{i.product_name}}</td>
+                                    <td valign="middle">{{i.product_qty}}</td>
+                                    <td valign="middle">
                                         <span> SAR {{i.unit_price}} </span>
                                     </td>
-                                    <td>
+                                    <td valign="middle">
                                        <span class="{% if i.supplier_product.price > i.product_name.price %} text-danger {% endif %}"> SAR {{i.product_name.price}} </span>
                                     </td>
                                     {% comment %} <td>within 2days</td> {% endcomment %}
-                                    <td class="text-success font-weight-bold">Available</td>
+                                    <td class="text-success font-weight-bold" valign="middle">Available</td>
                                 </tr>
                                 {% else %}
                                 <tr>
