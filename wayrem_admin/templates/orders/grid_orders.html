@@ -35,7 +35,7 @@
                 <td>{{order.order_phone|default_if_none:""}}</td>
                 <td>{{order.order_type|default_if_none:""}}</td>
                 {% if order.order_type.id == 29 %}
-                    <td>Draft</td>
+                    <td>Draft<br><a href="{% url 'wayrem_admin:orderupdate' order.from_clone %}">Ref #{{order.from_clone|get_order_reference}}</a></td>
                     <td> - </td>
                     <td> - </td>
                 {% else %}
