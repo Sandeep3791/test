@@ -322,7 +322,7 @@ class OrderStatusUpdated(LoginRequiredMixin, UpdateView):
     def credit_note(self,status,order_id):
         order_det=Orders.objects.filter(id=order_id).first()
         if(order_det.credit_note == 0 or order_det.credit_note is None ):
-            if status.id == 18:
+            if status.id == ORDER_CANCELLED:
                 cn=CreditNote.objects.filter().order_by("-id").first()
                 credit_note_return=cn.credit_note+1
                 cr_add=CreditNote(credit_note=credit_note_return)
@@ -545,7 +545,12 @@ class OrderCancelCloneOrder(View):
         order_type_status=StatusMaster.objects.get(id=ORDER_TYPE_DRAFT)
         new_order=self.model.objects.filter(id=id).values().first() 
         new_ref_number = create_new_ref_number()
-        new_order.update({'id': None,'ref_number':new_ref_number,'from_clone':id,'order_type_id':order_type_status.id,'status_id':order_status_instance.id})
+        new_order_transaction=OrderTransactions.objects.filter(order_id =id).values().first()
+        partial_payment =float(0)
+        if new_order_transaction['payment_status_id'] != PAYMENT_STATUS_CONFIRM:
+            partial_payment = float(new_order['grand_total'])
+        new_order.update({'id': None,'ref_number':new_ref_number,'from_clone':id,'to_clone':None,'order_type_id':order_type_status.id,'status_id':order_status_instance.id,'partial_payment':partial_payment,'partial_payment_settled_date':None})
+        
         new_order_created = self.model.objects.create(**new_order)
         new_order_id=new_order_created.id
         
@@ -554,7 +559,7 @@ class OrderCancelCloneOrder(View):
             od.update({'id':None,'order_id':new_order_id})
             OrderDetails.objects.create(**od)
         self.model.objects.filter(id=id).update(to_clone=new_order_id)
-        new_order_transaction=OrderTransactions.objects.filter(order_id =id).values().first()
+        
         
         get_latest_invoice=OrderTransactions.objects.all().values('invoices_id').order_by('-invoices_id').first()
         new_invoice_id=get_latest_invoice['invoices_id'] + 1
@@ -568,7 +573,7 @@ class OrderCancelCloneOrder(View):
             neworderlog.update({'id':None,'order_id':new_order_id,'log_date':datetime.now()})
             OrderDeliveryLogs.objects.create(**neworderlog)
         self.order_cancelled(id)
-        if new_order_transaction['payment_mode_id'] != COD:
+        if new_order_transaction['payment_mode_id'] != COD and new_order_transaction["payment_status_id"] == PAYMENT_STATUS_CONFIRM:
             self.add_to_wallet(id)
         return redirect('wayrem_admin:cloneorder', pk=new_order_id)
         
@@ -588,11 +593,24 @@ class OrderCancelCloneOrder(View):
         obj_stat_instance = StatusMaster.objects.get(id=ORDER_CANCELLED)
         delivery_status = ORDER_STATUS_CANCELLED
         deliv_obj_stat_instance = StatusMaster.objects.get(id=delivery_status)
-        Orders.objects.filter(id=order_id).update(status=obj_stat_instance, delivery_status=deliv_obj_stat_instance)
+        new_credit_note=self.credit_note(obj_stat_instance,order_id)
+        
+        Orders.objects.filter(id=order_id).update(status=obj_stat_instance, delivery_status=deliv_obj_stat_instance,credit_note=new_credit_note)
         payment_status = StatusMaster.objects.get(id=PAYMENT_STATUS_DECLINED)
         OrderTransactions.objects.filter(order=order_id).update(payment_status=payment_status)
         return 1
 
+    def credit_note(self,status,order_id):
+        order_det=Orders.objects.filter(id=order_id).first()
+        if(order_det.credit_note == 0 or order_det.credit_note is None ):
+            if status.id == ORDER_CANCELLED:
+                cn=CreditNote.objects.filter().order_by("-id").first()
+                credit_note_return=cn.credit_note+1
+                cr_add=CreditNote(credit_note=credit_note_return)
+                cr_add.save()
+                return credit_note_return
+            else:
+                return 0
     def order_inventory_process(self, order_id):
         # When we place order inventory process to shipping
         from wayrem_admin.models.orders import Orders, OrderDetails
@@ -720,6 +738,9 @@ class Clonecreateorder(View):
         order_transaction=OrderTransactions.objects.filter(order_id =id).values().first()
         
         order_detail_partial_payment = order_details['partial_payment']
+        if order_detail_partial_payment is None:
+            order_detail_partial_payment = float(0)
+
         if order_detail_partial_payment == float(0):
             order_status_instance = StatusMaster.objects.get(id=ORDER_PENDING_APPROVED)
         else:
@@ -728,6 +749,10 @@ class Clonecreateorder(View):
 
         order_dict={'order_type_id':order_type_status.id,'status_id':order_status_instance.id,'order_date':datetime.now()}
         
+        if order_transaction['payment_mode_id'] == COD:
+            order_status_instance = StatusMaster.objects.get(id=ORDER_PENDING_APPROVED)
+            order_dict={'order_type_id':order_type_status.id,'status_id':order_status_instance.id,'partial_payment':0,'order_date':datetime.now()}
+
         is_out_stock=self.check_product_quantity(id)
         if is_out_stock:
             return HttpResponseRedirect("/orders/clone-order/"+str(id))
