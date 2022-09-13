@@ -1,10 +1,10 @@
 from django import forms
-from wayrem_admin.models import CreditSettings, Customer
+from wayrem_admin.models import CreditSettings, Customer, CreditManagement
 
 
 class CustomerSearchFilter(forms.Form):
     customer = forms.CharField(widget=forms.TextInput(
-        attrs={'class': 'form-control p-2'}), required=False)
+        attrs={'class': 'form-control p-2', 'placeholder': 'Search'}), required=False)
 
 
 class CustomerEmailUpdateForm(forms.ModelForm):
@@ -30,7 +30,7 @@ class CreditsForm(forms.ModelForm):
 
 class CreditsSearchFilter(forms.Form):
     credit = forms.IntegerField(widget=forms.NumberInput(
-        attrs={'class': 'form-control p-2'}), required=False)
+        attrs={'class': 'form-control p-2', 'placeholder': 'Search'}), required=False)
 
 
 def get_credits():
@@ -54,5 +54,14 @@ class CreditsAssignForm(forms.Form):
             raise forms.ValidationError(
                 f"Please select a Credit amount!"
             )
-        else:
+        new_limit = CreditSettings.objects.get(id=credit)
+        try:
+            used_limit = CreditManagement.objects.get(
+                customer_id=self.data.get("id"))
+        except:
             return credit
+        if used_limit.used > new_limit.credit_amount:
+            raise forms.ValidationError(
+                f"Please select the credit greater than SAR {round(used_limit.used)}."
+            )
+        return credit

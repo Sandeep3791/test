@@ -5,7 +5,14 @@
 {% block title %} Credit Transactions {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
-{% block stylesheets %}{% endblock stylesheets %}
+{% block stylesheets %}
+<style>
+    .pending_type {display: flex;justify-content: space-between;align-items: center;padding: 0.7rem 1rem;width: fit-content;background: #ffc10712;border-radius: 10px;color: #d8a301;font-size: .9rem;width: 100%;}
+    .paid_type {display: flex;justify-content: space-between;align-items: center;padding: 0.7rem 1rem;width: fit-content;background: #05a67717;border-radius: 10px;color: #05A677;font-size: .9rem;width: 100%;}
+    .declined_type {width: 100%!important;padding: 0.7rem 1rem;background: #e11d470e;border-radius: 10px;color: #e11d48!important;font-size: .9rem;display: flex;justify-content: space-between;align-items: center;}
+    .payment_status {background: #4caf50;color: white;padding: 0.2rem 0.5rem;width: fit-content;border-radius: 5px;font-size: 0.8rem;}
+</style>
+{% endblock stylesheets %}
 {% block head %}
 <script src="{% static 'assets/js/datatable_ajax.js' %}"></script>
 <link rel="stylesheet" href="{% static 'assets/css/datatable.css' %}">
@@ -27,12 +34,12 @@
 
 <div class="dashboard_content_inner">
     <div class="topbar_pages">
-        <h4 class="text-title">Credit Transactions</h2>
+        <h4 class="text-title">Credit Transaction - #{{payment_ref.reference_no}}</h2>
         <div class="breadcrumb-section">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb padding-left-0">
                     <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
-                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:customerslist' %}"><span class="sidebar-icon"><i class="fas fa-users"></i></span> <span class="sidebar-text">Customers </span></a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:paid_credits' %}"><span class="sidebar-icon"><i class="fa fa-credit-card"></i></span> <span class="sidebar-text">Paid Credits </span></a></li>
                     <li class="breadcrumb-item active" aria-current="page">Credit Transactions</li>
                 </ol>
             </nav>
@@ -55,9 +62,7 @@
                     <tr>
                         <th scope="col">Order No.</th>
                         <th scope="col">Available</th>
-                        <th scope="col">Credit Amount</th>
-                        <th scope="col">Debit Amount</th>
-                        <th scope="col">Credit Date</th>
+                        <th scope="col">Paid Amount</th>
                         <th scope="col">Due Date</th>
                         <th scope="col">Paid Date</th>
                     </tr>
@@ -69,20 +74,11 @@
                         <td><a href="{% url 'wayrem_admin:orderupdate' item.order.id %}"> #{{item.order.ref_number}}</a></td>
                         <td>{{item.available|floatformat:2}}</td>
                         <td>
-                            {% if item.credit_amount %}
-                            <span class="font-weight-bold text-danger">- {{item.credit_amount|floatformat:2}} </span>
-                            {% endif %}
-                        </td>
-                        <td>
                             {% if item.paid_amount %}
                             <span class="font-weight-bold text-success">+ {{item.paid_amount|floatformat:2}}</span>
                             {% endif %}
                         </td>
-                        <td>
-                            {% if item.credit_date %}
-                            {{item.credit_date|date:"d M Y"}}
-                            {% endif %}
-                        </td>
+                        
                         <td>
                             {% if item.due_date %}
                             {{item.due_date|date:"d M Y"}}
@@ -153,28 +149,60 @@
                     </div>
                     </div>
             </div>
+            {% if payment_ref.payment_type.id == 12 %}
+            <div class="col-12 mb-4">
+                <div class="card card-body bg-white border-light shadow-sm mb-4 orderpayment">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h2 class="h5 m-0">Payment</h2>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center flex-column">
+                            <div class="pending_type">
+                                <span>{{payment_ref.payment_type.name}}</span>
+                                <span class="payment_status {% if payment_ref.payment_status.id == 27 %} bg-warning {% elif payment_ref.payment_status.id == 26 %}bg-danger{% else %}bg-success {% endif %}  ms-2">{{payment_ref.payment_status.name}}</span>
+                            </div>
+                            {% if perms.credits.credit_transaction_approve %}
+                            {% if payment_ref.payment_type.id == 12 %}
+                            <p style="padding-top:10px;margin-bottom:-12px">
+                                <a href="{{DOCUMENT_URL}}customer_banks/{{payment_ref.bank_payment_file}}" target="_blank" class="small">Download Bank transfer Document</a>
+                            </p>
+                            {% endif %}
+                            {% if payment_ref.payment_status.id == 27 %}
+                            <div class="d-flex justify-content-between w-100 mt-4">
+                                <button class="btn btn-success" data-toggle="modal" data-target="#modal-default">Approve</button>
+                                
+                                <button class="btn btn-danger" type="button" data-id="26" data-bs-toggle="modal" data-bs-target="#modal-default-reject">Reject</button> 
+                                
+                            </div>
+                            {% endif %}
+                            {% endif %}
+                        </div>
+                </div>
+            </div>
+                
+            {% else %}
+            <div class="col-12 mb-4">
+                <div class="card card-body bg-white border-light shadow-sm mb-4 p-4">
+                    <div class="d-flex justify-content-between align-items-center"><span class={% if payment_ref.payment_status.id == 6 %}"declined_type"{% else %}"paid_type"{% endif %}>
+                        <span> Order has been {{payment_ref.payment_status.name}}!</span><span class="payment_status {% if payment_ref.payment_status.id == 6 %}bg-danger{% else %}bg-success {% endif %} ms-2">{{payment_ref.payment_status.name}}</span></span>
+                    </div>
+                </div>
+            </div>
+                
+            {% endif %}
             <div class="col-12 mb-4">
                 <div class="card border-light shadow-sm">
                     <div class="card-body">
                         <div class="d-flex align-items-center justify-content-between border-bottom border-light pb-3">
                             <div>
-                                <h4 class="text-center mb-0"><span class="fas fa-file-invoice-dollar"></span> Total Transactions</h4>
+                                <h4 class="text-center mb-0"><span class="fas fa-file-invoice-dollar"></span> Total Transactions : {{list|length}}</h4>
                             </div>
                         </div>
                         <div class="d-flex align-items-center justify-content-between border-bottom border-light py-3">
                             <div>
-                                <h6 class="mb-0">Credit Amount</h6>
+                                <h6 class="mb-0">Total Amount</h6>
                             </div>
                             <div>
-                                <span class="font-weight-bold text-danger">{{total_credit}}</span>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center justify-content-between pt-3">
-                            <div>
-                                <h6 class="mb-0">Debit Amount</h6>
-                            </div>
-                            <div>
-                                <span class="font-weight-bold text-success">{{total_debit}}</span>
+                                <span class="font-weight-bold text-success">SAR {{total_amount|floatformat:2 }}</span>
                             </div>
                         </div>
                     </div>
@@ -184,122 +212,93 @@
     </div>
 </div>
 
-<script>
-function supplierFunc(SKU){
-  
-    const url="{% url 'wayrem_admin:viewprodsupplier' %}";
-    $.ajax({
-        
-        url:url,
-        data: {
-                    'product': SKU       // add the country id to the GET parameters
-                },
-        success:function(data){
-        $("#test"+SKU).html(data);
-        
-        $("#supplier"+SKU).modal('show');
-        },
-    });
+<!--Accept Modal-->
+<div class="modal fade" id="modal-default" tabindex="-1" aria-labelledby="modal-default" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="h6 modal-title">Terms of Service</h2>
+                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to confirm?</p>
+                <form action="" id="acceptform" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="payment_ref_id" value="{{payment_ref.id}}">
+                    <input type="hidden" name="payment_status" value="7">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="acceptbtn" class="btn btn-secondary">Accept</button>
+                <button type="button" class="btn btn-link text-gray ml-auto" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
-    }
-    $(document).ready(function(){
-    
-        $('#supplier').modal('hide');
-    
-    });
-</script>
-
-<script>
-function lowestFunc(SKU){
-  
-    const url="{% url 'wayrem_admin:lowest_price' %}";
-    $.ajax({
-        
-        url:url,
-        data: {
-                    'product': SKU       // add the country id to the GET parameters
-                },
-        success:function(data){
-        $("#lowest_price"+SKU).html(data);
-        
-        $("#lowest"+SKU).modal('show');
-        },
-    });
-
-    }
-    $(document).ready(function(){
-    
-        $('#lowest').modal('hide');
-    
-    });
-</script>
+<!--Reject Modal-->
+<div class="modal fade" id="modal-default-reject" tabindex="-1" aria-labelledby="modal-default-reject" style="display: none;" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="h6 modal-title">Terms of Service</h2>
+                <button type="button" class="btn-close close" data-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to reject?</p>
+                <form action="" id="rejectform" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="payment_ref_id" value="{{payment_ref.id}}">
+                    <input type="hidden" name="payment_status" value="26">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="rejectbtn" class="btn btn-secondary">Reject</button>
+                <button type="button" class="btn btn-link text-gray ml-auto close" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
-function lowesttimeFunc(SKU){
-  
-    const url="{% url 'wayrem_admin:lowest_time' %}";
-    $.ajax({
-        
-        url:url,
-        data: {
-                    'product': SKU       // add the country id to the GET parameters
-                },
-        success:function(data){
-        $("#lowest_time"+SKU).html(data);
-        
-        $("#lowesttime"+SKU).modal('show');
-        },
+    $("#acceptbtn").on("click",function(e){
+        e.preventDefault();
+        url = $("#acceptform").attr("action")
+            type_form=$("#acceptform").attr("method")
+            data_ser=$("#acceptform").serialize()
+            console.log(data_ser)
+            $.ajax({
+                    type: type_form,
+                    url: url,
+                    data: data_ser,
+                    cache: false,
+                    success: function (data) {
+                            location.reload();
+                    }
+                })
     });
-
-    }
-    $(document).ready(function(){
-    
-        $('#lowest').modal('hide');
-    
+    $("#rejectbtn").on("click",function(e){
+        e.preventDefault();
+        url = $("#rejectform").attr("action")
+            type_form=$("#rejectform").attr("method")
+            data_ser=$("#rejectform").serialize()
+            console.log(data_ser)
+            $.ajax({
+                    type: type_form,
+                    url: url,
+                    data: data_ser,
+                    cache: false,
+                    success: function (data) {
+                            location.reload();
+                    }
+                })
     });
-</script>
-<script>
-    function myProfile() {
-        var x = document.getElementById("myProfile");
-        if (x.style.display === "none") {
-            x.style.display = "block";
-        } else {
-            x.style.display = "none";
-      
-        }
-      }
-
-      function cancelBtn() {
-        console.log("button clicked")
-        location = location.href.split('?')[0];
-        
-        
-        var x = document.getElementById("myProfile");
-        if (x.style.display === "block") {
-            x.style.display = "none";
-        } 
-        
-      }
-</script>
+    $(".close").on("click",function(e){
+        e.preventDefault();
+        $("#modal-default-reject").modal('toggle');
+    })
 
 
-<script>
-    function myProfile() {
-        var x = document.getElementById("myProfile");
-        if (x.style.display === "none") {
-            x.style.display = "block";
-        } else {
-            x.style.display = "none";
-      
-        }
-      }
-
-      function cancelBtn() {
-        var x = document.getElementById("myProfile");
-        if (x.style.display === "block") {
-            x.style.display = "none";
-        } 
-      }
 </script>
 
 {% endblock content %}

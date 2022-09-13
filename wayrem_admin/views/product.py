@@ -41,34 +41,62 @@ def product_excel(request):
     df_pm = pd.read_sql(
         f'select * from products_master where is_deleted=False', con)
     df_um = pd.read_sql(f'select * from unit_master', con)
-    df_cm = pd.read_sql(f'select * from categories_master', con)
     df_pmc = pd.read_sql(f'select * from products_master_category', con)
-    df_pcm = pd.merge(df_pmc, df_cm, left_on='categories_id', right_on='id')
-    df_pcm = df_pcm[['products_id', 'name']]
-    df_pcm = df_pcm.groupby('products_id', sort=False).name.apply(
+    cc = pd.read_sql(
+        f'select id,name from categories_master where is_parent = True', con)
+    pc = pd.read_sql(
+        f'select id,name from categories_master where is_parent = False', con)
+    df_pmc_pc = pd.merge(df_pmc, pc, left_on="categories_id", right_on="id")
+    df_pmc_cc = pd.merge(df_pmc, cc, left_on="categories_id", right_on="id")
+    df_pmc_pc = df_pmc_pc.drop(['id_x', 'id_y'], axis=1)
+    df_pmc_cc = df_pmc_cc.drop(['id_x', 'id_y'], axis=1)
+    df_pmc_pc = df_pmc_pc.groupby('products_id', sort=False).name.apply(
         ', '.join).reset_index(name='categories')
-    df_pc = pd.merge(df_pm, df_pcm, left_on='id', right_on='products_id')
-    df_weight_unit = pd.merge(
-        df_pc, df_um, left_on='weight_unit_id', right_on='id')
-    df_quantity_unit = pd.merge(
-        df_pc, df_um, left_on='quantity_unit_id', right_on='id')
+    df_pmc_cc = df_pmc_cc.groupby('products_id', sort=False).name.apply(
+        ', '.join).reset_index(name='subcategories')
+    df_pmc = pd.merge(df_pmc_pc, df_pmc_cc, left_on='products_id',
+                      right_on='products_id', indicator=True, how="outer")
+    df_pmc = df_pmc.drop_duplicates(
+        subset="products_id", keep='first', inplace=False)
+    df_pc = pd.merge(df_pm, df_pmc, left_on='id', right_on='products_id')
+    del df_pc['_merge']
+
+    df_sm = pd.read_sql(f'select * from supplier_master', con)
+    df_pms = pd.read_sql(f'select * from products_master_supplier', con)
+    df_psm = pd.merge(df_pms, df_sm, left_on='supplier_id', right_on='id')
+    df_psm = df_psm[['products_id', 'company_name']]
+    df_psm = df_psm.groupby('products_id', sort=False).company_name.apply(
+        ', '.join).reset_index(name='supplier')
+    df_pc = pd.merge(df_pc, df_psm, indicator=True,
+                     left_on='id', right_on='products_id', how="outer")
+    df_pc = df_pc.drop(df_pc[df_pc._merge == "right_only"].index)
+    del df_pc['_merge']
+    df_pc = pd.merge(
+        df_pc, df_um, indicator=True, left_on='weight_unit_id', right_on='id', how="outer")
+    df_pc = df_pc.drop(
+        df_pc[df_pc._merge == "right_only"].index)
+    del df_pc['_merge']
+    df_pc.rename(columns={'unit_name': 'weight_unit'}, inplace=True)
+    df_pc = pd.merge(
+        df_pc, df_um, indicator=True, left_on='quantity_unit_id', right_on='id', how="outer")
+    df_pc = df_pc.drop(
+        df_pc[df_pc._merge == "right_only"].index)
+    del df_pc['_merge']
+    df_pc.rename(columns={'unit_name': 'quantity_unit'}, inplace=True)
     df_pc['feature_product'] = df_pc['feature_product'].astype(bool)
     df_pc['publish'] = df_pc['publish'].astype(bool)
     df_pc['package_count'] = df_pc['package_count'].replace(
         {'True': True, 'False': False})
-    # df_pc['date_of_exp'] = pd.to_datetime(df_pc['date_of_exp'])
-    # df_pc['date_of_mfg'] = pd.to_datetime(df_pc['date_of_mfg'])
-    weight_unit = df_weight_unit['unit_name']
-    quantity_unit = df_quantity_unit['unit_name']
     excel_cols = {
         'sku': df_pc['SKU'],
         'name': df_pc['name'],
-        'category': df_pc['categories'],
+        'categories': df_pc['categories'],
+        'sub-categories': df_pc['subcategories'],
         'manufacturer  name': df_pc['mfr_name'],
         'size': df_pc['weight'],
-        'size unit': weight_unit,
+        'size unit': df_pc['weight_unit'],
         'available stock': df_pc['quantity'],
-        'stock unit': quantity_unit,
+        'stock unit': df_pc['quantity_unit'],
         'starting inventory': df_pc['inventory_starting'],
         'shipped inventory': df_pc['inventory_shipped'],
         'received inventory': df_pc['inventory_received'],
@@ -88,6 +116,7 @@ def product_excel(request):
         'publish': df_pc['publish'],
         'package': df_pc['package_count'],
         'barcode': df_pc['barcode'],
+        'supplier': df_pc['supplier'],
     }
     df = df.assign(**excel_cols)
     print(df)
