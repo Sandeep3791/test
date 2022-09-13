@@ -446,6 +446,59 @@ class OrderCreditNoteView(View):
         response['Content-Disposition'] = 'inline;attachment;filename='+filename
         return response
 
+class OrderRefCreditNoteView(View):
+    login_url = 'wayrem_admin:root'
+    model = Orders
+    template_name = "orders/order_credit_note.html"
+    KEY = 'setting_vat'
+    WAYREM_VAT = 'wayrem_vat_registration'
+    WAYREM_CR = 'wayrem_cr_no'
+
+    def image_to_base64(self, image):
+        buff = BytesIO()
+        image.save(buff, format="png")
+        img_str = base64.b64encode(buff.getvalue())
+        return img_str.decode("utf-8")
+
+    def get(self, request, id):
+        context = {}
+        context['currency'] = CURRENCY
+        order_id = id
+        orders_details = Orders.objects.filter(ref_number=order_id).first()
+        if orders_details.status.id != ORDER_CANCELLED:
+            return render(request, '404.html')
+            #return HttpResponse("Order is not cancelled")
+        filename = "order-"+str(orders_details.ref_number)+".pdf"
+        context['order'] = orders_details
+        context['tax_vat'] = Settings.objects.filter(key=self.KEY).first()
+        context['wayrem_vat'] = Settings.objects.filter(
+            key=self.WAYREM_VAT).first()
+        context['wayrem_cr'] = Settings.objects.filter(
+            key=self.WAYREM_CR).first()
+        context['wayrem_seller_name'] = Settings.objects.filter(
+            key="wayrem_seller_name").first()
+        context['order_details'] = OrderDetails.objects.filter(order=order_id)
+        context['order_transaction'] = OrderTransactions.objects.filter(
+            order=order_id).first()
+        fatoora_obj = Fatoora(
+            seller_name=context['wayrem_seller_name'].value,
+            tax_number=context['wayrem_vat'].value,
+            # invoice_date="2021-07-12T14:25:09+00:00",
+            invoice_date=orders_details.order_date,
+            total_amount=orders_details.grand_total,
+            tax_amount=orders_details.tax,
+        )
+        qr_code = qrcode.make(fatoora_obj.base64)
+        image = self.image_to_base64(qr_code)
+        context['image'] = image
+        html_template = render_to_string(self.template_name, context)
+        pdf_file = HTML(string=html_template,
+                        base_url=request.build_absolute_uri()).write_pdf()
+        response = HttpResponse(pdf_file, content_type='application/pdf')
+        response['Content-Transfer-Encoding'] = 'binary'
+        response['Content-Disposition'] = 'inline;attachment;filename='+filename
+        return response
+
 class OrderInvoiceView(LoginRequiredMixin, View):
     login_url = 'wayrem_admin:root'
     model = Orders
