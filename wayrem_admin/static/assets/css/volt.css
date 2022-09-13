@@ -58204,6 +58204,9 @@ fieldset:disabled .btn {
         text-align: center !important;
     }
 
+    .sku_img h5 {
+        font-size: .8rem !important;
+    }
 
 }
 
@@ -58221,7 +58224,7 @@ fieldset:disabled .btn {
     }
 
     .sku_img h5 {
-        font-size: .9rem !important;
+        font-size: .9rem;
     }
 }
 
@@ -66806,7 +66809,7 @@ nav#topbar_content {
 }
 
 .sku_img h5 {
-    font-size: .9rem !important;
+    font-size: .9rem;
     font-weight: 900;
 }
 
@@ -66814,6 +66817,14 @@ nav#topbar_content {
 @media only screen and (min-width: 1024px) and (max-width: 1366px) {
     .bulk_heading {
         font-size: 1rem;
+    }
+
+}
+
+@media only screen and (max-width: 1024px) {
+
+    .x-overflow {
+        overflow-x: scroll;
     }
 }
 
