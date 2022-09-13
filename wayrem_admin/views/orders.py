@@ -594,8 +594,8 @@ class OrderCancelCloneOrder(View):
         delivery_status = ORDER_STATUS_CANCELLED
         deliv_obj_stat_instance = StatusMaster.objects.get(id=delivery_status)
         new_credit_note=self.credit_note(obj_stat_instance,order_id)
-        
         Orders.objects.filter(id=order_id).update(status=obj_stat_instance, delivery_status=deliv_obj_stat_instance,credit_note=new_credit_note)
+        self.order_inventory_process(order_id)
         payment_status = StatusMaster.objects.get(id=PAYMENT_STATUS_DECLINED)
         OrderTransactions.objects.filter(order=order_id).update(payment_status=payment_status)
         return 1
