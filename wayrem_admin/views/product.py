@@ -982,17 +982,35 @@ def update_quantity_bulk(sku_list, quantity_list):
     return {"status": True}
 
 
+@app.task()
+def remove_quantity_bulk(sku_list, quantity_list):
+    print(sku_list, quantity_list)
+    for sku, quantity in zip(sku_list, quantity_list):
+        try:
+            product = Products.objects.get(SKU=sku)
+            inventory_dict = {'inventory_type_id': 5, 'quantity': quantity, 'product_id': product.id,
+                              'warehouse_id': 1, 'po_id': None, 'supplier_id': None, 'order_id': None, 'order_status': None}
+            Inventory().insert_inventory(inventory_dict)
+            Inventory().update_product_quantity(product.id)
+            print(sku, quantity, "successfull")
+        except Exception as e:
+            print(sku, quantity, "failed", e)
+    print("Quantity Updation Done")
+    return {"status": True}
+
+
 def bulk_quantity_excel(request):
     if request.method == "POST":
         file = request.FILES["myFileInput"]
-        required_cols = ['sku', 'quantity', 'product name', 'brand']
+        required_cols = ['sku', 'add quantity',
+                         'remove quantity', 'product name', 'brand']
         df = pd.read_excel(file)
         excel_cols = list(df.columns)
         required_cols.sort()
         excel_cols.sort()
         missing_cols = list(set(required_cols) - set(excel_cols))
         unwanted_cols = list(set(excel_cols) - set(required_cols))
-        if len(excel_cols) == 4 and required_cols == excel_cols:
+        if len(excel_cols) == 5 and required_cols == excel_cols:
             try:
                 del df['product name']
                 del df['brand']
@@ -1000,29 +1018,48 @@ def bulk_quantity_excel(request):
                               host=DATABASES['default']['HOST'], database=DATABASES['default']['NAME'])
                 df_products = pd.read_sql(
                     'select * from products_master', con)
-                df.rename(columns={"sku": "SKU"}, inplace=True)
+                df.rename(columns={"sku": "SKU", "add quantity": "add_quantity",
+                          "remove quantity": "remove_quantity"}, inplace=True)
                 df = df.drop_duplicates(
                     subset="SKU", keep='first', inplace=False)
                 # NaN values removed from sku and product name
-                df = df[df['SKU'].notna()]
-                df = df[df['quantity'].notna()]
-                df['quantity'] = df['quantity'].astype(int)
-                df = df[df.quantity != 0]
+                df_add = df[df['SKU'].notna()]
+                df_remove = df[df['SKU'].notna()]
+                df_add = df[df['add_quantity'].notna()]
+                df_remove = df[df['remove_quantity'].notna()]
+                df_add['add_quantity'] = df_add['add_quantity'].astype(int)
+                df_remove['remove_quantity'] = df_remove['remove_quantity'].astype(
+                    int)
+                df_add = df_add[df_add.add_quantity > 0]
+                df_remove = df_remove[df_remove.remove_quantity > 0]
                 df_products['SKU'] = df_products['SKU'].astype(str)
-                df['SKU'] = df['SKU'].astype(str)
-                df_updated = df[df.set_index(
+                df_add['SKU'] = df_add['SKU'].astype(str)
+                df_remove['SKU'] = df_remove['SKU'].astype(str)
+                df_updated_add = df_add[df_add.set_index(
                     ['SKU']).index.isin(df_products.set_index(['SKU']).index)]
-                sku_s = df_updated['SKU'].tolist()
-                quantitys = df_updated['quantity'].tolist()
-                if len(sku_s) > 0:
-                    sku_list = list(divide_chunks(sku_s, 25))
-                    quantity_list = list(divide_chunks(quantitys, 25))
+                df_updated_remove = df_remove[df_remove.set_index(
+                    ['SKU']).index.isin(df_products.set_index(['SKU']).index)]
+                sku_s_add = df_updated_add['SKU'].tolist()
+                sku_s_remove = df_updated_remove['SKU'].tolist()
+                quantitys_add = df_updated_add['add_quantity'].tolist()
+                quantitys_remove = df_updated_remove['remove_quantity'].tolist(
+                )
+                if len(sku_s_add) > 0:
+                    sku_list = list(divide_chunks(sku_s_add, 25))
+                    quantity_list = list(divide_chunks(quantitys_add, 25))
                     for sku, quantity in zip(sku_list, quantity_list):
                         print("working", sku, quantity)
                         update_quantity_bulk.delay(sku, quantity)
+                if len(sku_s_remove) > 0:
+                    sku_list = list(divide_chunks(sku_s_add, 25))
+                    quantity_list = list(divide_chunks(quantitys_remove, 25))
+                    for sku, quantity in zip(sku_list, quantity_list):
+                        print("working", sku, quantity)
+                        remove_quantity_bulk.delay(sku, quantity)
                 context = {
                     "total_entries_excel": len(df),
-                    "quantity_sku_count": len(sku_s)
+                    "quantity_sku_count": len(sku_s_add),
+                    "quantity_sku_count_remove": len(sku_s_add)
                 }
                 return render(request, "product/import_product.html", context)
             except Exception as e:

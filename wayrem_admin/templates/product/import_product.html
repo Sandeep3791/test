@@ -166,7 +166,7 @@
                         </form>
                     </div>
                     <div class="form-group col-md-3 col-xl-3">
-                        <label for="code" class="h5 bulk_heading">Add Products Quantity</label>
+                        <label for="code" class="h5 bulk_heading">Add/Remove Products Quantity</label>
                         <form action="{% url 'wayrem_admin:bulk_quantity' %}" method="POST" enctype="multipart/form-data" >
                             {% csrf_token %}
                             <div class="form-file">
@@ -249,7 +249,8 @@
                                     <p class="text-dark" >Price of SKU's to be updated: {{price_sku_count}}</p>
                                     {% endif %}
                                     {% if quantity_sku_count %}
-                                    <p class="text-dark" >Quantity of SKU's to be updated: {{quantity_sku_count}}</p>
+                                    <p class="text-dark" >Quantity of SKU's to be added: {{quantity_sku_count}}</p>
+                                    <p class="text-dark" >Quantity of SKU's to be removed: {{quantity_sku_count_remove}}</p>
                                     {% endif %}
                                 </div>
                             </div>
