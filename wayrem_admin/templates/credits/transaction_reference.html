@@ -1,6 +1,8 @@
 {% extends "layouts/base.html" %}
 {% load static %}
-{% block title %} Credits List {% endblock %}
+{% load util_tags  %}
+{% load template_tags %}
+{% block title %} Credit Transactions {% endblock %}
 
 <!-- Specific Page CSS goes HERE  -->
 {% block stylesheets %}{% endblock stylesheets %}
@@ -16,7 +18,7 @@
     <script src= "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.js">  </script>  
     <link href= "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/ui-lightness/jquery-ui.css" rel="stylesheet" type="text/css" />   {% endcomment %}
 {% endblock head %}
-
+{% load util_tags  %}
 {% block content %}
 
 <div class="filter_width p-4 dropdown_content" id="myProfile">
@@ -25,13 +27,13 @@
 
 <div class="dashboard_content_inner">
     <div class="topbar_pages">
-        <h4 class="text-title">All Credits</h2>
+        <h4 class="text-title">Credit Transactions</h2>
         <div class="breadcrumb-section">
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb padding-left-0">
                     <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:dashboard' %}"><span class="sidebar-icon"><span class="fas fa-chart-pie"></span></span> Dashboard</a></li>
-                    <li class="breadcrumb-item"><span class="sidebar-icon"><i class="fa fa-credit-card"></i></span> <span class="sidebar-text">Credits &nbsp; </span></li>
-                    <li class="breadcrumb-item active" aria-current="page">Manage Credits</li>
+                    <li class="breadcrumb-item"><a href="{% url 'wayrem_admin:paid_credits' %}"><span class="sidebar-icon"><i class="fa fa-credit-card"></i></span> <span class="sidebar-text">Credits </span></a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Paid Credit Transactions</li>
                 </ol>
             </nav>
         </div>
@@ -44,13 +46,10 @@
     </div>
     {% endfor %}
     {% endif %}
-    
+
     <div class="table-settings mb-4">
         <div class="subheader row mt-3 align-items-center">
             <div class="col-xl-2 col-md-2 col-lg-2 col-md-5">
-                {% if perms.credits.settings_add %}
-                <a class="btn btn-success" href="{% url 'wayrem_admin:create_credit' %}">Create Credit</a>
-                {% endif %}
             </div>
             <div class="add_btn col-xl-2 col-lg-2 col-md-5 d-flex align-items-righ padding-0 justify-content-center">
                 <div class="col-xl-10 col-md-3 col-lg-10 col-md-5">
@@ -62,7 +61,7 @@
                     <div class=" d-flex align-items-center justify-content-end my-2">
                         <div class="col-xl-7 col-md-7 col-lg-7 " style="height:40px;">
                             <div class="input-group subadmin_search">
-                                {{filter_form.credit}}
+                                <input type="text" class="form-control table_searchbar" name="reference_no" value="{{reference_no}}" id="table_search" placeholder="Reference No." aria-label="Search" aria-describedby="basic-addon2">
                                 <button type="submit" class="btn btn-dark border-0 col-xl-3 col-md-5 col-12 fas fa-search"> Search</button>
                             </div>
                         </div>
@@ -75,22 +74,33 @@
         <table class="table table-hover text-center" id="filtertable">
             <thead class="">
                 <tr>
-                    {% comment %} <th scope="col">S. No.</th> {% endcomment %}
-                    <th scope="col">Credit Amount</th>
-                    <th scope="col">Time Period (in days)</th>
-                    {% if perms.credits.settings_view or perms.credits.settings_edit %}
+                    <th scope="col">Reference No.</th>
+                    <th scope="col">Customer</th>
+                    <th scope="col">Total Amount</th>
+                    <th scope="col">Paid Date</th>
+                    <th scope="col">Payment Type</th>
+                    <th scope="col">Status</th>
                     <th scope="col">Actions</th>
-                    {% endif %}
                 </tr>
             </thead>
             <tbody class="bg-white">
-                {% if list %}
                 {% for item in list %}
                 <tr>
-                    <td>SAR {{item.credit_amount}}</td>
-                    <td>{{item.time_period}}</td>
-                    {% if perms.credits.settings_view or perms.credits.settings_edit %}
-                   <td>
+                    <td><a href="{% url 'wayrem_admin:paid_credit_view' item.reference_no %}"> #{{item.reference_no}}</a></td>
+                    <td>{{item.customer.first_name}} {{item.customer.last_name}}</td>
+                    <td>{{item.id|credit_total_paid_amount|floatformat:2}}</td>
+                    <td>
+                        {% if item.created_at %}
+                        {{item.created_at|date:"d M Y"}}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {{item.payment_type.name}}
+                    </td>
+                    <td>
+                        <span class="badge {% if item.payment_status.id == 27 or item.payment_status.id == 6  %} text-dark{% endif %}" style="padding: 3px 8px;line-height: 11px;background-color:{{item.payment_status.status_color}} !important">{{item.payment_status.name}}</span>
+                    </td>
+                    <td>
                         <div class="btn-group">
                             <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="icon icon-sm">
@@ -99,91 +109,17 @@
                                 <span class="sr-only">Toggle Dropdown</span>
                             </button>
                             <div class="dropdown-menu">
-                                {% if perms.credits.settings_view %}
-                                <a class="dropdown-item" href="{% url 'wayrem_admin:view_credit' item.id %}"><span class="fas fa-eye mr-2"></span>View Details</a>
-                                {% endif %}
-                                {% if perms.credits.settings_edit %}
-                                <a class="dropdown-item" href="{% url 'wayrem_admin:update_credit' item.id %}"><span class="fas fa-edit mr-2"></span>Edit</a>
-                                {% endif %}
-                                {% if perms.credits.settings_edit %}
-                                <a class="dropdown-item text-danger"  data-bs-toggle="modal" data-bs-target="#deleteModal{{item.id}}" href="#"> <span class="fas fa-trash-alt mr-2"></span>Remove</a>
-                                {% endif %}
-                            </div>
-                        </div>
-
-                        <!-- Modal -->
-                        <div class="modal fade" id="deleteModal{{item.id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">Delete Credit: {{item.credit_amount|title}}</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                        Are you sure want to delete Credit: {{item.credit_amount|title}} ?
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-dark" data-bs-dismiss="modal">Close</button>
-                                        <form method="POST" action="{% url 'wayrem_admin:delete_credit' %}">
-                                            {% csrf_token %}
-                                            <input type="hidden" value="{{item.id}}" name="creditId">
-                                            <button type="submit" class="btn btn-danger">Delete</button>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                                <a class="dropdown-item" href="{% url 'wayrem_admin:paid_credit_view' item.reference_no %}"><span class="fas fa-eye mr-2"></span>View</a>
+                            </div>                            
                     </td>
-                    {% endif %}
                 </tr>
                 {% endfor %}
-                {% else %}
-                    <td colspan="4">No data available in table.</td>
-                {% endif %}
             </tbody>
         </table>
-        {% include "credits/pagination.html" %}    
-        </div>
-        
+            
+        {% include "credits/pagination.html" %}
     </div>
 </div>
-
-<script>
-    $(document).ready(function () {
-        oTable = $('#filtertable').DataTable({
-            dom: 'rt',
-            pageLength : 25,
-            'columnDefs': [{ 'orderable': false, 'targets': [3] }],
-            "oLanguage": {
-                "oPaginate": {
-                    "sNext": '<i class="fas fa-arrow-circle-right text-primary"></i>',
-                    "sPrevious": '<i class="fas fa-arrow-circle-left text-primary"></i>'
-                }
-            },
-            "fnDrawCallback": function (oSettings) {
-                if (oSettings._iDisplayLength > oSettings.fnRecordsDisplay()) {
-                    $(oSettings.nTableWrapper).find('.dataTables_paginate').hide();
-                } else {
-                    $(oSettings.nTableWrapper).find('.dataTables_paginate').show();
-                }
-            }
-        });
-        $('#table_search').keyup(function () {
-            oTable.search($(this).val()).draw();
-        })
-        $("#table_search").on(
-          "change keyup paste input", function() {
-           oTable.search($(this).val()).draw();
-           var info = oTable.page.info();
-            $('.searchfound').text(info.recordsDisplay);
-           if(info.recordsDisplay==0) {
-            $('.searchfoundstart').text(0);
-           } else {
-            $('.searchfoundstart').text(1);
-           }
-        })
-    });
-</script> 
 
 <script>
 function supplierFunc(SKU){
@@ -282,35 +218,7 @@ function lowesttimeFunc(SKU){
         
       }
 </script>
-{% comment %} 
-<script>
-    $(document).ready(function () {
-        oTable = $('#filtertable').DataTable({
-            dom: 'rt',
-            'columnDefs': [{ 'orderable': false, 'targets': [5, 6] }],
-            "oLanguage": {
-                "oPaginate": {
-                    "sNext": '<i class="fas fa-arrow-circle-right text-primary"></i>',
-                    "sPrevious": '<i class="fas fa-arrow-circle-left text-primary"></i>'
-                }
-            },
-            "fnDrawCallback": function (oSettings) {
-                if (oSettings._iDisplayLength > oSettings.fnRecordsDisplay()) {
-                    $(oSettings.nTableWrapper).find('.dataTables_paginate').hide();
-                } else {
-                    $(oSettings.nTableWrapper).find('.dataTables_paginate').show();
-                }
-            }
-        });
-        $('#table_search').keyup(function () {
-            oTable.search($(this).val()).draw();
-        });
-        $("#table_search").on(
-          "change keyup paste input", function() {
-           oTable.search($(this).val()).draw();
-        })
-    });
-</script> {% endcomment %}
+
 
 <script>
     function myProfile() {
@@ -335,8 +243,5 @@ function lowesttimeFunc(SKU){
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}{% endblock javascripts %}
-
-
-
 
 
