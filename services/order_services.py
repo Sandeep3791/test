@@ -1119,8 +1119,13 @@ def get_all_orders(offset, customer_id, db: Session):
                 for type_value in order_type_data:
                     order_value = type_value.name
 
+                partial_payment = data.partial_payment
+                if partial_payment is None:
+                    partial_payment = 0
+                
             data_order = order_schemas.OrderDetails(order_id=data.id, order_ref_no=data.ref_number, sub_total=data.sub_total, item_discount=data.item_discount, tax_vat=vat_with_prcnt, total=data.total, grand_total=data.grand_total, email=data.order_email, contact=data.order_phone, country=data.order_country, city=data.order_city, billing_name=data.order_billing_name,
-                                                    billing_address=data.order_billing_address, shipping_name=data.order_ship_name, shipping_address=data.order_ship_address, payment_type=payment_type, payment_status=payment_status, order_date=date, product_count=product_count, order_status=order_status, order_type=order_value, invoice_id=data.invoices_id, delivery_logs=last_log, products=order_product_list)
+                                                    billing_address=data.order_billing_address, shipping_name=data.order_ship_name, shipping_address=data.order_ship_address, payment_type=payment_type, payment_status=payment_status, order_date=date, product_count=product_count, order_status=order_status, order_type=order_value, invoice_id=data.invoices_id, delivery_logs=last_log, products=order_product_list, pending_payment = partial_payment,
+                                                    partial_payment_settled_date = data.partial_payment_settled_date)
             order_list.append(data_order)
 
         data4 = order_schemas.ResponseMyOrders(
@@ -1250,9 +1255,13 @@ def get_order_details(order_id, db: Session):
             if data.invoices_id:
                 invoice_link = f"{constants.global_link}/orders/invoice-orders/{data.ref_number}"
 
+            partial_payment = data.partial_payment
+            if partial_payment is None:
+                partial_payment = 0
+
             data_order = order_schemas.OrderDetailsbyid(order_id=data.id, order_ref_no=data.ref_number, sub_total=data.sub_total, item_discount=data.item_discount, tax_vat=vat_with_prcnt, total=data.total, grand_total=data.grand_total, email=data.order_email, contact=data.order_phone, country=data.order_country, city=data.order_city, billing_name=data.order_billing_name,
                                                         billing_address=data.order_billing_address, shipping_name=data.order_ship_name, shipping_address=data.order_ship_address, payment_type=payment_type, payment_status=payment_status, order_date=date, product_count=product_count, order_status=order_status, order_type=order_value, invoice_id=data.invoices_id, invoice_link=invoice_link, delivery_charges=delivery_charge,
-                                                        bank_receipt=final_bank_re, order_delivery_logs=logs_list, products=order_product_list)
+                                                        bank_receipt=final_bank_re, order_delivery_logs=logs_list, products=order_product_list, pending_payment = partial_payment, pending_payment_date = data.partial_payment_settled_date)
             order_list.append(data_order)
         data4 = order_schemas.ResponseMyOrdersbyid(
             customer_id=data.customer_id, orders=order_list)
