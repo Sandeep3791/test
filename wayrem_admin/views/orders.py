@@ -17,7 +17,7 @@ from wayrem_admin.forms import SettingsForm
 from django.core.paginator import Paginator
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from wayrem_admin.export import generate_excel
-from wayrem_admin.models import Orders, OrderDetails, StatusMaster, OrderDeliveryLogs, OrderTransactions,create_new_ref_number
+from wayrem_admin.models import Orders, OrderDetails, StatusMaster, OrderDeliveryLogs, OrderTransactions,create_new_ref_number,CreditNote
 from wayrem_admin.models import Inventory
 from wayrem_admin.models import Settings
 from django.views.generic.edit import CreateView, UpdateView
@@ -112,17 +112,25 @@ class OrderExportView(View):
     @method_decorator(login_required(login_url='wayrem_admin:root'))
     def get(self, request, **kwargs):
         qs = Orders.objects.annotate(OrderReference=F('ref_number'), OrderDate=F('order_date'), Customer=F('customer__first_name'), Mobile=F('order_phone'), Status=F(
-            'status__name'), Items=Value('', output_field=CharField()), Total=F('grand_total')).values('id', 'OrderReference', 'OrderDate', 'Customer', 'Mobile', 'Status', 'Items', 'Total')
+            'status__name'), Items=Value('', output_field=CharField()), Total=F('grand_total'), PaymentStatus=Value('', output_field=CharField())).values('id', 'OrderReference', 'OrderDate', 'Customer', 'Mobile', 'Status', 'Items', 'Total','PaymentStatus')
         filtered_list = OrderFilter(self.request.GET, queryset=qs)
         query_set = filtered_list.qs
         for qs_field in query_set:
             qs_field['Items'] = OrderDetails.objects.filter(
                 order=qs_field['id']).count()
             qs_field['OrderDate'] = qs_field['OrderDate'].strftime("%d %b %Y")
+            qs_field['PaymentStatus'] = self.getpaymentstatus(qs_field['id'])
             del qs_field['id']
         response = self.genrate_excel(query_set)
         return response
-
+    
+    def getpaymentstatus(self,order_id):
+        ot=OrderTransactions.objects.filter(order_id=order_id).first()
+        if ot is None:
+            return ""
+        else:
+            print(ot.payment_status)
+            return ot.payment_status.name
     def genrate_excel(self, query_set):
         # Create an in-memory output file for the new workbook.
         output = io.BytesIO()
@@ -282,9 +290,16 @@ class OrderStatusUpdated(LoginRequiredMixin, UpdateView):
 
             if log_status is None:
                 data_dic['loginext_success'] = None
-                Orders.objects.filter(id=get_id).update(
-                    status=obj_stat_instance, delivery_status=deliv_obj_stat_instance)
+                credit_note=self.credit_note(obj_stat_instance,get_id)
+                if credit_note:
+                    Orders.objects.filter(id=get_id).update(
+                        status=obj_stat_instance, delivery_status=deliv_obj_stat_instance,credit_note=credit_note)
+                else:
+                    Orders.objects.filter(id=get_id).update(
+                        status=obj_stat_instance, delivery_status=deliv_obj_stat_instance)
+                        
                 self.add_to_wallet(get_id)
+
                 odl = OrderDeliveryLogs(order_id=get_id, order_status=deliv_obj_stat_instance, order_status_details="status change",
                                         log_date=now, user_id=1, customer_view=deliv_obj_stat_instance.customer_view)
                 odl.save()
@@ -304,6 +319,18 @@ class OrderStatusUpdated(LoginRequiredMixin, UpdateView):
         data_dic_json = json.dumps(data_dic)
         return HttpResponse(data_dic_json)
 
+    def credit_note(self,status,order_id):
+        order_det=Orders.objects.filter(id=order_id).first()
+        if(order_det.credit_note == 0 or order_det.credit_note is None ):
+            if status.id == ORDER_CANCELLED:
+                cn=CreditNote.objects.filter().order_by("-id").first()
+                credit_note_return=cn.credit_note+1
+                cr_add=CreditNote(credit_note=credit_note_return)
+                cr_add.save()
+                return credit_note_return
+            else:
+                return 0
+
     def order_notification_customer(self, order_id, status_id):
         from wayrem_admin.forecasts.firebase_notify import FirebaseLibrary
         FirebaseLibrary().send_notify(order_id=order_id, order_status=status_id)
@@ -314,7 +341,7 @@ class OrderStatusUpdated(LoginRequiredMixin, UpdateView):
         return 1
 
     def add_to_wallet(self,order_id):
-        wallet_list=Wallet.objects.filter(order_id=748,transaction_type_id=2).first()
+        wallet_list=Wallet.objects.filter(order_id=order_id,transaction_type_id=2).first() # check duplicate entry
         if wallet_list is not None:
             return 1
         
@@ -366,6 +393,111 @@ class OrderPaymentStatusUpdated(LoginRequiredMixin, UpdateView):
                 FirebaseLibrary().send_notify(order_id=order_id, order_status=PAYMENT_STATUS_CONFIRM)
         return 1
 
+class OrderCreditNoteView(View):
+    login_url = 'wayrem_admin:root'
+    model = Orders
+    template_name = "orders/order_credit_note.html"
+    KEY = 'setting_vat'
+    WAYREM_VAT = 'wayrem_vat_registration'
+    WAYREM_CR = 'wayrem_cr_no'
+
+    def image_to_base64(self, image):
+        buff = BytesIO()
+        image.save(buff, format="png")
+        img_str = base64.b64encode(buff.getvalue())
+        return img_str.decode("utf-8")
+
+    def get(self, request, id):
+        context = {}
+        context['currency'] = CURRENCY
+        order_id = id
+        orders_details = Orders.objects.filter(id=order_id).first()
+        if orders_details.status.id != ORDER_CANCELLED:
+            return render(request, '404.html')
+            #return HttpResponse("Order is not cancelled")
+        filename = "order-"+str(orders_details.ref_number)+".pdf"
+        context['order'] = orders_details
+        context['tax_vat'] = Settings.objects.filter(key=self.KEY).first()
+        context['wayrem_vat'] = Settings.objects.filter(
+            key=self.WAYREM_VAT).first()
+        context['wayrem_cr'] = Settings.objects.filter(
+            key=self.WAYREM_CR).first()
+        context['wayrem_seller_name'] = Settings.objects.filter(
+            key="wayrem_seller_name").first()
+        context['order_details'] = OrderDetails.objects.filter(order=order_id)
+        context['order_transaction'] = OrderTransactions.objects.filter(
+            order=order_id).first()
+        fatoora_obj = Fatoora(
+            seller_name=context['wayrem_seller_name'].value,
+            tax_number=context['wayrem_vat'].value,
+            # invoice_date="2021-07-12T14:25:09+00:00",
+            invoice_date=orders_details.order_date,
+            total_amount=orders_details.grand_total,
+            tax_amount=orders_details.tax,
+        )
+        qr_code = qrcode.make(fatoora_obj.base64)
+        image = self.image_to_base64(qr_code)
+        context['image'] = image
+        html_template = render_to_string(self.template_name, context)
+        pdf_file = HTML(string=html_template,
+                        base_url=request.build_absolute_uri()).write_pdf()
+        response = HttpResponse(pdf_file, content_type='application/pdf')
+        response['Content-Transfer-Encoding'] = 'binary'
+        response['Content-Disposition'] = 'inline;attachment;filename='+filename
+        return response
+
+class OrderRefCreditNoteView(View):
+    login_url = 'wayrem_admin:root'
+    model = Orders
+    template_name = "orders/order_credit_note.html"
+    KEY = 'setting_vat'
+    WAYREM_VAT = 'wayrem_vat_registration'
+    WAYREM_CR = 'wayrem_cr_no'
+
+    def image_to_base64(self, image):
+        buff = BytesIO()
+        image.save(buff, format="png")
+        img_str = base64.b64encode(buff.getvalue())
+        return img_str.decode("utf-8")
+
+    def get(self, request, id):
+        context = {}
+        context['currency'] = CURRENCY
+        order_id = id
+        orders_details = Orders.objects.filter(ref_number=order_id).first()
+        if orders_details.status.id != ORDER_CANCELLED:
+            return render(request, '404.html')
+            #return HttpResponse("Order is not cancelled")
+        filename = "order-"+str(orders_details.ref_number)+".pdf"
+        context['order'] = orders_details
+        context['tax_vat'] = Settings.objects.filter(key=self.KEY).first()
+        context['wayrem_vat'] = Settings.objects.filter(
+            key=self.WAYREM_VAT).first()
+        context['wayrem_cr'] = Settings.objects.filter(
+            key=self.WAYREM_CR).first()
+        context['wayrem_seller_name'] = Settings.objects.filter(
+            key="wayrem_seller_name").first()
+        context['order_details'] = OrderDetails.objects.filter(order=order_id)
+        context['order_transaction'] = OrderTransactions.objects.filter(
+            order=order_id).first()
+        fatoora_obj = Fatoora(
+            seller_name=context['wayrem_seller_name'].value,
+            tax_number=context['wayrem_vat'].value,
+            # invoice_date="2021-07-12T14:25:09+00:00",
+            invoice_date=orders_details.order_date,
+            total_amount=orders_details.grand_total,
+            tax_amount=orders_details.tax,
+        )
+        qr_code = qrcode.make(fatoora_obj.base64)
+        image = self.image_to_base64(qr_code)
+        context['image'] = image
+        html_template = render_to_string(self.template_name, context)
+        pdf_file = HTML(string=html_template,
+                        base_url=request.build_absolute_uri()).write_pdf()
+        response = HttpResponse(pdf_file, content_type='application/pdf')
+        response['Content-Transfer-Encoding'] = 'binary'
+        response['Content-Disposition'] = 'inline;attachment;filename='+filename
+        return response
 
 class OrderInvoiceView(LoginRequiredMixin, View):
     login_url = 'wayrem_admin:root'
@@ -466,7 +598,12 @@ class OrderCancelCloneOrder(View):
         order_type_status=StatusMaster.objects.get(id=ORDER_TYPE_DRAFT)
         new_order=self.model.objects.filter(id=id).values().first() 
         new_ref_number = create_new_ref_number()
-        new_order.update({'id': None,'ref_number':new_ref_number,'from_clone':id,'order_type_id':order_type_status.id,'status_id':order_status_instance.id})
+        new_order_transaction=OrderTransactions.objects.filter(order_id =id).values().first()
+        partial_payment =float(0)
+        if new_order_transaction['payment_status_id'] != PAYMENT_STATUS_CONFIRM:
+            partial_payment = float(new_order['grand_total'])
+        new_order.update({'id': None,'ref_number':new_ref_number,'from_clone':id,'to_clone':None,'order_type_id':order_type_status.id,'status_id':order_status_instance.id,'partial_payment':partial_payment,'partial_payment_settled_date':None})
+        
         new_order_created = self.model.objects.create(**new_order)
         new_order_id=new_order_created.id
         
@@ -475,7 +612,7 @@ class OrderCancelCloneOrder(View):
             od.update({'id':None,'order_id':new_order_id})
             OrderDetails.objects.create(**od)
         self.model.objects.filter(id=id).update(to_clone=new_order_id)
-        new_order_transaction=OrderTransactions.objects.filter(order_id =id).values().first()
+        
         
         get_latest_invoice=OrderTransactions.objects.all().values('invoices_id').order_by('-invoices_id').first()
         new_invoice_id=get_latest_invoice['invoices_id'] + 1
@@ -489,7 +626,7 @@ class OrderCancelCloneOrder(View):
             neworderlog.update({'id':None,'order_id':new_order_id,'log_date':datetime.now()})
             OrderDeliveryLogs.objects.create(**neworderlog)
         self.order_cancelled(id)
-        if new_order_transaction['payment_mode_id'] != COD:
+        if new_order_transaction['payment_mode_id'] != COD and new_order_transaction["payment_status_id"] == PAYMENT_STATUS_CONFIRM:
             self.add_to_wallet(id)
         return redirect('wayrem_admin:cloneorder', pk=new_order_id)
         
@@ -509,10 +646,60 @@ class OrderCancelCloneOrder(View):
         obj_stat_instance = StatusMaster.objects.get(id=ORDER_CANCELLED)
         delivery_status = ORDER_STATUS_CANCELLED
         deliv_obj_stat_instance = StatusMaster.objects.get(id=delivery_status)
-        Orders.objects.filter(id=order_id).update(status=obj_stat_instance, delivery_status=deliv_obj_stat_instance)
+        new_credit_note=self.credit_note(obj_stat_instance,order_id)
+        Orders.objects.filter(id=order_id).update(status=obj_stat_instance, delivery_status=deliv_obj_stat_instance,credit_note=new_credit_note)
+        self.order_inventory_process(order_id)
         payment_status = StatusMaster.objects.get(id=PAYMENT_STATUS_DECLINED)
         OrderTransactions.objects.filter(order=order_id).update(payment_status=payment_status)
         return 1
+
+    def credit_note(self,status,order_id):
+        order_det=Orders.objects.filter(id=order_id).first()
+        if(order_det.credit_note == 0 or order_det.credit_note is None ):
+            if status.id == ORDER_CANCELLED:
+                cn=CreditNote.objects.filter().order_by("-id").first()
+                credit_note_return=cn.credit_note+1
+                cr_add=CreditNote(credit_note=credit_note_return)
+                cr_add.save()
+                return credit_note_return
+            else:
+                return 0
+    def order_inventory_process(self, order_id):
+        # When we place order inventory process to shipping
+        from wayrem_admin.models.orders import Orders, OrderDetails
+        orders = Orders.objects.filter(id=order_id).first()
+        order_status = orders.status.id
+        
+        order_details = OrderDetails.objects.filter(order=order_id)
+        if (order_status == ORDER_STATUS_RECEIVED) or (order_status == ORDER_STATUS_CANCELLED)  or (order_status == ORDER_CANCELLED) :
+            for order_detail in order_details:
+                inventory_dict = {'inventory_type_id': 3, 'quantity': order_detail.quantity, 'product_id': order_detail.product.id,
+                                  'warehouse_id': order_detail.product.warehouse.id, 'po_id': None, 'supplier_id': None, 'order_id': order_id, 'order_status': order_status}
+                if (order_status == ORDER_STATUS_RECEIVED):
+                    inventory_dict['inventory_type_id'] = 3
+                    inventory_dict['order_status'] = INVENTORY_ORDER_STATUS_ORDERED
+                else:
+                    inventory_dict['inventory_type_id'] = 4
+                    inventory_dict['order_status'] = INVENTORY_ORDER_STATUS_CANCELLED
+                self.insert_inventory(inventory_dict)
+        return 1
+
+    def insert_inventory(self, inventory_dict):
+        try:
+            if ('product_id' in inventory_dict) and ('quantity' in inventory_dict) and ('inventory_type_id' in inventory_dict) and ('warehouse_id' in inventory_dict):
+                # inventory_dict={'inventory_type_id':1,'quantity':2,'product_id':1,'warehouse_id':1,'po_id':None,'supplier_id':None,'order_id':None,'order_status':None}
+                inventory_create = Inventory(**inventory_dict)
+                inventory_create.save()
+                product_id = inventory_dict['product_id']
+                self.update_product_quantity(product_id)
+                return True
+            else:
+                print("missing value")
+        except Exception as e:
+            print(e)
+            return False
+
+
 
 class CloneOrderView(DetailView):
     model = Orders
@@ -556,6 +743,7 @@ class InsertOrderdetail(View):
         od = OrderDetails(**od_det_dic)
         od.save()
         OrderLib().update_order(id)
+        OrderLib().order_partial_payment(id)
         return redirect('wayrem_admin:cloneorder', pk=id)
 
 class AutoCompleteModelView(View):
@@ -563,10 +751,13 @@ class AutoCompleteModelView(View):
 
     def post(self,request):
         search=self.request.POST.get('search')
-        pro_list=Products.objects.filter(Q(name__contains=search) | Q(SKU__contains=search)).values('id','name','SKU')
+        pro_list=Products.objects.filter(Q(name__contains=search) | Q(SKU__contains=search)| Q(mfr_name__contains=search)).values('id','name','SKU','mfr_name')
         results = []
         for pro in pro_list:
-            new_dic={'value':pro['id'],'label':pro['SKU'] +" - "+pro['name']}
+            mfr_name=""
+            if pro['mfr_name']:
+                mfr_name=pro['mfr_name']
+            new_dic={'value':pro['id'],'label':pro['SKU'] +" - "+pro['name']+" - "+ mfr_name}
             results.append(new_dic)
         data = json.dumps(results)
         mimetype = 'application/json'
@@ -603,6 +794,9 @@ class Clonecreateorder(View):
         order_transaction=OrderTransactions.objects.filter(order_id =id).values().first()
         
         order_detail_partial_payment = order_details['partial_payment']
+        if order_detail_partial_payment is None:
+            order_detail_partial_payment = float(0)
+
         if order_detail_partial_payment == float(0):
             order_status_instance = StatusMaster.objects.get(id=ORDER_PENDING_APPROVED)
         else:
@@ -610,12 +804,67 @@ class Clonecreateorder(View):
         order_type_status=StatusMaster.objects.get(id=ORDER_TYPE_ONLINE_CUSTOMERS)
 
         order_dict={'order_type_id':order_type_status.id,'status_id':order_status_instance.id,'order_date':datetime.now()}
-        order_details.update(order_dict)
-        Orders.objects.filter(id=id).update(**order_details)
-        OrderDeliveryLogs.objects.filter(order_id =id,order_status_id=1).update(log_date=datetime.now())
         
-        if order_transaction['payment_mode_id'] != COD:
-            OrderLib().credit_to_wallet(order_details,order_transaction)
+        if order_transaction['payment_mode_id'] == COD:
+            order_status_instance = StatusMaster.objects.get(id=ORDER_PENDING_APPROVED)
+            order_dict={'order_type_id':order_type_status.id,'status_id':order_status_instance.id,'partial_payment':0,'order_date':datetime.now()}
 
-        return HttpResponseRedirect("/orders/"+str(id))
+        is_out_stock=self.check_product_quantity(id)
+        if is_out_stock:
+            return HttpResponseRedirect("/orders/clone-order/"+str(id))
+        else:
+            order_details.update(order_dict)
+            Orders.objects.filter(id=id).update(**order_details)
+            OrderDeliveryLogs.objects.filter(order_id =id,order_status_id=1).update(log_date=datetime.now())
+            if order_transaction['payment_mode_id'] != COD:
+                OrderLib().credit_to_wallet(order_details,order_transaction)
+            self.order_inventory_process(id)
+            return HttpResponseRedirect("/orders/"+str(id))
+
+    def check_product_quantity(self,order_id):
+        orderdetail=OrderDetails.objects.filter(order_id=order_id)
+        out_of_stock=0
+        outpro=""
+        for od in orderdetail:
+            if int(od.quantity) <= int(od.product.quantity):
+                pass
+            else:
+                out_of_stock=1
+                outpro +=od.product_name +"or "
+        if out_of_stock:
+            outpro = (outpro[:-3])
+            message="Please check the available quanity for the product " + outpro
+            messages.success(self.request, message)
+        return out_of_stock
+    
+    def order_inventory_process(self, order_id):
+        # When we place order inventory process to shipping
+        from wayrem_admin.models.orders import Orders, OrderDetails
+        orders = Orders.objects.filter(id=order_id).first()
+        order_status = orders.status.id
         
+        order_details = OrderDetails.objects.filter(order=order_id)
+        for order_detail in order_details:
+            inventory_dict = {'inventory_type_id': 3, 'quantity': order_detail.quantity, 'product_id': order_detail.product.id,
+                                'warehouse_id': order_detail.product.warehouse.id, 'po_id': None, 'supplier_id': None, 'order_id': order_id, 'order_status': order_status}
+            inventory_dict['inventory_type_id'] = 3
+            inventory_dict['order_status'] = INVENTORY_ORDER_STATUS_ORDERED
+            self.insert_inventory(inventory_dict)
+        return 1
+
+    def insert_inventory(self, inventory_dict):
+        try:
+            if ('product_id' in inventory_dict) and ('quantity' in inventory_dict) and ('inventory_type_id' in inventory_dict) and ('warehouse_id' in inventory_dict):
+                # inventory_dict={'inventory_type_id':1,'quantity':2,'product_id':1,'warehouse_id':1,'po_id':None,'supplier_id':None,'order_id':None,'order_status':None}
+                inventory_create = Inventory(**inventory_dict)
+                inventory_create.save()
+                product_id = inventory_dict['product_id']
+                self.update_product_quantity(product_id)
+                return True
+            else:
+                print("missing value")
+        except Exception as e:
+            print(e)
+            return False
+
+            

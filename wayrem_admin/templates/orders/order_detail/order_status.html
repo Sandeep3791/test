@@ -5,6 +5,19 @@
     .payment_status {background: #4caf50;color: white;padding: 0.2rem 0.5rem;width: fit-content;border-radius: 5px;font-size: 0.8rem;}
 </style>
 
+{% if order.status.id == 18 %}
+<div class="card card-body bg-white border-light shadow-sm mb-4 p-4">
+    <div class="">
+        <label class="my-1 mr-2 text-gray-600" for="country">Order Refrence:</label><span class="font-weight-bold"> #{{order.ref_number}}</span>
+    </div>
+    <div class="d-flex justify-content-between align-items-center mt-2">
+        <h2 class="h5 m-0">Credit Note {{order.credit_note}}</h2>
+        <a href="{% url 'wayrem_admin:creditnoteorder' order.id %}" class="btn btn-info" ><i class="fa fa-download" aria-hidden="true"></i> Download</a>
+    </div>
+    <div>
+    </div>
+</div>
+{% endif %}
 {% if order.status.id != 28 %}
     <div class="card card-body bg-white border-light shadow-sm mb-4 p-4">
         <div class="">

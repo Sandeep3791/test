@@ -35,7 +35,16 @@
         </nav>
     </div>
 </div>
+{% if messages %}
+<div class="alert alert-warning">
+    {% for message in messages %}
+    {{ message }} 
+    {% endfor %}
+  
+</div>
 
+</ul>
+{% endif %}
 <!--============================================-->
 <div class="row dashboard_content_inner">
     <div class="col-12 col-xl-8">
@@ -114,9 +123,9 @@
              
         <!-- Action Buttons -->
         <div class="d-flex justify-content-end my-3">
-            <button type="submit" class="btn btn-danger ms-3">
+            <a type="submit" class="btn btn-danger ms-3" href="{% url 'wayrem_admin:orderlist' %}">
                 Cancel
-            </button>  
+            </a>  
             <button type="submit" class="btn btn-success ms-3 d-none">
                 Save as draft
             </button>  
@@ -207,9 +216,22 @@ $( function() {
                 $( "#selectuser_id" ).val( ui.item.value);
                 return false;
             },
+            minLength:3,
+            scroll:true
         });
 
 })
 
 </script>
+<style>
+    .ui-autocomplete {
+         max-height: 200px;
+         overflow-y: auto;
+         /* prevent horizontal scrollbar */
+         overflow-x: hidden;
+         /* add padding to account for vertical scrollbar */
+         padding-right: 20px;
+     } 
+</style>
+
 {% endblock javascripts %}

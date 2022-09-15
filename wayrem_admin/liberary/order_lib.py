@@ -80,6 +80,7 @@ class OrderLib:
         else:
             partial_payment=float(grand_total) - float(wallet_amount)
             partial_payment=round(partial_payment,2)
+        
         Orders.objects.filter(id=order_id).update(partial_payment=partial_payment)
         return 1
 

@@ -43,7 +43,7 @@
                     <label class="my-1 mr-2 text-gray-600" for="country">Total Amount</label>
                     <p><label>SR {{total_amount}}</label></p>
                 </div>
-                {% if total_amount != 0 %}<a type="submit" class="btn btn-primary ms-3" href="{% url 'wayrem_admin:walletpay' customer_id %}"><i class="fa fa-check" aria-hidden="true"></i> Pay</a>{% endif %}
+                {% if total_amount != 0 %}<a type="submit" class="btn btn-primary ms-3" href="{% url 'wayrem_admin:walletpay' customer_id %}"><i class="fa fa-check" aria-hidden="true"></i> Refund</a>{% endif %}
             </div>
         </div>
     </div>

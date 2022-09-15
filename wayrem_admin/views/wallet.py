@@ -47,7 +47,7 @@ class WalletCustomerPay(View):
         grand_total=amount
         currentDateTime = datetime.now()
         payment_type=30
-        orderObject=Wallet.objects.filter(transaction_type_id=2).order_by("-id").first()
+        orderObject=Wallet.objects.filter(transaction_type_id=2,customer_id=customer_id).order_by("-id").first()
         order_id=orderObject.order_id
 
         total_amount=float(grand_total)
@@ -73,7 +73,7 @@ class WalletList(ListView):
     def get_context_data(self, **kwargs):
         context = super(WalletList, self).get_context_data(**kwargs)
         id=self.kwargs['id']
-        transaction_id=self.model.objects.values('transaction_type_id').annotate(total_sum=Sum('amount'))
+        transaction_id=self.model.objects.values('transaction_type_id').annotate(total_sum=Sum('amount')).filter(customer=id)
         dr=0
         cr=0
         for tr in transaction_id:
@@ -87,5 +87,3 @@ class WalletList(ListView):
         context['total_amount']=total_amount
         context['customer_id']=id
         return context
-
-
