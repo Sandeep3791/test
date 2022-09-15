@@ -1,4 +1,5 @@
 import math
+from urllib import request
 
 from pytz import utc
 from services import firebase_services, payment_services
@@ -1590,3 +1591,131 @@ def format_string(view_list, image_list):
                                     </tr>
                                 """
     return x
+
+def pending_payment_services(user_request, db:Session):
+    customer_id = user_request.customer_id
+    db_user_active = db.query(user_models.User).filter(
+        user_models.User.id == customer_id).first()
+    if db_user_active:
+        if db_user_active.verification_status == "active":
+            entityId = common_services.get_entityId(user_request.entityId)
+
+            checkout_request = payment_schemas.CheckoutIdRequest(
+                entityId=entityId, amount=user_request.amount, currency='SAR', paymentType=user_request.paymentType, customer_id=user_request.customer_id)
+
+            user_request2 = jsonable_encoder(checkout_request)
+
+            if user_request.registrationId:
+                user_request2['registrationId'] = user_request.registrationId
+
+            checkout_details = payment_services.HyperPayResponseView(
+                user_request.entityId).generate_checkout_id(user_request2)
+            success_code = checkout_details['result']['code']
+            if success_code == '000.200.100' or success_code == '000.200.101' or success_code == '000.200.102':
+                checkout_id = checkout_details['id']
+                order_details = db.query(order_models.Orders).filter(order_models.Orders.id == user_request.order_id).first()
+                if order_details:
+                    order_details.checkout_id = checkout_id
+                    db.merge(order_details)
+                    db.commit()
+                data = payment_schemas.ResponseCreditPay(
+                    checkout_id=checkout_id)
+                resp = payment_schemas.ResponseCreditPAyCheckout(
+                    status=status.HTTP_200_OK, message="Checkout ID created successfully", data=data)
+                return resp
+
+            else:
+                common_msg = user_schemas.ResponseCommonMessage(
+                    status=status.HTTP_404_NOT_FOUND, message="Transaction failed!")
+                return common_msg
+        else:
+            common_msg = user_schemas.ResponseCommonMessage(
+                status=status.HTTP_404_NOT_FOUND, message="User is not approved to place the order")
+            return common_msg
+    else:
+        common_msg = user_schemas.ResponseCommonMessage(
+            status=status.HTTP_404_NOT_FOUND, message="Customer does't exist!")
+        return common_msg
+
+def clone_order(user_request, db: Session):
+    order_details = db.query(order_models.Orders).filter(order_models.Orders.id == user_request.order_id).first()
+    payment_amount = order_details.partial_payment
+    if user_request.paymentMode == 14:
+
+        SUCCESS_CODES_REGEX = re.compile(r'^(000\.000\.|000\.100\.1|000\.[36])')
+        SUCCESS_MANUAL_REVIEW_CODES_REGEX = re.compile(
+            r'^(000\.400\.0[^3]|000\.400\.[0-1]{2}0)')
+        PENDING_CHANGEABLE_SOON_CODES_REGEX = re.compile(r'^(000\.200)')
+        PENDING_NOT_CHANGEABLE_SOON_CODES_REGEX = re.compile(
+            r'^(800\.400\.5|100\.400\.500)')
+        hyperpay_response = None
+        hyperpay_response_description = None
+
+        payment_status = payment_services.HyperPayResponseView(
+            request.entityId).get_payment_status(request.checkout_id)
+
+        payment_check = payment_status.get("result").get("code")
+        hyperpay_response = payment_status
+        hyperpay_response_description = payment_status.get(
+            "result").get("description")
+        if re.search(PENDING_CHANGEABLE_SOON_CODES_REGEX, payment_check) or re.search(PENDING_NOT_CHANGEABLE_SOON_CODES_REGEX, payment_check) or re.search(SUCCESS_CODES_REGEX, payment_check) or re.search(SUCCESS_MANUAL_REVIEW_CODES_REGEX, payment_check):
+            failed = False
+        else:
+            failed = True
+        if failed:
+            response = user_schemas.ResponseCommonMessage(
+                status=status.HTTP_424_FAILED_DEPENDENCY, message="Transaction Failed!!", data=str(hyperpay_response))
+            return response
+        registrationId = payment_status.get("registrationId")
+
+        if registrationId:
+            card_body = payment_status.get("card")
+            card_number = card_body.get("last4Digits")
+
+            reg_id = db.query(payment_models.CustomerCard).filter(payment_models.CustomerCard.customer_id == request.customer_id, or_(
+                payment_models.CustomerCard.registration_id == registrationId, payment_models.CustomerCard.card_number == card_number)).first()
+
+            if not reg_id:
+                card_body = payment_status.get("card")
+                card_number = card_body.get("last4Digits")
+                expiry_month = card_body.get("expiryMonth")
+                expiry_year = card_body.get("expiryYear")
+                card_holder = card_body.get("holder")
+                card_type = card_body.get("type")
+                card_brand = payment_status.get("paymentBrand")
+                save_card = payment_models.CustomerCard(customer_id=request.customer_id, registration_id=registrationId, card_number=card_number, expiry_month=expiry_month,
+                                                        expiry_year=expiry_year, card_holder=card_holder, card_type=card_type, card_body=str(card_body), card_brand=card_brand)
+                db.merge(save_card)
+                db.commit()
+        order_details.partial_payment = 0
+        order_details.partial_payment_settled_date = datetime.now()
+        
+    elif user_request.paymentMode == 13:
+        credit_data = db.query(credit_models.CreditManagement).filter(
+                credit_models.CreditManagement.customer_id == request.customer_id).first()
+        available_cr = credit_data.available
+
+        if available_cr >= payment_amount:
+            updated_credit = round(float(available_cr - payment_amount), 2)
+
+            credit_data.available = updated_credit
+            credit_data.used += float(payment_amount)
+            credit_data.updated_at = common_services.get_time()
+            db.merge(credit_data)
+            db.commit()
+
+            update_date = credit_data.updated_at
+
+            credit_settings_data = db.query(credit_models.CreditSettings).filter(
+                credit_models.CreditSettings.id == credit_data.credit_rule_id).first()
+            time_in_days = credit_settings_data.time_period
+            due_date = update_date + timedelta(days=time_in_days)
+
+            credit_log = credit_models.CreditTransactionsLog(customer_id=request.customer_id, order_id=user_request.order_id, credit_amount=float(
+                payment_amount), available=updated_credit, credit_date=common_services.get_time(), due_date=due_date, payment_status=False)
+            db.merge(credit_log)
+            db.commit()
+        else:
+            result = user_schemas.ResponseCommonMessage(
+                status=status.HTTP_404_NOT_FOUND, message="Not enough credits available !")
+            return result

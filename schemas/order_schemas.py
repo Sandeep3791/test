@@ -292,3 +292,19 @@ class InitialOrderResponse(BaseModel):
     status: str
     message: str
     data: ReferenceAndCheckoutIds
+
+class PaymentCheckoutIdRequest(BaseModel):
+    order_id: int
+    customer_id: int
+    entityId: str
+    amount: str
+    currency: str
+    paymentType: str
+    registrationId: Optional[str]
+
+class CloneOrderPayment(BaseModel):
+    order_id: int
+    customer_id: int
+    checkout_id: Optional[str]
+    entityId: Optional[str]
+    paymentMode: int

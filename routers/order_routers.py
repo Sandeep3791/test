@@ -79,3 +79,15 @@ def get_filters_orders(offset: str, customer_id: int, filter_id: int ,authorize:
     get_product_details = order_services.get_filters_orders(
         offset, customer_id,filter_id, db)
     return get_product_details
+
+
+@router.post('/get/pending/payment/checkout/id')
+def get_pending_payment_checkout_id(user_request: order_schemas.PaymentCheckoutIdRequest, authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
+    response = order_services.pending_payment_services(user_request, db)
+    return response
+
+@router.post('/clone/pending/payment')
+def clone_order_payment(user_request: order_schemas.CloneOrderPayment, authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
+    response = order_services.clone_order(user_request, db)
+    return response
+

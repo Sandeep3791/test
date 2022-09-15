@@ -54,6 +54,7 @@ def upload_bank_payment_image(customer_id, order_id, image, db: Session):
         file_object.close()
 
     order_data.bank_payment_image = db_path
+    order_data.payment_mode_id = 12
     db.merge(order_data)
     db.commit()
     prfl_path = user_schemas.UploadProfiledata(path=db_path)
