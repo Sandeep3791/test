@@ -751,10 +751,13 @@ class AutoCompleteModelView(View):
 
     def post(self,request):
         search=self.request.POST.get('search')
-        pro_list=Products.objects.filter(Q(name__contains=search) | Q(SKU__contains=search)).values('id','name','SKU')
+        pro_list=Products.objects.filter(Q(name__contains=search) | Q(SKU__contains=search)| Q(mfr_name__contains=search)).values('id','name','SKU','mfr_name')
         results = []
         for pro in pro_list:
-            new_dic={'value':pro['id'],'label':pro['SKU'] +" - "+pro['name']}
+            mfr_name=""
+            if pro['mfr_name']:
+                mfr_name=pro['mfr_name']
+            new_dic={'value':pro['id'],'label':pro['SKU'] +" - "+pro['name']+" - "+ mfr_name}
             results.append(new_dic)
         data = json.dumps(results)
         mimetype = 'application/json'
