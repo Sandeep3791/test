@@ -33,7 +33,7 @@ class Orders(models.Model):
     order_ship_address = models.CharField(max_length=100)
 
     order_ship_building_name = models.CharField(max_length=100)
-    order_ship_landmark = models.CharField(max_length=100)
+    order_ship_landmark = models.CharField(max_length=100, null=True)
     order_ship_region = models.CharField(max_length=100)
     order_ship_latitude = models.CharField(max_length=100)
     order_ship_longitude = models.CharField(max_length=100)
@@ -60,7 +60,7 @@ class Orders(models.Model):
     partial_payment = models.FloatField(default=0, null=True)
     partial_payment_settled_date = models.DateTimeField(blank=True, null=True)
     credit_note = models.IntegerField(default=0, null=True)
-    
+
     def __str__(self):
         return self.ref_number
 
@@ -299,8 +299,10 @@ class Wallet(models.Model):
         app_label = "wayrem_admin"
         db_table = 'wallet'
 
+
 class CreditNote(models.Model):
     credit_note = models.IntegerField(blank=True, null=True)
+
     class Meta:
         app_label = "wayrem_admin"
         db_table = 'credit_note'
