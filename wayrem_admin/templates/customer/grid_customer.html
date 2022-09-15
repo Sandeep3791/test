@@ -77,9 +77,9 @@
                         {% if perms.credits.transaction_logs %}
                         <a class="dropdown-item" href="{% url 'wayrem_admin:credit_transactions' user.id %}"><span class="fa fa-credit-card mr-2"></span>Credit Logs</a>
                         {% endif %}
-                        {% if perms.wallet.customer_wallet %}
+                        {% comment %} {% if perms.wallet.customer_wallet %}
                         <a class="dropdown-item" href="{% url 'wayrem_admin:walletlistcreate' user.id %}"><span class="fas fa-wallet mr-2"></span>Wallet</a>
-                        {% endif %}
+                        {% endif %} {% endcomment %}
                         {% comment %} <a class="dropdown-item" href=""><span class="fas fa-edit mr-2"></span>Edit</a>
                         <a class="dropdown-item text-danger"  data-bs-toggle="modal" data-bs-target="#deleteModal{{suppl.id}}" href="#"> <span class="fas fa-trash-alt mr-2"></span>Remove</a> {% endcomment %}
                     </div>
