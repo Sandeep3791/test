@@ -31,7 +31,7 @@ class Orders(Base):
     order_city = Column(String(255))
     order_country = Column(String(255))
     order_ship_region = Column(String(255))
-    order_ship_landmark = Column(String(255))
+    order_ship_landmark = Column(String(255), nullable=True)
     order_ship_building_name = Column(String(255))
     order_ship_latitude = Column(String(255))
     order_ship_longitude = Column(String(255))
