@@ -20,13 +20,13 @@ class User(BaseModel):
     business_name: str
     delivery_house_no_building_name: str
     delivery_road_name_Area: str
-    delivery_landmark: str
+    delivery_landmark: Optional[str] = None
     delivery_country: str
     delivery_region: str
     delivery_town_city:  str
     billing_house_no_building_name: str
     billing_road_name_Area: str
-    billing_landmark: str
+    billing_landmark: Optional[str] = None
     billing_country: str
     billing_region: str
     billing_town_city:  str
