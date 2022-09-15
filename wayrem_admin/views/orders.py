@@ -341,7 +341,7 @@ class OrderStatusUpdated(LoginRequiredMixin, UpdateView):
         return 1
 
     def add_to_wallet(self,order_id):
-        wallet_list=Wallet.objects.filter(order_id=748,transaction_type_id=2).first()
+        wallet_list=Wallet.objects.filter(order_id=order_id,transaction_type_id=2).first() # check duplicate entry
         if wallet_list is not None:
             return 1
         
