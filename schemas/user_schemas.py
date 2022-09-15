@@ -282,7 +282,7 @@ class CustomerAddressSchema(BaseModel):
     contact: int
     house_no_building_name: str
     road_name_Area: str
-    landmark: str
+    landmark: Optional[str] = None
     country: str
     region: str
     town_city: str
@@ -297,7 +297,7 @@ class CustomerAddressResponse2(BaseModel):
     contact: int
     house_no_building_name: str
     road_name_Area: str
-    landmark: str
+    landmark: Optional[str] = None
     country: str
     region: str
     town_city: str
@@ -317,7 +317,7 @@ class CustomerAddressResponse(BaseModel):
     contact: int
     house_no_building_name: str
     road_name_Area: str
-    landmark: str
+    landmark: Optional[str] = None
     country: str
     region: str
     town_city: str
@@ -353,7 +353,7 @@ class UpdateCustomerAddress(BaseModel):
     contact: int
     house_no_building_name: str
     road_name_Area: str
-    landmark: str
+    landmark: Optional[str] = None
     country: str
     region: str
     town_city: str
