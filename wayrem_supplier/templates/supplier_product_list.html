@@ -61,6 +61,7 @@
                     <tr>
                         <th class="text-secondary text-sm font-weight-bolder opacity-7">SKU</th>
                         <th class="text-secondary text-sm font-weight-bolder opacity-7">Product Name</th>
+                        <th class="text-secondary text-sm font-weight-bolder opacity-7">Brand</th>
                         <th class="text-secondary text-sm font-weight-bolder opacity-7">Quantity</th>
                         <th class="text-secondary text-sm font-weight-bolder opacity-7">Price</th>
                         <th class="text-secondary text-sm font-weight-bolder opacity-7">Deliverable Days</th>
@@ -73,6 +74,7 @@
                         <tr> 
                             <td class="text-sm font-weight-bold p-4">{{ item.SKU }}</td>
                             <td class="text-sm font-weight-bold p-4">{{ item.product_name }}</td>
+                            <td class="text-sm font-weight-bold p-4">{{ item.product.mfr_name }}</td>
                             <td class="text-sm font-weight-bold p-4">{{ item.quantity }}{{item.unit }}</td>
                             <td class="text-sm font-weight-bold p-4">{{ item.price | truncatechars:30 }}</td>
                             <td class="text-sm font-weight-bold p-4">{{ item.deliverable_days }}</td> 
