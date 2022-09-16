@@ -66,5 +66,7 @@ class CreditPaymentReference(Base):
     reference_no = Column(String(255),unique=True,nullable=True)
     bank_payment_file = Column(String(255), nullable=True)
     payment_type_id = Column(Integer)
+    payment_status_id = Column(Integer)
     is_verified = Column(Boolean, default=False)
     created_at = Column(DateTime(timezone=True), default=get_time())
+    updated_at = Column(DateTime(timezone=True), default=get_time())

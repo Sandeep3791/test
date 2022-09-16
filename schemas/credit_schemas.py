@@ -1,6 +1,6 @@
 from typing import Optional
 from pydantic import BaseModel
-from typing import Optional, List
+from typing import Optional, List, Union
 
 
 class ResponseCustomerCredits(BaseModel):
@@ -16,6 +16,11 @@ class ResponseCustomerCreditsFinal(BaseModel):
     message: str
     data: ResponseCustomerCredits
 
+class OrdersRefNumber(BaseModel):
+    order_ref_no: str
+    order_amount: float 
+    order_due_time: Optional[str] = None
+
 
 class ResponseCustomerCreditsTxn(BaseModel):
     id: int
@@ -25,12 +30,18 @@ class ResponseCustomerCreditsTxn(BaseModel):
     due_date: Optional[str] = None
     payment_status: bool
     is_refund : bool
-    order_ref_no: str
+    order_ref_no: Union[str, List[OrdersRefNumber]]
     valid_date: Optional[bool]
     paid_date: Optional[str] = None
     paid_amount: Optional[float] = None
     paid_credit_id: Optional[int] = None
     bank_pending:Optional[bool] = False
+    bank_reject: Optional[bool] = False
+    transaction_ref_id: Optional[int] = None
+    transaction_ref_no: Optional[str] = None
+    transaction_creation_date: Optional[str] = None
+    bank_details: Optional[str] = None
+
 
 
 class ResponseCustomerCreditsTxnFinal(BaseModel):

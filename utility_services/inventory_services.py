@@ -14,8 +14,10 @@ def update_inventory(order_id, product_id, product_quantity, db: Session):
     db.commit()
     # Inverntory Update start
     try:
-        product_type = db.execute(
-            f"SELECT `inventory`.`inventory_type_id`, SUM(`inventory`.`quantity`) AS `inventory_quantity` FROM `inventory` WHERE `inventory`.`product_id` = {product_id} GROUP BY `inventory`.`inventory_type_id` ORDER BY `inventory`.`inventory_type_id` ASC")
+        # product_type = db.execute(
+        #     f"SELECT `inventory`.`inventory_type_id`, SUM(`inventory`.`quantity`) AS `inventory_quantity` FROM `inventory` WHERE `inventory`.`product_id` = {product_id} GROUP BY `inventory`.`inventory_type_id` ORDER BY `inventory`.`inventory_type_id` ASC")
+        product_type = db.execute(f"SELECT inventory_type_id, SUM(quantity) AS inventory_quantity FROM {constants.Database_name}.inventory WHERE inventory.product_id = {product_id} GROUP BY inventory_type_id ORDER BY inventory_type_id ASC")
+
         total_quantity = 0
         inventory_starting = 0
         inventory_received = 0

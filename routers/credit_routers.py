@@ -11,9 +11,6 @@ from schemas import credit_schemas
 
 router = APIRouter(
     prefix="/v1",
-    # dependencies=[Depends(get_bearer_header)],
-    # responses={404: {"description": "Not found"},
-    # 401:{"description":"Unauthorised"}},
     tags=["CREDITS"],
 )
 
@@ -58,7 +55,7 @@ def check_user_credit(customer_id: int, authorize: AuthJWT = Depends(oauth2_sche
 
 
 @router.post('/upload/credit/bank/payment/image')
-def upload_credit_bank_payment_image(customer_id: str, reference_no: int, image: UploadFile = File(...), authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
+def upload_credit_bank_payment_image(customer_id: int, reference_no: int, image: UploadFile = File(...), authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
     user = credit_services.upload_credit_bank_payment_image(customer_id, reference_no, image, db)
     return user
 
@@ -67,3 +64,7 @@ def pay_overdue_credits(request: credit_schemas.CreditDuesbyBankRequest, authori
     response = credit_services.pay_overdue_credits_ByBank(request, db)
     return response
     
+@router.post('/credit/cancel/transation')
+def transaction_cancel(customer_id: int, transation_ref_id: int, authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
+    response =credit_services.update_payment_status_id(customer_id, transation_ref_id, db)
+    return response
