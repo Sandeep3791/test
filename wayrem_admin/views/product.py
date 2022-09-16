@@ -1012,6 +1012,9 @@ def bulk_quantity_excel(request):
         unwanted_cols = list(set(excel_cols) - set(required_cols))
         if len(excel_cols) == 5 and required_cols == excel_cols:
             try:
+                cols = ['add quantity', 'remove quantity']
+                df[cols] = df[cols].apply(
+                    pd.to_numeric, errors='coerce', axis=1)
                 del df['product name']
                 del df['brand']
                 con = connect(user=DATABASES['default']['USER'], password=DATABASES['default']['PASSWORD'],
@@ -1020,16 +1023,13 @@ def bulk_quantity_excel(request):
                     'select * from products_master', con)
                 df.rename(columns={"sku": "SKU", "add quantity": "add_quantity",
                           "remove quantity": "remove_quantity"}, inplace=True)
-                df = df.drop_duplicates(
-                    subset="SKU", keep='first', inplace=False)
                 # NaN values removed from sku and product name
-                df_add = df[df['SKU'].notna()]
-                df_remove = df[df['SKU'].notna()]
-                df_add = df[df['add_quantity'].notna()]
-                df_remove = df[df['remove_quantity'].notna()]
-                df_add['add_quantity'] = df_add['add_quantity'].astype(int)
-                df_remove['remove_quantity'] = df_remove['remove_quantity'].astype(
-                    int)
+                df_add = df[df[['SKU', 'add_quantity']].notna().all(1)]
+                df_add = df_add.drop_duplicates(
+                    subset="SKU", keep='first', inplace=False)
+                df_remove = df[df[['SKU', 'remove_quantity']].notna().all(1)]
+                df_remove = df_remove.drop_duplicates(
+                    subset="SKU", keep='first', inplace=False)
                 df_add = df_add[df_add.add_quantity > 0]
                 df_remove = df_remove[df_remove.remove_quantity > 0]
                 df_products['SKU'] = df_products['SKU'].astype(str)
@@ -1064,7 +1064,7 @@ def bulk_quantity_excel(request):
                 return render(request, "product/import_product.html", context)
             except Exception as e:
                 print(e)
-                messages.success(request, "Wrong Excel format!")
+                messages.error(request, "Wrong Excel format!")
                 return render(request, "product/import_product.html")
         else:
             context = {
