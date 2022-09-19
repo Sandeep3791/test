@@ -20,13 +20,13 @@ class User(BaseModel):
     business_name: str
     delivery_house_no_building_name: str
     delivery_road_name_Area: str
-    delivery_landmark: str
+    delivery_landmark: Optional[str] = None
     delivery_country: str
     delivery_region: str
     delivery_town_city:  str
     billing_house_no_building_name: str
     billing_road_name_Area: str
-    billing_landmark: str
+    billing_landmark: Optional[str] = None
     billing_country: str
     billing_region: str
     billing_town_city:  str
@@ -58,13 +58,13 @@ class ResponseCreateUser(BaseModel):
     business_name: str
     delivery_house_no_building_name: str
     delivery_road_name_Area: str
-    delivery_landmark: str
+    delivery_landmark: Optional[str] = None
     delivery_country: str
     delivery_region: str
     delivery_town_city:  str
     billing_house_no_building_name: str
     billing_road_name_Area: str
-    billing_landmark: str
+    billing_landmark: Optional[str] = None
     billing_country: str
     billing_region: str
     billing_town_city:  str
@@ -102,13 +102,13 @@ class LoginResponse(BaseModel):
     business_name: str
     delivery_house_no_building_name: str
     delivery_road_name_Area: str
-    delivery_landmark: str
+    delivery_landmark: Optional[str] = None
     delivery_country: str
     delivery_region: str
     delivery_town_city:  str
     billing_house_no_building_name: str
     billing_road_name_Area: str
-    billing_landmark: str
+    billing_landmark: Optional[str] = None
     billing_country: str
     billing_region: str
     billing_town_city:  str
@@ -140,13 +140,13 @@ class ProfileResponse(BaseModel):
     business_name: str
     delivery_house_no_building_name: str
     delivery_road_name_Area: str
-    delivery_landmark: str
+    delivery_landmark: Optional[str] = None
     delivery_country: str
     delivery_region: str
     delivery_town_city:  str
     billing_house_no_building_name: str
     billing_road_name_Area: str
-    billing_landmark: str
+    billing_landmark: Optional[str] = None
     billing_country: str
     billing_region: str
     billing_town_city:  str
@@ -209,13 +209,13 @@ class UserUpdate(BaseModel):
     business_name: str
     delivery_house_no_building_name: str
     delivery_road_name_Area: str
-    delivery_landmark: str
+    delivery_landmark: Optional[str] = None
     delivery_country: str
     delivery_region: str
     delivery_town_city:  str
     billing_house_no_building_name: str
     billing_road_name_Area: str
-    billing_landmark: str
+    billing_landmark: Optional[str] = None
     billing_country: str
     billing_region: str
     billing_town_city:  str
@@ -236,13 +236,13 @@ class ResponseUpdateUser(BaseModel):
     business_name: str
     delivery_house_no_building_name: str
     delivery_road_name_Area: str
-    delivery_landmark: str
+    delivery_landmark: Optional[str] = None
     delivery_country: str
     delivery_region: str
     delivery_town_city:  str
     billing_house_no_building_name: str
     billing_road_name_Area: str
-    billing_landmark: str
+    billing_landmark: Optional[str] = None
     billing_country: str
     billing_region: str
     billing_town_city:  str
@@ -282,7 +282,7 @@ class CustomerAddressSchema(BaseModel):
     contact: int
     house_no_building_name: str
     road_name_Area: str
-    landmark: str
+    landmark: Optional[str] = None
     country: str
     region: str
     town_city: str
@@ -297,7 +297,7 @@ class CustomerAddressResponse2(BaseModel):
     contact: int
     house_no_building_name: str
     road_name_Area: str
-    landmark: str
+    landmark: Optional[str] = None
     country: str
     region: str
     town_city: str
@@ -317,7 +317,7 @@ class CustomerAddressResponse(BaseModel):
     contact: int
     house_no_building_name: str
     road_name_Area: str
-    landmark: str
+    landmark: Optional[str] = None
     country: str
     region: str
     town_city: str
@@ -331,7 +331,7 @@ class Responsedeliveryaddress(BaseModel):
     last_name: str
     delivery_house_no_building_name: str
     delivery_road_name_Area: str
-    delivery_landmark: str
+    delivery_landmark: Optional[str] = None
     delivery_country: str
     delivery_region: str
     delivery_town_city:  str
@@ -353,7 +353,7 @@ class UpdateCustomerAddress(BaseModel):
     contact: int
     house_no_building_name: str
     road_name_Area: str
-    landmark: str
+    landmark: Optional[str] = None
     country: str
     region: str
     town_city: str
@@ -391,7 +391,7 @@ class ResponseBillingaddress(BaseModel):
     last_name: str
     billing_house_no_building_name: str
     billing_road_name_Area: str
-    billing_landmark: str
+    billing_landmark: Optional[str] = None
     billing_country: str
     billing_region: str
     billing_town_city:  str
@@ -409,7 +409,7 @@ class BillingAddressUpdate(BaseModel):
     customer_id: int
     billing_house_no_building_name: str
     billing_road_name_Area: str
-    billing_landmark: str
+    billing_landmark: Optional[str] = None
     billing_country: str
     billing_region: str
     billing_town_city:  str

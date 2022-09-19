@@ -18,7 +18,7 @@ class OrderRequest(BaseModel):
     city: str
     shipping_region: str
     shipping_building_name: str
-    shipping_landmark: str
+    shipping_landmark: Optional[str] = None
     shipping_latitude: str
     shipping_longitude: str
     billing_name: str
@@ -42,7 +42,7 @@ class InitialOrderRequest(BaseModel):
     city: str
     shipping_region: str
     shipping_building_name: str
-    shipping_landmark: str
+    shipping_landmark: Optional[str] = None
     shipping_latitude: str
     shipping_longitude: str
     billing_name: str
@@ -67,7 +67,7 @@ class CreateOrderRequest(BaseModel):
     city: str
     shipping_region: str
     shipping_building_name: str
-    shipping_landmark: str
+    shipping_landmark: Optional[str] = None
     shipping_latitude: str
     shipping_longitude: str
     billing_name: str

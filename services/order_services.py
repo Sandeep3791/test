@@ -928,7 +928,7 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
             else:
                 inv_no = 1001
         order_transact = order_models.OrderTransactions(user_id=request.customer_id,  order_id=order_id, order_type=1,
-                                                        payment_mode_id=request.payment_type, payment_status_id=request.payment_status, invoices_id=inv_no)
+                                                        payment_mode_id=request.payment_type, payment_status_id=request.payment_status, invoices_id=inv_no,created_at=common_services.get_time(),updated_at=common_services.get_time())
         db.merge(order_transact)
         db.commit()
 
