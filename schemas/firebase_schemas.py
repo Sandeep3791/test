@@ -14,8 +14,8 @@ class PushNotificationFirebase(BaseModel):
 
 class NotificationResponse(BaseModel):
     title: Optional[str]
-    order_id: int
-    ref_no: int
+    order_id: Optional[int]
+    ref_no: Optional[int]
     message: Optional[str]
     time: Optional[str]
     date: str

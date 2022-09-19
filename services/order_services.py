@@ -1,5 +1,6 @@
 import math
 from urllib import request
+from weakref import KeyedRef
 
 from pytz import utc
 from services import firebase_services, payment_services
@@ -1029,7 +1030,7 @@ def get_all_orders(offset, customer_id, db: Session):
     for value in limit_value:
         limit_val = int(value[0])
     orders_data = db.execute(
-        f'SELECT t1.*, t2.id as transaction_id, t2.payment_mode_id, t2.payment_status_id , t2.invoices_id, t4.name as payment_mode , t3.name as payment_status FROM {constants.Database_name}.orders t1 inner join {constants.Database_name}.order_transactions t2 on t1.id = t2.order_id inner join {constants.Database_name}.status_master t3 on  t3.id = t2.payment_status_id inner join {constants.Database_name}.status_master t4 on t4.id = t2.payment_mode_id  where customer_id = {customer_id} and is_shown = true order by t1.id DESC limit {offset_int},{limit_val};')
+        f'SELECT t1.*, t2.id as transaction_id, t2.payment_mode_id, t2.payment_status_id , t2.invoices_id, t4.name as payment_mode , t3.name as payment_status FROM {constants.Database_name}.orders t1 inner join {constants.Database_name}.order_transactions t2 on t1.id = t2.order_id inner join {constants.Database_name}.status_master t3 on  t3.id = t2.payment_status_id inner join {constants.Database_name}.status_master t4 on t4.id = t2.payment_mode_id  where customer_id = {customer_id} and is_shown = true and order_type != 29 order by t1.id DESC limit {offset_int},{limit_val};')
     if orders_data.rowcount > 0:
         order_list = []
         for data in orders_data:
@@ -1634,11 +1635,16 @@ def pending_payment_services(user_request, db:Session):
             return common_msg
     else:
         common_msg = user_schemas.ResponseCommonMessage(
-            status=status.HTTP_404_NOT_FOUND, message="Customer does't exist!")
+            status=status.HTTP_404_NOT_FOUND, message="Customer doesn't exist!")
         return common_msg
 
 def clone_order(user_request, db: Session):
     order_details = db.query(order_models.Orders).filter(order_models.Orders.id == user_request.order_id).first()
+    if not order_details:
+        common_msg = user_schemas.ResponseCommonMessage(
+            status=status.HTTP_404_NOT_FOUND, message="Order doesn't exist!")
+        return common_msg
+    
     payment_amount = order_details.partial_payment
     if user_request.paymentMode == 14:
 
@@ -1687,8 +1693,6 @@ def clone_order(user_request, db: Session):
                                                         expiry_year=expiry_year, card_holder=card_holder, card_type=card_type, card_body=str(card_body), card_brand=card_brand)
                 db.merge(save_card)
                 db.commit()
-        order_details.partial_payment = 0
-        order_details.partial_payment_settled_date = datetime.now()
         
     elif user_request.paymentMode == 13:
         credit_data = db.query(credit_models.CreditManagement).filter(
@@ -1719,3 +1723,18 @@ def clone_order(user_request, db: Session):
             result = user_schemas.ResponseCommonMessage(
                 status=status.HTTP_404_NOT_FOUND, message="Not enough credits available !")
             return result
+
+    order_details.partial_payment = 0
+    order_details.partial_payment_settled_date = common_services.get_time()
+    db.merge(order_details)
+    db.commit()
+
+    transaction_detail = db.query(order_models.OrderDeliveryLogs).filter(order_models.OrderDeliveryLogs.order_id == order_details.id).first() 
+    transaction_detail.log_date = common_services.get_time()
+    db.merge(transaction_detail)
+    db.commit()
+
+    data_response = order_schemas.OrderResponseData(order_id=order_details.id)
+    response = order_schemas.OrderResponse(
+    status=status.HTTP_200_OK, message="Order Placed Successfully", data=data_response)    
+    return response
