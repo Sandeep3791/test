@@ -1051,7 +1051,7 @@ def bulk_quantity_excel(request):
                         print("working", sku, quantity)
                         update_quantity_bulk.delay(sku, quantity)
                 if len(sku_s_remove) > 0:
-                    sku_list = list(divide_chunks(sku_s_add, 25))
+                    sku_list = list(divide_chunks(sku_s_remove, 25))
                     quantity_list = list(divide_chunks(quantitys_remove, 25))
                     for sku, quantity in zip(sku_list, quantity_list):
                         print("working", sku, quantity)
