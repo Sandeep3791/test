@@ -16,7 +16,7 @@ from django.http import HttpResponse
 import json
 from wayrem_admin.forecasts.firebase_notify import FirebaseLibrary
 from wayrem_admin.models import CreditSettings
-from wayrem_admin.models.customers import CustomerNotification
+from wayrem_admin.models.customers import CreditCycle, CustomerNotification
 from wayrem_admin.models.orders import Orders, StatusMaster
 from wayrem_admin.services import send_email
 from wayrem_admin.forms import CustomerSearchFilter, CustomerEmailUpdateForm, CreditsForm, CreditsSearchFilter
@@ -37,7 +37,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
 from django.contrib.auth.decorators import permission_required
 from django.utils.decorators import method_decorator
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date, time
 
 
 class CreditCreate(LoginPermissionCheckMixin, CreateView):
@@ -177,6 +177,17 @@ def creditAssign(request, id=None):
                 assign_credit = CreditManagement(
                     customer_id=id, credit_rule=available_credit, used=0, available=available_credit.credit_amount)
                 assign_credit.save()
+            credit_cycle, created = CreditCycle.objects.get_or_create(
+                customer_id=id)
+            date_today = date.today()
+            min_startdate = datetime.combine(date_today, time.min)
+            max_enddate = datetime.combine(
+                date_today, time.max) + timedelta(days=available_credit.time_period)
+            if created:
+                credit_cycle.start_date = min_startdate
+            credit_cycle.end_date = max_enddate
+            credit_cycle.credit_rule = available_credit
+            credit_cycle.save()
             try:
                 customer = Customer.objects.get(id=id)
                 devices = CustomerDevice.objects.filter(
@@ -203,7 +214,7 @@ def creditAssign(request, id=None):
                 message = setting_msg.value.format(**values)
                 print(devices)
                 if not devices:
-                    return "No device found!!"
+                    print("No device found!!")
                 else:
                     for device in devices:
                         device_token = device.device_id
@@ -217,7 +228,10 @@ def creditAssign(request, id=None):
                             "amount": available_credit.credit_amount,
                             "credit": True
                         }
-                        FirebaseLibrary().send_firebase_notification(notf, payload)
+                        # FirebaseLibrary().send_firebase_notification(notf, payload)
+                        t = threading.Thread(target=FirebaseLibrary().send_firebase_notification, args=(
+                            notf, payload))
+                        t.start()
                     notification_store = CustomerNotification(
                         customer=customer, title=notify_title, message=message)
                     notification_store.save()
@@ -313,7 +327,7 @@ def credit_reminder():
                         message = setting_msg.value.format(**values)
                         print(devices)
                         if not devices:
-                            return "No device found!!"
+                            print("No device found!!")
                         else:
                             for device in devices:
                                 device_token = device.device_id

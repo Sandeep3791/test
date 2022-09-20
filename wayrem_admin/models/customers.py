@@ -240,3 +240,18 @@ class CreditPaymentReference(models.Model):
     class Meta:
         app_label = "wayrem_admin"
         db_table = 'credit_payment_reference'
+
+
+class CreditCycle(models.Model):
+    id = models.AutoField(primary_key=True, unique=True)
+    customer = models.OneToOneField("Customer", models.CASCADE)
+    credit_rule = models.ForeignKey(
+        "CreditSettings", models.CASCADE, null=True)
+    start_date = models.DateTimeField(null=True)
+    end_date = models.DateTimeField(null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        app_label = "wayrem_admin"
+        db_table = 'credit_cycle'

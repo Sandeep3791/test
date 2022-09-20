@@ -35,59 +35,41 @@
         </div>
     </div>
     <div class="row rounded mx-auto shadow-sm bg-white w-75 mt-5">
-        <div class="col-xl-4 col-lg-6 other_info ">
-            <div class="">
+        <div class="col-xl-12 col-lg-12 col-12 other_info ">
+            
                 <div class="row">
-                    <div class="col-12 text_value">
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-12 text_value">
                         <label for="">Name</label>
                         <span class="">{{suppldata.username}}</span>
                     </div>
-                    <div class="col-12 text_value">
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-12 text_value">
                         <label for="">Email id</label>
                         <span class="">{{suppldata.email}}</span>
                     </div>
-                    {% comment %} <div class="col-12 text_value">
-                        <label for="">Contact No
-                    </label>
-                        <span class="">{{userdata.contact}}</span>
-                    </div> {% endcomment %}
-                    {% comment %} <div class="col-6 text_value">
-                        <button class="btn bg-primary text-white ki_btn">Edit</button>
-                    </div> {% endcomment %}
-                    
-                    <!-- <div class="col-12 text_value">
-                        <label for="">Role</label>
-
-                    </div> -->
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-12 text_value">
+                        <label for="">Company Name</label>
+                        <span class="">{{suppldata.company_name}}</span>
+                    </div>
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-12 text_value">
+                        <label for="">Contact</label>
+                        <span class="">{{suppldata.contact|default_if_none:"-" }}</span>
+                    </div>
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-12 text_value">
+                        <label for="">Address</label>
+                        <span class="">{{suppldata.address|default_if_none:"-" }}</span>
+                    </div>
+                    <div class="col-xl-4 col-lg-4 col-md-4 col-12 text_value">
+                        <label for="">Status </label>
+                        {% if suppldata.is_active == 1 %}
+                            <span class="">Active</span>
+                        {% else %}
+                            <span class="">Deactive</span>
+                        {% endif %}
+                    </div>
                 </div>
-            </div>
+            
         </div>
         <!-- <div class="col-xl-1 p-0"></div> -->
-        <div class="col-xl-8 col-lg-8 d-flex other_info">
-            <div class="row">
-                <div class="col-xl-6 text_value">
-                    <label for="">Company Name</label>
-                    <span class="">{{suppldata.company_name}}</span>
-                </div>
-                <div class="col-xl-6 text_value">
-                    <label for="">Contact</label>
-                    <span class="">{{suppldata.contact}}</span>
-                </div>
-                <div class="col-xl-6 text_value">
-                    <label for="">Address</label>
-                    <span class="">{{suppldata.address}}</span>
-                </div>
-                <div class="col-xl-6 text_value">
-                    <label for="">Status </label>
-                    {% if suppldata.is_active == 1 %}
-                        <span class="">Active</span>
-                    {% else %}
-                        <span class="">Deactive</span>
-                    {% endif %}
-                </div>
-
-            </div>
-        </div>
         <hr>
         <div class="col-2 text_value ">
             <a href="{% url 'wayrem_admin:supplierlist' %}"  class="btn bg-danger text-white ki_btn ">Back</a>
@@ -138,6 +120,8 @@
 
 .text_value span {
     font-size: 1.1rem;
+    word-wrap: break-word!important;
+    width: -webkit-fill-available;
 
 }
 

@@ -35,145 +35,106 @@
             </nav>
         </div>
     </div>
-    <div class="rounded shadow-sm mt-5 bg-white w-75 mx-auto">
-        <div class="col-xl-12 col-lg-12   other_info ">
+    
+    <div class="row rounded mx-auto shadow-sm bg-white w-75 mt-5">
+        <div class="col-xl-12 col-lg-12 col-12 other_info ">
                     <div class="row">
-                        <div class="col-6 text_value">
+                        <div class="col-xl-4 col-lg-4 col-md-4 col-12 text_value">
                             <label for=""><h5 class="mb-0">Name:</h5></label>
                             <span class="">{{userdata.username}}</span>
                         </div>
-                        <div class="col-6 text_value">
+                        <div class="col-xl-4 col-lg-4 col-md-4 col-12 text_value">
                             <label for=""><h5 class="mb-0">Email id:</h5></label>
                             <span class="">{{userdata.email}}</span>
                         </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-6 text_value">
+                        <div class="col-xl-4 col-lg-4 col-md-4 col-12 text_value">
                             <label for=""><h5 class="mb-0">Contact No:</h5></label>
-                            <span class="">{{userdata.contact}}</span>
+                            <span class="">{{userdata.contact|default_if_none:"-"}}</span>
                         </div>
-                        <div class="col-6 text_value">
+                        <div class="col-xl-4 col-lg-4 col-md-4 col-12 text_value">
                             <label for=""><h5 class="mb-0">Role:</h5></label>
                             <span class="">{{userdata.role}}</span>
                         </div>
-                    </div>
-                    {% comment %} <div class="col-6 text_value">
-                        <button class="btn bg-primary text-white ki_btn">Edit</button>
-                    </div> {% endcomment %}
-                    
-                        <div class="row col-3 mt-3">
-                            <a href="{% url 'wayrem_admin:userlist' %}"  class="btn bg-danger text-white ki_btn">Back</a>
-                        </div>
-                   
-                    
-                    <!-- <div class="col-12 text_value">
-                        <label for="">Role</label>
-
-                    </div> -->
-                </div>
-        </div>
-        <!-- <div class="col-xl-1 p-0"></div> -->
-        <!-- <div class="col-xl-8 col-lg-8 d-flex other_info">
-            <div class="row">
-                <div class="col-xl-6 text_value">
-                    <label for="">Role
-                    </label>
-                    <span class="">{{userdata.role}}</span>
-                </div>
-                <div class="col-xl-6 text_value">
-                    <label for="">Gender
-                    </label>
-                    <span class="">{{userdata.gender}}</span>
-                </div>
-               
-                <div class="col-xl-6 text_value">
-                    <label for="">Address</label>
-                    <span class="">{{userdata.address}}</span>
-                </div>
-                <div class="col-xl-6 text_value">
-                    <label for="">City</label>
-                    <span class="">{{userdata.city}}</span>
-                </div>
-                <div class="col-xl-6 text_value">
-                    <label for="">Zip Code </label>
-                    <span class="">{{userdata.zip_code}}</span>
-                </div>
+                    </div>                    
+            <div class="row col-3 mt-3">
+                <a href="{% url 'wayrem_admin:userlist' %}"  class="btn bg-danger text-white ki_btn">Back</a>
             </div>
-        </div> -->
+        </div>
     </div>
 </div>
 
-
 <style>
 
-/*---------------view profile css--------------------*/
-
-.recep_role {
-    width: fit-content;
-    background-color:#4fe06129;
-    padding: 0.2rem 0.7rem;
-    border-radius: 20px;
-    color: #4fe061;
-    font-size: 0.8rem!important;
-    font-weight: 500;
-}
-
-.page_title {
-    font-size: 1.4rem;
-    font-weight: 500;
-}
-
-.view_border{
-    border-right: 1px solid #dbdbdb;
-}
-
-.other_info{
-    padding: 3rem;
-}
-
-.text_value{
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 2rem;
-    flex-wrap: wrap;
-}
-
-
-.text_value label {
-    font-size: 1rem;
-    color:#535353;
-}
-
-.text_value span {
-    font-size: 1.1rem;
-
-}
-
-
-
-/*----------------------- Media query Responsive-------------- */
-
-@media (max-width:992px) {
-    .ki_dt {
-        overflow-x: scroll;
+    /*---------------view profile css--------------------*/
+    
+    .recep_role {
+        width: fit-content;
+        background-color:#4fe06129;
+        padding: 0.2rem 0.7rem;
+        border-radius: 20px;
+        color: #4fe061;
+        font-size: 0.8rem!important;
+        font-weight: 500;
     }
-
+    
     .page_title {
-        font-size: 1.2rem!important;
-        margin: 1rem 0;
+        font-size: 1.4rem;
+        font-weight: 500;
     }
-}
-
-@media (max-width:600px) {}
-
-@media (max-width:480px) {
-
-    .page_title {
-        font-size: 1.2rem!important;
-        margin: 1rem 0;
+    
+    .view_border{
+        border-right: 1px solid #dbdbdb;
     }
-}
-</style>
+    
+    .other_info{
+        padding: 3rem;
+    }
+    
+    .text_value{
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 2rem;
+        flex-wrap: wrap;
+    }
+    
+    
+    .text_value label {
+        font-size: 1rem;
+        color:#535353;
+    }
+    
+    .text_value span {
+        font-size: 1.1rem;
+        word-wrap: break-word!important;
+        width: -webkit-fill-available;
+    
+    }
+    
+    
+    
+    /*----------------------- Media query Responsive-------------- */
+    
+    @media (max-width:992px) {
+        .ki_dt {
+            overflow-x: scroll;
+        }
+    
+        .page_title {
+            font-size: 1.2rem!important;
+            margin: 1rem 0;
+        }
+    }
+    
+    @media (max-width:600px) {}
+    
+    @media (max-width:480px) {
+    
+        .page_title {
+            font-size: 1.2rem!important;
+            margin: 1rem 0;
+        }
+    }
+    </style>
 
 
 <script>
