@@ -687,44 +687,42 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
             ref_no = generate_ref_number(db)
 
             order = order_models.Orders(
-            ref_number=ref_no,
-            customer_id=request.customer_id,
-            status=16,
-            delivery_status=1,
-            sub_total=0,
-            item_discount=0,
-            item_margin=0,
-            tax=0,
-            tax_vat=0,
-            discount=0,
-            grand_total=0,
-            shipping=0,
-            total=0,
-            order_shipped=0,
-            order_ship_name=request.shipping_name,
-            order_ship_address=request.shipping_address,
-            order_billing_name=request.billing_name,
-            order_billing_address=request.billing_address,
-            order_city=request.city,
-            order_country=request.country,
-            order_ship_region=request.shipping_region,
-            order_ship_landmark=request.shipping_landmark,
-            order_ship_building_name=request.shipping_building_name,
-            order_ship_latitude=request.shipping_latitude,
-            order_ship_longitude=request. shipping_longitude,
-            order_phone=request.contact,
-            order_email=request.email,
-            order_type=24,
-            delivery_charge=request.delivery_fees,
-            order_date=common_services.get_time())
+                ref_number=ref_no,
+                customer_id=request.customer_id,
+                status=16,
+                delivery_status=1,
+                sub_total=0,
+                item_discount=0,
+                item_margin=0,
+                tax=0,
+                tax_vat=0,
+                discount=0,
+                grand_total=0,
+                shipping=0,
+                total=0,
+                order_shipped=0,
+                order_ship_name=request.shipping_name,
+                order_ship_address=request.shipping_address,
+                order_billing_name=request.billing_name,
+                order_billing_address=request.billing_address,
+                order_city=request.city,
+                order_country=request.country,
+                order_ship_region=request.shipping_region,
+                order_ship_landmark=request.shipping_landmark,
+                order_ship_building_name=request.shipping_building_name,
+                order_ship_latitude=request.shipping_latitude,
+                order_ship_longitude=request. shipping_longitude,
+                order_phone=request.contact,
+                order_email=request.email,
+                order_type=24,
+                delivery_charge=request.delivery_fees,
+                order_date=common_services.get_time())
             db.merge(order)
             db.commit()
 
         else:
             order = db.query(order_models.Orders).filter(
-            order_models.Orders.ref_number == request.ref_number).first()
-
-        
+                order_models.Orders.ref_number == request.ref_number).first()
 
         order_data = db.query(order_models.Orders).filter(
             order_models.Orders.ref_number == order.ref_number).first()
@@ -928,7 +926,7 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
             else:
                 inv_no = 1001
         order_transact = order_models.OrderTransactions(user_id=request.customer_id,  order_id=order_id, order_type=1,
-                                                        payment_mode_id=request.payment_type, payment_status_id=request.payment_status, invoices_id=inv_no,created_at=common_services.get_time(),updated_at=common_services.get_time())
+                                                        payment_mode_id=request.payment_type, payment_status_id=request.payment_status, invoices_id=inv_no, created_at=common_services.get_time(), updated_at=common_services.get_time())
         db.merge(order_transact)
         db.commit()
 
@@ -1030,7 +1028,7 @@ def get_all_orders(offset, customer_id, db: Session):
     for value in limit_value:
         limit_val = int(value[0])
     orders_data = db.execute(
-        f'SELECT t1.*, t2.id as transaction_id, t2.payment_mode_id, t2.payment_status_id , t2.invoices_id, t4.name as payment_mode , t3.name as payment_status FROM {constants.Database_name}.orders t1 inner join {constants.Database_name}.order_transactions t2 on t1.id = t2.order_id inner join {constants.Database_name}.status_master t3 on  t3.id = t2.payment_status_id inner join {constants.Database_name}.status_master t4 on t4.id = t2.payment_mode_id  where customer_id = {customer_id} and is_shown = true and order_type != 29 order by t1.id DESC limit {offset_int},{limit_val};')
+        f'SELECT t1.*, t2.id as transaction_id, t2.payment_mode_id, t2.payment_status_id , t2.invoices_id, t4.name as payment_mode , t3.name as payment_status FROM {constants.Database_name}.orders t1 inner join {constants.Database_name}.order_transactions t2 on t1.id = t2.order_id inner join {constants.Database_name}.status_master t3 on  t3.id = t2.payment_status_id inner join {constants.Database_name}.status_master t4 on t4.id = t2.payment_mode_id  where customer_id = {customer_id} and is_shown = true and t1.order_type != 29 order by t1.id DESC limit {offset_int},{limit_val};')
     if orders_data.rowcount > 0:
         order_list = []
         for data in orders_data:
@@ -1124,10 +1122,10 @@ def get_all_orders(offset, customer_id, db: Session):
                 partial_payment = data.partial_payment
                 if partial_payment is None:
                     partial_payment = 0
-                
+
             data_order = order_schemas.OrderDetails(order_id=data.id, order_ref_no=data.ref_number, sub_total=data.sub_total, item_discount=data.item_discount, tax_vat=vat_with_prcnt, total=data.total, grand_total=data.grand_total, email=data.order_email, contact=data.order_phone, country=data.order_country, city=data.order_city, billing_name=data.order_billing_name,
-                                                    billing_address=data.order_billing_address, shipping_name=data.order_ship_name, shipping_address=data.order_ship_address, payment_type=payment_type, payment_status=payment_status, order_date=date, product_count=product_count, order_status=order_status, order_type=order_value, invoice_id=data.invoices_id, delivery_logs=last_log, products=order_product_list, pending_payment = partial_payment,
-                                                    partial_payment_settled_date = data.partial_payment_settled_date)
+                                                    billing_address=data.order_billing_address, shipping_name=data.order_ship_name, shipping_address=data.order_ship_address, payment_type=payment_type, payment_status=payment_status, order_date=date, product_count=product_count, order_status=order_status, order_type=order_value, invoice_id=data.invoices_id, delivery_logs=last_log, products=order_product_list, pending_payment=partial_payment,
+                                                    partial_payment_settled_date=data.partial_payment_settled_date)
             order_list.append(data_order)
 
         data4 = order_schemas.ResponseMyOrders(
@@ -1263,7 +1261,7 @@ def get_order_details(order_id, db: Session):
 
             data_order = order_schemas.OrderDetailsbyid(order_id=data.id, order_ref_no=data.ref_number, sub_total=data.sub_total, item_discount=data.item_discount, tax_vat=vat_with_prcnt, total=data.total, grand_total=data.grand_total, email=data.order_email, contact=data.order_phone, country=data.order_country, city=data.order_city, billing_name=data.order_billing_name,
                                                         billing_address=data.order_billing_address, shipping_name=data.order_ship_name, shipping_address=data.order_ship_address, payment_type=payment_type, payment_status=payment_status, order_date=date, product_count=product_count, order_status=order_status, order_type=order_value, invoice_id=data.invoices_id, invoice_link=invoice_link, delivery_charges=delivery_charge,
-                                                        bank_receipt=final_bank_re, order_delivery_logs=logs_list, products=order_product_list, pending_payment = partial_payment, pending_payment_date = data.partial_payment_settled_date)
+                                                        bank_receipt=final_bank_re, order_delivery_logs=logs_list, products=order_product_list, pending_payment=partial_payment, pending_payment_date=data.partial_payment_settled_date)
             order_list.append(data_order)
         data4 = order_schemas.ResponseMyOrdersbyid(
             customer_id=data.customer_id, orders=order_list)
@@ -1593,7 +1591,8 @@ def format_string(view_list, image_list):
                                 """
     return x
 
-def pending_payment_services(user_request, db:Session):
+
+def pending_payment_services(user_request, db: Session):
     customer_id = user_request.customer_id
     db_user_active = db.query(user_models.User).filter(
         user_models.User.id == customer_id).first()
@@ -1614,7 +1613,8 @@ def pending_payment_services(user_request, db:Session):
             success_code = checkout_details['result']['code']
             if success_code == '000.200.100' or success_code == '000.200.101' or success_code == '000.200.102':
                 checkout_id = checkout_details['id']
-                order_details = db.query(order_models.Orders).filter(order_models.Orders.id == user_request.order_id).first()
+                order_details = db.query(order_models.Orders).filter(
+                    order_models.Orders.id == user_request.order_id).first()
                 if order_details:
                     order_details.checkout_id = checkout_id
                     db.merge(order_details)
@@ -1638,17 +1638,20 @@ def pending_payment_services(user_request, db:Session):
             status=status.HTTP_404_NOT_FOUND, message="Customer doesn't exist!")
         return common_msg
 
+
 def clone_order(user_request, db: Session):
-    order_details = db.query(order_models.Orders).filter(order_models.Orders.id == user_request.order_id).first()
+    order_details = db.query(order_models.Orders).filter(
+        order_models.Orders.id == user_request.order_id).first()
     if not order_details:
         common_msg = user_schemas.ResponseCommonMessage(
             status=status.HTTP_404_NOT_FOUND, message="Order doesn't exist!")
         return common_msg
-    
+
     payment_amount = order_details.partial_payment
     if user_request.paymentMode == 14:
 
-        SUCCESS_CODES_REGEX = re.compile(r'^(000\.000\.|000\.100\.1|000\.[36])')
+        SUCCESS_CODES_REGEX = re.compile(
+            r'^(000\.000\.|000\.100\.1|000\.[36])')
         SUCCESS_MANUAL_REVIEW_CODES_REGEX = re.compile(
             r'^(000\.400\.0[^3]|000\.400\.[0-1]{2}0)')
         PENDING_CHANGEABLE_SOON_CODES_REGEX = re.compile(r'^(000\.200)')
@@ -1693,10 +1696,10 @@ def clone_order(user_request, db: Session):
                                                         expiry_year=expiry_year, card_holder=card_holder, card_type=card_type, card_body=str(card_body), card_brand=card_brand)
                 db.merge(save_card)
                 db.commit()
-        
+
     elif user_request.paymentMode == 13:
         credit_data = db.query(credit_models.CreditManagement).filter(
-                credit_models.CreditManagement.customer_id == request.customer_id).first()
+            credit_models.CreditManagement.customer_id == request.customer_id).first()
         available_cr = credit_data.available
 
         if available_cr >= payment_amount:
@@ -1729,12 +1732,13 @@ def clone_order(user_request, db: Session):
     db.merge(order_details)
     db.commit()
 
-    transaction_detail = db.query(order_models.OrderDeliveryLogs).filter(order_models.OrderDeliveryLogs.order_id == order_details.id).first() 
+    transaction_detail = db.query(order_models.OrderDeliveryLogs).filter(
+        order_models.OrderDeliveryLogs.order_id == order_details.id).first()
     transaction_detail.log_date = common_services.get_time()
     db.merge(transaction_detail)
     db.commit()
 
     data_response = order_schemas.OrderResponseData(order_id=order_details.id)
     response = order_schemas.OrderResponse(
-    status=status.HTTP_200_OK, message="Order Placed Successfully", data=data_response)    
+        status=status.HTTP_200_OK, message="Order Placed Successfully", data=data_response)
     return response
