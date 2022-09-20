@@ -102,7 +102,7 @@ class FirebaseLibrary:
             self.send_email_notification(
                 order_id=order_id, order_ref=order_data.ref_number, status=notify_title)
             if not devices:
-                return "No device found!!"
+                print("No device found!!")
             else:
                 for device in devices:
                     device_token = device.device_id

@@ -203,7 +203,7 @@ def creditAssign(request, id=None):
                 message = setting_msg.value.format(**values)
                 print(devices)
                 if not devices:
-                    return "No device found!!"
+                    print("No device found!!")
                 else:
                     for device in devices:
                         device_token = device.device_id
@@ -313,7 +313,7 @@ def credit_reminder():
                         message = setting_msg.value.format(**values)
                         print(devices)
                         if not devices:
-                            return "No device found!!"
+                            print("No device found!!")
                         else:
                             for device in devices:
                                 device_token = device.device_id
