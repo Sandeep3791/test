@@ -1645,6 +1645,8 @@ def clone_order(user_request, db: Session):
             status=status.HTTP_404_NOT_FOUND, message="Order doesn't exist!")
         return common_msg
     
+    order_transaction = db.query(order_models.OrderTransactions).filter(order_models.OrderTransactions.order_id == user_request.order_id).first()
+    
     payment_amount = order_details.partial_payment
     if user_request.paymentMode == 14:
 
@@ -1673,6 +1675,8 @@ def clone_order(user_request, db: Session):
                 status=status.HTTP_424_FAILED_DEPENDENCY, message="Transaction Failed!!", data=str(hyperpay_response))
             return response
         registrationId = payment_status.get("registrationId")
+        
+        order_transaction.payment_mode_id = 14
 
         if registrationId:
             card_body = payment_status.get("card")
@@ -1719,6 +1723,8 @@ def clone_order(user_request, db: Session):
                 payment_amount), available=updated_credit, credit_date=common_services.get_time(), due_date=due_date, payment_status=False)
             db.merge(credit_log)
             db.commit()
+            
+            order_transaction.payment_mode_id = 13
         else:
             result = user_schemas.ResponseCommonMessage(
                 status=status.HTTP_404_NOT_FOUND, message="Not enough credits available !")
@@ -1726,13 +1732,18 @@ def clone_order(user_request, db: Session):
 
     order_details.partial_payment = 0
     order_details.partial_payment_settled_date = common_services.get_time()
+    order_details.order_type = 24
     db.merge(order_details)
     db.commit()
 
-    transaction_detail = db.query(order_models.OrderDeliveryLogs).filter(order_models.OrderDeliveryLogs.order_id == order_details.id).first() 
-    transaction_detail.log_date = common_services.get_time()
-    db.merge(transaction_detail)
+    delivery_logs = db.query(order_models.OrderDeliveryLogs).filter(order_models.OrderDeliveryLogs.order_id == order_details.id).first() 
+    delivery_logs.log_date = common_services.get_time()
+    db.merge(delivery_logs)
     db.commit()
+
+    order_transaction.payment_status_id = 7
+    db.merge(order_transaction)
+    db.commit()    
 
     data_response = order_schemas.OrderResponseData(order_id=order_details.id)
     response = order_schemas.OrderResponse(
