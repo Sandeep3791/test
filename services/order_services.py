@@ -1661,7 +1661,7 @@ def clone_order(user_request, db: Session):
         hyperpay_response_description = None
 
         payment_status = payment_services.HyperPayResponseView(
-            request.entityId).get_payment_status(request.checkout_id)
+            user_request.entityId).get_payment_status(user_request.checkout_id)
 
         payment_check = payment_status.get("result").get("code")
         hyperpay_response = payment_status
