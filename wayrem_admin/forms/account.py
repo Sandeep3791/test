@@ -113,7 +113,7 @@ class ResetPasswordForm(forms.Form):
             attrs={'class': 'form-control'}), required=False
     )
     otp = forms.CharField(
-        widget=forms.TextInput(
+        widget=forms.NumberInput(
             attrs={'class': 'form-control', 'autofocus': True}), required=True
     )
     new_password = forms.CharField(
