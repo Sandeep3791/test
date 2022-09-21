@@ -29,6 +29,11 @@ app.conf.beat_schedule = {
         'schedule': crontab(minute='*/5'),
         # 'args': (9),
     },
+    'import-primary-images-every-5min': {
+        'task': 'wayrem_admin.tasks.product_primary_image',
+        'schedule': crontab(minute='*/5'),
+        # 'args': (9),
+    },
     'forecasting_product_24hrs': {
         'task': 'wayrem_admin.tasks.forecasts_product',
         'schedule': crontab(hour='*/24'),

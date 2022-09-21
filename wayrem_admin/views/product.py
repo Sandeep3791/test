@@ -745,7 +745,7 @@ def check_import_status(request):
     # client_dir = '/home/suryaaa/Music/image_testing/client-images'
     # client_dir = '/opt/app/wayrem-admin-backend/media/wayrem-product-images'
     client_dir = os.path.join(os.path.abspath(
-        "."), "media", "wayrem-product-images")
+        "."), "media", "wayrem-product-images", "gallery-images")
     sku_folders = [f for f in os.listdir(
         client_dir) if os.path.isdir(os.path.join(client_dir, f))]
     # failed_dir = f"/home/suryaaa/Music/image_testing/failed"
@@ -860,10 +860,16 @@ def bulk_publish_excel(request):
                 ['SKU']).index.isin(df_products.set_index(['SKU']).index)]
             unpublished = df_updated[df_updated['publish'] == False]
             published = df_updated[df_updated['publish'] == True]
-            unpublished_list = tuple(unpublished['SKU'].tolist())
-            published_list = tuple(published['SKU'].tolist())
-            unpublished_query = f"UPDATE products_master SET publish = False where SKU in {unpublished_list}"
-            published_query = f"UPDATE products_master SET publish = True where SKU in {published_list}"
+            unpublished_list = """' , '""".join(
+                [str(item) for item in unpublished['SKU'].tolist()])
+            unpublished_list = "'" + \
+                unpublished_list[:] + "'" + unpublished_list[0:0]
+            published_list = """' , '""".join(
+                [str(item) for item in published['SKU'].tolist()])
+            published_list = "'" + \
+                published_list[:] + "'" + published_list[0:0]
+            unpublished_query = f"UPDATE products_master SET publish = False where SKU in ({unpublished_list})"
+            published_query = f"UPDATE products_master SET publish = True where SKU in ({published_list})"
             # df_updated = pd.merge(
             #     df.reset_index(), df_products, how='inner').set_index('index')
             if len(unpublished_list) > 0:
@@ -873,8 +879,8 @@ def bulk_publish_excel(request):
                 with connection.cursor() as cursor:
                     cursor.execute(published_query)
             context = {
-                "published": len(published_list),
-                "unpublished": len(unpublished_list)
+                "published": len(published['SKU'].tolist()),
+                "unpublished": len(unpublished['SKU'].tolist())
             }
             return render(request, "product/import_product.html", context)
         else:
@@ -1105,50 +1111,4 @@ def scan_result(request):
         return render(request, "product/product_view_pop.html", {"message": "Barcode is not available!!"})
 
 
-def import_primary_image(request):
-    # path = '/home/suryaaa/Music/image_testing/client-images'
-    path = os.path.join(os.path.abspath(
-        '.'), "media", "common_folder", "import_images")
-    # path = '/opt/app/wayrem-admin-backend/media/wayrem-product-images'
 
-    items = [f for f in os.listdir(
-        path) if not os.path.isdir(os.path.join(path, f))]
-
-    print(items)
-
-    for file in items:
-        file_name = file.split(".")[0].lower()
-        product = Products.objects.filter(name__icontains=file_name).first()
-        # product = Products.objects.filter(SKU=i).first()
-        common_folder = os.path.join(
-            os.path.abspath('.'), "media", "common_folder")
-        if product:
-            src_dir = os.path.join(path, file)
-            # dst_dir = f"/home/suryaaa/Music/database/products/{i}/"
-            # dst_dir = f"{common_folder}/products/{product.SKU}/"
-            dst_dir = os.path.join(common_folder, "products", product.SKU)
-            isExist = os.path.exists(dst_dir)
-            if not isExist:
-                os.makedirs(dst_dir)
-            if os.path.isfile(src_dir):
-                destination = os.path.join(dst_dir, file.replace(' ', '_'))
-                shutil.copy(src_dir, destination)
-                product.primary_image = f"products/{product.SKU}/{file.replace(' ', '_')}"
-                print("default image copied")
-                product.save()
-                print('copied', file_name)
-            os.remove(src_dir)
-        else:
-            source = os.path.join(path, file)
-            # dst_dir = f"/home/suryaaa/Music/image_testing/failed"
-            dst_dir = os.path.join(common_folder, "failed")
-            isExist = os.path.exists(dst_dir)
-            if not isExist:
-                os.makedirs(dst_dir)
-            destination = os.path.join(dst_dir, file)
-            shutil.copy(source, destination)
-            print('copied', file)
-            os.remove(source)
-            print("failed!!")
-    print("done")
-    return HttpResponse("Successfully imported!!")

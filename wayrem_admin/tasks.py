@@ -8,8 +8,13 @@ from wayrem_admin.views.credits import credit_reminder
 
 @shared_task(bind=True)
 def prod_img(self):
-    print("hello world")
     import_image()
+    return "Done"
+
+
+@shared_task(bind=True)
+def product_primary_image(self):
+    import_primary_image()
     return "Done"
 
 
