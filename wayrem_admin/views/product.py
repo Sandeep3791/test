@@ -860,10 +860,16 @@ def bulk_publish_excel(request):
                 ['SKU']).index.isin(df_products.set_index(['SKU']).index)]
             unpublished = df_updated[df_updated['publish'] == False]
             published = df_updated[df_updated['publish'] == True]
-            unpublished_list = tuple(unpublished['SKU'].tolist())
-            published_list = tuple(published['SKU'].tolist())
-            unpublished_query = f"UPDATE products_master SET publish = False where SKU in {unpublished_list}"
-            published_query = f"UPDATE products_master SET publish = True where SKU in {published_list}"
+            unpublished_list = """' , '""".join(
+                [str(item) for item in unpublished['SKU'].tolist()])
+            unpublished_list = "'" + \
+                unpublished_list[:] + "'" + unpublished_list[0:0]
+            published_list = """' , '""".join(
+                [str(item) for item in published['SKU'].tolist()])
+            published_list = "'" + \
+                published_list[:] + "'" + published_list[0:0]
+            unpublished_query = f"UPDATE products_master SET publish = False where SKU in ({unpublished_list})"
+            published_query = f"UPDATE products_master SET publish = True where SKU in ({published_list})"
             # df_updated = pd.merge(
             #     df.reset_index(), df_products, how='inner').set_index('index')
             if len(unpublished_list) > 0:
@@ -873,8 +879,8 @@ def bulk_publish_excel(request):
                 with connection.cursor() as cursor:
                     cursor.execute(published_query)
             context = {
-                "published": len(published_list),
-                "unpublished": len(unpublished_list)
+                "published": len(published['SKU'].tolist()),
+                "unpublished": len(unpublished['SKU'].tolist())
             }
             return render(request, "product/import_product.html", context)
         else:
