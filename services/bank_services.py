@@ -27,7 +27,7 @@ def get_all_banks(db: Session):
         return common_msg
 
 
-def upload_bank_payment_image(customer_id, order_id, image, db: Session):
+def upload_bank_payment_image(customer_id, order_id, pending_payment, image, db: Session):
 
     order_data = db.query(order_models.OrderTransactions).filter(
         order_models.OrderTransactions.order_id == order_id).first()
@@ -52,6 +52,22 @@ def upload_bank_payment_image(customer_id, order_id, image, db: Session):
     with open(os.path.join(stored_path), "wb+") as file_object:
         file_object.write(image.file.read())
         file_object.close()
+
+    if pending_payment:
+        order_data.payment_status_id = 27
+        
+        order_details = db.query(order_models.Orders).filter(order_models.Orders.id == order_id).first()
+        # order_details.partial_payment = 0    ?need to clarify
+        order_details.partial_payment_settled_date = common_services.get_time()
+        order_details.status = 16
+        # order_details.order_type = 24
+        db.merge(order_details)
+        db.commit()
+
+        delivery_logs = db.query(order_models.OrderDeliveryLogs).filter(order_models.OrderDeliveryLogs.order_id == order_id).first() 
+        delivery_logs.log_date = common_services.get_time()
+        db.merge(delivery_logs)
+        db.commit()
 
     order_data.bank_payment_image = db_path
     order_data.payment_mode_id = 12

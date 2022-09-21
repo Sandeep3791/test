@@ -1261,7 +1261,7 @@ def get_order_details(order_id, db: Session):
 
             data_order = order_schemas.OrderDetailsbyid(order_id=data.id, order_ref_no=data.ref_number, sub_total=data.sub_total, item_discount=data.item_discount, tax_vat=vat_with_prcnt, total=data.total, grand_total=data.grand_total, email=data.order_email, contact=data.order_phone, country=data.order_country, city=data.order_city, billing_name=data.order_billing_name,
                                                         billing_address=data.order_billing_address, shipping_name=data.order_ship_name, shipping_address=data.order_ship_address, payment_type=payment_type, payment_status=payment_status, order_date=date, product_count=product_count, order_status=order_status, order_type=order_value, invoice_id=data.invoices_id, invoice_link=invoice_link, delivery_charges=delivery_charge,
-                                                        bank_receipt=final_bank_re, order_delivery_logs=logs_list, products=order_product_list, pending_payment=partial_payment, pending_payment_date=data.partial_payment_settled_date)
+                                                        bank_receipt=final_bank_re, order_delivery_logs=logs_list, products=order_product_list, pending_payment=partial_payment, pending_payment_date=str(common_services.utc_to_tz(data.partial_payment_settled_date)))
             order_list.append(data_order)
         data4 = order_schemas.ResponseMyOrdersbyid(
             customer_id=data.customer_id, orders=order_list)
@@ -1685,7 +1685,7 @@ def clone_order(user_request, db: Session):
             card_body = payment_status.get("card")
             card_number = card_body.get("last4Digits")
 
-            reg_id = db.query(payment_models.CustomerCard).filter(payment_models.CustomerCard.customer_id == request.customer_id, or_(
+            reg_id = db.query(payment_models.CustomerCard).filter(payment_models.CustomerCard.customer_id == user_request.customer_id, or_(
                 payment_models.CustomerCard.registration_id == registrationId, payment_models.CustomerCard.card_number == card_number)).first()
 
             if not reg_id:
@@ -1696,14 +1696,14 @@ def clone_order(user_request, db: Session):
                 card_holder = card_body.get("holder")
                 card_type = card_body.get("type")
                 card_brand = payment_status.get("paymentBrand")
-                save_card = payment_models.CustomerCard(customer_id=request.customer_id, registration_id=registrationId, card_number=card_number, expiry_month=expiry_month,
+                save_card = payment_models.CustomerCard(customer_id=user_request.customer_id, registration_id=registrationId, card_number=card_number, expiry_month=expiry_month,
                                                         expiry_year=expiry_year, card_holder=card_holder, card_type=card_type, card_body=str(card_body), card_brand=card_brand)
                 db.merge(save_card)
                 db.commit()
 
     elif user_request.paymentMode == 13:
         credit_data = db.query(credit_models.CreditManagement).filter(
-            credit_models.CreditManagement.customer_id == request.customer_id).first()
+            credit_models.CreditManagement.customer_id == user_request.customer_id).first()
         available_cr = credit_data.available
 
         if available_cr >= payment_amount:
@@ -1722,7 +1722,7 @@ def clone_order(user_request, db: Session):
             time_in_days = credit_settings_data.time_period
             due_date = update_date + timedelta(days=time_in_days)
 
-            credit_log = credit_models.CreditTransactionsLog(customer_id=request.customer_id, order_id=user_request.order_id, credit_amount=float(
+            credit_log = credit_models.CreditTransactionsLog(customer_id=user_request.customer_id, order_id=user_request.order_id, credit_amount=float(
                 payment_amount), available=updated_credit, credit_date=common_services.get_time(), due_date=due_date, payment_status=False)
             db.merge(credit_log)
             db.commit()
@@ -1735,7 +1735,8 @@ def clone_order(user_request, db: Session):
 
     order_details.partial_payment = 0
     order_details.partial_payment_settled_date = common_services.get_time()
-    order_details.order_type = 24
+    # order_details.order_type = 24
+    order_details.status = 16
     db.merge(order_details)
     db.commit()
 
