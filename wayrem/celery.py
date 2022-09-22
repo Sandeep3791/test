@@ -49,6 +49,11 @@ app.conf.beat_schedule = {
         'schedule': crontab(hour='*/24'),
         # 'args': (9),
     },
+    'credits_cycle_24hrs': {
+        'task': 'wayrem_admin.tasks.customer_credit_cycle',
+        'schedule': crontab(hour='*/24'),
+        # 'args': (9),
+    },
 }
 # @app.on_after_configure.connect
 # def setup_periodic_tasks(sender, **kwargs):

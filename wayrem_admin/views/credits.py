@@ -298,10 +298,10 @@ def credit_reminder():
                     days_reminder2 = abs(
                         credit.credit_rule.time_period - 3)
                     print(log.credit_date)
-                    reminder1 = log.credit_date + \
+                    reminder1 = log.due_date - \
                         timedelta(days=days_reminder1)
-                    reminder2 = log.credit_date + \
-                        timedelta(days=days_reminder2)
+                    reminder2 = log.due_date - \
+                        timedelta(days=3)
                     if today.date() == reminder1.date() or today.date() == reminder2.date():
                         devices = CustomerDevice.objects.filter(
                             customer=credit.customer, is_active=True)
@@ -346,6 +346,23 @@ def credit_reminder():
                                 customer=log.customer.id, title=notify_title, message=message)
                             notification_store.save()
     print("Credit Reminder Notification Done")
+
+
+def credit_cycle_update():
+    cycles = CreditCycle.objects.all()
+    for cycle in cycles:
+        date_yesterday = date.today() - timedelta(days=1)
+        if date_yesterday == cycle.end_date.date():
+            date_today = date.today()
+            min_startdate = datetime.combine(date_today, time.min)
+            cycle.start_date = min_startdate
+            max_enddate = datetime.combine(
+                date_today, time.max) + timedelta(days=cycle.credit_rule.time_period)
+            cycle.end_date = max_enddate
+            cycle.save()
+            print("cycle updated for customer: ",
+                  cycle.customer.id, "cycle id: ", cycle.id)
+    print("Credit Cycle update successfully!!")
 
 
 def credit_refund(order_id):
