@@ -113,7 +113,7 @@ class ResetPasswordForm(forms.Form):
             attrs={'class': 'form-control'}), required=False
     )
     otp = forms.CharField(
-        widget=forms.TextInput(
+        widget=forms.NumberInput(
             attrs={'class': 'form-control', 'autofocus': True}), required=True
     )
     new_password = forms.CharField(
@@ -125,7 +125,7 @@ class ResetPasswordForm(forms.Form):
             attrs={'autocomplete': 'new-password', 'class': 'form-control'}, render_value=True),
     )
 
-    def clean_new_password(self):
+    def clean_confirm_password(self):
         email = self.cleaned_data.get('email')
         user = Users.objects.get(email=email)
         password = self.cleaned_data.get("new_password")
