@@ -723,7 +723,12 @@ class CloneOrderView(DetailView):
                 context['product']=products
 
         context['pid'] =pid     
-        context['order_details'] = OrderDetails.objects.filter(order=order_id)
+        oder_detail=OrderDetails.objects.filter(order=order_id)
+        context['order_details'] = oder_detail
+        if not oder_detail:
+            message="Please add items to cart to create an order."
+            messages.success(self.request, message)
+        
         context['currency'] = CURRENCY
         return context
 
@@ -751,7 +756,7 @@ class AutoCompleteModelView(View):
 
     def post(self,request):
         search=self.request.POST.get('search')
-        pro_list=Products.objects.filter(Q(name__contains=search) | Q(SKU__contains=search)| Q(mfr_name__contains=search)).values('id','name','SKU','mfr_name')
+        pro_list=Products.objects.filter(Q(name__icontains=search) | Q(SKU__contains=search)| Q(mfr_name__icontains=search)).values('id','name','SKU','mfr_name')
         results = []
         for pro in pro_list:
             mfr_name=""
