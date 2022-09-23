@@ -104,7 +104,7 @@
                                 <tr>
                                     <th scope="row">{{forloop.counter}}</th>
                                     <td>{{i.product_name}}</td>
-                                    <td>{{i.product_qty}}</td>
+                                    <td>{{i.product_qty}} {{i.product_name.quantity_unit}} </td>
                                     <td>SAR {{i.product_name.price}}</td>
                                     {% comment %} <td>within 2days</td> {% endcomment %}
                                     <td class="text-danger font-weight-bold">Not Available</td>
