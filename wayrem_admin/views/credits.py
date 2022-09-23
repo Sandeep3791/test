@@ -177,6 +177,52 @@ def creditAssign(request, id=None):
                 assign_credit = CreditManagement(
                     customer_id=id, credit_rule=available_credit, used=0, available=available_credit.credit_amount)
                 assign_credit.save()
+            try:
+                customer = Customer.objects.get(id=id)
+                devices = CustomerDevice.objects.filter(
+                    customer=customer, is_active=True)
+                setting_msg = Settings.objects.get(
+                    key="notification_credit_assign")
+                email_template = EmailTemplateModel.objects.get(
+                    key="notification_credit_assign")
+                body_format = {
+                    'customer': f"{customer.first_name} {customer.last_name}",
+                    'amount': available_credit.credit_amount,
+                    'days': available_credit.time_period
+                }
+                email_body = email_template.message_format.format(
+                    **body_format)
+                t = threading.Thread(target=send_email, args=(
+                    customer.email, email_template.subject, email_body))
+                t.start()
+                notify_title = setting_msg.display_name
+                values = {
+                    'amount': available_credit.credit_amount,
+                    'days': available_credit.time_period
+                }
+                message = setting_msg.value.format(**values)
+                print(devices)
+                if not devices:
+                    print("No device found!!")
+                else:
+                    for device in devices:
+                        device_token = device.device_id
+                        notf = {
+                            "title": notify_title,
+                            "message": message,
+                            "device_token": device_token,
+                        }
+                        payload = {
+                            "action_type": "credit_assigned",
+                            "amount": available_credit.credit_amount,
+                            "credit": True
+                        }
+                        FirebaseLibrary().send_firebase_notification(notf, payload)
+                    notification_store = CustomerNotification(
+                        customer=customer, title=notify_title, message=message)
+                    notification_store.save()
+            except Exception as e:
+                print(e)
             messages.success(request, "Credit Updated!")
             return redirect('wayrem_admin:customerslist')
         else:
@@ -267,7 +313,7 @@ def credit_reminder():
                         message = setting_msg.value.format(**values)
                         print(devices)
                         if not devices:
-                            return "No device found!!"
+                            print("No device found!!")
                         else:
                             for device in devices:
                                 device_token = device.device_id

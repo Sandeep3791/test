@@ -860,10 +860,16 @@ def bulk_publish_excel(request):
                 ['SKU']).index.isin(df_products.set_index(['SKU']).index)]
             unpublished = df_updated[df_updated['publish'] == False]
             published = df_updated[df_updated['publish'] == True]
-            unpublished_list = tuple(unpublished['SKU'].tolist())
-            published_list = tuple(published['SKU'].tolist())
-            unpublished_query = f"UPDATE products_master SET publish = False where SKU in {unpublished_list}"
-            published_query = f"UPDATE products_master SET publish = True where SKU in {published_list}"
+            unpublished_list = """' , '""".join(
+                [str(item) for item in unpublished['SKU'].tolist()])
+            unpublished_list = "'" + \
+                unpublished_list[:] + "'" + unpublished_list[0:0]
+            published_list = """' , '""".join(
+                [str(item) for item in published['SKU'].tolist()])
+            published_list = "'" + \
+                published_list[:] + "'" + published_list[0:0]
+            unpublished_query = f"UPDATE products_master SET publish = False where SKU in ({unpublished_list})"
+            published_query = f"UPDATE products_master SET publish = True where SKU in ({published_list})"
             # df_updated = pd.merge(
             #     df.reset_index(), df_products, how='inner').set_index('index')
             if len(unpublished_list) > 0:
@@ -873,8 +879,8 @@ def bulk_publish_excel(request):
                 with connection.cursor() as cursor:
                     cursor.execute(published_query)
             context = {
-                "published": len(published_list),
-                "unpublished": len(unpublished_list)
+                "published": len(published['SKU'].tolist()),
+                "unpublished": len(unpublished['SKU'].tolist())
             }
             return render(request, "product/import_product.html", context)
         else:
@@ -1012,6 +1018,9 @@ def bulk_quantity_excel(request):
         unwanted_cols = list(set(excel_cols) - set(required_cols))
         if len(excel_cols) == 5 and required_cols == excel_cols:
             try:
+                cols = ['add quantity', 'remove quantity']
+                df[cols] = df[cols].apply(
+                    pd.to_numeric, errors='coerce', axis=1)
                 del df['product name']
                 del df['brand']
                 con = connect(user=DATABASES['default']['USER'], password=DATABASES['default']['PASSWORD'],
@@ -1020,16 +1029,13 @@ def bulk_quantity_excel(request):
                     'select * from products_master', con)
                 df.rename(columns={"sku": "SKU", "add quantity": "add_quantity",
                           "remove quantity": "remove_quantity"}, inplace=True)
-                df = df.drop_duplicates(
-                    subset="SKU", keep='first', inplace=False)
                 # NaN values removed from sku and product name
-                df_add = df[df['SKU'].notna()]
-                df_remove = df[df['SKU'].notna()]
-                df_add = df[df['add_quantity'].notna()]
-                df_remove = df[df['remove_quantity'].notna()]
-                df_add['add_quantity'] = df_add['add_quantity'].astype(int)
-                df_remove['remove_quantity'] = df_remove['remove_quantity'].astype(
-                    int)
+                df_add = df[df[['SKU', 'add_quantity']].notna().all(1)]
+                df_add = df_add.drop_duplicates(
+                    subset="SKU", keep='first', inplace=False)
+                df_remove = df[df[['SKU', 'remove_quantity']].notna().all(1)]
+                df_remove = df_remove.drop_duplicates(
+                    subset="SKU", keep='first', inplace=False)
                 df_add = df_add[df_add.add_quantity > 0]
                 df_remove = df_remove[df_remove.remove_quantity > 0]
                 df_products['SKU'] = df_products['SKU'].astype(str)
@@ -1051,7 +1057,7 @@ def bulk_quantity_excel(request):
                         print("working", sku, quantity)
                         update_quantity_bulk.delay(sku, quantity)
                 if len(sku_s_remove) > 0:
-                    sku_list = list(divide_chunks(sku_s_add, 25))
+                    sku_list = list(divide_chunks(sku_s_remove, 25))
                     quantity_list = list(divide_chunks(quantitys_remove, 25))
                     for sku, quantity in zip(sku_list, quantity_list):
                         print("working", sku, quantity)
@@ -1064,7 +1070,7 @@ def bulk_quantity_excel(request):
                 return render(request, "product/import_product.html", context)
             except Exception as e:
                 print(e)
-                messages.success(request, "Wrong Excel format!")
+                messages.error(request, "Wrong Excel format!")
                 return render(request, "product/import_product.html")
         else:
             context = {
