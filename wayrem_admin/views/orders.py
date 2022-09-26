@@ -216,8 +216,7 @@ class OrderStatusUpdated(LoginRequiredMixin, UpdateView):
         obj = form.save(commit=False)
         status_id = int(self.request.POST.get('status'))
         obj.status = StatusMaster.objects.get(id=status_id)
-        print(status_id)
-        print("ka")
+       
         obj.save()
         return HttpResponse(True)
 
@@ -651,6 +650,10 @@ class OrderCancelCloneOrder(View):
         self.order_inventory_process(order_id)
         payment_status = StatusMaster.objects.get(id=PAYMENT_STATUS_DECLINED)
         OrderTransactions.objects.filter(order=order_id).update(payment_status=payment_status)
+        now = datetime.now()
+        odl = OrderDeliveryLogs(order_id=order_id, order_status=deliv_obj_stat_instance, order_status_details="status change",
+                                        log_date=now, user_id=1, customer_view=deliv_obj_stat_instance.customer_view)
+        odl.save()
         return 1
 
     def credit_note(self,status,order_id):
