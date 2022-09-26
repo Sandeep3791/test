@@ -459,10 +459,19 @@ def user_credit_request(request, db: Session, background_tasks: BackgroundTasks,
             for i in range(len(raw_email_data)):
                 admin_e = raw_email_data[i].email
                 email_list.append(admin_e)
+                
+            business= db.execute(f"SELECT * FROM {constants.Database_name}.business_type where id = {user_data.business_type_id}")
+            for name in business:
+                business_type = name.business_type
             values = {
                 'customer': f"{user_data.first_name} {user_data.last_name}",
-                'amount': request.requested_amount
+                'amount': request.requested_amount,
+                'business_type': business_type if business_type else None
             }
+            # values = {
+            #     'customer': f"{user_data.first_name} {user_data.last_name}",
+            #     'amount': request.requested_amount
+            # }
             body = body.format(**values)
             for to in email_list:
                 background_tasks.add_task(
