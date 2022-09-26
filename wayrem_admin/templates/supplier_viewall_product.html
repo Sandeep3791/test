@@ -6,6 +6,7 @@
       <tr>
         <th> </th>
         <th scope="col" class = "text-center">SKU</th>
+        <th scope="col" class = "text-center">Brand</th>
         <th scope="col" class = "text-center">Products</th>
         <th scope="col" class = "text-center">Price</th>
         <th scope="col" class = "text-center">Deliverable Time</th>
@@ -23,6 +24,7 @@
           <input class="form-check-input" type="checkbox" value="{{i.id}}" name="prod{{forloop.counter}}" id="product_id" checked>
         </td>
         <td class = "text-center">{{ i.SKU }}</td>
+        <td class = "text-center">{{i.product_id.mfr_name}}</td>
         <td class = "text-center">{{i.product_name}}</td>
         <td class = "text-center">{{i.price}}</td>
         <td class = "text-center">Within {{i.deliverable_days}} days</td>

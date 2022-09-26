@@ -104,7 +104,7 @@ def product_excel(request):
         'cancelled inventory': df_pc['inventory_cancelled'],
         'date of manufacture': df_pc['date_of_mfg'],
         'date of expiry': df_pc['date_of_exp'],
-        'price (in SAR)': df_pc['price'],
+        'price (in SAR)': df_pc['price'].astype(float).round(2),
         'discount': df_pc['discount'],
         'discount unit': df_pc['dis_abs_percent'],
         'margin': df_pc['wayrem_margin'],
@@ -751,11 +751,11 @@ def check_import_status(request):
     # failed_dir = f"/home/suryaaa/Music/image_testing/failed"
     # failed_dir = f"/opt/app/wayrem-admin-backend/media/common_folder/failed"
     failed_dir = os.path.join(os.path.abspath(
-        "."), "media", "common_folder", "failed")
+        "."), "media", "common_folder", "failed", "gallery")
     failed_sku_folders = [f for f in os.listdir(
         failed_dir) if os.path.isdir(os.path.join(failed_dir, f))]
     img = Images.objects.values('product_id').distinct().count()
-    prod = Products.objects.all().count()
+    prod = Products.objects.filter(is_deleted=False).count()
     query = "SELECT * FROM   products_master WHERE  NOT EXISTS  (SELECT * FROM   product_images WHERE  product_images.product_id = products_master.id)"
     with connection.cursor() as cursor:
         no_image_sku = cursor.execute(query)
@@ -769,6 +769,36 @@ def check_import_status(request):
     response = HttpResponse(json.dumps(context))
     return response
     # return render(request, "product/img_status.html", context)
+
+
+def check_import_primary_status(request):
+    # client_dir = '/home/suryaaa/Music/image_testing/client-images'
+    # client_dir = '/opt/app/wayrem-admin-backend/media/wayrem-product-images'
+    client_dir = os.path.join(os.path.abspath(
+        "."), "media", "wayrem-product-images", "primary-images")
+    sku_folders = [f for f in os.listdir(
+        client_dir) if os.path.isdir(os.path.join(client_dir, f))]
+    # failed_dir = f"/home/suryaaa/Music/image_testing/failed"
+    # failed_dir = f"/opt/app/wayrem-admin-backend/media/common_folder/failed"
+    failed_dir = os.path.join(os.path.abspath(
+        "."), "media", "common_folder", "failed", "primary")
+    failed_sku_folders = [f for f in os.listdir(
+        failed_dir) if os.path.isdir(os.path.join(failed_dir, f))]
+    prod = Products.objects.filter(is_deleted=False).count()
+    query = "SELECT * FROM products_master where primary_image = '' or primary_image is null;"
+    query2 = "SELECT * FROM products_master where primary_image != '';"
+    with connection.cursor() as cursor:
+        no_image_sku = cursor.execute(query)
+        img = cursor.execute(query2)
+    context = {
+        "available_folders": len(sku_folders),
+        "failed_folders": len(failed_sku_folders),
+        "no_image_products": no_image_sku,
+        "total_product_images": prod,
+        "product_with_imgs": img
+    }
+    response = HttpResponse(json.dumps(context))
+    return response
 
 
 def import_single_image(request):
@@ -1109,6 +1139,3 @@ def scan_result(request):
     except Exception as e:
         print(e)
         return render(request, "product/product_view_pop.html", {"message": "Barcode is not available!!"})
-
-
-

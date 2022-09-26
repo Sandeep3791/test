@@ -19,7 +19,7 @@ from wayrem_admin.models import CreditSettings
 from wayrem_admin.models.customers import CreditCycle, CustomerNotification
 from wayrem_admin.models.orders import Orders, StatusMaster
 from wayrem_admin.services import send_email
-from wayrem_admin.forms import CustomerSearchFilter, CustomerEmailUpdateForm, CreditsForm, CreditsSearchFilter
+from wayrem_admin.forms import CustomerSearchFilter, CustomerEmailUpdateForm, CreditsForm, CreditsSearchFilter, CreditTxnSearchFilter
 from django.urls import reverse_lazy
 from wayrem_admin.utils.constants import *
 from wayrem_admin.filters.customer_filters import *
@@ -390,15 +390,13 @@ class CustomerCreditTransactionReference(LoginPermissionCheckMixin, ListView):
 
     def get_queryset(self):
         qs = CreditPaymentReference.objects.all().order_by("-id")
-        q = self.request.GET.get(
-            'reference_no') if self.request.GET.get('reference_no') != None else ''
-        if q != None:
-            qs = qs.filter(reference_no__icontains=q)
-        return qs
+        filtered_list = CreditTxnFilter(self.request.GET, queryset=qs)
+        return filtered_list.qs
 
     def get_context_data(self, **kwargs):
         context = super(CustomerCreditTransactionReference,
                         self).get_context_data(**kwargs)
+        context['filter_form'] = CreditTxnSearchFilter(self.request.GET)
         return context
 
 
@@ -456,3 +454,19 @@ class PaidCreditTransactionView(LoginPermissionCheckMixin, ListView):
         payment_ref.payment_status = status
         payment_ref.save()
         return HttpResponse("Successfully Updated")
+
+
+def credit_cycle_generator():
+    credit_management = CreditManagement.objects.all()
+    for credit in credit_management:
+        credit_cycle, created = CreditCycle.objects.get_or_create(
+            customer_id=credit.customer_id)
+        date_today = date.today()
+        min_startdate = datetime.combine(date_today, time.min)
+        max_enddate = datetime.combine(
+            date_today, time.max) + timedelta(days=credit.credit_rule.time_period)
+        credit_cycle.start_date = min_startdate
+        credit_cycle.end_date = max_enddate
+        credit_cycle.credit_rule_id = credit.credit_rule.id
+        credit_cycle.save()
+    print("DONE")

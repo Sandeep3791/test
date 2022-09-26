@@ -160,11 +160,13 @@
                         --
                         {% else %}
                         {{item.quantity}}
+                        {{item.product.quantity_unit}}
                         {% endif %}
                     </td>
                     <td>
                         {% if item.inventory_type.id == 3 or item.inventory_type.id == 5 %}
                         {{item.quantity}}
+                        {{item.product.quantity_unit}}
                         {% else %}
                         --
                         {% endif %}

@@ -51,7 +51,7 @@ def import_image():
         else:
             src_dir = f"{path}/{i}/"
             # dst_dir = f"/home/suryaaa/Music/image_testing/failed"
-            dst_dir = f"/opt/app/wayrem-admin-backend/media/common_folder/failed/{i}/"
+            dst_dir = f"/opt/app/wayrem-admin-backend/media/common_folder/failed/gallery/{i}/"
             isExist = os.path.exists(dst_dir)
             if not isExist:
                 os.makedirs(dst_dir)
@@ -101,7 +101,7 @@ def import_primary_image():
         else:
             source = os.path.join(path, file)
             # dst_dir = f"/home/suryaaa/Music/image_testing/failed"
-            dst_dir = os.path.join(common_folder, "failed")
+            dst_dir = os.path.join(common_folder, "failed", "primary")
             isExist = os.path.exists(dst_dir)
             if not isExist:
                 os.makedirs(dst_dir)

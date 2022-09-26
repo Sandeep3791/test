@@ -18,7 +18,7 @@
                 <td>{{product.SKU}}</td>
                 <td>{{product.mfr_name|default_if_none:"-"}}</td>
                 <td>{{product.name}}</td>
-                <td>{{product.price|default_if_none:""}}</td>
+                <td>{{product.price|default_if_none:""|floatformat:2}}</td>
                 <td>{{product.quantity|default_if_none:""}}</td>
                 <td>{{product.weight_unit|default_if_none:"-"|striptags}}</td>
             </tr>

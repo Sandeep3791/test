@@ -10,6 +10,7 @@
             <th scope="col">Username</th>
             <th scope="col">Email</th>
             <th scope="col">Contact</th>
+            <th scope="col">Business Type</th>
             <th scope="col">Status</th>
             <th scope="col">Credits</th>
             {% if perms.customer.view or perms.customer.update_email or perms.credits.assign_customer %}
@@ -25,6 +26,7 @@
             <td>{{user.first_name}} {{user.last_name}}</td>
             <td>{{user.email}}</td>
             <td>{{user.contact}}</td>
+            <td>{{user.business_type.business_type}}</td>
             <td>
                 {% if perms.customer.approve %}
                     {% if user.verification_status == "waiting for approval" %}

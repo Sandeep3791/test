@@ -113,6 +113,78 @@
                     </div>
                 </div>
             </div>
+            <div class="col-12 col-sm-6 col-xl-3 mb-4  p-0">
+                <div class="card border-light shadow-sm">
+                    <div class="card-body">
+                        <div class="row d-block d-xl-flex align-items-center">
+                            <div class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
+                                <div class="icon icon-shape icon-md icon-shape-secondary rounded me-4 me-sm-0"><span class="fas fa-tasks"></span></div>
+                            </div>
+                            <div class="col-12 col-xl-7 px-xl-0">
+                                <div class="d-none d-sm-block">
+                                    <h6>SKU primary images in queue</h6>
+                                    <h4 class="mb-1 available_folders_primary">{{available_folders}}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-xl-3 mb-4">
+                <div class="card border-light shadow-sm">
+                    <div class="card-body">
+                        <div class="row d-block d-xl-flex align-items-center">
+                            <div class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
+                                <div class="icon icon-shape icon-md icon-shape-secondary rounded me-4 me-sm-0"><span class="fas fa-exclamation-triangle"></span></div>
+                            </div>
+                            <div class="col-12 col-xl-7 px-xl-0">
+                                <div class="d-none d-sm-block">
+                                    <h6>Invalid SKU <br> primary images</h6>
+                                    <h5 class="mb-1 failed_folders_primary">{{failed_folders}}</h5>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-xl-3 mb-4 padding-left-0">
+                <div class="card border-light shadow-sm">
+                    <div class="card-body">
+                        <div class="row d-block d-xl-flex align-items-center">
+                            <div class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
+                                <div class="icon icon-shape icon-md icon-shape-secondary rounded me-4 me-sm-0"><span class="fas fa-database"></span></div>
+                            </div>
+                            <div class="col-12 col-xl-7 px-xl-0">
+                                <div class="d-none d-sm-block">
+                                    <h6>SKU with primary images</h6>
+                                    <div class="sku_img mb-1 d-flex justify-content-between">
+                                        <h5 class="product_with_imgs_primary">{{product_with_imgs}}</h5>
+                                         <h5> out of </h5>
+                                         <h5 class="total_product_images_primary">{{total_product_images}}</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-xl-3 mb-4 p-0">
+                <div class="card border-light shadow-sm">
+                    <div class="card-body">
+                        <div class="row d-block d-xl-flex align-items-center">
+                            <div class="col-12 col-xl-5 text-xl-center mb-3 mb-xl-0 d-flex align-items-center justify-content-xl-center">
+                                <div class="icon icon-shape icon-md icon-shape-secondary rounded me-4 me-sm-0"><span class="fas fa-ban"></span></div>
+                            </div>
+                            <div class="col-12 col-xl-7 px-xl-0">
+                                <div class="d-none d-sm-block">
+                                    <h6>SKU without <br> primary images</h6>
+                                    <h4 class="mb-1 no_image_products_primary">{{no_image_products}}</h4>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="bg-white  rounded p-4 p-lg-4 shadow-sm mb-4">
                 <!-- Form -->
                 <div class="row d-flex">
@@ -285,12 +357,37 @@
         </div>
     </div>
     
+    
 </div>
 
 {% endblock content %}
 
 <!-- Specific Page JS goes HERE  -->
 {% block javascripts %}
+<script>
+    function loadimg(){
+        const url="{% url 'wayrem_admin:image_import_primary' %}";
+        $.ajax({
+            url:url,
+            data: {},
+            success:function(data){
+                var obj = JSON.parse(data)
+                console.log(obj.available_folders)
+            $(".available_folders_primary").text(obj.available_folders);
+            $(".failed_folders_primary").text(obj.failed_folders);
+            $(".product_with_imgs_primary").text(obj.product_with_imgs);
+            $(".total_product_images_primary").text(obj.total_product_images);
+            $(".product_with_imgs_primary").text(obj.product_with_imgs);
+            $(".no_image_products_primary").text(obj.no_image_products);
+            
+            },
+        });
+    }
+loadimg(); // This will run on page load
+setInterval(function(){
+    loadimg() // this will run after every 5 seconds
+}, 30000);
+</script>
 <script>
     function loadimg(){
         const url="{% url 'wayrem_admin:image_import' %}";
