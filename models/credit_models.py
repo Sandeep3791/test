@@ -77,7 +77,7 @@ class CreditCycle(Base):
     
     id = Column(Integer(), autoincrement=True,  primary_key=True, index=True)
     customer_id = Column(ForeignKey('customers_master.id'))
-    credit_rule = Column(ForeignKey('CreditSettings.id'))
+    credit_rule_id = Column(ForeignKey('CreditSettings.id'))
     start_date = Column(DateTime(timezone=True), nullable=True)
     end_date = Column(DateTime(timezone=True), nullable=True)
     created_at = Column(DateTime(timezone=True), default=get_time())
