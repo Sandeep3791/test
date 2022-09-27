@@ -206,7 +206,6 @@ def create_po_step2(request):
                 supplier=supplier_name.username, number=po_name)
             to = supplier_name.email
             subject = email_setting.subject.format(number=po_name)
-            send_email(to, subject, body)
             t = threading.Thread(
                 target=send_email, args=(to, subject, body))
             t.start()
