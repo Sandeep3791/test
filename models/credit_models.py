@@ -70,3 +70,15 @@ class CreditPaymentReference(Base):
     is_verified = Column(Boolean, default=False)
     created_at = Column(DateTime(timezone=True), default=get_time())
     updated_at = Column(DateTime(timezone=True), default=get_time())
+
+
+class CreditCycle(Base):
+    __tablename__ = "credit_cycle"
+    
+    id = Column(Integer(), autoincrement=True,  primary_key=True, index=True)
+    customer = Column(ForeignKey('customers_master.id'))
+    credit_rule = Column(ForeignKey('CreditSettings.id'))
+    start_date = Column(DateTime(timezone=True), nullable=True)
+    end_date = Column(DateTime(timezone=True), nullable=True)
+    created_at = Column(DateTime(timezone=True), default=get_time())
+    updated_at = Column(DateTime(timezone=True), default=get_time())
