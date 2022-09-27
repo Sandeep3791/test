@@ -183,8 +183,7 @@ def creditAssign(request, id=None):
             min_startdate = datetime.combine(date_today, time.min)
             max_enddate = datetime.combine(
                 date_today, time.max) + timedelta(days=available_credit.time_period)
-            if created:
-                credit_cycle.start_date = min_startdate
+            credit_cycle.start_date = min_startdate
             credit_cycle.end_date = max_enddate
             credit_cycle.credit_rule = available_credit
             credit_cycle.save()
