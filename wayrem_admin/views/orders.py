@@ -601,6 +601,12 @@ class OrderCancelCloneOrder(View):
         partial_payment =float(0)
         if new_order_transaction['payment_status_id'] != PAYMENT_STATUS_CONFIRM:
             partial_payment = float(new_order['grand_total'])
+        
+        # when payment rejected
+        if new_order_transaction['payment_status_id'] == PAYMENT_STATUS_REJECTED: 
+            new_order_transaction['payment_status_id']=PAYMENT_STATUS_PENDING
+        
+        
         new_order.update({'id': None,'ref_number':new_ref_number,'from_clone':id,'to_clone':None,'order_type_id':order_type_status.id,'status_id':order_status_instance.id,'partial_payment':partial_payment,'partial_payment_settled_date':None})
         
         new_order_created = self.model.objects.create(**new_order)
