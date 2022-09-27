@@ -66842,3 +66842,8 @@ nav#topbar_content {
         font-size: 1rem;
     }
 }
+
+.ocerflow-scroll-50vh {
+    overflow: scroll;
+    max-height: 48vh;
+}
