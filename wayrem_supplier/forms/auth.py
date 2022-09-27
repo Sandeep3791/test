@@ -67,7 +67,7 @@ class ResetPasswordForm(forms.Form):
     #         )
     #     return cleaned_data
 
-    def clean_new_password(self):
+    def clean_confirm_password(self):
         email = self.cleaned_data.get('email')
         user = Supplier.objects.get(email=email)
         password = self.cleaned_data.get("new_password")
