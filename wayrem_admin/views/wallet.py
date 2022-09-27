@@ -84,6 +84,6 @@ class WalletList(ListView):
         total_amount=cr - dr
         if total_amount <= 0:
             total_amount=0
-        context['total_amount']=total_amount
+        context['total_amount']=round(total_amount, 2)
         context['customer_id']=id
         return context

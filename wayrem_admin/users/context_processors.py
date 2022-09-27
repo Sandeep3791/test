@@ -8,6 +8,9 @@ from django.conf import settings
 
 
 def show_menu(request):
+    active_menu = request.META. get('PATH_INFO')
+    active_menu=active_menu.strip('/')
+    
     """
     Return a menu along with user permission set'.
     """
@@ -42,25 +45,43 @@ def show_menu(request):
     if pages_menu:
         for menu in pages_menu:
             if menu.parent_id == 0:
+                
                 pages_menu_list.append(menu.id)
-                menu_temp_dict[menu.id] = menu.__dict__
+                p_menu_list=menu.__dict__
+                p_menu_list['is_active']=0
+                current_menu=None
+                if menu.action_path:
+                    current_menu=menu.action_path.strip('/')
+                if active_menu ==  current_menu:
+                    p_menu_list["is_active"]=1
+                menu_temp_dict[menu.id] =p_menu_list
 
         for function_id in pages_menu_list:
             menu_dict = {}
             menu_dict['menu'] = menu_temp_dict[function_id]
             for menu in pages_menu:
                 if menu.parent_id == function_id:
-                    sub_list.append(menu.__dict__)
+                    
+                    sub_menu=menu.__dict__
+                    sub_menu["is_active"]=0
+                    current_menu=None
+                    if menu.action_path:
+                        current_menu=menu.action_path.strip('/')
+                    if active_menu == current_menu:
+                        sub_menu["is_active"]=1
+                        menu_dict["menu"]["is_active"]=1
+                    sub_list.append(sub_menu)
+
             if sub_list:
                 menu_dict['submenu'] = sub_list.copy()
             pages_menu_dict[function_id] = menu_dict
             sub_list.clear()
     require_https = request.is_secure()
-    # print(pages_menu_dict)
+    
     if not request.is_ajax():
         current_path = request.path.strip('/')
         # print(search(pages_menu_dict, current_path)
-
+    #print(pages_menu_dict)
     return {'pages_menu': pages_menu_dict, 'require_https': settings.FLAG_SSL}
 
 

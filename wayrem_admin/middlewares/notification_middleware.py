@@ -21,8 +21,8 @@ class NotificationMiddleWare(object):
                     order_date__day=this_day, status__id=16).count()
 
             request.new_order = Orders.objects.filter(status__id=16).count()
-            request.new_customer = Customer.objects.exclude(
-                verification_status="active").count()
+            request.new_customer = Customer.objects.filter(
+                verification_status="waiting for approval").count()
             response = self.get_response(request)
         else:
             response = self.get_response(request)
