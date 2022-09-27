@@ -393,7 +393,7 @@
                         </div> 
                         {% endif %}
                         <div class="mt-4">
-                            <a href="{% url 'wayrem_admin:customerslist' %}" class="btn btn-block btn-primary">Cancel</a>
+                            <a href="{% url 'wayrem_admin:customerslist' %}{{qs}}" class="btn btn-block btn-primary">Cancel</a>
                             {% if perms.customer.approve %}
                             {% if user.verification_status == "waiting for approval" or user.verification_status == "updated"  %} 
                             <a href="{% url 'wayrem_admin:customer_verification' user.id %}?status=active" class="btn btn-block btn-success">Approve</a>

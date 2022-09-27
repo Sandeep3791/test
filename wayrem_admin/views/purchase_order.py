@@ -118,16 +118,19 @@ def create_purchase_order(request):
         elif request.GET.get('product'):
             prod = request.GET.get('product')
             try:
-                p = SupplierProducts.objects.filter(SKU=prod).first().id
+                p = SupplierProducts.objects.filter(SKU=prod).first()
+                s = p.supplier_id.id
+                p = p.id
             except:
+                s = 1
                 p = 1
             form = POFormOne(
-                initial={"product_name": p})
+                initial={"product_name": p, "supplier_name": s})
         elif request.GET.get('suprod'):
             x = request.GET.get('suprod').split('?')
             product = SupplierProducts.objects.filter(SKU=x[1]).first()
             form = POFormOne(
-                initial={"product_name": product, "supplier_name": x[0]})
+                initial={"product_name": product.id, "supplier_name": x[0]})
         else:
             form = POFormOne(
                 initial={'supplier_name': request.session.get('supplier_company', None)})

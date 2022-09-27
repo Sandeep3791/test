@@ -60,6 +60,11 @@ class CustomersList(LoginPermissionCheckMixin, ListView):
     def get_context_data(self, **kwargs):
         context = super(CustomersList, self).get_context_data(**kwargs)
         context['filter_form'] = CustomerSearchFilter(self.request.GET)
+        if self.request.META['QUERY_STRING']:
+            qs = self.request.META['QUERY_STRING']
+            context['qs'] = "?"+qs
+        else:
+            context['qs'] = ""
         return context
 
 
@@ -80,7 +85,14 @@ class Active_BlockCustomer(LoginPermissionCheckMixin, View):
 @permission_required('customer.view', raise_exception=True)
 def customer_details(request, id=None):
     user = Customer.objects.filter(id=id).first()
-    return render(request, 'customer/customer_view.html', {'user': user})
+    context = {}
+    context['user'] = user
+    if request.META['QUERY_STRING']:
+        qs = request.META['QUERY_STRING']
+        context['qs'] = "?"+qs
+    else:
+        context['qs'] = ""
+    return render(request, 'customer/customer_view.html', context)
 
 
 @permission_required('customer.approve', raise_exception=True)

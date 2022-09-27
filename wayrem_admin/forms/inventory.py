@@ -63,6 +63,10 @@ class InventoryAdvanceFilterForm(forms.Form):
         attrs={'class': 'form-control form-control-select'}))
     name = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control p-2', 'placeholder': 'Product name'}), required=False)
+    mfr_name = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'form-control p-2', 'placeholder': 'Brand'}), required=False)
+    customer = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'form-control p-2', 'placeholder': 'Customer'}), required=False)
     SKU = forms.CharField(widget=forms.TextInput(
         attrs={'class': 'form-control p-2', 'placeholder': 'SKU'}), required=False)
 
