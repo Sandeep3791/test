@@ -1095,7 +1095,7 @@ def bulk_quantity_excel(request):
                 context = {
                     "total_entries_excel": len(df),
                     "quantity_sku_count": len(sku_s_add),
-                    "quantity_sku_count_remove": len(sku_s_add)
+                    "quantity_sku_count_remove": len(sku_s_remove)
                 }
                 return render(request, "product/import_product.html", context)
             except Exception as e:

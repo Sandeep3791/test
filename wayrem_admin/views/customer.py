@@ -149,7 +149,14 @@ def customer_verification(request, id=None):
         except Exception as e:
             print("Failed to send notifications because ", e)
         # messages.success(request, f"{user.first_name} is now Rejected")
-        return redirect('wayrem_admin:customerdetails', id)
+        context = {}
+        if request.META['QUERY_STRING']:
+            qs = request.META['QUERY_STRING']
+        else:
+            qs = ""
+        response = redirect('wayrem_admin:customerslist')
+        response['Location'] += '?' + qs
+        return response
     if status == "active":
         email_template = EmailTemplateModel.objects.get(
             key="customer_approved")
@@ -187,7 +194,15 @@ def customer_verification(request, id=None):
         messages.success(request, f"{user.first_name} is now Active")
     else:
         messages.error(request, f"{user.first_name} is now Inactive")
-    return redirect('wayrem_admin:customerslist')
+    context = {}
+    if request.META['QUERY_STRING']:
+        qs = request.META['QUERY_STRING']
+        qs = qs.split("&")[0]
+    else:
+        qs = ""
+    response = redirect('wayrem_admin:customerslist')
+    response['Location'] += '?' + qs
+    return response
 
 
 @permission_required('customer.update_email', raise_exception=True)
