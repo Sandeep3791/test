@@ -68,7 +68,7 @@ def import_image():
 def import_primary_image():
     # path = '/home/suryaaa/Music/image_testing/client-images'
     path = os.path.join(os.path.abspath(
-        '.'), "media", "wayrem-product-images", "primary_images")
+        '.'), "media", "wayrem-product-images", "primary-images")
     # path = '/opt/app/wayrem-admin-backend/media/wayrem-product-images'
 
     items = [f for f in os.listdir(
