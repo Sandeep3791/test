@@ -123,17 +123,20 @@
              
         <!-- Action Buttons -->
         <div class="d-flex justify-content-end my-3">
-            <a type="submit" class="btn btn-danger ms-3" href="{% url 'wayrem_admin:orderlist' %}">
-                Cancel
+            <a type="submit" class="btn btn-dark ms-3" href="{% url 'wayrem_admin:orderlist' %}">
+                Back
             </a>  
-            <button type="submit" class="btn btn-success ms-3 d-none">
-                Save as draft
-            </button>  
-            
+            {% if order_details.count == 0 %}
+            <button type="button" class="btn btn-primary ms-3" disabled>Create Order</button>
+
+            {% else %}
             <a type="submit" class="btn btn-primary ms-3" href="{% url 'wayrem_admin:clonecreateorder' order.id %}">
                 <i class="fa fa-check" aria-hidden="true"></i>
                 Create Order
             </a> 
+
+            {% endif %}
+
         </div>
     </div>
     

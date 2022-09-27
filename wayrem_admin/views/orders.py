@@ -216,8 +216,7 @@ class OrderStatusUpdated(LoginRequiredMixin, UpdateView):
         obj = form.save(commit=False)
         status_id = int(self.request.POST.get('status'))
         obj.status = StatusMaster.objects.get(id=status_id)
-        print(status_id)
-        print("ka")
+       
         obj.save()
         return HttpResponse(True)
 
@@ -602,6 +601,12 @@ class OrderCancelCloneOrder(View):
         partial_payment =float(0)
         if new_order_transaction['payment_status_id'] != PAYMENT_STATUS_CONFIRM:
             partial_payment = float(new_order['grand_total'])
+        
+        # when payment rejected
+        if new_order_transaction['payment_status_id'] == PAYMENT_STATUS_REJECTED: 
+            new_order_transaction['payment_status_id']=PAYMENT_STATUS_PENDING
+        
+        
         new_order.update({'id': None,'ref_number':new_ref_number,'from_clone':id,'to_clone':None,'order_type_id':order_type_status.id,'status_id':order_status_instance.id,'partial_payment':partial_payment,'partial_payment_settled_date':None})
         
         new_order_created = self.model.objects.create(**new_order)
@@ -651,6 +656,10 @@ class OrderCancelCloneOrder(View):
         self.order_inventory_process(order_id)
         payment_status = StatusMaster.objects.get(id=PAYMENT_STATUS_DECLINED)
         OrderTransactions.objects.filter(order=order_id).update(payment_status=payment_status)
+        now = datetime.now()
+        odl = OrderDeliveryLogs(order_id=order_id, order_status=deliv_obj_stat_instance, order_status_details="status change",
+                                        log_date=now, user_id=1, customer_view=deliv_obj_stat_instance.customer_view)
+        odl.save()
         return 1
 
     def credit_note(self,status,order_id):
@@ -723,7 +732,12 @@ class CloneOrderView(DetailView):
                 context['product']=products
 
         context['pid'] =pid     
-        context['order_details'] = OrderDetails.objects.filter(order=order_id)
+        oder_detail=OrderDetails.objects.filter(order=order_id)
+        context['order_details'] = oder_detail
+        if not oder_detail:
+            message="Please add items to cart to create an order."
+            messages.success(self.request, message)
+        
         context['currency'] = CURRENCY
         return context
 
@@ -751,7 +765,7 @@ class AutoCompleteModelView(View):
 
     def post(self,request):
         search=self.request.POST.get('search')
-        pro_list=Products.objects.filter(Q(name__contains=search) | Q(SKU__contains=search)| Q(mfr_name__contains=search)).values('id','name','SKU','mfr_name')
+        pro_list=Products.objects.filter(Q(name__icontains=search) | Q(SKU__contains=search)| Q(mfr_name__icontains=search)).values('id','name','SKU','mfr_name')
         results = []
         for pro in pro_list:
             mfr_name=""
