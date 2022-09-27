@@ -311,7 +311,7 @@ def pay_overdue_credits(request, db: Session):
                                 credit_models.CreditManagement.customer_id == request.customer_id).first()
                         if float(request.amount) >= float(amount_to_paid):
                             available_amt = float(user_Credit_data.available)
-                            new_available_limit = available_amt + amount_to_paid
+                            new_available_limit = float(available_amt) + float(amount_to_paid)
                             paid_data = credit_models.CreditTransactionsLog(credit_date=exist_credit_date, due_date=exist_due_date, credit_id=i, paid_date=present_date,
                                                                             paid_amount=amount_to_paid, payment_status=True, order_id=credit_info.order_id, customer_id=request.customer_id, 
                                                                             available=new_available_limit,reference_id=reference_number_obj.id)
