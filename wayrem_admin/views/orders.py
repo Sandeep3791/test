@@ -845,7 +845,7 @@ class Clonecreateorder(View):
         grandtotal=float(order_dict['grand_total'])
         if partial_payment == 0:
             payment_status_instance = StatusMaster.objects.get(id=PAYMENT_STATUS_CONFIRM)
-        if grandtotal > partial_payment:
+        else:
             payment_status_instance = StatusMaster.objects.get(id=PAYMENT_STATUS_PARTIAL_PAYMENT)
         OrderTransactions.objects.filter(order=order_id).update(payment_status=payment_status_instance)
         return 1
