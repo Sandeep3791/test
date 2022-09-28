@@ -45,6 +45,10 @@ class Orders(Base):
     delivery_status = Column(Integer(), default=1)
     order_type = Column(Integer(), default=24)
     delivery_charge = Column(String(255))
+    from_clone = Column(BigInteger)
+    to_clone = Column(BigInteger)
+    partial_payment = Column(Float, default=0)
+    partial_payment_settled_date = Column(DateTime)
 
 
 class OrderDetails(Base):

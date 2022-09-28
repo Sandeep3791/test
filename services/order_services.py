@@ -1,4 +1,6 @@
 import math
+from urllib import request
+from weakref import KeyedRef
 
 from pytz import utc
 from services import firebase_services, payment_services
@@ -685,44 +687,42 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
             ref_no = generate_ref_number(db)
 
             order = order_models.Orders(
-            ref_number=ref_no,
-            customer_id=request.customer_id,
-            status=16,
-            delivery_status=1,
-            sub_total=0,
-            item_discount=0,
-            item_margin=0,
-            tax=0,
-            tax_vat=0,
-            discount=0,
-            grand_total=0,
-            shipping=0,
-            total=0,
-            order_shipped=0,
-            order_ship_name=request.shipping_name,
-            order_ship_address=request.shipping_address,
-            order_billing_name=request.billing_name,
-            order_billing_address=request.billing_address,
-            order_city=request.city,
-            order_country=request.country,
-            order_ship_region=request.shipping_region,
-            order_ship_landmark=request.shipping_landmark,
-            order_ship_building_name=request.shipping_building_name,
-            order_ship_latitude=request.shipping_latitude,
-            order_ship_longitude=request. shipping_longitude,
-            order_phone=request.contact,
-            order_email=request.email,
-            order_type=24,
-            delivery_charge=request.delivery_fees,
-            order_date=common_services.get_time())
+                ref_number=ref_no,
+                customer_id=request.customer_id,
+                status=16,
+                delivery_status=1,
+                sub_total=0,
+                item_discount=0,
+                item_margin=0,
+                tax=0,
+                tax_vat=0,
+                discount=0,
+                grand_total=0,
+                shipping=0,
+                total=0,
+                order_shipped=0,
+                order_ship_name=request.shipping_name,
+                order_ship_address=request.shipping_address,
+                order_billing_name=request.billing_name,
+                order_billing_address=request.billing_address,
+                order_city=request.city,
+                order_country=request.country,
+                order_ship_region=request.shipping_region,
+                order_ship_landmark=request.shipping_landmark,
+                order_ship_building_name=request.shipping_building_name,
+                order_ship_latitude=request.shipping_latitude,
+                order_ship_longitude=request. shipping_longitude,
+                order_phone=request.contact,
+                order_email=request.email,
+                order_type=24,
+                delivery_charge=request.delivery_fees,
+                order_date=common_services.get_time())
             db.merge(order)
             db.commit()
 
         else:
             order = db.query(order_models.Orders).filter(
-            order_models.Orders.ref_number == request.ref_number).first()
-
-        
+                order_models.Orders.ref_number == request.ref_number).first()
 
         order_data = db.query(order_models.Orders).filter(
             order_models.Orders.ref_number == order.ref_number).first()
@@ -895,8 +895,11 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
                 time_in_days = credit_settings_data.time_period
                 due_date = update_date + timedelta(days=time_in_days)
 
+                credit_end_date = db.query(credit_models.CreditCycle).filter(credit_models.CreditCycle.customer_id == request.customer_id).first()
+                due_end_date = credit_end_date.end_date
+
                 credit_log = credit_models.CreditTransactionsLog(customer_id=request.customer_id, order_id=order_id_credit, credit_amount=float(
-                    paying_price), available=updated_credit, credit_date=common_services.get_time(), due_date=due_date, payment_status=False)
+                    paying_price), available=updated_credit, credit_date=common_services.get_time(), due_date=due_end_date, payment_status=False)
                 db.merge(credit_log)
                 db.commit()
 
@@ -926,7 +929,7 @@ def create_order_new(request, db: Session, background_tasks: BackgroundTasks):
             else:
                 inv_no = 1001
         order_transact = order_models.OrderTransactions(user_id=request.customer_id,  order_id=order_id, order_type=1,
-                                                        payment_mode_id=request.payment_type, payment_status_id=request.payment_status, invoices_id=inv_no,created_at=common_services.get_time(),updated_at=common_services.get_time())
+                                                        payment_mode_id=request.payment_type, payment_status_id=request.payment_status, invoices_id=inv_no, created_at=common_services.get_time(), updated_at=common_services.get_time())
         db.merge(order_transact)
         db.commit()
 
@@ -1028,7 +1031,7 @@ def get_all_orders(offset, customer_id, db: Session):
     for value in limit_value:
         limit_val = int(value[0])
     orders_data = db.execute(
-        f'SELECT t1.*, t2.id as transaction_id, t2.payment_mode_id, t2.payment_status_id , t2.invoices_id, t4.name as payment_mode , t3.name as payment_status FROM {constants.Database_name}.orders t1 inner join {constants.Database_name}.order_transactions t2 on t1.id = t2.order_id inner join {constants.Database_name}.status_master t3 on  t3.id = t2.payment_status_id inner join {constants.Database_name}.status_master t4 on t4.id = t2.payment_mode_id  where customer_id = {customer_id} and is_shown = true order by t1.id DESC limit {offset_int},{limit_val};')
+        f'SELECT t1.*, t2.id as transaction_id, t2.payment_mode_id, t2.payment_status_id , t2.invoices_id, t4.name as payment_mode , t3.name as payment_status FROM {constants.Database_name}.orders t1 inner join {constants.Database_name}.order_transactions t2 on t1.id = t2.order_id inner join {constants.Database_name}.status_master t3 on  t3.id = t2.payment_status_id inner join {constants.Database_name}.status_master t4 on t4.id = t2.payment_mode_id  where customer_id = {customer_id} and is_shown = true and t1.order_type != 29 order by t1.id DESC limit {offset_int},{limit_val};')
     if orders_data.rowcount > 0:
         order_list = []
         for data in orders_data:
@@ -1119,8 +1122,13 @@ def get_all_orders(offset, customer_id, db: Session):
                 for type_value in order_type_data:
                     order_value = type_value.name
 
+                partial_payment = data.partial_payment
+                if partial_payment is None:
+                    partial_payment = 0
+
             data_order = order_schemas.OrderDetails(order_id=data.id, order_ref_no=data.ref_number, sub_total=data.sub_total, item_discount=data.item_discount, tax_vat=vat_with_prcnt, total=data.total, grand_total=data.grand_total, email=data.order_email, contact=data.order_phone, country=data.order_country, city=data.order_city, billing_name=data.order_billing_name,
-                                                    billing_address=data.order_billing_address, shipping_name=data.order_ship_name, shipping_address=data.order_ship_address, payment_type=payment_type, payment_status=payment_status, order_date=date, product_count=product_count, order_status=order_status, order_type=order_value, invoice_id=data.invoices_id, delivery_logs=last_log, products=order_product_list)
+                                                    billing_address=data.order_billing_address, shipping_name=data.order_ship_name, shipping_address=data.order_ship_address, payment_type=payment_type, payment_status=payment_status, order_date=date, product_count=product_count, order_status=order_status, order_type=order_value, invoice_id=data.invoices_id, delivery_logs=last_log, products=order_product_list, pending_payment=partial_payment,
+                                                    partial_payment_settled_date=data.partial_payment_settled_date)
             order_list.append(data_order)
 
         data4 = order_schemas.ResponseMyOrders(
@@ -1250,9 +1258,13 @@ def get_order_details(order_id, db: Session):
             if data.invoices_id:
                 invoice_link = f"{constants.global_link}/orders/invoice-orders/{data.ref_number}"
 
+            partial_payment = data.partial_payment
+            if partial_payment is None:
+                partial_payment = 0
+
             data_order = order_schemas.OrderDetailsbyid(order_id=data.id, order_ref_no=data.ref_number, sub_total=data.sub_total, item_discount=data.item_discount, tax_vat=vat_with_prcnt, total=data.total, grand_total=data.grand_total, email=data.order_email, contact=data.order_phone, country=data.order_country, city=data.order_city, billing_name=data.order_billing_name,
                                                         billing_address=data.order_billing_address, shipping_name=data.order_ship_name, shipping_address=data.order_ship_address, payment_type=payment_type, payment_status=payment_status, order_date=date, product_count=product_count, order_status=order_status, order_type=order_value, invoice_id=data.invoices_id, invoice_link=invoice_link, delivery_charges=delivery_charge,
-                                                        bank_receipt=final_bank_re, order_delivery_logs=logs_list, products=order_product_list)
+                                                        bank_receipt=final_bank_re, order_delivery_logs=logs_list, products=order_product_list, pending_payment=partial_payment, pending_payment_date=str(common_services.utc_to_tz(data.partial_payment_settled_date)))
             order_list.append(data_order)
         data4 = order_schemas.ResponseMyOrdersbyid(
             customer_id=data.customer_id, orders=order_list)
@@ -1581,3 +1593,166 @@ def format_string(view_list, image_list):
                                     </tr>
                                 """
     return x
+
+
+def pending_payment_services(user_request, db: Session):
+    customer_id = user_request.customer_id
+    db_user_active = db.query(user_models.User).filter(
+        user_models.User.id == customer_id).first()
+    if db_user_active:
+        if db_user_active.verification_status == "active":
+            entityId = common_services.get_entityId(user_request.entityId)
+
+            checkout_request = payment_schemas.CheckoutIdRequest(
+                entityId=entityId, amount=user_request.amount, currency='SAR', paymentType=user_request.paymentType, customer_id=user_request.customer_id)
+
+            user_request2 = jsonable_encoder(checkout_request)
+
+            if user_request.registrationId:
+                user_request2['registrationId'] = user_request.registrationId
+
+            checkout_details = payment_services.HyperPayResponseView(
+                user_request.entityId).generate_checkout_id(user_request2)
+            success_code = checkout_details['result']['code']
+            if success_code == '000.200.100' or success_code == '000.200.101' or success_code == '000.200.102':
+                checkout_id = checkout_details['id']
+                order_details = db.query(order_models.Orders).filter(
+                    order_models.Orders.id == user_request.order_id).first()
+                if order_details:
+                    order_details.checkout_id = checkout_id
+                    db.merge(order_details)
+                    db.commit()
+                data = payment_schemas.ResponseCreditPay(
+                    checkout_id=checkout_id)
+                resp = payment_schemas.ResponseCreditPAyCheckout(
+                    status=status.HTTP_200_OK, message="Checkout ID created successfully", data=data)
+                return resp
+
+            else:
+                common_msg = user_schemas.ResponseCommonMessage(
+                    status=status.HTTP_404_NOT_FOUND, message="Transaction failed!")
+                return common_msg
+        else:
+            common_msg = user_schemas.ResponseCommonMessage(
+                status=status.HTTP_404_NOT_FOUND, message="User is not approved to place the order")
+            return common_msg
+    else:
+        common_msg = user_schemas.ResponseCommonMessage(
+            status=status.HTTP_404_NOT_FOUND, message="Customer doesn't exist!")
+        return common_msg
+
+
+def clone_order(user_request, db: Session):
+    order_details = db.query(order_models.Orders).filter(
+        order_models.Orders.id == user_request.order_id).first()
+    if not order_details:
+        common_msg = user_schemas.ResponseCommonMessage(
+            status=status.HTTP_404_NOT_FOUND, message="Order doesn't exist!")
+        return common_msg
+
+    order_transaction = db.query(order_models.OrderTransactions).filter(order_models.OrderTransactions.order_id == user_request.order_id).first()
+    
+    payment_amount = order_details.partial_payment
+    if user_request.paymentMode == 14:
+
+        SUCCESS_CODES_REGEX = re.compile(
+            r'^(000\.000\.|000\.100\.1|000\.[36])')
+        SUCCESS_MANUAL_REVIEW_CODES_REGEX = re.compile(
+            r'^(000\.400\.0[^3]|000\.400\.[0-1]{2}0)')
+        PENDING_CHANGEABLE_SOON_CODES_REGEX = re.compile(r'^(000\.200)')
+        PENDING_NOT_CHANGEABLE_SOON_CODES_REGEX = re.compile(
+            r'^(800\.400\.5|100\.400\.500)')
+        hyperpay_response = None
+        hyperpay_response_description = None
+
+        payment_status = payment_services.HyperPayResponseView(
+            user_request.entityId).get_payment_status(user_request.checkout_id)
+
+        payment_check = payment_status.get("result").get("code")
+        hyperpay_response = payment_status
+        hyperpay_response_description = payment_status.get(
+            "result").get("description")
+        if re.search(PENDING_CHANGEABLE_SOON_CODES_REGEX, payment_check) or re.search(PENDING_NOT_CHANGEABLE_SOON_CODES_REGEX, payment_check) or re.search(SUCCESS_CODES_REGEX, payment_check) or re.search(SUCCESS_MANUAL_REVIEW_CODES_REGEX, payment_check):
+            failed = False
+        else:
+            failed = True
+        if failed:
+            response = user_schemas.ResponseCommonMessage(
+                status=status.HTTP_424_FAILED_DEPENDENCY, message="Transaction Failed!!", data=str(hyperpay_response))
+            return response
+        registrationId = payment_status.get("registrationId")
+        
+        order_transaction.payment_mode_id = 14
+
+        if registrationId:
+            card_body = payment_status.get("card")
+            card_number = card_body.get("last4Digits")
+
+            reg_id = db.query(payment_models.CustomerCard).filter(payment_models.CustomerCard.customer_id == user_request.customer_id, or_(
+                payment_models.CustomerCard.registration_id == registrationId, payment_models.CustomerCard.card_number == card_number)).first()
+
+            if not reg_id:
+                card_body = payment_status.get("card")
+                card_number = card_body.get("last4Digits")
+                expiry_month = card_body.get("expiryMonth")
+                expiry_year = card_body.get("expiryYear")
+                card_holder = card_body.get("holder")
+                card_type = card_body.get("type")
+                card_brand = payment_status.get("paymentBrand")
+                save_card = payment_models.CustomerCard(customer_id=user_request.customer_id, registration_id=registrationId, card_number=card_number, expiry_month=expiry_month,
+                                                        expiry_year=expiry_year, card_holder=card_holder, card_type=card_type, card_body=str(card_body), card_brand=card_brand)
+                db.merge(save_card)
+                db.commit()
+
+    elif user_request.paymentMode == 13:
+        credit_data = db.query(credit_models.CreditManagement).filter(
+            credit_models.CreditManagement.customer_id == user_request.customer_id).first()
+        available_cr = credit_data.available
+
+        if available_cr >= payment_amount:
+            updated_credit = round(float(available_cr - payment_amount), 2)
+
+            credit_data.available = updated_credit
+            credit_data.used += float(payment_amount)
+            credit_data.updated_at = common_services.get_time()
+            db.merge(credit_data)
+            db.commit()
+
+            update_date = credit_data.updated_at
+
+            credit_settings_data = db.query(credit_models.CreditSettings).filter(
+                credit_models.CreditSettings.id == credit_data.credit_rule_id).first()
+            time_in_days = credit_settings_data.time_period
+            due_date = update_date + timedelta(days=time_in_days)
+
+            credit_log = credit_models.CreditTransactionsLog(customer_id=user_request.customer_id, order_id=user_request.order_id, credit_amount=float(
+                payment_amount), available=updated_credit, credit_date=common_services.get_time(), due_date=due_date, payment_status=False)
+            db.merge(credit_log)
+            db.commit()
+            
+            order_transaction.payment_mode_id = 13
+        else:
+            result = user_schemas.ResponseCommonMessage(
+                status=status.HTTP_404_NOT_FOUND, message="Not enough credits available !")
+            return result
+
+    order_details.partial_payment = 0
+    order_details.partial_payment_settled_date = common_services.get_time()
+    # order_details.order_type = 24
+    order_details.status = 16
+    db.merge(order_details)
+    db.commit()
+
+    delivery_logs = db.query(order_models.OrderDeliveryLogs).filter(order_models.OrderDeliveryLogs.order_id == order_details.id).first() 
+    delivery_logs.log_date = common_services.get_time()
+    db.merge(delivery_logs)
+    db.commit()
+
+    order_transaction.payment_status_id = 7
+    db.merge(order_transaction)
+    db.commit()    
+
+    data_response = order_schemas.OrderResponseData(order_id=order_details.id)
+    response = order_schemas.OrderResponse(
+        status=status.HTTP_200_OK, message="Order Placed Successfully", data=data_response)
+    return response

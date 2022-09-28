@@ -76,7 +76,10 @@ def send_notification_list(customer_id, db: Session):
 
             foreign_data = db.query(order_models.Orders).filter(
                 order_models.Orders.id == order_id).first()
-            order_ref = foreign_data.ref_number
+            if foreign_data:
+                order_ref = foreign_data.ref_number
+            else:
+                order_ref = None
 
             var = firebase_schemas.NotificationResponse(
                 title=title, message=message, time=time, date=date, order_id=order_id, ref_no=order_ref)

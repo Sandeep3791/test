@@ -1,4 +1,5 @@
 
+from typing import Optional
 from fastapi_jwt_auth import AuthJWT
 from fastapi import APIRouter, Depends,UploadFile,File
 import database
@@ -27,8 +28,8 @@ def get_all_banks(authorize: AuthJWT = Depends(oauth2_schema), db: Session = Dep
 
 
 @router.post('/upload/bank/payment/image')
-def upload_bank_payment_image(customer_id: str, order_id: int, image: UploadFile = File(...), authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
-    user = bank_services.upload_bank_payment_image(customer_id, order_id, image, db)
+def upload_bank_payment_image(customer_id: str, order_id: int, pending_payment: Optional[bool] = False,image: UploadFile = File(...), authorize: AuthJWT = Depends(oauth2_schema), db: Session = Depends(database.get_db)):
+    user = bank_services.upload_bank_payment_image(customer_id, order_id, pending_payment, image, db)
     return user
 
 

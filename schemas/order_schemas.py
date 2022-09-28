@@ -168,6 +168,9 @@ class OrderDetails(BaseModel):
     invoice_id: Optional[str]
     delivery_logs: List[OrderByIdDeliveryLogs]
     products: List[OrdersProducts]
+    pending_payment: Optional[float] = None
+    pending_payment_date: Optional[str] = None
+    
 
 
 class ResponseMyOrders(BaseModel):
@@ -209,7 +212,8 @@ class OrderDetailsbyid(BaseModel):
     bank_receipt: Optional[str] = None
     order_delivery_logs: List[OrderByIdDeliveryLogs]
     products: List[OrdersProducts]
-    
+    pending_payment: Optional[float] = None
+    pending_payment_date: Optional[str] = None
 
 
 class ResponseMyOrdersbyid(BaseModel):
@@ -288,3 +292,19 @@ class InitialOrderResponse(BaseModel):
     status: str
     message: str
     data: ReferenceAndCheckoutIds
+
+class PaymentCheckoutIdRequest(BaseModel):
+    order_id: int
+    customer_id: int
+    entityId: str
+    amount: str
+    currency: str
+    paymentType: str
+    registrationId: Optional[str]
+
+class CloneOrderPayment(BaseModel):
+    order_id: int
+    customer_id: int
+    checkout_id: Optional[str]
+    entityId: Optional[str]
+    paymentMode: int
