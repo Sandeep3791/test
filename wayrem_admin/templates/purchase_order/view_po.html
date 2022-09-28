@@ -90,7 +90,7 @@
                                 <tr>
                                     <th scope="row" valign="middle">{{forloop.counter}}</th>
                                     <td style="white-space:break-spaces;" valign="middle">{{i.product_name}}</td>
-                                    <td valign="middle">{{i.product_qty}}</td>
+                                    <td valign="middle">{{i.product_qty}} {{i.product_name.quantity_unit.unit_name}}</td>
                                     <td valign="middle">
                                         <span> SAR {{i.unit_price}} </span>
                                     </td>
