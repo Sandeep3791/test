@@ -16,10 +16,10 @@ from django.http import HttpResponse
 import json
 from wayrem_admin.forecasts.firebase_notify import FirebaseLibrary
 from wayrem_admin.models import CreditSettings
-from wayrem_admin.models.customers import CustomerNotification
+from wayrem_admin.models.customers import CreditCycle, CustomerNotification
 from wayrem_admin.models.orders import Orders, StatusMaster
 from wayrem_admin.services import send_email
-from wayrem_admin.forms import CustomerSearchFilter, CustomerEmailUpdateForm, CreditsForm, CreditsSearchFilter
+from wayrem_admin.forms import CustomerSearchFilter, CustomerEmailUpdateForm, CreditsForm, CreditsSearchFilter, CreditTxnSearchFilter
 from django.urls import reverse_lazy
 from wayrem_admin.utils.constants import *
 from wayrem_admin.filters.customer_filters import *
@@ -37,7 +37,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from wayrem_admin.permissions.mixins import LoginPermissionCheckMixin
 from django.contrib.auth.decorators import permission_required
 from django.utils.decorators import method_decorator
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date, time
 
 
 class CreditCreate(LoginPermissionCheckMixin, CreateView):
@@ -177,6 +177,17 @@ def creditAssign(request, id=None):
                 assign_credit = CreditManagement(
                     customer_id=id, credit_rule=available_credit, used=0, available=available_credit.credit_amount)
                 assign_credit.save()
+            credit_cycle, created = CreditCycle.objects.get_or_create(
+                customer_id=id)
+            date_today = date.today()
+            min_startdate = datetime.now()
+            # min_startdate = datetime.combine(date_today, time.min)
+            max_enddate = datetime.combine(
+                date_today, time.max) + timedelta(days=available_credit.time_period-1)
+            credit_cycle.start_date = min_startdate
+            credit_cycle.end_date = max_enddate
+            credit_cycle.credit_rule = available_credit
+            credit_cycle.save()
             try:
                 customer = Customer.objects.get(id=id)
                 devices = CustomerDevice.objects.filter(
@@ -217,7 +228,10 @@ def creditAssign(request, id=None):
                             "amount": available_credit.credit_amount,
                             "credit": True
                         }
-                        FirebaseLibrary().send_firebase_notification(notf, payload)
+                        # FirebaseLibrary().send_firebase_notification(notf, payload)
+                        t = threading.Thread(target=FirebaseLibrary().send_firebase_notification, args=(
+                            notf, payload))
+                        t.start()
                     notification_store = CustomerNotification(
                         customer=customer, title=notify_title, message=message)
                     notification_store.save()
@@ -284,10 +298,10 @@ def credit_reminder():
                     days_reminder2 = abs(
                         credit.credit_rule.time_period - 3)
                     print(log.credit_date)
-                    reminder1 = log.credit_date + \
+                    reminder1 = log.due_date - \
                         timedelta(days=days_reminder1)
-                    reminder2 = log.credit_date + \
-                        timedelta(days=days_reminder2)
+                    reminder2 = log.due_date - \
+                        timedelta(days=3)
                     if today.date() == reminder1.date() or today.date() == reminder2.date():
                         devices = CustomerDevice.objects.filter(
                             customer=credit.customer, is_active=True)
@@ -334,6 +348,23 @@ def credit_reminder():
     print("Credit Reminder Notification Done")
 
 
+def credit_cycle_update():
+    cycles = CreditCycle.objects.all()
+    for cycle in cycles:
+        date_yesterday = date.today() - timedelta(days=1)
+        if date_yesterday == cycle.end_date.date():
+            date_today = date.today()
+            min_startdate = datetime.combine(date_today, time.min)
+            cycle.start_date = min_startdate
+            max_enddate = datetime.combine(
+                date_today, time.max) + timedelta(days=cycle.credit_rule.time_period)
+            cycle.end_date = max_enddate
+            cycle.save()
+            print("cycle updated for customer: ",
+                  cycle.customer.id, "cycle id: ", cycle.id)
+    print("Credit Cycle update successfully!!")
+
+
 def credit_refund(order_id):
     order = Orders.objects.get(id=order_id)
     credit_log = CreditTransactionLogs.objects.filter(
@@ -359,15 +390,13 @@ class CustomerCreditTransactionReference(LoginPermissionCheckMixin, ListView):
 
     def get_queryset(self):
         qs = CreditPaymentReference.objects.all().order_by("-id")
-        q = self.request.GET.get(
-            'reference_no') if self.request.GET.get('reference_no') != None else ''
-        if q != None:
-            qs = qs.filter(reference_no__icontains=q)
-        return qs
+        filtered_list = CreditTxnFilter(self.request.GET, queryset=qs)
+        return filtered_list.qs
 
     def get_context_data(self, **kwargs):
         context = super(CustomerCreditTransactionReference,
                         self).get_context_data(**kwargs)
+        context['filter_form'] = CreditTxnSearchFilter(self.request.GET)
         return context
 
 
@@ -425,3 +454,19 @@ class PaidCreditTransactionView(LoginPermissionCheckMixin, ListView):
         payment_ref.payment_status = status
         payment_ref.save()
         return HttpResponse("Successfully Updated")
+
+
+def credit_cycle_generator():
+    credit_management = CreditManagement.objects.all()
+    for credit in credit_management:
+        credit_cycle, created = CreditCycle.objects.get_or_create(
+            customer_id=credit.customer_id)
+        date_today = date.today()
+        min_startdate = datetime.combine(date_today, time.min)
+        max_enddate = datetime.combine(
+            date_today, time.max) + timedelta(days=credit.credit_rule.time_period)
+        credit_cycle.start_date = min_startdate
+        credit_cycle.end_date = max_enddate
+        credit_cycle.credit_rule_id = credit.credit_rule.id
+        credit_cycle.save()
+    print("DONE")

@@ -152,18 +152,18 @@
         });
 
     });
-    const url = "{% url 'wayrem_admin:load_supplier_products' %}";
-    const supplierId = $("#id_supplier_name").val();
+    //const url = "{% url 'wayrem_admin:load_supplier_products' %}";
+    //const supplierId = $("#id_supplier_name").val();
 
-        $.ajax({
-            url: url,
-            data: {
-                'supplier': supplierId
-            },
-            success: function (data) {
-                $("#id_product_name").html(data);                
-            }
-        });
+      //  $.ajax({
+      //      url: url,
+        //    data: {
+        //        'supplier': supplierId
+        //    },
+        //    success: function (data) {
+        //        $("#id_product_name").html(data);                
+        //    }
+        //});
 });
 </script>
 {% endblock javascripts %}

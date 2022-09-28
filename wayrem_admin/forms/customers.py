@@ -7,6 +7,11 @@ class CustomerSearchFilter(forms.Form):
         attrs={'class': 'form-control p-2', 'placeholder': 'Search'}), required=False)
 
 
+class CreditTxnSearchFilter(forms.Form):
+    search = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'form-control p-2', 'placeholder': 'Search'}), required=False)
+
+
 class CustomerEmailUpdateForm(forms.ModelForm):
 
     class Meta:

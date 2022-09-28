@@ -9,7 +9,7 @@ from wayrem_admin.models import Images, Products
 
 def import_image():
     # path = '/home/suryaaa/Music/image_testing/client-images'
-    path = '/opt/app/wayrem-admin-backend/media/wayrem-product-images'
+    path = '/opt/app/wayrem-admin-backend/media/wayrem-product-images/gallery-images'
 
     items = [f for f in os.listdir(
         path) if os.path.isdir(os.path.join(path, f))]
@@ -51,7 +51,7 @@ def import_image():
         else:
             src_dir = f"{path}/{i}/"
             # dst_dir = f"/home/suryaaa/Music/image_testing/failed"
-            dst_dir = f"/opt/app/wayrem-admin-backend/media/common_folder/failed/{i}/"
+            dst_dir = f"/opt/app/wayrem-admin-backend/media/common_folder/failed/gallery/{i}/"
             isExist = os.path.exists(dst_dir)
             if not isExist:
                 os.makedirs(dst_dir)
@@ -61,5 +61,53 @@ def import_image():
                 shutil.copy(source, destination)
                 print('copied', file_name)
             shutil.rmtree(src_dir)
+            print("failed!!")
+    print("done")
+
+
+def import_primary_image():
+    # path = '/home/suryaaa/Music/image_testing/client-images'
+    path = os.path.join(os.path.abspath(
+        '.'), "media", "wayrem-product-images", "primary-images")
+    # path = '/opt/app/wayrem-admin-backend/media/wayrem-product-images'
+
+    items = [f for f in os.listdir(
+        path) if not os.path.isdir(os.path.join(path, f))]
+
+    print(items)
+
+    for file in items:
+        file_name = file.split(".")[0].lower()
+        product = Products.objects.filter(name__icontains=file_name).first()
+        # product = Products.objects.filter(SKU=i).first()
+        common_folder = os.path.join(
+            os.path.abspath('.'), "media", "common_folder")
+        if product:
+            src_dir = os.path.join(path, file)
+            # dst_dir = f"/home/suryaaa/Music/database/products/{i}/"
+            # dst_dir = f"{common_folder}/products/{product.SKU}/"
+            dst_dir = os.path.join(common_folder, "products", product.SKU)
+            isExist = os.path.exists(dst_dir)
+            if not isExist:
+                os.makedirs(dst_dir)
+            if os.path.isfile(src_dir):
+                destination = os.path.join(dst_dir, file.replace(' ', '_'))
+                shutil.copy(src_dir, destination)
+                product.primary_image = f"products/{product.SKU}/{file.replace(' ', '_')}"
+                print("default image copied")
+                product.save()
+                print('copied', file_name)
+            os.remove(src_dir)
+        else:
+            source = os.path.join(path, file)
+            # dst_dir = f"/home/suryaaa/Music/image_testing/failed"
+            dst_dir = os.path.join(common_folder, "failed", "primary")
+            isExist = os.path.exists(dst_dir)
+            if not isExist:
+                os.makedirs(dst_dir)
+            destination = os.path.join(dst_dir, file)
+            shutil.copy(source, destination)
+            print('copied', file)
+            os.remove(source)
             print("failed!!")
     print("done")

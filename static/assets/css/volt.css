@@ -59800,12 +59800,21 @@ label {
 
 .user-avatar.large-avatar {
     border: 2px solid #ffffff;
+    object-fit: cover;
     height: 10rem;
     width: 10rem;
     min-height: 10rem;
     min-width: 10rem;
 }
 
+.user-avatar.large-avatar img {
+    object-fit: cover;
+    border: 2px solid #ffffff;
+    height: 9rem;
+    width: 9rem;
+    min-height: 9rem;
+    min-width: 9rem;
+}
 
 /**
  * = Badges
@@ -66820,4 +66829,10 @@ nav#topbar_content {
     .bulk_heading {
         font-size: 1rem;
     }
+}
+
+
+.ocerflow-scroll-50vh {
+    overflow: scroll;
+    max-height: 48vh;
 }

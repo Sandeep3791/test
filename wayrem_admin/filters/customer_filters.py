@@ -1,6 +1,6 @@
 from django.db.models import Q
 import django_filters
-from wayrem_admin.models import Customer, CreditSettings
+from wayrem_admin.models import Customer, CreditSettings, CreditPaymentReference
 
 
 class CustomerFilter(django_filters.FilterSet):
@@ -36,3 +36,18 @@ class CreditsFilter(django_filters.FilterSet):
             Q(credit_amount__icontains=value) | Q(
                 time_period__icontains=value)
         ).order_by("id")
+
+
+class CreditTxnFilter(django_filters.FilterSet):
+    search = django_filters.CharFilter(
+        method='credit_txn_filter', label="Search")
+
+    class Meta:
+        model = CreditPaymentReference
+        fields = ['search']
+
+    def credit_txn_filter(self, queryset, name, value):
+        return CreditPaymentReference.objects.filter(
+            Q(reference_no__icontains=value) | Q(
+                customer__first_name__icontains=value) | Q(
+                customer__last_name__icontains=value) | Q(payment_status__name__icontains=value) | Q(payment_type__name__icontains=value)).order_by("id")

@@ -29,6 +29,11 @@ app.conf.beat_schedule = {
         'schedule': crontab(minute='*/5'),
         # 'args': (9),
     },
+    'import-primary-images-every-5min': {
+        'task': 'wayrem_admin.tasks.product_primary_image',
+        'schedule': crontab(minute='*/5'),
+        # 'args': (9),
+    },
     'forecasting_product_24hrs': {
         'task': 'wayrem_admin.tasks.forecasts_product',
         'schedule': crontab(hour='*/24'),
@@ -41,6 +46,11 @@ app.conf.beat_schedule = {
     },
     'credits_reminder_24hrs': {
         'task': 'wayrem_admin.tasks.customer_credit_reminder',
+        'schedule': crontab(hour='*/24'),
+        # 'args': (9),
+    },
+    'credits_cycle_24hrs': {
+        'task': 'wayrem_admin.tasks.customer_credit_cycle',
         'schedule': crontab(hour='*/24'),
         # 'args': (9),
     },

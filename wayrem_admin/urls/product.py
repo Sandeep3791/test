@@ -32,6 +32,8 @@ urlpatterns = [
     path('import-products/', views.import_products, name="importproducts"),
     path('import-products-result/', views.import_result, name="import_result"),
     path('import-image-status/', views.check_import_status, name="image_import"),
+    path('import-primary-image-status/', views.check_import_primary_status,
+         name="image_import_primary"),
     path('publish-import/', views.bulk_publish_excel, name="bulk_publish"),
     path('price-import/', views.bulk_price_excel, name="bulk_price"),
     path('quantity-import/', views.bulk_quantity_excel, name="bulk_quantity"),

@@ -393,10 +393,10 @@
                         </div> 
                         {% endif %}
                         <div class="mt-4">
-                            <a href="{% url 'wayrem_admin:customerslist' %}" class="btn btn-block btn-primary">Cancel</a>
+                            <a href="{% url 'wayrem_admin:customerslist' %}{{qs}}" class="btn btn-block btn-primary">Cancel</a>
                             {% if perms.customer.approve %}
                             {% if user.verification_status == "waiting for approval" or user.verification_status == "updated"  %} 
-                            <a href="{% url 'wayrem_admin:customer_verification' user.id %}?status=active" class="btn btn-block btn-success">Approve</a>
+                            <a href="{% url 'wayrem_admin:customer_verification' user.id %}{{qs}}&status=active" class="btn btn-block btn-success">Approve</a>
                             <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                 Reject
                             </button>
@@ -428,7 +428,7 @@
           <button type="button" class="btn-close"  data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-            <form action="{% url 'wayrem_admin:customer_verification' user.id %}" id="rejectForm" method="post">
+            <form action="{% url 'wayrem_admin:customer_verification' user.id %}{{qs}}" id="rejectForm" method="post">
                 {% csrf_token %}
                 <div class="mb-3">
                     <label for="exampleInputPassword1" class="form-label">Reason<span class="text-danger">*</span></label>
