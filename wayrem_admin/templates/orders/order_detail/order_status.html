@@ -77,7 +77,11 @@
             </p>
             {% endif %}
             <div class="d-flex justify-content-between w-100 mt-4">
+                
+                {% if not order_transaction.payment_mode.id == 13 or order_transaction.payment_mode.id == 14 %}
                 <button class="btn btn-success modelpaymentstatus" type="button" data-id="{{PAYMENT_STATUS_CONFIRM}}" >Confirm</button>
+                {% endif %}
+                
                 {% if order_transaction.payment_mode.id == 12 %}
                 <button class="btn btn-danger modelpaymentstatus" type="button" data-id="{{PAYMENT_STATUS_REJECTED}}" data-bs-toggle="modal" data-bs-target="#modal-default">Reject</button> 
                 {% endif %}

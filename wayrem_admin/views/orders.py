@@ -1,4 +1,5 @@
 import base64
+from functools import partial
 from io import BytesIO
 from itertools import product
 from unittest import result
@@ -806,7 +807,8 @@ class Clonecreateorder(View):
     def get(self,request,id):
         order_details=self.model.objects.filter(id=id).values().first()
         order_transaction=OrderTransactions.objects.filter(order_id =id).values().first()
-        
+
+
         order_detail_partial_payment = order_details['partial_payment']
         if order_detail_partial_payment is None:
             order_detail_partial_payment = float(0)
@@ -822,6 +824,8 @@ class Clonecreateorder(View):
         if order_transaction['payment_mode_id'] == COD:
             order_status_instance = StatusMaster.objects.get(id=ORDER_PENDING_APPROVED)
             order_dict={'order_type_id':order_type_status.id,'status_id':order_status_instance.id,'partial_payment':0,'order_date':datetime.now()}
+        else:
+            self.order_transaction_update(order_details)
 
         is_out_stock=self.check_product_quantity(id)
         if is_out_stock:
@@ -834,7 +838,17 @@ class Clonecreateorder(View):
                 OrderLib().credit_to_wallet(order_details,order_transaction)
             self.order_inventory_process(id)
             return HttpResponseRedirect("/orders/"+str(id))
-
+    
+    def order_transaction_update(self,order_dict):
+        order_id=order_dict["id"]
+        partial_payment=float(order_dict['partial_payment'])
+        grandtotal=float(order_dict['grand_total'])
+        if partial_payment == 0:
+            payment_status_instance = StatusMaster.objects.get(id=PAYMENT_STATUS_CONFIRM)
+        else:
+            payment_status_instance = StatusMaster.objects.get(id=PAYMENT_STATUS_PARTIAL_PAYMENT)
+        OrderTransactions.objects.filter(order=order_id).update(payment_status=payment_status_instance)
+        return 1
     def check_product_quantity(self,order_id):
         orderdetail=OrderDetails.objects.filter(order_id=order_id)
         out_of_stock=0
