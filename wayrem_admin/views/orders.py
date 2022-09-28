@@ -657,6 +657,7 @@ class OrderCancelCloneOrder(View):
             Orders.objects.filter(id=order_id).update(status=obj_stat_instance, delivery_status=deliv_obj_stat_instance,credit_note=new_credit_note)
         else:
             Orders.objects.filter(id=order_id).update(status=obj_stat_instance, delivery_status=deliv_obj_stat_instance)
+
         self.order_inventory_process(order_id)
         payment_status = StatusMaster.objects.get(id=PAYMENT_STATUS_DECLINED)
         OrderTransactions.objects.filter(order=order_id).update(payment_status=payment_status)
@@ -853,8 +854,8 @@ class Clonecreateorder(View):
             payment_status_instance = StatusMaster.objects.get(id=PAYMENT_STATUS_PARTIAL_PAYMENT)
 
         if order_transaction['payment_mode_id'] == BANK_TRANSFER and (order_transaction['payment_status_id'] == PAYMENT_STATUS_REJECTED or order_transaction['payment_status_id'] == PAYMENT_STATUS_PENDING_APPROVAL or order_transaction['payment_status_id'] == PAYMENT_STATUS_PENDING):
-            payment_status_instance = StatusMaster.objects.get(id=PAYMENT_STATUS_PENDING)
-        print(payment_status_instance)
+            payment_status_instance = StatusMaster.objects.get(id=PAYMENT_STATUS_PENDING_APPROVAL)
+        
         OrderTransactions.objects.filter(order=order_id).update(payment_status=payment_status_instance)
         return 1
 
