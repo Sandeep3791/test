@@ -653,7 +653,10 @@ class OrderCancelCloneOrder(View):
         delivery_status = ORDER_STATUS_CANCELLED
         deliv_obj_stat_instance = StatusMaster.objects.get(id=delivery_status)
         new_credit_note=self.credit_note(obj_stat_instance,order_id)
-        Orders.objects.filter(id=order_id).update(status=obj_stat_instance, delivery_status=deliv_obj_stat_instance,credit_note=new_credit_note)
+        if new_credit_note:
+            Orders.objects.filter(id=order_id).update(status=obj_stat_instance, delivery_status=deliv_obj_stat_instance,credit_note=new_credit_note)
+        else:
+            Orders.objects.filter(id=order_id).update(status=obj_stat_instance, delivery_status=deliv_obj_stat_instance)
         self.order_inventory_process(order_id)
         payment_status = StatusMaster.objects.get(id=PAYMENT_STATUS_DECLINED)
         OrderTransactions.objects.filter(order=order_id).update(payment_status=payment_status)
@@ -674,6 +677,8 @@ class OrderCancelCloneOrder(View):
                 return credit_note_return
             else:
                 return 0
+        else:
+            return 0
     def order_inventory_process(self, order_id):
         # When we place order inventory process to shipping
         from wayrem_admin.models.orders import Orders, OrderDetails
@@ -807,8 +812,7 @@ class Clonecreateorder(View):
     def get(self,request,id):
         order_details=self.model.objects.filter(id=id).values().first()
         order_transaction=OrderTransactions.objects.filter(order_id =id).values().first()
-
-
+        
         order_detail_partial_payment = order_details['partial_payment']
         if order_detail_partial_payment is None:
             order_detail_partial_payment = float(0)
@@ -825,7 +829,7 @@ class Clonecreateorder(View):
             order_status_instance = StatusMaster.objects.get(id=ORDER_PENDING_APPROVED)
             order_dict={'order_type_id':order_type_status.id,'status_id':order_status_instance.id,'partial_payment':0,'order_date':datetime.now()}
         else:
-            self.order_transaction_update(order_details)
+            self.order_transaction_update(order_details,order_transaction)
 
         is_out_stock=self.check_product_quantity(id)
         if is_out_stock:
@@ -839,7 +843,7 @@ class Clonecreateorder(View):
             self.order_inventory_process(id)
             return HttpResponseRedirect("/orders/"+str(id))
     
-    def order_transaction_update(self,order_dict):
+    def order_transaction_update(self,order_dict,order_transaction):
         order_id=order_dict["id"]
         partial_payment=float(order_dict['partial_payment'])
         grandtotal=float(order_dict['grand_total'])
@@ -847,8 +851,13 @@ class Clonecreateorder(View):
             payment_status_instance = StatusMaster.objects.get(id=PAYMENT_STATUS_CONFIRM)
         else:
             payment_status_instance = StatusMaster.objects.get(id=PAYMENT_STATUS_PARTIAL_PAYMENT)
+
+        if order_transaction['payment_mode_id'] == BANK_TRANSFER and (order_transaction['payment_status_id'] == PAYMENT_STATUS_REJECTED or order_transaction['payment_status_id'] == PAYMENT_STATUS_PENDING_APPROVAL or order_transaction['payment_status_id'] == PAYMENT_STATUS_PENDING):
+            payment_status_instance = StatusMaster.objects.get(id=PAYMENT_STATUS_PENDING)
+        print(payment_status_instance)
         OrderTransactions.objects.filter(order=order_id).update(payment_status=payment_status_instance)
         return 1
+
     def check_product_quantity(self,order_id):
         orderdetail=OrderDetails.objects.filter(order_id=order_id)
         out_of_stock=0
