@@ -717,7 +717,8 @@ class OrderCancelCloneOrder(View):
 
 
 
-class CloneOrderView(DetailView):
+class CloneOrderView(LoginPermissionCheckMixin,DetailView):
+    permission_required = 'order.cancel_clone'
     model = Orders
     template_name = "orders/orderclone/order_clone.html"
     context_object_name = 'order'

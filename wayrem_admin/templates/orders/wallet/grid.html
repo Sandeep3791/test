@@ -16,8 +16,8 @@
         {% for wallet in wallet %}
            <tr>
                 <td>{% if wallet.payment_type_id == 30 %} Customer amount return {% else %}{{wallet.order.ref_number}}{% endif %}</td> 
-                <td>{% if wallet.transaction_type_id == 1  %}{{wallet.amount}} {% else %} --{% endif %}</td>
-                <td>{% if wallet.transaction_type_id == 2  %}{{wallet.amount}} {% else %} --{% endif %}</td>
+                <td>{% if wallet.transaction_type_id == 1  %}{{wallet.amount|floatformat:2}} {% else %} --{% endif %}</td>
+                <td>{% if wallet.transaction_type_id == 2  %}{{wallet.amount|floatformat:2}} {% else %} --{% endif %}</td>
                 
                 <td>{{wallet.order.customer.first_name}} {{wallet.order.customer.last_name|default_if_none:""}}</td>
                 <td>{{wallet.created|date:"M d, Y"}}</td>

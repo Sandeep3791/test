@@ -47,20 +47,33 @@
                 <td>{{order.grand_total|floatformat:2}}</td>
                 <td>
                     <div class="btn-group">
-                        <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="icon icon-sm">
-                                <span class="fas fa-ellipsis-h icon-dark"></span>
-                            </span>
-                            <span class="sr-only">Toggle Dropdown</span>
-                        </button>
+                        {% if order.order_type.id == 29  %}
+                                        {% if perms.order.cancel_clone %}
+                                        <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <span class="icon icon-sm">
+                                                <span class="fas fa-ellipsis-h icon-dark"></span>
+                                            </span>
+                                            <span class="sr-only">Toggle Dropdown</span>
+                                        </button>
+                                        
+                                        {% endif %}
+                                        {% else %}
+                                        <button class="btn btn-link text-dark dropdown-toggle dropdown-toggle-split m-0 p-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <span class="icon icon-sm">
+                                                <span class="fas fa-ellipsis-h icon-dark"></span>
+                                            </span>
+                                            <span class="sr-only">Toggle Dropdown</span>
+                                        </button>
+                                        {% endif %}
+                        
                                     <div class="dropdown-menu">
                                         {% if order.order_type.id == 29  %}
-                                        <a class="dropdown-item" href="{% url 'wayrem_admin:cloneorder' order.id %}"><span class="fas fa-edit mr-2"></span>Clone order</a>
+                                        {% if perms.order.cancel_clone %}<a class="dropdown-item" href="{% url 'wayrem_admin:cloneorder' order.id %}"><span class="fas fa-edit mr-2"></span>Clone order</a>{% endif %}
                                         {% else %}
                                             {% comment %} <a class="dropdown-item " href="{% url 'wayrem_admin:invoiceorder' order.id %}"  target="__blank"><span class="fas fa-eye mr-2"></span>Invoice</a> {% endcomment %}
                                             <a class="dropdown-item" href="{% url 'wayrem_admin:orderupdate' order.id %}"><span class="fas fa-edit mr-2"></span>View order</a>
-                                            {% if order.status.id != 18 and perms.order.change_status %}<a class="dropdown-item orderstatus" data-id="{{order.id}}" href="#"><span class="fas fa-edit mr-2"></span>Change Status</a>{% endif %}
-                                            {% if order.status.id == 16 %}    <a class="dropdown-item " data-id="{{order.id}}" href="{% url 'wayrem_admin:cancelcloneorder' order.id %}"><span class="fas fa-edit mr-2"></span>Cancel and clone order</a>{% endif %}
+                                            {% if order.status.id != 18 and perms.order.change_status %}{% if order.status.id != 28 %}<a class="dropdown-item orderstatus" data-id="{{order.id}}" href="#"><span class="fas fa-edit mr-2"></span>Change Status</a>{% endif %}{% endif %}
+                                            {% if order.status.id == 16 and perms.order.cancel_clone %}    <a class="dropdown-item " data-id="{{order.id}}" href="{% url 'wayrem_admin:cancelcloneorder' order.id %}"><span class="fas fa-edit mr-2"></span>Cancel and clone order</a>{% endif %}
                                         {% endif %}
                                         </div>
                                 </div>
