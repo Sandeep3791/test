@@ -134,7 +134,7 @@ endcomment %}
                                 <a class="dropdown-item" href="{% url 'wayrem_admin:roles_update' role.id %}"><span class="fas fa-edit mr-2"></span>Edit</a>
                                 {% endif %}
                                 {% if perms.role.permission %}
-                                <a class="dropdown-item" href="{% url 'wayrem_admin:role-permission' role.id %}"><span class="fas fa-edit mr-2"></span>permission</a>
+                                <a class="dropdown-item" href="{% url 'wayrem_admin:role-permission' role.id %}"><span class="fas fa-edit mr-2"></span>Permission</a>
                                 {% endif %}
                             </div>
                         </div>
