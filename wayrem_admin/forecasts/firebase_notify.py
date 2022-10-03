@@ -184,19 +184,19 @@ class FirebaseLibrary:
         
     def send_email_delete_clone_create(self, order_id, order_ref, status,order):
         try:
-            if (float(0) == order.partial_payment):
-                email_template = EmailTemplateModel.objects.get(key="create_order_delete_clone")
-            else:
-                email_template = EmailTemplateModel.objects.get(key="create_order_delete_clone_partial")
-
             subject = email_template.subject
             body = email_template.message_format
             status='Order created'
             values = {"Ref#": order_ref,"status": status}
             subject = subject.format(**values)
-            body_values = {"partial_payment":order.partial_payment,'grand_total':order.grand_total,"order_number": order_ref,"Ref#": order_ref, "status": status, "link": f"{WAYREM_ADMIN_BASE_URL}orders/{order_id}"}
-            
-            body = body.format(**body_values)
+            if (float(0) == order.partial_payment):
+                email_template = EmailTemplateModel.objects.get(key="create_order_delete_clone")
+                body_values = {'grand_total':order.grand_total,"order_number": order_ref,"Ref#": order_ref, "status": status, "link": f"{WAYREM_ADMIN_BASE_URL}orders/{order_id}"}
+                body = body.format(**body_values)
+            else:
+                email_template = EmailTemplateModel.objects.get(key="create_order_delete_clone_partial")
+                body_values = {"partial_payment":order.partial_payment,'grand_total':order.grand_total,"order_number": order_ref,"Ref#": order_ref, "status": status, "link": f"{WAYREM_ADMIN_BASE_URL}orders/{order_id}"}
+                body = body.format(**body_values)
             order_email=order.order_email
             send_email(to=order_email, subject=subject, body=body)
             
