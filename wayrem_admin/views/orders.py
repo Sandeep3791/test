@@ -665,7 +665,7 @@ class OrderCancelCloneOrder(View):
         odl = OrderDeliveryLogs(order_id=order_id, order_status=deliv_obj_stat_instance, order_status_details="status change",
                                         log_date=now, user_id=1, customer_view=deliv_obj_stat_instance.customer_view)
         odl.save()
-        t = threading.Thread(target=self.order_notification_customer, args=(get_id, ORDER_CANCELLED,))
+        t = threading.Thread(target=self.order_notification_customer, args=(order_id, ORDER_CANCELLED,))
         t.start()
         return 1
 
