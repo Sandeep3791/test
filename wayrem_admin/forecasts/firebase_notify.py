@@ -145,3 +145,62 @@ class FirebaseLibrary:
             return response
         except:
             print("Failed!!")
+
+    def send_email_notification_delete_clone(self, order_id, order_status):
+        try:
+            status = StatusMaster.objects.get(id=order_status)
+            notify_title = status.name
+            notify_msg = status.description
+            order_data = Orders.objects.get(id=order_id)
+            customer_id = order_data.customer
+            devices = CustomerDevice.objects.filter(
+                customer=customer_id, is_active=True)
+            setting_key = self.status_to_msg(order_status)
+            setting_msg = Settings.objects.get(key=setting_key)
+            values = {
+                'ref_no': order_data.ref_number
+            }
+            message = setting_msg.value.format(**values)
+            if not devices:
+                    print("No device found!!")
+            else:
+                for device in devices:
+                    device_token = device.device_id
+                    notf = {
+                        "title": notify_title,
+                        "message": message,
+                        "device_token": device_token,
+                        "order_id": order_id,
+                        "grocery_id": None
+                    }
+                    self.push_notification_in_firebase(notf)
+                notification_store = CustomerNotification(customer=customer_id, order=order_data, title=notify_title, message=message)
+                notification_store.save()
+                
+            self.send_email_delete_clone_create(order_id=order_id, order_ref=order_data.ref_number, status=notify_title,order=order_data)
+            return 1
+        except:
+                print("Failed!!")
+        
+    def send_email_delete_clone_create(self, order_id, order_ref, status,order):
+        try:
+            if (float(0) == order.partial_payment):
+                email_template = EmailTemplateModel.objects.get(key="create_order_delete_clone")
+            else:
+                email_template = EmailTemplateModel.objects.get(key="create_order_delete_clone_partial")
+
+            subject = email_template.subject
+            body = email_template.message_format
+            status='Order created'
+            values = {"Ref#": order_ref,"status": status}
+            subject = subject.format(**values)
+            body_values = {"partial_payment":order.partial_payment,'grand_total':order.grand_total,"order_number": order_ref,"Ref#": order_ref, "status": status, "link": f"{WAYREM_ADMIN_BASE_URL}orders/{order_id}"}
+            
+            body = body.format(**body_values)
+            order_email=order.order_email
+            send_email(to=order_email, subject=subject, body=body)
+            
+        except Exception as e:
+            print(e)
+            print("email Failed!!")
+        return True

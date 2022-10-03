@@ -665,8 +665,15 @@ class OrderCancelCloneOrder(View):
         odl = OrderDeliveryLogs(order_id=order_id, order_status=deliv_obj_stat_instance, order_status_details="status change",
                                         log_date=now, user_id=1, customer_view=deliv_obj_stat_instance.customer_view)
         odl.save()
+        t = threading.Thread(target=self.order_notification_customer, args=(get_id, ORDER_CANCELLED,))
+        t.start()
         return 1
 
+    def order_notification_customer(self, order_id, status_id):
+        from wayrem_admin.forecasts.firebase_notify import FirebaseLibrary
+        FirebaseLibrary().send_notify(order_id=order_id, order_status=status_id)
+        return 1
+    
     def credit_note(self,status,order_id):
         order_det=Orders.objects.filter(id=order_id).first()
         if(order_det.credit_note == 0 or order_det.credit_note is None ):
@@ -843,8 +850,15 @@ class Clonecreateorder(View):
             if order_transaction['payment_mode_id'] != COD:
                 OrderLib().credit_to_wallet(order_details,order_transaction)
             self.order_inventory_process(id)
+            self.send_notification_email(id,order_details)
             return HttpResponseRedirect("/orders/"+str(id))
     
+
+    def send_notification_email(self,order_id,order_details):
+        from wayrem_admin.forecasts.firebase_notify import FirebaseLibrary
+        FirebaseLibrary().send_email_notification_delete_clone(order_id=order_id, order_status=ORDER_STATUS_RECEIVED)
+        return 1
+
     def order_transaction_update(self,order_dict,order_transaction):
         order_id=order_dict["id"]
         partial_payment=float(order_dict['partial_payment'])
