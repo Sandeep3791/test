@@ -197,7 +197,10 @@ def customer_verification(request, id=None):
     context = {}
     if request.META['QUERY_STRING']:
         qs = request.META['QUERY_STRING']
-        qs = qs.split("&")[0]
+        if "page" in qs:
+            qs = qs.split("&")[0]
+        else:
+            qs = ""
     else:
         qs = ""
     response = redirect('wayrem_admin:customerslist')

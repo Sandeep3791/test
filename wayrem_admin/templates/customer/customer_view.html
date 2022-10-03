@@ -396,7 +396,7 @@
                             <a href="{% url 'wayrem_admin:customerslist' %}{{qs}}" class="btn btn-block btn-primary">Cancel</a>
                             {% if perms.customer.approve %}
                             {% if user.verification_status == "waiting for approval" or user.verification_status == "updated"  %} 
-                            <a href="{% url 'wayrem_admin:customer_verification' user.id %}{{qs}}&status=active" class="btn btn-block btn-success">Approve</a>
+                            <a href="{% url 'wayrem_admin:customer_verification' user.id %}{{qs}}{% if qs %}&{% else %}?{% endif %}status=active" class="btn btn-block btn-success">Approve</a>
                             <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#exampleModal">
                                 Reject
                             </button>
