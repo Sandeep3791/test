@@ -627,15 +627,24 @@ class OrderCancelCloneOrder(View):
         
         
         OrderTransactions.objects.create(**new_order_transaction)
-        neworderlog=OrderDeliveryLogs.objects.filter(order_id=id,order_status=1).values().first()
-        if neworderlog is not None:
-            neworderlog.update({'id':None,'order_id':new_order_id,'log_date':datetime.now()})
-            OrderDeliveryLogs.objects.create(**neworderlog)
+        # neworderlog=OrderDeliveryLogs.objects.filter(order_id=id,order_status=1).values().first()
+        # if neworderlog is not None:
+        #     neworderlog.update({'id':None,'order_id':new_order_id,'log_date':datetime.now()})
+        #     OrderDeliveryLogs.objects.create(**neworderlog)
+
+        self.order_delivery_log(new_order_id)
         self.order_cancelled(id)
         if new_order_transaction['payment_mode_id'] != COD and new_order_transaction["payment_status_id"] == PAYMENT_STATUS_CONFIRM:
             self.add_to_wallet(id)
         return redirect('wayrem_admin:cloneorder', pk=new_order_id)
-        
+
+    def order_delivery_log(self,order_id):
+        now = datetime.now()
+        deliv_obj_stat_instance = StatusMaster.objects.get(id=ORDER_STATUS_RECEIVED)
+        odl = OrderDeliveryLogs(order_id=order_id, order_status=deliv_obj_stat_instance, order_status_details="Order is confirmed",log_date=now, user_id=1, customer_view=deliv_obj_stat_instance.customer_view)
+        odl.save()
+        return 1
+
     def add_to_wallet(self,order_id):
         get_order_wallet=self.model.objects.filter(id=order_id).first()
         order_transaction=OrderTransactions.objects.filter(order_id = order_id).first()
@@ -819,6 +828,7 @@ class OrderRemoveDetail(View):
 class Clonecreateorder(View):
     model = Orders
     def get(self,request,id):
+        
         order_details=self.model.objects.filter(id=id).values().first()
         order_transaction=OrderTransactions.objects.filter(order_id =id).values().first()
         
@@ -850,10 +860,10 @@ class Clonecreateorder(View):
             if order_transaction['payment_mode_id'] != COD:
                 OrderLib().credit_to_wallet(order_details,order_transaction)
             self.order_inventory_process(id)
+            
             self.send_notification_email(id,order_details)
             return HttpResponseRedirect("/orders/"+str(id))
     
-
     def send_notification_email(self,order_id,order_details):
         from wayrem_admin.forecasts.firebase_notify import FirebaseLibrary
         FirebaseLibrary().send_email_notification_delete_clone(order_id=order_id, order_status=ORDER_STATUS_RECEIVED)
