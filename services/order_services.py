@@ -1,4 +1,3 @@
-from ast import Constant
 import math
 from urllib import request
 from weakref import KeyedRef
@@ -22,6 +21,8 @@ from datetime import timedelta
 import constants
 import re
 from sqlalchemy import null, or_
+import threading
+
 
 
 app = FastAPI()
@@ -1743,36 +1744,46 @@ def clone_order(user_request, db: Session):
     order_details.status = 16
     db.merge(order_details)
     db.commit()
-    
-    code_name_query = f"SELECT id, codename FROM {constants.Database_name}.function_master where codename = 'credits.request_notification' "
-    code_name = db.execute(code_name_query)
-    # code_name_id = code_name.id
-    for cd in code_name:
-        code_name_id = cd.id
-    role_id_query = f"SELECT role_id FROM {constants.Database_name}.role_permissions where function_id = {code_name_id} "
-    role_permission_id = db.execute(role_id_query)
-    for rpi in role_permission_id:
-        role_permission_ID = rpi.role_id
-    user_master_email_query = f"SELECT email FROM {constants.Database_name}.users_master where role_id = {role_permission_ID} "
-    user_master_email = db.execute(user_master_email_query)
-    for ume in user_master_email:
-        user_master_email_id = ume.email    
-    to = user_master_email_id
-    email_query = f"SELECT * FROM {constants.Database_name}.email_template where email_template.key = 'create_order_delete_clone_partial'"
-    emails = db.execute(email_query)
-    for email in emails:
-        subject = email.subject
-        body = email.message_format
-    values = {
-        'Ref#': order_details.ref_number,
-        'status': order_details.status,        
-        'link': f"{constants.global_link}/orders/{order_details.id}",
-        'partial_payment': order_details.partial_payment,
-        'grand_total': order_details.grand_total,
-        'order_number': order_details.ref_number
-    }
-    body = body.format(**values)
-    common_services.send_otp(to, subject, body, db)
+    try:
+        code_name_query = f"SELECT id FROM {constants.Database_name}.function_master where codename = 'credits.request_notification' "
+        code_name = db.execute(code_name_query)
+        # code_name_id = code_name.id
+        for cd in code_name:
+            code_name_id = cd.id
+        role_id_query = f"SELECT role_id FROM {constants.Database_name}.role_permissions where function_id = {code_name_id} "
+        role_permission_id = db.execute(role_id_query)
+        for rpi in role_permission_id:
+            role_permission_ID = rpi.role_id
+        user_master_email_query = f"SELECT email FROM {constants.Database_name}.users_master where role_id = {role_permission_ID} "
+        user_master_email = db.execute(user_master_email_query)
+        to_list = [ume[0] for ume in user_master_email]
+        email_query = f"SELECT * FROM {constants.Database_name}.email_template where email_template.key = 'create_order_delete_clone_partial'"
+        emails = db.execute(email_query)
+        for email in emails:
+            subject = email.subject
+            body = email.message_format
+        values = {
+            'Ref#': order_details.ref_number,
+            'status': order_details.status,        
+            'link': f"{constants.global_link}/orders/{order_details.id}",
+            'partial_payment': order_details.partial_payment,
+            'grand_total': order_details.grand_total,
+            'order_number': order_details.ref_number
+        }
+
+        subject_values = {
+            'Ref#': order_details.ref_number,
+            'status': order_details.status
+        }
+        body = body.format(**values)
+        subject = subject.format(**subject_values)
+        # common_services.send_otp(to, subject, body, db)
+        for to in to_list:
+            email_send = threading.Thread(target=common_services.send_otp, args=(to, subject, body))
+            email_send.start()
+    except Exception:
+        logging.exception("Error occurred while sending mail")
+        # print(Exception)
 
     delivery_logs = db.query(order_models.OrderDeliveryLogs).filter(order_models.OrderDeliveryLogs.order_id == order_details.id).first() 
     delivery_logs.log_date = common_services.get_time()

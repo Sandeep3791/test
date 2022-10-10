@@ -22,7 +22,7 @@ oauth2_schema = HTTPBearer()
 
 
 @router.post('/customer/registration')
-def customer_user(request: user_schemas.User,authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db),background : BackgroundTasks = None):
+def customer_user(customer_id: int, request: user_schemas.User,authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db),background : BackgroundTasks = None):
     data = user_services.customer_user(request,authorize, db,background)
     return data
 

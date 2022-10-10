@@ -47,7 +47,7 @@ def utc_to_tz(now_utc):
         return None
 
 
-def send_otp(to, subject, body, request, db: Session, file_path=None, invoice_delete=None):
+def send_otp(to, subject, body, request = None, db: Session = None, file_path=None, invoice_delete=None):
     try:
         sender = 'support@wayrem.com'
         password = 'Wayrem@123'
