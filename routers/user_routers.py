@@ -22,7 +22,66 @@ oauth2_schema = HTTPBearer()
 
 
 @router.post('/customer/registration')
-def customer_user(request: user_schemas.User = Depends(), registration_docs :UploadFile =File(None), tax_docs : UploadFile =File(None), marrof_docs : UploadFile =File(None), authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db), background : BackgroundTasks = None):
+def customer_user(
+    first_name: str = Form(...),
+    last_name: str = Form(...),
+    email: str = Form(...),
+    password: str = Form(...),
+    confirm_password: str = Form(...),
+    contact: int = Form(...),
+    business_type: str = Form(...),
+    business_name: str = Form(...),
+    delivery_house_no_building_name: str = Form(...),
+    delivery_road_name_Area: str = Form(...),
+    delivery_landmark: Optional[str] = Form(None),
+    delivery_country: str = Form(...),
+    delivery_region: str = Form(...),
+    delivery_town_city:  str = Form(...),
+    billing_house_no_building_name: str = Form(...),
+    billing_road_name_Area: str = Form(...),
+    billing_landmark: Optional[str]  = Form(None),
+    billing_country: str = Form(...),
+    billing_region: str = Form(...),
+    billing_town_city:  str = Form(...),
+    registration_number: int = Form(...),
+    tax_number: int = Form(...),
+    deliveryAddress_latitude: str = Form(...),
+    deliveryAddress_longitude: str = Form(...),
+    billlingAddress_Latitude: str = Form(...),
+    billingAddress_longitude: str = Form(...),
+    device_id: str = Form(...),
+    device_type: str = Form(...) ,
+    registration_docs :UploadFile =File(None), tax_docs : UploadFile =File(None), marrof_docs : UploadFile =File(None), authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db), background : BackgroundTasks = None):
+    request = user_schemas.User(
+            first_name = first_name,
+            last_name = last_name,
+            email = email,
+            password = password,
+            confirm_password = confirm_password,
+            contact= contact,
+            business_type = business_type,
+            business_name = business_name,
+            delivery_house_no_building_name = delivery_house_no_building_name,
+            delivery_road_name_Area = delivery_road_name_Area,
+            delivery_landmark = delivery_landmark,
+            delivery_country = delivery_country,
+            delivery_region = delivery_region,
+            delivery_town_city = delivery_town_city,
+            billing_house_no_building_name = billing_house_no_building_name,
+            billing_road_name_Area = billing_road_name_Area,
+            billing_landmark =  billing_landmark,
+            billing_country = billing_country,
+            billing_region = billing_region,
+            billing_town_city = billing_town_city,
+            registration_number = registration_number,
+            tax_number = tax_number,
+            deliveryAddress_latitude = deliveryAddress_latitude,
+            deliveryAddress_longitude = deliveryAddress_longitude,
+            billlingAddress_Latitude = billlingAddress_Latitude,
+            billingAddress_longitude = billingAddress_longitude,
+            device_id = device_id,
+            device_type = device_type
+        )
     data = user_services.customer_user(request, registration_docs, tax_docs, marrof_docs, authorize, db, background)
     return data
 

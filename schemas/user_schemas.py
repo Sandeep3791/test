@@ -11,34 +11,34 @@ class Settings(BaseModel):
 
 
 class User(BaseModel):
-    first_name: str
-    last_name: str
-    email: str
-    password: str
-    confirm_password: str
-    contact: int
-    business_type: str
-    business_name: str
-    delivery_house_no_building_name: str
-    delivery_road_name_Area: str
-    delivery_landmark: Optional[str] = None
-    delivery_country: str
-    delivery_region: str
-    delivery_town_city:  str
-    billing_house_no_building_name: str
-    billing_road_name_Area: str
-    billing_landmark: Optional[str] = None
-    billing_country: str
-    billing_region: str
-    billing_town_city:  str
-    registration_number: int
-    tax_number: int
-    deliveryAddress_latitude: str
-    deliveryAddress_longitude: str
-    billlingAddress_Latitude: str
-    billingAddress_longitude: str
-    device_id: str
-    device_type: str
+    first_name: str 
+    last_name: str 
+    email: str 
+    password: str 
+    confirm_password: str 
+    contact: int 
+    business_type: str 
+    business_name: str 
+    delivery_house_no_building_name: str 
+    delivery_road_name_Area: str 
+    delivery_landmark: Optional[str] 
+    delivery_country: str 
+    delivery_region: str 
+    delivery_town_city:  str 
+    billing_house_no_building_name: str 
+    billing_road_name_Area: str 
+    billing_landmark: Optional[str]  
+    billing_country: str 
+    billing_region: str 
+    billing_town_city:  str 
+    registration_number: int 
+    tax_number: int 
+    deliveryAddress_latitude: str 
+    deliveryAddress_longitude: str 
+    billlingAddress_Latitude: str 
+    billingAddress_longitude: str 
+    device_id: str 
+    device_type: str 
 
 # class CustomerUploadDocs(BaseModel):
     
