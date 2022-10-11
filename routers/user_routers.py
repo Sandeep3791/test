@@ -1,7 +1,7 @@
 from fastapi_jwt_auth import AuthJWT
 from starlette import status
 from schemas import user_schemas
-from fastapi import APIRouter, Depends, UploadFile, File,BackgroundTasks
+from fastapi import APIRouter, Depends, UploadFile, File,BackgroundTasks, Form
 import database
 from sqlalchemy.orm import Session
 from services import user_services
@@ -22,8 +22,8 @@ oauth2_schema = HTTPBearer()
 
 
 @router.post('/customer/registration')
-def customer_user(customer_id: int, request: user_schemas.User,authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db),background : BackgroundTasks = None):
-    data = user_services.customer_user(request,authorize, db,background)
+def customer_user(request: user_schemas.User = Depends(), registration_docs :UploadFile =File(None), tax_docs : UploadFile =File(None), marrof_docs : UploadFile =File(None), authorize: AuthJWT = Depends(), db: Session = Depends(database.get_db), background : BackgroundTasks = None):
+    data = user_services.customer_user(request, registration_docs, tax_docs, marrof_docs, authorize, db, background)
     return data
 
 

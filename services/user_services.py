@@ -23,7 +23,7 @@ app = FastAPI()
 logger = logging.getLogger(__name__)
 
 
-def customer_user(request, authorize: AuthJWT, db: Session, background_tasks: BackgroundTasks):
+def customer_user(request, registration_docs, tax_docs, marrof_docs, authorize: AuthJWT, db: Session, background_tasks: BackgroundTasks):
     user = db.query(user_models.User).filter(
         user_models.User.email == request.email).first()
     contact = db.query(user_models.User).filter(
@@ -90,6 +90,131 @@ def customer_user(request, authorize: AuthJWT, db: Session, background_tasks: Ba
                                  registration_number=request.registration_number, tax_number=request.tax_number, delivery_house_no_building_name=request.delivery_house_no_building_name, delivery_road_name_Area=request.delivery_road_name_Area, delivery_landmark=request.delivery_landmark, delivery_country=request.delivery_country, delivery_region=request.delivery_region, delivery_town_city=request.delivery_town_city, billing_house_no_building_name=request.billing_house_no_building_name, billing_road_name_Area=request.billing_road_name_Area, billing_landmark=request.billing_landmark, billing_country=request.billing_country, billing_region=request.billing_region, billing_town_city=request.billing_town_city, deliveryAddress_latitude=request.deliveryAddress_latitude, deliveryAddress_longitude=request.deliveryAddress_longitude, billlingAddress_Latitude=request.billlingAddress_Latitude, billingAddress_longitude=request.billingAddress_longitude)
         db.merge(data1)
         db.commit()
+        try:
+            path = os.path.abspath('.')    
+            common_folder_path = os.path.join(path, 'common_folder')
+
+            user_data = db.query(user_models.User).filter(
+                user_models.User.id == customer_id).first()
+
+            if user_data.verification_status == "active":
+                resp = user_schemas.ResponseCommonMessage(
+                    status=status.HTTP_200_OK, message='User is already active!')
+                return resp
+
+            if not user_data:
+                common_msg = user_schemas.ResponseCommonMessage(
+                    status=status.HTTP_404_NOT_FOUND, message='Invalid Customer ID')
+                return common_msg
+
+            if registration_docs:
+                a = registration_docs.filename
+                s = a.split(".")[-1]
+                reg_docs_path = os.path.join(
+                    common_folder_path, f"registration_docs-{customer_id}."+s)
+                if os.path.exists(reg_docs_path):
+                    os.remove(reg_docs_path)
+                if user_data:
+                    with open(reg_docs_path, "wb+") as file_object:
+                        file_object.write(registration_docs.file.read())
+                        file_object.close()
+                user_data.registration_docs_path = reg_docs_path
+                db.merge(user_data)
+                db.commit()
+            else:
+                reg_docs_path = "null"
+
+            if tax_docs:
+                a = tax_docs.filename
+                s = a.split(".")[-1]
+                tax_docs_path = os.path.join(
+                    common_folder_path, f"tax_docs-{customer_id}."+s)
+                if os.path.exists(tax_docs_path):
+                    os.remove(tax_docs_path)
+                if user_data:
+                    with open(tax_docs_path, "wb+") as file_object:
+                        file_object.write(tax_docs.file.read())
+                        file_object.close()
+                user_data.tax_docs_path = tax_docs_path
+                db.merge(user_data)
+                db.commit()
+            else:
+                tax_docs_path = "null"
+
+            if marrof_docs:
+                a = marrof_docs.filename
+                s = a.split(".")[-1]
+                marrof_docs_path = os.path.join(
+                    common_folder_path, f"marrof_docs-{customer_id}."+s)
+                if os.path.exists(marrof_docs_path):
+                    os.remove(marrof_docs_path)
+                if user_data:
+                    with open(marrof_docs_path, "wb+") as file_object:
+                        file_object.write(marrof_docs.file.read())
+                        file_object.close()
+                user_data.marrof_docs_path = marrof_docs_path
+                db.merge(user_data)
+                db.commit()
+            else:
+                marrof_docs_path = "null"
+
+            docs_data = user_schemas.Uploaddocsdata(
+                registration_docs_path=reg_docs_path, tax_docs_path=tax_docs_path, marrof_docs_path=marrof_docs_path)
+
+            resp = user_schemas.Uploaddocs(
+                status=status.HTTP_200_OK, message='success', data=docs_data)
+            if user_data.verification_status == "rejected":
+                user_data.verification_status = "updated"
+                db.merge(user_data)
+                db.commit()
+                customer_data = db.query(user_models.User).filter(
+                    user_models.User.id == customer_id).first()
+                f_name = customer_data.first_name
+                l_name = customer_data.last_name
+                full_name = f_name + l_name
+
+                doc_list = []
+                if registration_docs:
+                    doc_list.append("registration")
+                if tax_docs:
+                    doc_list.append("tax")
+                if marrof_docs:
+                    doc_list.append("maroof")
+                docs_value = ",".join(doc_list)
+
+                emails_data = db.execute(
+                    f"SELECT * FROM {constants.Database_name}.email_template where email_template.key = 'customer_docs_upload' ")
+                subject = None
+                body = None
+                for em_Data in emails_data:
+                    subject = em_Data.subject
+                    body = em_Data.message_format
+
+                emails_query = db.execute(
+                    f"SELECT email FROM {constants.Database_name}.users_master where is_superuser=True or role_id in (SELECT role_id FROM {constants.Database_name}.role_permissions where function_id = (SELECT id FROM {constants.Database_name}.function_master where codename = 'customer.approve')) ")
+                raw_email_data = emails_query.mappings().all()
+                email_list = []
+                for i in range(len(raw_email_data)):
+                    admin_e = raw_email_data[i].email
+                    email_list.append(admin_e)
+                values = {
+                    'fullname': full_name,
+                    'docs': docs_value,
+                    'link': f"{constants.global_link}/customer/customer-details/{customer_data.id}/"
+                }
+
+                sub_values = {
+                    'fullname': full_name
+                }
+                body = body.format(**values)
+                subject = subject.format(**sub_values)
+
+                for to in email_list:
+                    background_tasks.add_task(
+                        common_services.send_otp, to, subject, body, None, db)
+            # return resp`
+        except Exception:
+            logging.exception("Error occurred while uploading documents.")
 
         data = db.query(user_models.User).filter(
             user_models.User.email == request.email).first()

@@ -1,3 +1,4 @@
+from fastapi import Form, UploadFile, File
 from typing import Optional
 from pydantic import BaseModel
 from typing import Optional, List
@@ -38,6 +39,9 @@ class User(BaseModel):
     billingAddress_longitude: str
     device_id: str
     device_type: str
+
+# class CustomerUploadDocs(BaseModel):
+    
 
 
 class OtpverifyResponse(BaseModel):
