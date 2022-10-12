@@ -1,3 +1,4 @@
+from argparse import OPTIONAL
 from fastapi import Form, UploadFile, File
 from typing import Optional
 from pydantic import BaseModel
@@ -81,6 +82,10 @@ class ResponseCreateUser(BaseModel):
     profile_pic: str = None
     access_token: str
     refresh_token: str
+    registration_docs_path: Optional[str] = None
+    tax_docs_path: Optional[str] = None
+    marrof_docs_path: Optional[str] = None
+
 
 
 class CreateUserResponse(BaseModel):

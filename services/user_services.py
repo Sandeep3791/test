@@ -88,7 +88,9 @@ def customer_user(request, registration_docs, tax_docs, marrof_docs, authorize: 
         data1 = user_models.User(first_name=request.first_name, last_name=request.last_name, business_type_id=business_type_data, business_name=request.business_name, email=request.email, password=request.password, contact=request.contact,
                                  registration_number=request.registration_number, tax_number=request.tax_number, delivery_house_no_building_name=request.delivery_house_no_building_name, delivery_road_name_Area=request.delivery_road_name_Area, delivery_landmark=request.delivery_landmark, delivery_country=request.delivery_country, delivery_region=request.delivery_region, delivery_town_city=request.delivery_town_city, billing_house_no_building_name=request.billing_house_no_building_name, billing_road_name_Area=request.billing_road_name_Area, billing_landmark=request.billing_landmark, billing_country=request.billing_country, billing_region=request.billing_region, billing_town_city=request.billing_town_city, deliveryAddress_latitude=request.deliveryAddress_latitude, deliveryAddress_longitude=request.deliveryAddress_longitude, billlingAddress_Latitude=request.billlingAddress_Latitude, billingAddress_longitude=request.billingAddress_longitude)
         db.merge(data1)
-        db.commit()
+        db.commit()        
+        data_customer_id = db.query(user_models.User).filter(user_models.User.email == data1.email).first()
+        customer_id = data_customer_id.id
         try:
             path = os.path.abspath('.')    
             common_folder_path = os.path.join(path, 'common_folder')
@@ -96,15 +98,16 @@ def customer_user(request, registration_docs, tax_docs, marrof_docs, authorize: 
             user_data = db.query(user_models.User).filter(
                 user_models.User.id == customer_id).first()
 
-            if user_data.verification_status == "active":
-                resp = user_schemas.ResponseCommonMessage(
-                    status=status.HTTP_200_OK, message='User is already active!')
-                return resp
-
             if not user_data:
                 common_msg = user_schemas.ResponseCommonMessage(
                     status=status.HTTP_404_NOT_FOUND, message='Invalid Customer ID')
                 return common_msg
+
+            if user_data.verification_status == "active":
+                resp = user_schemas.ResponseCommonMessage(
+                    status=status.HTTP_200_OK, message='User is already active!')
+                return resp
+            
 
             if registration_docs:
                 a = registration_docs.filename
@@ -287,7 +290,7 @@ def customer_user(request, registration_docs, tax_docs, marrof_docs, authorize: 
             pass
 
         res_data = user_schemas.ResponseCreateUser(customer_id=data.id, first_name=data.first_name, last_name=data.last_name, business_type=bu_name, business_name=data.business_name, email=data.email, password=data.password, contact=data.contact, registration_number=data.registration_number, tax_number=data.tax_number, delivery_house_no_building_name=data.delivery_house_no_building_name, delivery_road_name_Area=data.delivery_road_name_Area, delivery_landmark=data.delivery_landmark, delivery_country=data.delivery_country, delivery_region=data.delivery_region,
-                                                   delivery_town_city=data.delivery_town_city, billing_house_no_building_name=data.billing_house_no_building_name, billing_road_name_Area=data.billing_road_name_Area, billing_landmark=data.billing_landmark, billing_country=data.billing_country, billing_region=data.billing_region, billing_town_city=data.billing_town_city, deliveryAddress_latitude=data.deliveryAddress_latitude, deliveryAddress_longitude=data.deliveryAddress_longitude, billlingAddress_Latitude=data.billlingAddress_Latitude, billingAddress_longitude=data.billingAddress_longitude, profile_pic=file_path, access_token=access_token, refresh_token=refresh_token
+                                                   delivery_town_city=data.delivery_town_city, billing_house_no_building_name=data.billing_house_no_building_name, billing_road_name_Area=data.billing_road_name_Area, billing_landmark=data.billing_landmark, billing_country=data.billing_country, billing_region=data.billing_region, billing_town_city=data.billing_town_city, deliveryAddress_latitude=data.deliveryAddress_latitude, deliveryAddress_longitude=data.deliveryAddress_longitude, billlingAddress_Latitude=data.billlingAddress_Latitude, billingAddress_longitude=data.billingAddress_longitude, profile_pic=file_path, access_token=access_token, refresh_token=refresh_token                                                   
                                                    )
         response = user_schemas.CreateUserResponse(
             status=status.HTTP_200_OK, message="User Registered Successfully", data=res_data)
