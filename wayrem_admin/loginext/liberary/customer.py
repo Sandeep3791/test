@@ -36,6 +36,7 @@ class CustomerLib(ApiBase):
 
     def check_customer(self, reference):
         method = "GET"
+
         path = "ClientApp/customer/v1/get/list?ids="+str(reference)
         get_authenticate = self.get_authenticate_key()
         headers = {'WWW-Authenticate': get_authenticate}
@@ -48,8 +49,7 @@ class CustomerLib(ApiBase):
     def process_customer(self, order_details):
         account_code = self.accountcode(order_details.customer.id)
         is_account_exist = self.get_customer_id(order_details.customer.id)
-        get_customer_data = self.check_customer(
-            is_account_exist.customer_reference_id)
+        get_customer_data = self.check_customer(account_code)
         if is_account_exist:
             if is_account_exist.customer_reference_id is None:
                 if get_customer_data:
@@ -68,7 +68,7 @@ class CustomerLib(ApiBase):
                                                 'customer_reference_id': customer_reference_id, 'create_customer_response': create_customer_response}
                     self.insert_customer_response(insert_customer_response)
             else:
-                reference_id = is_account_exist.customer_reference_id
+                reference_id = get_customer_data["referenceId"]
                 update_customer = self.update_customer(
                     order_details, reference_id)
                 insert_customer_response = {'id': is_account_exist.id, 'customer_id': order_details.customer.id,
@@ -158,6 +158,7 @@ class CustomerLib(ApiBase):
         headers = {'WWW-Authenticate': get_authenticate}
         response = ApiBase.send_request(
             self, method, path, update_customer, headers, "json")
+
         return response
 
     def update_customer_dic(self, order_details, reference_id):
