@@ -15,3 +15,4 @@ from wayrem_admin.models.suppliers import *
 from wayrem_admin.models.units import *
 from wayrem_admin.models.users import *
 from wayrem_admin.models.warehouse import *
+from wayrem_admin.models.localization import *

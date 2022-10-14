@@ -1,0 +1,75 @@
+<div class="subheader row align-items-center justify-content-between">
+     <div class="col-xl-5 col-lg-5 col-5">        
+        <div class="col-xl-11 col-lg-11 col-md-5">
+            {% if perms.settings.create %}<button class="btn btn-success create_new" data-bs-toggle="modal" data-bs-target="#exampleModal">Import Mobile Localization</button>{% endif %}
+            </a>
+        </div>
+    </div>
+     <!-- Modal -->
+     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Import Mobile Localization</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form action="{% url 'wayrem_admin:localization_excel_import' %}" method="POST" enctype="multipart/form-data" validate>
+                    <div class="modal-body">
+                        {% csrf_token %}
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-file">
+                                        <input type="file" class="form-file-input" name="myFileInput" required accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" id="myFileInput" />
+                                        <label class="form-file-label" for="myFileInput">
+                                            <span class="form-file-text">Choose file...</span>
+                                            <span class="form-file-button">Browse</span>
+                                    </label>
+                                </div>
+                                </div>
+                               
+                            </div>
+                    </div>
+                    <br/>
+                    <div class="modal-footer">
+                        <button type="button" class="btn bg-danger text-white btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-xl-4 col-lg-4 col-8 my-2">
+        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center py-4">
+            <div class="d-block mb-4 mb-md-0"></div>
+            <div class="btn-toolbar mb-2 mb-md-0">
+                        <div class="btn-group">
+                            <button class="button button1 export_file dropdown-toggle btn btn-sm btn-outline-primary" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                Export
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                <li>
+                                    <a class="dropdown-item exportorders" href="/settings/excel_export"> Export Mobile Localization </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+        </div>
+        <div class="row d-flex align-items-center">
+            <div class="col-xl-12 col-lg-3 col-md-0 mb-3 mb-md-0 mb-sm-3 mb-lg-0 " style="height:40px;">
+            <form method="GET">    
+                <div class="input-group subadmin_search">
+                    {{filter_form.settings}}
+                    <button type="submit" class="btn btn-dark border-0 col-xl-3 col-md-5 col-12 fas fa-search"> Search</button>
+                </div>
+            </form>
+            </div>
+        </div>
+
+    </div>
+
+    {% comment %} <div class="col-xl-2 col-lg-2 col-md-2 padding-right-0 m-2 justify-content-end d-flex">
+                <a class=" btn btn-primary col-xl-12 col-lg-12" data-bs-toggle="modal" data-bs-target="#advance_filter" href="#">Filter <img src="/static/assets/img/logo/filter1.svg" height="" width=""> </a>
+    </div> {% endcomment %}
+</div>
+
+

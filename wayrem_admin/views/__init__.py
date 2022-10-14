@@ -20,3 +20,4 @@ from wayrem_admin.views.static_pages import *
 from wayrem_admin.views.banks import *
 from wayrem_admin.views.wallet import *
 from wayrem_admin.views.available_stock import *
+from wayrem_admin.views.mobile_localization import *
