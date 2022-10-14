@@ -100,7 +100,7 @@ class Order(ApiBase):
         deliverAddressId = "Home"
         deliverAccountName = orderdetail.order_ship_name
         deliverEmail = orderdetail.order_email
-        deliverPhoneNumber = orderdetail.order_phone
+        deliverPhoneNumber = "966"+orderdetail.order_phone
 
         deliverApartment = orderdetail.order_ship_building_name
         deliverStreetName = orderdetail.order_ship_address

@@ -34,9 +34,9 @@ class CustomerLib(ApiBase):
         else:
             return get_customer
 
-    def check_customer(self,reference):
+    def check_customer(self, reference):
         method = "GET"
-        
+
         path = "ClientApp/customer/v1/get/list?ids="+str(reference)
         get_authenticate = self.get_authenticate_key()
         headers = {'WWW-Authenticate': get_authenticate}
@@ -80,7 +80,8 @@ class CustomerLib(ApiBase):
                                             'customer_reference_id': get_customer_data["referenceId"], 'create_customer_response': get_customer_data}
                 self.insert_customer_response(insert_customer_response)
                 reference_id = get_customer_data["referenceId"]
-                update_customer = self.update_customer(order_details, reference_id)
+                update_customer = self.update_customer(
+                    order_details, reference_id)
 
             else:
                 create_customer_response = self.create_customer(
@@ -129,7 +130,8 @@ class CustomerLib(ApiBase):
             last_name = order_details.customer.last_name
 
         create_customer_dic['name'] = order_details.customer.first_name+last_name
-        create_customer_dic['mobile'] = "966"+str(order_details.customer.contact)
+        create_customer_dic['mobile'] = "966" + \
+            str(order_details.customer.contact)
         create_customer_dic['email'] = order_details.customer.email
         create_customer_dic['customerType'] = self.customer_type
         create_customer_dic['billingAddress'] = {}
@@ -156,7 +158,6 @@ class CustomerLib(ApiBase):
         headers = {'WWW-Authenticate': get_authenticate}
         response = ApiBase.send_request(
             self, method, path, update_customer, headers, "json")
-        
         return response
 
     def update_customer_dic(self, order_details, reference_id):
@@ -176,7 +177,7 @@ class CustomerLib(ApiBase):
         update_customer_dic['billingAddress']['landmark'] = order_details.order_ship_landmark
         update_customer_dic['billingAddress']['locality'] = order_details.order_ship_region
         update_customer_dic['billingAddress']['city'] = order_details.order_city
-        update_customer_dic['billingAddress']['state'] =order_details.order_ship_region
+        update_customer_dic['billingAddress']['state'] = order_details.order_ship_region
         update_customer_dic['billingAddress']['country'] = order_details.order_country
         update_customer_dic['billingAddress']['pincode'] = "NA"
         update_customer_dic['billingAddress']['latitude'] = order_details.order_ship_latitude
