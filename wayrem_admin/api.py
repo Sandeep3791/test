@@ -1,4 +1,4 @@
-# import requests   [REDACTED].wJUoHtkX0wRjj9g1xk6G_tNlrWqoST7PlW8gH7OnyF8
+# import requests   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
 
 # url = "https://api.barcodelookup.com/v3/products?barcode=8901262072052&formatted=y&key=2ppq23rl3qiilkkc0k315y1ft3ytxw"
 
@@ -24,7 +24,7 @@ message = Mail(
     html_content='<strong>and easy to do anywhere, even with Python</strong>')
 try:
     sg = SendGridAPIClient(
-        '[REDACTED].3HFHrgCCN81kEee5n_LCmeZbm8GrAVOXU1lClP5S_vI')
+        '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')
     response = sg.send(message)
     print(response.status_code)
     print(response.body)

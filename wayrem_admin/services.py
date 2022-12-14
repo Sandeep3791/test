@@ -44,7 +44,7 @@ def send_email(to, subject, body):
 #         html_content=body)
 #     try:
 #         sg = SendGridAPIClient(
-#             '[REDACTED].3HFHrgCCN81kEee5n_LCmeZbm8GrAVOXU1lClP5S_vI')
+#             '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')
 #         response = sg.send(message)
 #         print(response.status_code)
 #         print(response.body)
