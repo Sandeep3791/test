@@ -83,7 +83,7 @@ WSGI_APPLICATION = 'supplier.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'wayrem_stg_v2',
+        'NAME': 'wayrem_uat_v3',
         'USER': 'wayremdb_adminuser',
         'PASSWORD': 'r2wXJfUs78NczMFWRXcV',
         'HOST': 'db',
