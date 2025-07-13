@@ -4,3 +4,4 @@ myenv/
 venv
 __pycache__/
 *.pyc
+constant.py
